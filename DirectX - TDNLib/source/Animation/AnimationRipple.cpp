@@ -4,7 +4,7 @@
 
 AnimationRipple::AnimationRipple(char* fileName, int MoveAlpha, float MoveScale)
 {
-	image = new iex2DObj(fileName);
+	image = new tdn2DObj(fileName);
 	//image->SetShiftCenter(true);
 
 	alpha = 255;

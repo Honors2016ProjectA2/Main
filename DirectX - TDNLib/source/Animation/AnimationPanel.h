@@ -1,5 +1,5 @@
 #pragma once
-#include "iextreme.h"
+#include "tdnlib.h"
 
 class AnimationPanel
 {
@@ -9,13 +9,13 @@ public:
 
 
 	void Update();
-	void Render(int x, int y, DWORD dwFlag = RS_COPY);
+	void Render(int x, int y, DWORD dwFlag = RS::COPY);
 
 	void Action();
 	bool GetisAction();
 
 private:
-	iex2DObj* m_image;
+	tdn2DObj* m_image;
 
 	int m_sizeX;
 	int m_sizeY;

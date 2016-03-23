@@ -4,7 +4,7 @@
 
 AnimationPanel::AnimationPanel(char* _fileName, int _sizeX, int _sizeY, int _endCount, int _upflame, int _upCount, bool loop)
 {
-	m_image = new iex2DObj(_fileName);
+	m_image = new tdn2DObj(_fileName);
 
 	// サイズ指定
 	m_sizeX = _sizeX;

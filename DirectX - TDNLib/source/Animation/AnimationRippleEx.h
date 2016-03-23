@@ -1,5 +1,5 @@
 #pragma once
-#include "iextreme.h"
+#include "tdnlib.h"
 #include "../system/System.h"
 
 class AnimationRippleEx
@@ -16,9 +16,9 @@ public:
 	void Render(float x, float y, DWORD dwFlag);
 
 	bool isDoing(){ return isAction; }
-	iex2DObj* GetObj(){ return obj; };
+	tdn2DObj* GetObj(){ return obj; };
 private:
-	iex2DObj* obj;
+	tdn2DObj* obj;
 	
 	//Vector3 pos;
 

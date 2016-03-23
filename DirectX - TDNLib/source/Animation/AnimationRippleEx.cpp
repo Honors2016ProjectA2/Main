@@ -3,7 +3,7 @@
 
 AnimationRippleEx::AnimationRippleEx(char* name, int EndFlame, int alphaNearFlame, int alphaFarFlame, float StartScale, float ScaleMove, bool IsRoop)
 {
-	obj = new iex2DObj(name);
+	obj = new tdn2DObj(name);
 
 	//pos = VECTOR_ZERO;
 	isAction = false;
