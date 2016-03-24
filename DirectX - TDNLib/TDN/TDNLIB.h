@@ -1191,11 +1191,6 @@ namespace tdnInputEnum
 	static const int STICK_WIDTH = 1000;
 	static const int DEFAULT_KEY_CONFIG = -1;
 	static const float MIN_MOVE_STICK = .35f;
-	static const int NUM_ID_GROUPS = 5;
-	static const LPSTR ID_GOURPS[NUM_ID_GROUPS] =
-	{
-		"DEFAULT", "XBOX", "PS3", "GAMEPAD", "NORI_GAMEPAD"
-	};
 }
 
 
@@ -1205,10 +1200,10 @@ namespace tdnInputEnum
 class tdnInputManager
 {
 private:
-	static LPDIRECTINPUT8 lpDI;
-	static int num_device;
-	static DIDEVICEINSTANCE	device_instances[tdnInputEnum::INPUT_DEVICE_MAX];
-	static char groupID[tdnInputEnum::INPUT_DEVICE_MAX][16];
+	static LPDIRECTINPUT8 m_lpDI;
+	static int m_NumDevice;
+	static DIDEVICEINSTANCE	m_DeviceInstances[tdnInputEnum::INPUT_DEVICE_MAX];
+	static char m_GroupID[tdnInputEnum::INPUT_DEVICE_MAX][32];
 
 	static BOOL CALLBACK EnumDeviceCallback(const DIDEVICEINSTANCE* pdidi, VOID* pContext);
 	static BOOL CALLBACK EnumAxes(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef);
@@ -1217,14 +1212,15 @@ public:
 	static void Initialize();
 	static void Release()
 	{
-		if (lpDI)
+		if (m_lpDI)
 		{
-			delete lpDI;
-			lpDI = nullptr;
+			delete m_lpDI;
+			m_lpDI = nullptr;
 		}
 	}
 	static LPDIRECTINPUTDEVICE8 GetDevice(int no);
-	static LPSTR GetGroupID(int no){ return groupID[no]; }
+	static LPSTR GetGroupID(int no){ return m_GroupID[no]; }
+	static LPSTR GetDeviceInstanceName(int no){ return m_DeviceInstances[no].tszInstanceName; }
 };
 
 enum KEYCODE
@@ -1310,7 +1306,7 @@ public:
 	int tdnInputDevice::GetAxisX(){ return (pad_axisX*pad_axisX > tdnInputEnum::MIN_MOVE_STICK*(tdnInputEnum::STICK_WIDTH*tdnInputEnum::STICK_WIDTH)) ? pad_axisX : 0; }
 	int tdnInputDevice::GetAxisY(){ return (pad_axisY*pad_axisY > tdnInputEnum::MIN_MOVE_STICK*(tdnInputEnum::STICK_WIDTH*tdnInputEnum::STICK_WIDTH)) ? pad_axisY : 0; }
 	int tdnInputDevice::GetAxisX2(){ return (pad_axisX2*pad_axisX2 > tdnInputEnum::MIN_MOVE_STICK*(tdnInputEnum::STICK_WIDTH*tdnInputEnum::STICK_WIDTH)) ? pad_axisX2 : 0; }
-	int tdnInputDevice::GetAxisY2(){ return (pad_axisX2*pad_axisY2 > tdnInputEnum::MIN_MOVE_STICK*(tdnInputEnum::STICK_WIDTH*tdnInputEnum::STICK_WIDTH)) ? pad_axisY2 : 0; }
+	int tdnInputDevice::GetAxisY2(){ return (pad_axisY2*pad_axisY2 > tdnInputEnum::MIN_MOVE_STICK*(tdnInputEnum::STICK_WIDTH*tdnInputEnum::STICK_WIDTH)) ? pad_axisY2 : 0; }
 };
 
 class tdnInput
@@ -1325,10 +1321,10 @@ public:
 	static void PadAsign(LPSTR config, int no = 0);
 
 	static int KeyGet(KEYCODE key, int no = 0){ return device[no]->Get(key); }
-	static int GetAxisX(int no=0) { return device[no]->GetAxisX(); }
-	static int GetAxisY(int no=0) { return device[no]->GetAxisY(); }
-	static int GetAxisX2(int no=0){ return device[no]->GetAxisX2(); }
-	static int GetAxisY2(int no=0){ return device[no]->GetAxisY2(); }
+	static int GetAxisX(int no = 0) { return device[no]->GetAxisX(); }
+	static int GetAxisY(int no = 0) { return device[no]->GetAxisY(); }
+	static int GetAxisX2(int no = 0){ return device[no]->GetAxisX2(); }
+	static int GetAxisY2(int no = 0){ return device[no]->GetAxisY2(); }
 	static void GetAxisXYf(float *outX, float *outY, int no = 0);
 	static void GetAxisXY2f(float *outX, float *outY, int no = 0);
 };
@@ -1484,6 +1480,53 @@ bool KeyBoardTRG(BYTE KeyCode, UINT frame = 1);
 
 // 何かキーが押されたとき、1フレームだけそのキーのキーコードが返ってくる( タイピングゲームとかで使えそう )
 BYTE KeyBoardAnyTRG();
+
+
+//-----------------------------------------------------------------------------
+//		マウス入力
+//-----------------------------------------------------------------------------
+
+enum class WHEEL_FLAG
+{
+	NONE, UP, DOWN
+};
+
+class tdnMouse
+{
+private:
+	static POINT m_CurrentPoint;
+	static POINT m_PrevPoint;
+	static RECT m_Rc;
+
+	// ホイール
+	static int m_PrevWheel;
+	static int m_CurrentWheel;
+	static WHEEL_FLAG m_FlagW;
+
+	static Vector2 m_Axis;
+	static Vector2 m_Pos;
+	static int m_FlagRight, m_FlagLeft;
+
+public:
+
+	static void SetWheel(WHEEL_FLAG f)
+	{
+		m_CurrentWheel = (f == WHEEL_FLAG::DOWN) ? m_CurrentWheel - 1 : m_CurrentWheel + 1;
+	}
+
+	static void Initialize(BOOL show);
+	static void Update();
+	static Vector2 &GetPos(){ return m_Pos; }
+	static int GetLeft(){ return m_FlagLeft; }									// 左クリックしたかどうか(iexみたいにおしっぱ1、押した瞬間3が返る)
+	static int GetRight(){ return m_FlagRight; }								// 右クリックしたかどうか(iexみたいにおしっぱ1、押した瞬間3が返る)
+	static WHEEL_FLAG GetWheelFlag(){ return m_FlagW; }							// ホイールの状態取得
+	static bool isPushCenter(){ return ((GetKeyState(0x04) & 0x80) != 0); }		// 真ん中ボタンをクリックしたか
+	static float GetMoveDist()
+	{
+		float vx = (float)(m_CurrentPoint.x - m_PrevPoint.x), vy = (float)(m_CurrentPoint.y - m_PrevPoint.y);
+		return sqrtf(vx*vx + vy*vy);
+	}
+};
 
 
 

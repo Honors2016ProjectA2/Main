@@ -15,6 +15,7 @@ namespace SoundManager
 	void Initialize();
 	void Release();
 	void Update();
+	void SetListenerPos(const Vector2 &pos);
 }
 
 class iexSoundBase;
@@ -27,9 +28,8 @@ private:
 	std::map<LPSTR, int> ID;	// char*型で番号を振り分ける
 
 	tdnSoundSE *play_manager;	// iexSound
+	Vector2 m_ListenerPos;		// 聞こえる人の座標
 
-	// データ検索
-	//int Find_data_no(char *_ID);
 
 	int Play_in(int data_num, bool loop);
 	int Play_in(int data_num, const Vector2 &pos, const Vector2 &move, bool loop);
@@ -70,7 +70,7 @@ public:
 	void Stop_all();																								// 全部止める
 	void SetFX(LPSTR _ID, int no, DXA_FX flag);
 
-	void SetListener(const Vector2 &pos, const Vector2 &move);			// リスナー情報
+	void SetListener(const Vector2 &pos);			// リスナー情報
 };
 
 class BGM_Manager

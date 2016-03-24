@@ -1,5 +1,4 @@
 ﻿#include "TDNLIB.h"
-#include<fstream>
 #include "../source/system/ItDebug.h"
 
 //*****************************************************************************************************************************
@@ -10,10 +9,10 @@
 //------------------------------------------------------
 //		静的メンバ変数
 //------------------------------------------------------
-LPDIRECTINPUT8 tdnInputManager::lpDI = nullptr;
-int tdnInputManager::num_device = 0;
-DIDEVICEINSTANCE tdnInputManager::device_instances[tdnInputEnum::INPUT_DEVICE_MAX];
-char tdnInputManager::groupID[tdnInputEnum::INPUT_DEVICE_MAX][16];
+LPDIRECTINPUT8 tdnInputManager::m_lpDI = nullptr;
+int tdnInputManager::m_NumDevice = 0;
+DIDEVICEINSTANCE tdnInputManager::m_DeviceInstances[tdnInputEnum::INPUT_DEVICE_MAX];
+char tdnInputManager::m_GroupID[tdnInputEnum::INPUT_DEVICE_MAX][32];
 
 //------------------------------------------------------
 //		コントローラー列挙
@@ -21,7 +20,7 @@ char tdnInputManager::groupID[tdnInputEnum::INPUT_DEVICE_MAX][16];
 BOOL CALLBACK tdnInputManager::EnumDeviceCallback(const DIDEVICEINSTANCE* pdidi, VOID* pContext)
 {
 	//	情報のコピー
-	memcpy(&device_instances[num_device], pdidi, sizeof(DIDEVICEINSTANCE));
+	memcpy(&m_DeviceInstances[m_NumDevice], pdidi, sizeof(DIDEVICEINSTANCE));
 
 	/*
 	•DI8DEVTYPE_GAMEPAD
@@ -96,12 +95,12 @@ BOOL CALLBACK tdnInputManager::EnumDeviceCallback(const DIDEVICEINSTANCE* pdidi,
 		}
 
 		// 同一controllerチェック
-		if (strcmp(device_instances[num_device].tszInstanceName, work) == 0)
+		if (strcmp(m_DeviceInstances[m_NumDevice].tszInstanceName, work) == 0)
 		{
 			// ID読み飛ばし
 			infs >> yomitobashi;
 			// 見つかったcontrollerの名前のグループID登録
-			infs >> groupID[num_device];
+			infs >> m_GroupID[m_NumDevice];
 			find = true;
 			break;
 		}
@@ -112,12 +111,12 @@ BOOL CALLBACK tdnInputManager::EnumDeviceCallback(const DIDEVICEINSTANCE* pdidi,
 	{
 		// 見つからなかったのでリスト追加します
 		std::ofstream ofs("DATA/Input/list.txt", std::ios::out | std::ios::ate | std::ios::app);
-		ofs << "NAME: " << device_instances[num_device].tszInstanceName << "|";
+		ofs << "NAME: " << m_DeviceInstances[m_NumDevice].tszInstanceName << "|";
 		ofs << "\nID: DEFAULT\n\n";
 	}
 
 	//	最大
-	if (++num_device >= tdnInputEnum::INPUT_DEVICE_MAX) return DIENUM_STOP;
+	if (++m_NumDevice >= tdnInputEnum::INPUT_DEVICE_MAX) return DIENUM_STOP;
 
 	return DIENUM_CONTINUE;
 }
@@ -126,17 +125,17 @@ BOOL CALLBACK tdnInputManager::EnumDeviceCallback(const DIDEVICEINSTANCE* pdidi,
 //------------------------------------------------------
 void tdnInputManager::Initialize()
 {
-	lpDI = nullptr;
-	MyAssert(DirectInput8Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&lpDI, nullptr) == DI_OK, "DirectInputの初期化でエラー");
-	lpDI->Initialize(GetModuleHandle(nullptr), DIRECTINPUT_VERSION);
+	m_lpDI = nullptr;
+	MyAssert(DirectInput8Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_lpDI, nullptr) == DI_OK, "DirectInputの初期化でエラー");
+	m_lpDI->Initialize(GetModuleHandle(nullptr), DIRECTINPUT_VERSION);
 
-	num_device = 0;
+	m_NumDevice = 0;
 
 	// 最初は全員デフォルトのID
-	for (int i = 0; i < tdnInputEnum::INPUT_DEVICE_MAX; i++) strcpy_s(groupID[i], 16, "DEFAULT");
+	for (int i = 0; i < tdnInputEnum::INPUT_DEVICE_MAX; i++) strcpy_s(m_GroupID[i], 32, "DEFAULT");
 
 	//	ゲームパッドの列挙(この中でIDの振り分けしてます)
-	lpDI->EnumDevices(DI8DEVCLASS_GAMECTRL, EnumDeviceCallback, lpDI, DIEDFL_ATTACHEDONLY);
+	m_lpDI->EnumDevices(DI8DEVCLASS_GAMECTRL, EnumDeviceCallback, m_lpDI, DIEDFL_ATTACHEDONLY);
 }
 
 //------------------------------------------------------
@@ -167,7 +166,7 @@ LPDIRECTINPUTDEVICE8 tdnInputManager::GetDevice(int no)
 	LPDIRECTINPUTDEVICE8	lpDevice;
 
 	//	デバイス生成
-	hr = lpDI->CreateDevice(device_instances[no].guidInstance, &lpDevice, NULL);
+	hr = m_lpDI->CreateDevice(m_DeviceInstances[no].guidInstance, &lpDevice, NULL);
 	if (FAILED(hr)) return nullptr;
 
 	// フォーマット設定(キーボードとかジョイスティックとか)
@@ -217,12 +216,12 @@ LPDIRECTINPUTDEVICE8 tdnInputManager::GetDevice(int no)
 
 	return lpDevice;
 }
-	
+
 
 //*****************************************************************************************************************************
 //				入力デバイス
 //*****************************************************************************************************************************
-const int tdnInputDevice::default_key_map[20] = { 'W', 'S', 'A', 'D', 'Z', 'X', 'C', 'V', 'F', 'R', '4', 'G', 'T', '5', VK_RETURN, VK_SPACE };
+const int tdnInputDevice::default_key_map[20] = { 'W', 'S', 'A', 'D', 'Z', 'X', 'C', 'V', 'F', 'G', 'R', 'T', '4', '5', VK_RETURN, VK_SPACE };
 const int tdnInputDevice::default_joy_map[20] = { AXIS_X, AXIS_Y, AXIS_Z, AXIS_RZ, 2, 3, 1, 4, 7, 5, 11, 8, 6, 12, 9, 10 };
 
 //------------------------------------------------------
@@ -267,6 +266,64 @@ void tdnInputDevice::Update()
 	// スティック初期化
 	pad_axisX = pad_axisX2 = pad_axisY = pad_axisY2 = 0;
 
+	if (lpDevice)
+	{
+		//------------------------------------------------------
+		//	ゲームパッド
+		//------------------------------------------------------
+		// アクセス権が万が一入ってなかったら
+		if (FAILED(lpDevice->Poll())){
+			HRESULT hr;
+			do { hr = lpDevice->Acquire(); } while (hr == DIERR_INPUTLOST);	// アクセス権の再取得
+			lpDevice->Poll();
+		}
+
+		// パッド情報構造体
+		DIJOYSTATE2 js;
+
+		if (lpDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js) == DI_OK){
+			//	軸状態保存
+			long	axis[6];
+			axis[0] = js.lX;	// スティックx軸
+			axis[1] = js.lY;	// スティックy軸
+			axis[2] = js.lZ;	// スロットル制御を表す場合が多い。ジョイスティックにこの軸がない場合、値はゼロである。 
+			axis[3] = js.lRx;	// x 軸回転。ジョイスティックにこの軸がない場合、値はゼロである
+			axis[4] = js.lRy;	// y 軸回転。ジョイスティックにこの軸がない場合、値はゼロである
+			axis[5] = js.lRz;	// z 軸回転 (方向舵と呼ばれる)。ジョイスティックにこの軸がない場合、値はゼロである。
+
+			//	軸設定
+			pad_axisX = axis[joy_map[0]];	//	左スティックＸ軸
+			pad_axisY = axis[joy_map[1]];	//	左スティックＹ軸
+			pad_axisX2 = axis[joy_map[2]];	//	右スティックＸ軸
+			pad_axisY2 = axis[joy_map[3]];	//	右スティックＹ軸
+
+			//	上下左右キー設定
+			u32	angle = 8;
+			u8	povkey[9] = { 0x01, 0x09, 0x08, 0x0A, 0x02, 0x06, 0x04, 0x05, 0x00 };
+			//	８方向取得
+			if (LOWORD(js.rgdwPOV[0]) != 0xFFFF) angle = js.rgdwPOV[0] / 4500;
+			for (int dir = 0; dir < 4; dir++)
+			{
+				if (povkey[angle] & (0x01 << dir)){
+					if (joy_info[dir] & 0x01) joy_info[dir] = 1; else joy_info[dir] = 3;
+				}
+				else {
+					if (joy_info[dir] & 0x01) joy_info[dir] = 2; else joy_info[dir] = 0;
+				}
+			}
+
+			//	ボタン(0,1,2,3はスティックなので省く)
+			for (int i = 4; i < 16; i++){
+				if (js.rgbButtons[joy_map[i]] & 0x80){
+					if (joy_info[i] & 0x01) joy_info[i] = 1; else joy_info[i] = 3;
+				}
+				else {
+					if (joy_info[i] & 0x01) joy_info[i] = 2; else joy_info[i] = 0;
+				}
+			}
+		}
+	}
+
 	//------------------------------------------------------
 	//	キーボード
 	//------------------------------------------------------
@@ -305,64 +362,6 @@ void tdnInputDevice::Update()
 		else {
 			work = (KeyBoard(key_map[i])) ? 1 : 0;
 			(key_info[i] & 0x01) ? (key_info[i] = (work) ? 1 : 2) : (key_info[i] = (work) ? 3 : 0);
-		}
-	}
-
-
-	//------------------------------------------------------
-	//	ゲームパッド
-	//------------------------------------------------------
-	if (!lpDevice)return;	// controllerささってない！
-
-	// アクセス権が万が一入ってなかったら
-	if (FAILED(lpDevice->Poll())){
-		HRESULT hr;
-		do { hr = lpDevice->Acquire(); } while (hr == DIERR_INPUTLOST);	// アクセス権の再取得
-		lpDevice->Poll();
-	}
-
-	// パッド情報構造体
-	DIJOYSTATE2 js;
-
-	if (lpDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js) == DI_OK){
-		//	軸状態保存
-		long	axis[6];
-		axis[0] = js.lX;	// スティックx軸
-		axis[1] = js.lY;	// スティックy軸
-		axis[2] = js.lZ;	// スロットル制御を表す場合が多い。ジョイスティックにこの軸がない場合、値はゼロである。 
-		axis[3] = js.lRx;	// x 軸回転。ジョイスティックにこの軸がない場合、値はゼロである
-		axis[4] = js.lRy;	// y 軸回転。ジョイスティックにこの軸がない場合、値はゼロである
-		axis[5] = js.lRz;	// z 軸回転 (方向舵と呼ばれる)。ジョイスティックにこの軸がない場合、値はゼロである。
-
-		//	軸設定
-		pad_axisX = axis[joy_map[0]];	//	左スティックＸ軸
-		pad_axisY = axis[joy_map[1]];	//	左スティックＹ軸
-		pad_axisX2 = axis[joy_map[2]];	//	右スティックＸ軸
-		pad_axisY2 = axis[joy_map[3]];	//	右スティックＹ軸
-
-		//	上下左右キー設定
-		u32	angle = 8;
-		u8	povkey[9] = { 0x01, 0x09, 0x08, 0x0A, 0x02, 0x06, 0x04, 0x05, 0x00 };
-		//	８方向取得
-		if (LOWORD(js.rgdwPOV[0]) != 0xFFFF) angle = js.rgdwPOV[0] / 4500;
-		for (int dir = 0; dir < 4; dir++)
-		{
-			if (povkey[angle] & (0x01 << dir)){
-				if (joy_info[dir] & 0x01) joy_info[dir] = 1; else joy_info[dir] = 3;
-			}
-			else {
-				if (joy_info[dir] & 0x01) joy_info[dir] = 2; else joy_info[dir] = 0;
-			}
-		}
-
-		//	ボタン(0,1,2,3はスティックなので省く)
-		for (int i = 4; i < 16; i++){
-			if (js.rgbButtons[joy_map[i]] & 0x80){
-				if (joy_info[i] & 0x01) joy_info[i] = 1; else joy_info[i] = 3;
-			}
-			else {
-				if (joy_info[i] & 0x01) joy_info[i] = 2; else joy_info[i] = 0;
-			}
 		}
 	}
 }
@@ -454,14 +453,18 @@ void tdnInput::PadAsign(LPSTR ID, int no)
 	do
 	{
 		infs >> str;
-		for (int i = 0; i < tdnInputEnum::NUM_ID_GROUPS; i++)
+		if (strcmp(ID, str) == 0)
 		{
-			if (strcmp(ID, tdnInputEnum::ID_GOURPS[i]) == 0)
-			{
-				find = true;
-				break;
-			}
+			find = true;
+			break;
 		}
+
+		// 読み飛ばし
+		for (int i = 0; i < 12; i++) infs >> str;
+
+		// ID検索に引っかからなかった！
+		MyAssert(!infs.eof(), "tdnInputでエラー : key_configに存在しないIDが含まれています。listのIDを確認してください");
+
 	} while (!find);
 
 	// ID情報の後にキーコンフィグがある
@@ -485,51 +488,51 @@ void tdnInput::PadAsign(LPSTR ID, int no)
 
 void tdnInput::GetAxisXYf(float *outX, float *outY, int no)
 {
-	float AX = (float)device[no]->GetAxisX() / tdnInputEnum::STICK_WIDTH, AY = (float)device[no]->GetAxisY() / tdnInputEnum::STICK_WIDTH;
+	*outX = (float)device[no]->GetAxisX() / tdnInputEnum::STICK_WIDTH, *outY = (float)device[no]->GetAxisY() / tdnInputEnum::STICK_WIDTH;
 
-	// 絶対値処理(2乗sqrtfとどっちが早いんだろう?)
-	*outX = (AX < 0) ? AX*-1 : AX;
-	*outY = (AY < 0) ? AY*-1 : AY;
+	//// 絶対値処理(2乗sqrtfとどっちが早いんだろう?)
+	//float X = (*outX < 0) ? *outX * -1 : *outX;
+	//float Y = (*outY < 0) ? *outY * -1 : *outY;
+	//
+	//float dist = *outX + *outY;
 
-	float dist = *outX + *outY;
-
-	// 誤差排除
+	//// 誤差排除
 	//if (dist < tdnInputEnum::MIN_MOVE_STICK)
 	//{
 	//	*outX = 0;
 	//	*outY = 0;
 	//}
 
-	// 正規化(これをしないと斜め移動が早くなってしまう)
-	if (dist > 1.0f)
-	{
-		*outX /= dist;
-		*outY /= dist;
-	}
+	//// 正規化(これをしないと斜め移動が早くなってしまう)
+	//if (dist > 1.0f)
+	//{
+	//	*outX /= dist;
+	//	*outY /= dist;
+	//}
 }
 void tdnInput::GetAxisXY2f(float *outX, float *outY, int no)
 {
-	float AX = (float)device[no]->GetAxisX2() / tdnInputEnum::STICK_WIDTH, AY = (float)device[no]->GetAxisY2() / tdnInputEnum::STICK_WIDTH;
+	*outX = (float)device[no]->GetAxisX2() / tdnInputEnum::STICK_WIDTH, *outY = (float)device[no]->GetAxisY2() / tdnInputEnum::STICK_WIDTH;
 
-	// 絶対値処理(2乗sqrtfとどっちが早いんだろう?)
-	*outX = (AX < 0) ? AX*-1 : AX;
-	*outY = (AY < 0) ? AY*-1 : AY;
+	//// 絶対値処理(2乗sqrtfとどっちが早いんだろう?)
+	//*outX = (AX < 0) ? AX*-1 : AX;
+	//*outY = (AY < 0) ? AY*-1 : AY;
+	//
+	//float dist = *outX + *outY;
 
-	float dist = *outX + *outY;
-
-	// 誤差排除
+	//// 誤差排除
 	//if (dist < tdnInputEnum::MIN_MOVE_STICK)
 	//{
 	//	*outX = 0;
 	//	*outY = 0;
 	//}
 
-	// 正規化(これをしないと斜め移動が早くなってしまう)
-	if (dist > 1.0f)
-	{
-		*outX /= dist;
-		*outY /= dist;
-	}
+	//// 正規化(これをしないと斜め移動が早くなってしまう)
+	//if (dist > 1.0f)
+	//{
+	//	*outX /= dist;
+	//	*outY /= dist;
+	//}
 }
 
 //*****************************************************************************************************************************
@@ -678,3 +681,94 @@ UINT KeyBoard(BYTE KeyCode){ return key_board->on_frame[KeyCode]; }
 bool KeyBoardTRG(BYTE KeyCode, UINT frame) { return (key_board->on_frame[KeyCode] == frame); }
 
 BYTE KeyBoardAnyTRG(){ return key_board->AnyTRG(); }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//*****************************************************************************************************************************
+//		マウス
+//*****************************************************************************************************************************
+//------------------------------------------------------
+//	静的変数
+//------------------------------------------------------
+Vector2 tdnMouse::m_Axis = Vector2(0, 0);
+Vector2 tdnMouse::m_Pos = Vector2(0, 0);
+int tdnMouse::m_FlagRight = 0;
+int tdnMouse::m_FlagLeft = 0;
+POINT tdnMouse::m_CurrentPoint;
+POINT tdnMouse::m_PrevPoint;
+RECT tdnMouse::m_Rc;
+int tdnMouse::m_PrevWheel;
+int tdnMouse::m_CurrentWheel;
+WHEEL_FLAG tdnMouse::m_FlagW = WHEEL_FLAG::NONE;
+
+//------------------------------------------------------
+//	初期化
+//------------------------------------------------------
+void tdnMouse::Initialize(BOOL show)
+{
+	ShowCursor(show);
+}
+
+
+//------------------------------------------------------
+//	更新
+//------------------------------------------------------
+void tdnMouse::Update()
+{
+	if (m_CurrentWheel == m_PrevWheel) m_FlagW = WHEEL_FLAG::NONE;
+	else
+	{
+		m_FlagW = (m_CurrentWheel < m_PrevWheel) ? WHEEL_FLAG::DOWN : WHEEL_FLAG::UP;
+		m_PrevWheel = m_CurrentWheel;
+	}
+
+	static const float Max = 0.6f;
+	static const float Min = 0.25f;
+
+	// 前回座標保存
+	m_PrevPoint = m_CurrentPoint;
+	//ShowCursor(TRUE);			// 勝手にファルスに
+	// 取得
+	GetCursorPos(&m_CurrentPoint);
+	GetWindowRect(tdnSystem::GetWindow(), &m_Rc);
+	// 窓位置と縁による調整
+	m_Pos.x = (float)(m_CurrentPoint.x - m_Rc.left - 8);
+	m_Pos.y = (float)(m_CurrentPoint.y - m_Rc.top - 29);
+	////中央オフセット＆正規化
+	m_Axis.x = ((float)m_Pos.x - (tdnSystem::GetScreenSize().right / 2)) / (tdnSystem::GetScreenSize().right / 2);
+	m_Axis.y = -((float)m_Pos.y - (tdnSystem::GetScreenSize().bottom / 2)) / (tdnSystem::GetScreenSize().bottom / 2);
+
+	// 最大値制御
+	if (m_Axis.x > Max)m_Axis.x = Max;
+	else if (m_Axis.x < -Max)m_Axis.x = -Max;
+	if (m_Axis.y > Max)m_Axis.y = Max;
+	else if (m_Axis.y < -Max)m_Axis.y = -Max;
+
+	// 最小値なら0
+	float val_x = sqrtf(m_Axis.x * m_Axis.x), val_y = sqrtf(m_Axis.y * m_Axis.y);
+	if (val_x < Min) m_Axis.x = 0;
+	if (val_y < Min * 1.5f) m_Axis.y = 0;
+
+	if (KeyBoard(MOUSE_LEFT))
+	{
+		m_FlagLeft = (m_FlagLeft == 0) ? 3 : 1;
+	}
+	else m_FlagLeft = 0;
+	if ((GetKeyState(0x02) & 0x80) != 0)
+	{
+		m_FlagRight = (m_FlagRight == 0) ? 3 : 1;
+	}
+	else m_FlagRight = 0;
+}

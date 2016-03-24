@@ -13,6 +13,8 @@ bool sceneTitle::Initialize()
 {
 	tdnView::Init();
 
+	tdnMouse::Initialize(TRUE);
+
 	return true;
 }
 
@@ -27,8 +29,13 @@ sceneTitle::~sceneTitle()
 //******************************************************************
 bool sceneTitle::Update()
 {
+	tdnMouse::Update();
 
-
+	// 左クリック
+	if (tdnMouse::GetLeft() == 3)
+	{
+		se->Play("波紋出す", tdnMouse::GetPos());
+	}
 
 	if (tdnInput::KeyGet(KEY_ENTER) == 3)
 	{

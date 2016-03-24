@@ -110,6 +110,8 @@
     <ClCompile Include="source\Animation\AnimationPanel.cpp" />
     <ClCompile Include="source\Animation\AnimationRipple.cpp" />
     <ClCompile Include="source\Animation\AnimationRippleEx.cpp" />
+    <ClCompile Include="source\Scene\SceneSelect.cpp" />
+    <ClCompile Include="source\Scene\SceneTitle.cpp" />
     <ClCompile Include="TDN\TDN_Archiver.cpp" />
     <ClCompile Include="TDN\TDN_Audio.cpp" />
     <ClCompile Include="TDN\TDN_2DObj.cpp" />
@@ -135,6 +137,8 @@
     <ClInclude Include="source\Animation\AnimationPanel.h" />
     <ClInclude Include="source\Animation\AnimationRipple.h" />
     <ClInclude Include="source\Animation\AnimationRippleEx.h" />
+    <ClInclude Include="source\Scene\SceneSelect.h" />
+    <ClInclude Include="source\Scene\SceneTitle.h" />
     <ClInclude Include="TDN\ogg\codec.h" />
     <ClInclude Include="TDN\ogg\ogg.h" />
     <ClInclude Include="TDN\ogg\os_types.h" />

@@ -1,11 +1,63 @@
 #include	"TDNLIB.h"
 #include	"SoundManager.h"
 
+
+//☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★
+//
+//								サウンド呼び出しID一覧														　☆★
+//
+//☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★
+
+//==============================================================================================
+//				S	E
+//==============================================================================================
+const SE_Manager::DATA all_dataS[] =
+{
+	//-------------------------------------------------------------------
+	// 効果音関係
+	//-------------------------------------------------------------------
+	{ "イエアア",	"DATA/Sound/SE/yeaa.wav", 10, false },
+	{ "波紋出す",	"DATA/Sound/SE/ripple.wav", 20, false },			// 波紋を発動する際に
+	{ "！の音", "DATA/Sound/SE/entry.wav", 10, false },				// 波紋を発動して条件を満たして！が出た時
+	{ "カーソル",	"DATA/Sound/SE/cursor_point.wav", 3, false },	// ペーパーボーズのボタンの上にカーソルしたときの音
+	{ "キャンセル", "DATA/Sound/SE/cancel.wav", 2, false },			// 何かしらのキャンセル、失敗したときとか 
+	{ "決定",		"DATA/Sound/SE/decision1.wav", 4, false },		// 何かしらの決定
+	{ "駅のガヤ",	"DATA/Sound/SE/gaya.wav", 1, false },			// 駅とかで使うガヤ
+
+	//-------------------------------------------------------------------
+	// 声関係
+	//-------------------------------------------------------------------
+	{ "女えー",			"DATA/Sound/Voice/girl-ee.wav", 2, false },
+	{ "女んー",			"DATA/Sound/Voice/girl-nn.wav", 2, false },
+	{ "女おー",			"DATA/Sound/Voice/girl-oo.wav", 2, false },
+	{ "女ショックー",	"DATA/Sound/Voice/girl-shock.wav", 2, false },
+	{ "女うそー",		"DATA/Sound/Voice/girl-uso.wav", 2, false },
+
+	{ "END", nullptr }
+};
+
+
+//==============================================================================================
+//				B	G	M
+//==============================================================================================
+const BGM_Manager::DATA all_dataB[] =
+{
+	{ "EoE_A", "DATA/Sound/BGM/Collision_of_ElementsA.wav", false },
+	{ "EoE_B", "DATA/Sound/BGM/Collision_of_ElementsB.wav", false },
+	{ "END", nullptr }
+};
+
+
+
+
+
 //**************************************************************************************************************
 //
 //		サウンド管理クラス(winmainとframeworkで使うだけ)
 //
 //**************************************************************************************************************
+//=============================================================================================
+//		初	期	化
 void SoundManager::Initialize()
 {
 	se = new SE_Manager;
@@ -14,16 +66,28 @@ void SoundManager::Initialize()
 	bgm->Initialize();
 }
 
+//=============================================================================================
+//		解		放
 void SoundManager::Release()
 {
-	delete se;
-	delete bgm;
+	SAFE_DELETE(se);
+	SAFE_DELETE(bgm);
 }
 
+//=============================================================================================
+//		更新
 void SoundManager::Update()
 {
 	se->Update();
 	bgm->Update();
+}
+
+
+///********************************************************************************************
+//		リスナー情報設定！
+void SoundManager::SetListenerPos(const Vector2 &pos)
+{
+	se->SetListener(pos);
 }
 
 
@@ -32,15 +96,6 @@ void SoundManager::Update()
 //		SE管理クラス
 //
 //**************************************************************************************************************
-//*********************************************************************************************
-//		パラメータの設定
-//*********************************************************************************************
-//	サウンドデータ(textで読み込むのも良いかもしれない)
-SE_Manager::DATA all_dataS[] =
-{
-	{ "イエアア", "DATA/Sound/SE/yeaa.wav", 20, false },
-	{ "END", nullptr }
-};
 
 
 //=============================================================================================
@@ -58,12 +113,13 @@ void SE_Manager::Initialize()
 	}
 
 	// リスナーの初期設定
-	play_manager->SetListenerAll(
-		Vector3(tdnSystem::GetScreenSize().right * .5f, tdnSystem::GetScreenSize().bottom * .5f, 0),	// リスナー座標(画面の真ん中と仮定する)
-		Vector3(1, 0, 0),	// 正面ベクトル
-		Vector3(0, 1, 0),	// 上方ベクトル
-		Vector3(0, 0, 0)	// 移動値
-		);
+	m_ListenerPos = Vector2(tdnSystem::GetScreenSize().right * .5f, tdnSystem::GetScreenSize().bottom * .5f);
+	//play_manager->SetListenerAll(
+	//	Vector3(tdnSystem::GetScreenSize().right * .5f, tdnSystem::GetScreenSize().bottom * .5f, 0),	// リスナー座標(画面の真ん中と仮定する)
+	//	Vector3(1, 0, 0),	// 正面ベクトル
+	//	Vector3(0, 1, 0),	// 上方ベクトル
+	//	Vector3(0, 0, 0)	// 移動値
+	//	);
 }
 //
 //=============================================================================================
@@ -98,7 +154,7 @@ int SE_Manager::Play_in(int data_num, bool loop)
 {
 	if (data_num != TDNSOUND_PLAY_NONE)
 	{
-		return play_manager->Play(data_num, loop);
+		play_manager->Play(data_num, loop);
 	}
 	return TDNSOUND_PLAY_NONE;
 }
@@ -107,7 +163,14 @@ int SE_Manager::Play_in(int data_num, const Vector2 &pos, const Vector2 &move, b
 {
 	if (data_num != TDNSOUND_PLAY_NONE)
 	{
-		return play_manager->Play(data_num, Vector3(pos.x, pos.y, 0), Vector3(move.x, move.y, 0), loop);
+		// ステレオ手動で設定してみる
+		static const int DSBPAN_WIDTH = 10000;
+		const int pan = (int)((DSBPAN_WIDTH / 8)*((pos.x - m_ListenerPos.x)/(tdnSystem::GetScreenSize().right/2)));
+		const int vol = DSBVOLUME_MAX + (int)((DSBVOLUME_MIN / 32) * (sqrtf((m_ListenerPos.x - pos.x)*(m_ListenerPos.x - pos.x)) / m_ListenerPos.x) + (DSBVOLUME_MIN / 16) * (sqrtf((m_ListenerPos.y - pos.y)*(m_ListenerPos.y - pos.y)) / m_ListenerPos.y));
+		play_manager->SetPan(data_num, pan);
+		play_manager->SetVolume(data_num, vol);
+
+		return play_manager->Play(data_num, loop);
 	}
 	return TDNSOUND_PLAY_NONE;
 }
@@ -132,10 +195,11 @@ void SE_Manager::Stop_all()
 	play_manager->AllStop();
 }
 
-void SE_Manager::SetListener(const Vector2 &pos, const Vector2 &move)
+void SE_Manager::SetListener(const Vector2 &pos)
 {
-	play_manager->SetListenerPos(Vector3(pos.x, pos.y, 0));
-	play_manager->SetListenerMove(Vector3(move.x, move.y, 0));
+	m_ListenerPos = pos;
+	//play_manager->SetListenerPos(Vector3(pos.x, pos.y, 0));
+	//play_manager->SetListenerMove(Vector3(move.x, move.y, 0));
 }
 //
 //=============================================================================================
@@ -150,16 +214,6 @@ void SE_Manager::SetListener(const Vector2 &pos, const Vector2 &move)
 //		BGM管理クラス
 //
 //**************************************************************************************************************
-//*********************************************************************************************
-//		パラメータの設定
-//*********************************************************************************************
-//	サウンドデータ(textで読み込むのも良いかもしれない)
-BGM_Manager::DATA all_dataB[] =
-{
-	{ "EoE_A", "DATA/Sound/BGM/Collision_of_ElementsA.wav", false },
-	{ "EoE_B", "DATA/Sound/BGM/Collision_of_ElementsB.wav", false },
-	{ "END", nullptr }
-};
 
 
 //=============================================================================================
