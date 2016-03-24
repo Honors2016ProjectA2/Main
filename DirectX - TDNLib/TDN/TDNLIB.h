@@ -1500,6 +1500,8 @@ BYTE KeyBoardAnyTRG();
 #define	TYPE_WAV	0
 #define	TYPE_OGG	1
 
+#define TDNSOUND_PLAY_NONE -1		// 再生が失敗したときの戻り値となる、または再生した番号を受け取る変数の初期値として与える
+
 enum class DXA_FX
 {
 	DXAFX_OFF = 0,		// エフェクトオフ
@@ -1735,6 +1737,7 @@ public:
 	// ※以下の関数を呼ぶにはSetの引数のb3Dをtrueにする必要があります
 	//---------------------------------------------------------------
 	int Play(int ID, const Vector3 &pos, const Vector3 &front = Vector3(0, 0, -1), const Vector3 &move = Vector3(0, 0, 0), bool loop = false);// 音源情報設定しつつ再生
+	int Play(int ID, const Vector3 &pos, const Vector3 &move, bool loop);															// ちょっと簡易版
 	void SetDist(int ID, int no, float max_dist = DS3D_DEFAULTMAXDISTANCE, float min_dist = DS3D_DEFAULTMINDISTANCE);				// 最大超えるともう聞こえない、最少は普通に0とかでいいと思う
 	void SetPos(int ID, int no, const Vector3 &pos);																				// 音が発生する座標
 	void SetFront(int ID, int no, const Vector3 &front);																			// 音の向き

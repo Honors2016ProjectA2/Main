@@ -1,5 +1,7 @@
 #pragma once
 
+#include<map>
+
 //********************************************************************************************************************
 //
 //		クラスの宣言
@@ -30,8 +32,7 @@ private:
 	//int Find_data_no(char *_ID);
 
 	int Play_in(int data_num, bool loop);
-	int Play_in(int data_num, float volume, bool loop);
-	int Play_in(int data_num, const Vector3 &pos, const Vector3 &front, const Vector3 &move, bool loop);
+	int Play_in(int data_num, const Vector2 &pos, const Vector2 &move, bool loop);
 
 public:
 
@@ -62,13 +63,14 @@ public:
 	//===============================================
 	//	処		理
 	//===============================================
-	int Play(LPSTR _ID, bool loop = false);																											// 簡易版
-	int Play(LPSTR _ID, float volume, bool loop);																									// ボリューム設定版
-	int Play(LPSTR _ID, const Vector3 &pos, const Vector3 &front = Vector3(0, 0, -1), const Vector3 &move = Vector3(0, 0, 0), bool loop = false);	// 3D設定版
-	void Stop(LPSTR _ID, int no);																													// Playで返ってきた数値を入れる
-	void Stop_all();																																// 全部止める
-	
-	void Set_listener(const Vector3 &pos, const Vector3 &front, const Vector3 &up, const Vector3 &move);											// リスナー情報
+	bool isPlay(LPSTR _ID, int no);
+	int Play(LPSTR _ID, bool loop = false);																			// 簡易版																								// ボリューム設定版
+	int Play(LPSTR _ID, const Vector2 &pos, const Vector2 &move = Vector2(0, 0), bool loop = false);				// 3D設定版
+	void Stop(LPSTR _ID, int no);																					// Playで返ってきた数値を入れる
+	void Stop_all();																								// 全部止める
+	void SetFX(LPSTR _ID, int no, DXA_FX flag);
+
+	void SetListener(const Vector2 &pos, const Vector2 &move);			// リスナー情報
 };
 
 class BGM_Manager
@@ -78,16 +80,10 @@ private:
 
 	tdnSoundBGM *play_manager;	// iexSound
 
-	// データ検索
-	//int Find_data_no(char *_ID);
-
 	void Play_in(int data_num, bool loop);
-	void Play_in(int data_num, float volume, bool loop);
 	void Play_in(int data_num, const Vector3 &pos, const Vector3 &front, const Vector3 &move, bool loop);
 
 public:
-
-	int effect_no = 0;
 
 	//===============================================
 	//	音データ
@@ -114,8 +110,7 @@ public:
 	//===============================================
 	//	処		理
 	//===============================================
-	void Play(LPSTR _ID, bool loop = true);																											// 簡易版
-	void Play(LPSTR _ID, float volume, bool loop);																									// ボリューム設定版
+	void Play(LPSTR _ID, bool loop = true);																											// 簡易版																								// ボリューム設定版
 	void Play(LPSTR _ID, const Vector3 &pos, const Vector3 &front = Vector3(0, 0, -1), const Vector3 &move = Vector3(0, 0, 0), bool loop = true);	// 3D設定版
 	void Stop(LPSTR _ID);																															// Playで返ってきた数値を入れる
 	void Stop_all();																																// 全部止める
@@ -124,8 +119,10 @@ public:
 	void Fade_out(LPSTR _ID, float fade_speed);
 	void Cross_fade(LPSTR inID, LPSTR outID, float fade_speed = .0075f, bool loop = true);
 	void Cross_fade(LPSTR inID, LPSTR outID, float in_speed, float out_speed, bool loop);
+	bool isPlay(LPSTR _ID);
+	void SetSpeed(LPSTR _ID, float speed);
 
-	void Set_listener(const Vector3 &pos, const Vector3 &front, const Vector3 &up, const Vector3 &move);											// リスナー情報
+	void SetListener(const Vector2 &pos, const Vector2 &move);											// リスナー情報
 };
 
 //===============================================

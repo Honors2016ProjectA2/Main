@@ -1157,7 +1157,32 @@ int tdnSoundSE::Play(int ID, bool loop)
 	}
 	
 	// 全員再生状態だったので、再生失敗
-	return -1;
+	return TDNSOUND_PLAY_NONE;
+}
+
+int tdnSoundSE::Play(int ID, const Vector3 &pos, const Vector3 &move, bool loop)
+{
+	MyAssert(data[ID][0]->b3D, "ERROR:b3DフラグOFFの状態で3Dサウンドを使用しています。Setのb3Dをtrueにすると解決します");
+
+	//	初期化チェック
+	assert(lpDS);
+	//	データが無い！！
+	assert(data[ID].size() != 0);
+
+	for (UINT play_no = 0; play_no < data[ID].size(); play_no++)
+	{
+		// 再生してないからいつでも514状態の人を検索
+		if (!data[ID][play_no]->buffer->isPlay())
+		{	// 見つかった！
+			data[ID][play_no]->buffer->SetPos(pos);
+			data[ID][play_no]->buffer->SetMove(move);
+			data[ID][play_no]->buffer->Play(loop);
+			return play_no;
+		}
+	}
+
+	// 全員再生状態だったので、再生失敗
+	return TDNSOUND_PLAY_NONE;
 }
 
 int tdnSoundSE::Play(int ID, const Vector3 &pos, const Vector3 &front, const Vector3 &move, bool loop)
@@ -1181,7 +1206,7 @@ int tdnSoundSE::Play(int ID, const Vector3 &pos, const Vector3 &front, const Vec
 	}
 
 	// 全員再生状態だったので、再生失敗
-	return -1;
+	return TDNSOUND_PLAY_NONE;
 }
 //
 //=============================================================================================

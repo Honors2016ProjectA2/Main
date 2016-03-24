@@ -56,6 +56,14 @@ void SE_Manager::Initialize()
 		ID[all_dataS[i].id] = i;
 		play_manager->Set(i, all_dataS[i].play_simultaneously, all_dataS[i].file_name, all_dataS[i].b3D);
 	}
+
+	// リスナーの初期設定
+	play_manager->SetListenerAll(
+		Vector3(tdnSystem::GetScreenSize().right * .5f, tdnSystem::GetScreenSize().bottom * .5f, 0),	// リスナー座標(画面の真ん中と仮定する)
+		Vector3(1, 0, 0),	// 正面ベクトル
+		Vector3(0, 1, 0),	// 上方ベクトル
+		Vector3(0, 0, 0)	// 移動値
+		);
 }
 //
 //=============================================================================================
@@ -78,47 +86,6 @@ SE_Manager::~SE_Manager()
 void SE_Manager::Update()
 {
 	play_manager->UpdateListener();
-
-	if (KeyBoardTRG(KB_1))
-	{
-		play_manager->SetFX(DXA_FX::DXAFX_CHORUS);
-	}
-	else if (KeyBoardTRG(KB_2))
-	{
-		play_manager->SetFX(DXA_FX::DXAFX_COMPRESSOR);
-	}
-	else if (KeyBoardTRG(KB_3))
-	{
-		play_manager->SetFX(DXA_FX::DXAFX_DISTORTION);
-	}
-	else if (KeyBoardTRG(KB_4))
-	{
-		play_manager->SetFX(DXA_FX::DXAFX_ECHO);
-	}
-	else if (KeyBoardTRG(KB_5))
-	{
-		play_manager->SetFX(DXA_FX::DXAFX_ENVREVERB);
-	}
-	else if (KeyBoardTRG(KB_6))
-	{
-		play_manager->SetFX(DXA_FX::DXAFX_FLANGER);
-	}
-	else if (KeyBoardTRG(KB_7))
-	{
-		play_manager->SetFX(DXA_FX::DXAFX_GARGLE);
-	}
-	else if (KeyBoardTRG(KB_8))
-	{
-		play_manager->SetFX(DXA_FX::DXAFX_PARAMEQ);
-	}
-	else if (KeyBoardTRG(KB_9))
-	{
-		//play_manager->SetFX(DXA_FX::DXAFX_WAVESREVERB);
-	}
-	else if (KeyBoardTRG(KB_0))
-	{
-		play_manager->SetFX(DXA_FX::DXAFX_OFF);
-	}
 }
 //
 //=============================================================================================
@@ -129,30 +96,20 @@ void SE_Manager::Update()
 //		処		理
 int SE_Manager::Play_in(int data_num, bool loop)
 {
-	if (data_num != -1)
+	if (data_num != TDNSOUND_PLAY_NONE)
 	{
 		return play_manager->Play(data_num, loop);
 	}
-	return -1;
+	return TDNSOUND_PLAY_NONE;
 }
 
-int SE_Manager::Play_in(int data_num, float volume, bool loop)
+int SE_Manager::Play_in(int data_num, const Vector2 &pos, const Vector2 &move, bool loop)
 {
-	if (data_num != -1)
+	if (data_num != TDNSOUND_PLAY_NONE)
 	{
-		play_manager->SetVolume(data_num, volume);
-		return play_manager->Play(data_num, loop);
+		return play_manager->Play(data_num, Vector3(pos.x, pos.y, 0), Vector3(move.x, move.y, 0), loop);
 	}
-	return -1;
-}
-
-int SE_Manager::Play_in(int data_num, const Vector3 &pos, const Vector3 &front, const Vector3 &move, bool loop)
-{
-	if (data_num != -1)
-	{
-		return play_manager->Play(data_num, pos, front, move, loop);
-	}
-	return -1;
+	return TDNSOUND_PLAY_NONE;
 }
 
 int SE_Manager::Play(LPSTR _ID, bool loop)
@@ -160,17 +117,9 @@ int SE_Manager::Play(LPSTR _ID, bool loop)
 	return Play_in(ID[_ID], loop);
 }
 
-int SE_Manager::Play(LPSTR _ID, float volume, bool loop)
+int SE_Manager::Play(LPSTR _ID, const Vector2 &pos, const Vector2 &move, bool loop)
 {
-	if (volume < 0) volume = 0;
-	else if (volume > 1.0f) volume = 1.0f;
-
-	return Play_in(ID[_ID], volume, loop);
-}
-
-int SE_Manager::Play(LPSTR _ID, const Vector3 &pos, const Vector3 &front, const Vector3 &move, bool loop)
-{
-	return Play_in(ID[_ID], pos, front, move, loop);
+	return Play_in(ID[_ID], pos, move, loop);
 }
 
 void SE_Manager::Stop(LPSTR _ID, int no)
@@ -183,37 +132,15 @@ void SE_Manager::Stop_all()
 	play_manager->AllStop();
 }
 
-void SE_Manager::Set_listener(const Vector3 &pos, const Vector3 &front, const Vector3 &up, const Vector3 &move)
+void SE_Manager::SetListener(const Vector2 &pos, const Vector2 &move)
 {
-	play_manager->SetListenerAll(pos, front, up, move);
+	play_manager->SetListenerPos(Vector3(pos.x, pos.y, 0));
+	play_manager->SetListenerMove(Vector3(move.x, move.y, 0));
 }
 //
 //=============================================================================================
 
 
-
-
-//=============================================================================================
-//		ＩＤ一致データ検索
-//int	SE_Manager::Find_data_no(LPSTR _ID)
-//{
-//	int	result = -1;
-//	//	データ数分ループ
-//	for (int i = 0; i < data_count; i++)
-//	{
-//		//	判定
-//		if (strcmp(all_dataS[i].id, _ID) != 0) continue;
-//
-//		//	発見
-//		result = i;
-//		//	ループを抜ける
-//		break;
-//	}
-//
-//	return	result;
-//}
-//
-//=============================================================================================
 
 
 
@@ -248,6 +175,14 @@ void BGM_Manager::Initialize()
 		ID[all_dataB[i].id] = i;
 		play_manager->Set(i, all_dataB[i].file_name, all_dataB[i].b3D);
 	}
+
+	// リスナーの初期設定
+	play_manager->SetListenerAll(
+		Vector3(tdnSystem::GetScreenSize().right * .5f, tdnSystem::GetScreenSize().bottom * .5f, 0),	// リスナー座標(画面の真ん中と仮定する)
+		Vector3(1, 0, 0),	// 正面ベクトル
+		Vector3(0, 1, 0),	// 上方ベクトル
+		Vector3(0, 0, 0)	// 移動値
+		);
 }
 //
 //=============================================================================================
@@ -269,57 +204,6 @@ void BGM_Manager::Update()
 {
 	play_manager->Update();
 	play_manager->UpdateListener();
-
-	if (KeyBoardTRG(KB_1))
-	{
-		effect_no = (int)DXA_FX::DXAFX_CHORUS;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_2))
-	{
-		effect_no = (int)DXA_FX::DXAFX_COMPRESSOR;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_3))
-	{
-		effect_no = (int)DXA_FX::DXAFX_DISTORTION;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_4))
-	{
-		effect_no = (int)DXA_FX::DXAFX_ECHO;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_5))
-	{
-		effect_no = (int)DXA_FX::DXAFX_ENVREVERB;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_6))
-	{
-		effect_no = (int)DXA_FX::DXAFX_FLANGER;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_7))
-	{
-		effect_no = (int)DXA_FX::DXAFX_GARGLE;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_8))
-	{
-		effect_no = (int)DXA_FX::DXAFX_PARAMEQ;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_9))
-	{
-		effect_no = (int)DXA_FX::DXAFX_WAVESREVERB;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_0))
-	{
-		effect_no = 0;
-		play_manager->SetFX(DXA_FX::DXAFX_OFF);
-	}
 }
 //
 //=============================================================================================
@@ -330,24 +214,15 @@ void BGM_Manager::Update()
 //		処		理
 void BGM_Manager::Play_in(int data_num, bool loop)
 {
-	if (data_num != -1)
+	if (data_num != TDNSOUND_PLAY_NONE)
 	{
-		play_manager->Play(data_num, loop);
-	}
-}
-
-void BGM_Manager::Play_in(int data_num, float volume, bool loop)
-{
-	if (data_num != -1)
-	{
-		play_manager->SetVolume(data_num, volume);
 		play_manager->Play(data_num, loop);
 	}
 }
 
 void BGM_Manager::Play_in(int data_num, const Vector3 &pos, const Vector3 &front, const Vector3 &move, bool loop)
 {
-	if (data_num != -1)
+	if (data_num != TDNSOUND_PLAY_NONE)
 	{
 		play_manager->Play(data_num, pos, front, move, loop);
 	}
@@ -356,14 +231,6 @@ void BGM_Manager::Play_in(int data_num, const Vector3 &pos, const Vector3 &front
 void BGM_Manager::Play(LPSTR _ID, bool loop)
 {
 	Play_in(ID[_ID], loop);
-}
-
-void BGM_Manager::Play(LPSTR _ID, float volume, bool loop)
-{
-	if (volume < 0) volume = 0;
-	else if (volume > 1.0f) volume = 1.0f;
-
-	Play_in(ID[_ID], volume, loop);
 }
 
 void BGM_Manager::Play(LPSTR _ID, const Vector3 &pos, const Vector3 &front, const Vector3 &move, bool loop)
@@ -401,37 +268,14 @@ void BGM_Manager::Cross_fade(LPSTR inID, LPSTR outID, float in_speed, float out_
 	play_manager->CrossFade(ID[inID], ID[outID], in_speed, out_speed, tdnSoundBGM::CROSS_FADE_TYPE::END_OF_ETERNITY, loop);
 }
 
-void BGM_Manager::Set_listener(const Vector3 &pos, const Vector3 &front, const Vector3 &up, const Vector3 &move)
+void BGM_Manager::SetListener(const Vector2 &pos, const Vector2 &move)
 {
-	play_manager->SetListenerAll(pos, front, up, move);
+	play_manager->SetListenerPos(Vector3(pos.x, pos.y, 0));
+	play_manager->SetListenerMove(Vector3(move.x, move.y, 0));
 }
 //
 //=============================================================================================
 
-
-
-
-//=============================================================================================
-//		ＩＤ一致データ検索
-//int	BGN_Manager::Find_data_no(LPSTR _ID)
-//{
-//	int	result = -1;
-//	//	データ数分ループ
-//	for (int i = 0; i < data_count; i++)
-//	{
-//		//	判定
-//		if (strcmp(all_dataB[i].id, _ID) != 0) continue;
-//
-//		//	発見
-//		result = i;
-//		//	ループを抜ける
-//		break;
-//	}
-//
-//	return	result;
-//}
-//
-//=============================================================================================
 
 
 //=============================================================================================
