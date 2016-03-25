@@ -110,6 +110,7 @@
     <ClCompile Include="source\Animation\AnimationPanel.cpp" />
     <ClCompile Include="source\Animation\AnimationRipple.cpp" />
     <ClCompile Include="source\Animation\AnimationRippleEx.cpp" />
+    <ClCompile Include="source\GossipRippel\GossipRippleManager.cpp" />
     <ClCompile Include="source\Scene\SceneSelect.cpp" />
     <ClCompile Include="source\Scene\SceneTitle.cpp" />
     <ClCompile Include="TDN\IEX_3DObject.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="source\Animation\AnimationPanel.h" />
     <ClInclude Include="source\Animation\AnimationRipple.h" />
     <ClInclude Include="source\Animation\AnimationRippleEx.h" />
+    <ClInclude Include="source\GossipRippel\GossipRippleManager.h" />
     <ClInclude Include="source\Scene\SceneSelect.h" />
     <ClInclude Include="source\Scene\SceneTitle.h" />
     <ClInclude Include="TDN\ogg\codec.h" />
