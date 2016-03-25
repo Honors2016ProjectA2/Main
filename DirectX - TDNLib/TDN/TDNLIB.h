@@ -803,7 +803,7 @@ public:
 	//	初期化
 	static void Initialize();
 	//	読み込み・解放
-	static Texture2D* Load(const char* filename);
+	static Texture2D* Load(const char* filename, int flag = 0);
 	static Texture2D* LoadMemory(const char* filename, const char* pArchiver);
 
 	static void	Release(Texture2D* lpTexture);
@@ -1939,3 +1939,231 @@ public:
 	typedef std::uniform_int_distribution < int > INT;
 	typedef std::uniform_int_distribution < float > FLOAT;
 };
+
+
+
+
+
+
+
+
+/********************************************/
+//		IEXゾーン			     
+/********************************************/
+
+//*****************************************************************************************************************************
+//
+//		メッシュ関連
+//
+//*****************************************************************************************************************************
+class iexMesh {
+private:
+protected:
+	u32				dwFlags;		//	フラグ
+	u8				bChanged;		//	変更フラグ
+
+	Vector3			Pos;			//	メッシュ座標
+	Vector3			Angle;			//	メッシュ回転量
+	Vector3			Scale;			//	メッシュスケール
+
+	D3DMATERIAL9	*lpMaterial;	//	材質
+	Texture2D*		*lpTexture;		//	テクスチャ
+	Texture2D*		*lpNormal;		//	法線テクスチャ
+	Texture2D*		*lpSpecular;	//	スペキュラテクスチャ
+	Texture2D*		*lpHeight;		//	高さテクスチャ
+	u32				MaterialCount;	//	材質数
+
+	LPD3DXMESH		lpMesh;			//	メッシュ
+
+public:
+	BOOL			bLoad;
+	Matrix			TransMatrix;	//	転送行列
+
+	//------------------------------------------------------
+	//	初期化
+	//------------------------------------------------------
+	iexMesh( char* filename );
+	iexMesh(){ bLoad = FALSE; }
+	iexMesh*	Clone();
+	iexMesh*	Clone(int num_tex);
+	~iexMesh();
+	void Release();
+
+	//------------------------------------------------------
+	//	読み込み
+	//------------------------------------------------------
+	BOOL LoadIMO( char* filename );
+	BOOL LoadX( char* filename );
+
+	//------------------------------------------------------
+	//	更新
+	//------------------------------------------------------
+	void Update();
+
+	//------------------------------------------------------
+	//	描画
+	//------------------------------------------------------
+	void Render();
+	void Render( u32 dwFlags, float param=-1 );
+	void Render( tdnShader* shader, char* name );
+
+	//------------------------------------------------------
+	//	レイ判定
+	//------------------------------------------------------
+	int	RayPick( Vector3* out, Vector3* pos, Vector3* vec, float *Dist );
+	int	RayPickUD( Vector3* out, Vector3* pos, Vector3* vec, float *Dist );
+
+	struct NearestPointOut
+	{
+		float length;
+		Vector3 Pos;
+		Vector3 Normal;
+	};
+	void NearestPoint( NearestPointOut *out, const Vector3 &pos );
+
+	//------------------------------------------------------
+	//	情報設定・取得
+	//------------------------------------------------------
+	//	位置
+	void SetPos( Vector3& pos );
+	void SetPos( float x, float y, float z );
+	inline Vector3	GetPos(){ return Pos; }
+	//	角度
+	void SetAngle( Vector3& angle );
+	void SetAngle( float angle );
+	void SetAngle( float x, float y, float z );
+	inline Vector3	GetAngle(){ return Angle; }
+	//	スケール
+	void SetScale( Vector3& scale );
+	void SetScale( float scale );
+	void SetScale( float x, float y, float z );
+	inline Vector3	GetScale(){ return Scale; }
+
+	//	情報
+	LPD3DXMESH	GetMesh(){ return lpMesh; }
+
+	Texture2D*	GetTexture( int n ){ return lpTexture[n]; }
+	void SetTexture(Texture2D *t, int n){ lpTexture[n] = t; }
+	Texture2D*	ChangeTexture(Texture2D *t, int n){ Texture2D *ret = lpTexture[n]; lpTexture[n] = t; return ret; }
+
+	float iexMesh::Length_of_furthest_point();
+};
+
+typedef iexMesh IEXMESH, *LPIEXMESH;
+
+//*****************************************************************************************************************************
+//
+//		３Ｄオブジェクト
+//
+//*****************************************************************************************************************************
+
+typedef struct tagIEMFILE IEMFILE, *LPIEMFILE;
+
+//------------------------------------------------------
+//	アニメーション構造体
+//------------------------------------------------------
+typedef struct tagIEXANIME2 {
+	u32			rotNum;
+	u16*		rotFrame;
+	Quaternion*	rot;
+
+	u32			posNum;
+	u16*		posFrame;
+	Vector3*	pos;
+} IEXANIME2, *LPIEXANIME2;
+
+//------------------------------------------------------
+//	３Ｄオブジェクト
+//------------------------------------------------------
+class iex3DObj : public iexMesh
+{
+protected:
+	u8				version;
+	u8				Param[16];
+
+	u8				Motion;			//	現在のモーション番号
+	u16				M_Offset[256];	//	モーション先頭フレーム
+
+	u32				dwFrame;		//	現在のフレーム
+	u32				NumFrame;		//	総フレーム数
+	u16*			dwFrameFlag;	//	フレーム情報
+
+	u32				RenderFrame;	//	レンダリングフレーム
+
+	LPIEXANIME2		lpAnime;		//	ボーンアニメーション
+
+	//	頂点情報
+	DWORD			NumVertex;
+	void*			lpVertex;
+
+	// スキンメッシュ関係
+	LPD3DXSKININFO		lpSkinInfo;	// スキン情報
+
+	u32				NumBone;
+	LPWORD			BoneParent;
+	Matrix*			lpBoneMatrix;
+	Matrix*			lpOffsetMatrix;
+	Matrix*			lpMatrix;
+
+	Quaternion*		orgPose;
+	Vector3*		orgPos;
+
+	Quaternion*		CurPose;
+	Vector3*		CurPos;
+
+public:
+	void	SetLoadFlag( BOOL bLoad ){ this->bLoad = bLoad; }
+	iex3DObj(){
+		bLoad = FALSE;
+		for( int i=0 ; i<16 ; i++ ) Param[i] = 0;
+	}
+	iex3DObj( char* filename );
+	~iex3DObj();
+
+	iex3DObj*	Clone();
+	iex3DObj*	Clone(int num_tex);
+
+	BOOL LoadObject( char* filename );
+	int LoadiEM( LPIEMFILE lpIem, LPSTR filename );
+	BOOL CreateFromIEM( char* path, LPIEMFILE lpIem );
+
+	LPD3DXSKININFO	CreateSkinInfo( LPIEMFILE lpIem );
+	LPD3DXMESH	CreateMesh( LPIEMFILE lpIem );
+
+
+
+	static BOOL SaveObject( LPIEMFILE lpIem, LPSTR filename );
+
+	void Update();
+	void SetMotion( int motion );
+	inline int GetMotion(){ return Motion; }
+	inline WORD GetMotionOffset( int m ){ return M_Offset[m]; }
+
+	inline void SetFrame( int frame ){ dwFrame = frame; }
+	inline int GetFrame(){ return dwFrame; }
+
+	void Animation();
+
+	void Render();
+	void Render( DWORD flag, float alpha=-1 );
+	void Render( tdnShader* shader, char* name );
+
+	inline int GetParam( int n ){ return Param[n]; }
+	inline void SetParam( int n, int p ){ Param[n] = p; }
+
+	inline WORD GetFrameFlag( int frame ){ return dwFrameFlag[frame]; }
+	inline void SetFrameFlag( int frame, WORD p ){ dwFrameFlag[frame] = p; }
+
+	inline int GetNumFrame(){ return NumFrame; }
+
+	inline Quaternion*	GetPose( int n ){ return &CurPose[n]; }
+	inline Vector3*		GetBonePos( int n ){ return &CurPos[n]; }
+	inline int	GetNumBone(){ return NumBone; }
+	inline Matrix*	GetBone( int n ){ return &lpBoneMatrix[n]; }
+
+	void UpdateSkinMeshFrame( float frame );
+	void UpdateBoneMatrix();
+	void UpdateSkinMesh();
+};
+
+typedef iex3DObj IEX3DOBJ, *LPIEX3DOBJ;

@@ -112,6 +112,9 @@
     <ClCompile Include="source\Animation\AnimationRippleEx.cpp" />
     <ClCompile Include="source\Scene\SceneSelect.cpp" />
     <ClCompile Include="source\Scene\SceneTitle.cpp" />
+    <ClCompile Include="TDN\IEX_3DObject.cpp" />
+    <ClCompile Include="TDN\IEX_Mesh.cpp" />
+    <ClCompile Include="TDN\IEX_SkinMesh.cpp" />
     <ClCompile Include="TDN\TDN_Archiver.cpp" />
     <ClCompile Include="TDN\TDN_Audio.cpp" />
     <ClCompile Include="TDN\TDN_2DObj.cpp" />

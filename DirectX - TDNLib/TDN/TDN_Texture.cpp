@@ -22,7 +22,7 @@ void	tdnTexture::Initialize()
 }
 
 //	“Ç‚İ‚İ
-Texture2D* tdnTexture::Load(const char* filename)
+Texture2D* tdnTexture::Load(const char* filename, int flag)
 {
 	int			TexNo;
 	HRESULT		hr;
@@ -44,6 +44,7 @@ Texture2D* tdnTexture::Load(const char* filename)
 	//	NEW_TEXTURE‚Ì‚Ü‚Ü‚¾‚Á‚½‚çV‹K“Ç‚İ‚İ 
 	if (TexNo == NEW_TEXTURE)
 	{
+		if (flag == 1) fmt = D3DFMT_R8G8B8;
 
 		//	‹ó‚¢‚Ä‚é”z—ñ‚ğŒŸõ
 		for (TexNo = 0; TexNo<MAX_TEXTURE; TexNo++) if (!TexInfo[TexNo].lpTexture) break;
