@@ -107,9 +107,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\Message\MessageDispatcher.cpp" />
     <ClCompile Include="source\Animation\AnimationPanel.cpp" />
     <ClCompile Include="source\Animation\AnimationRipple.cpp" />
     <ClCompile Include="source\Animation\AnimationRippleEx.cpp" />
+    <ClCompile Include="source\AI\Entity\BaseGameEntity.cpp" />
+    <ClCompile Include="source\AI\Entity\EntityManager.cpp" />
     <ClCompile Include="source\GossipRippel\GossipRippleManager.cpp" />
     <ClCompile Include="source\Scene\SceneSelect.cpp" />
     <ClCompile Include="source\Scene\SceneTitle.cpp" />
@@ -138,9 +141,15 @@
     <ClCompile Include="TDN\TDN_Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\AI\Message\MessageDispatcher.h" />
+    <ClInclude Include="source\AI\Message\Message.h" />
+    <ClInclude Include="source\AI\State\state.h" />
+    <ClInclude Include="source\AI\State\StateMachine.h" />
     <ClInclude Include="source\Animation\AnimationPanel.h" />
     <ClInclude Include="source\Animation\AnimationRipple.h" />
     <ClInclude Include="source\Animation\AnimationRippleEx.h" />
+    <ClInclude Include="source\AI\Entity\BaseGameEntity.h" />
+    <ClInclude Include="source\AI\Entity\EntityManager.h" />
     <ClInclude Include="source\GossipRippel\GossipRippleManager.h" />
     <ClInclude Include="source\Scene\SceneSelect.h" />
     <ClInclude Include="source\Scene\SceneTitle.h" />
