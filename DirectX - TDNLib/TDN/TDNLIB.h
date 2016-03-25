@@ -1568,6 +1568,7 @@ protected:
 	LPBYTE LoadFile(LPSTR fname, LPDWORD size, LPWAVEFORMATEX wfx);
 	LPBYTE LoadWAV(LPSTR fname, LPDWORD size, LPWAVEFORMATEX wfx);
 	LPBYTE LoadOWD(LPSTR fname, LPDWORD size, LPWAVEFORMATEX wfx);	// Owataso Wave Data
+	LPBYTE LoadMP3(LPSTR fname, LPDWORD size, LPWAVEFORMATEX wfx);
 
 	DWORD PlayCursor;
 	DWORD BufferSize;

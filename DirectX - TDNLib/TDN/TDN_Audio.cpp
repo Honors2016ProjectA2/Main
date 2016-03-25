@@ -235,6 +235,7 @@ LPBYTE tdnSoundBuffer::LoadWAV(LPSTR fname, LPDWORD size, LPWAVEFORMATEX wfx)
 {
 	// バイナリ読み込み
 	std::ifstream infs(fname, std::ios::binary);
+	MyAssert(infs, "エラーファイル名[%s]\n原因:wavファイルが入っていないか、wavファイル名が間違っているよ", fname);
 
 	char chunkID[4];
 	int ChunkSize;
@@ -361,6 +362,155 @@ LPBYTE tdnSoundBuffer::LoadOWD(LPSTR fname, LPDWORD size, LPWAVEFORMATEX wfx)
 	{
 
 	}
+
+	return buf;
+}
+
+//-------------------------------------------------------------
+//	MP3
+//-------------------------------------------------------------
+LPBYTE tdnSoundBuffer::LoadMP3(LPSTR fname, LPDWORD size, LPWAVEFORMATEX wfx)
+{
+	// バイナリ読み込み
+	std::ifstream infs(fname, std::ios::binary);
+	MyAssert(infs, "エラーファイル名[%s]\n原因:MP3ファイル名が間違っているよ", fname);
+
+	BYTE *buf = nullptr;
+
+	// フレームヘッダは４バイト(３２ビット）で出来ている。ので、DWORDでいっぺんに読んで分けていく
+	DWORD receive;
+	infs.read((char*)&receive, 32);
+
+	WORD frame_synchronism = (receive >> 21) & 0x000007ff;	// フレーム同期。オール1ビット(11ビット)
+	MyAssert(frame_synchronism == 0x000007ff, "エラーファイル名[%s]\n原因:形式はMP3ですが、中身がMP3でない可能性があります", fname);
+
+	BYTE ver = (receive >> 19) & 0x00000003;	// MPEG Audio のバージョンID(2ビット)
+
+	enum class MPEG_VERSION
+	{
+		MPEG_V2_5,	// バージョン2.5
+		RESERVE,	// 予約らしい
+		MPEG_V2,	// バージョン2
+		MPEG_V1		// バージョン1
+	}mpeg_ver;
+	switch (ver & 0x03)
+	{
+	case 0x00:mpeg_ver = MPEG_VERSION::MPEG_V2_5; break;
+	case 0x01:mpeg_ver = MPEG_VERSION::RESERVE; break;
+	case 0x02:mpeg_ver = MPEG_VERSION::MPEG_V2; break;
+	case 0x03:mpeg_ver = MPEG_VERSION::MPEG_V1; break;
+	}
+
+
+	BYTE layer			= (receive >> 17)	& 0x00000003;	// レイヤーの種類(2ビット)
+	BOOL CRCerror		= (receive >> 16)	& 0x00000001;	// CRCエラー検査による保護(1ビット)
+	BYTE bit_rate		= (receive >> 12)	& 0x0000000f;	// ビットレート(4ビット)
+	BYTE sampling_rate	= (receive >> 10)	& 0x0000003;	// サンプリングレート(2ビット)
+	BOOL padding		= (receive >> 9)	& 0x00000001;	// パディング(1ビット)	0:なし 1:あり
+	BOOL private_bit	= (receive >> 8)	& 0x00000001;	// プライベートビットの使用不使用(1ビット) 0:不使用 1:使用
+	BYTE channel_mode	= (receive >> 6)	& 0x0000003;	// チャンネルモード(2ビット)
+	BYTE mode_extention = (receive >> 4)	& 0x0000003;	// モードエクステンション。チャンネルモードが01の場合に有効、他の場合0に設定(2ビット)
+	BOOL copy_light		= (receive >> 3)	& 0x0000001;	// 著作権(1ビット)	0:保護なし 1:保護あり
+	BOOL original		= (receive >> 2)	& 0x00000001;	// オリジナル(1ビット)	0:コピー 1:オリジナル
+	BYTE emphasis		= receive			& 0x00000003;	// エンファシス。信号調整の一種(2ビット)
+
+	/*
+	MPEG Audio のバージョンID
+	[00] - MPEG v2.5 / [01] - (予約)
+	[10] - MPEG v2 / [11] - MPEG v1
+
+	レイヤーの種類
+	[00] - (予約) / [01] - Layer3
+	[10] - Layer2 / [11] - Layer1
+
+	CRCエラー検査による保護
+	[0] - 保護あり。この場合、16ビットのCRCがフレームヘッダの後に付加される
+	[1] - 保護なし
+
+	*/
+
+	// サンプリングレート表
+	static const int sampring_rate_list[3][3]=
+	{
+		{ 44100, 22050, 11025 },
+		{ 48000, 24000, 12000 },
+		{ 32000, 16000, 8000 }
+	};
+
+	// ビットレート表(頭おかしい)
+	static const int bit_rate_list[14][5] =
+	{
+		{ 32,	32,		32,		32,		8 },
+		{ 64,	48,		40,		48,		16 },
+		{ 96,	56,		48,		56,		24 },
+		{ 128,	64,		56,		64,		32 },
+		{ 160,	80,		64,		80,		40 },
+		{ 192,	96,		80,		96,		48 },
+		{ 224,	112,	96,		112,	56 },
+		{ 256,	128,	112,	128,	64 },
+		{ 288,	160,	128,	144,	80 },
+		{ 320,	192,	160,	160,	96 },
+		{ 352,	224,	192,	176,	112 },
+		{ 384,	256,	224,	192,	128 },
+		{ 416,	320,	256,	224,	144 },
+		{ 448,	384,	320,	256,	160 }
+	};
+
+	// サンプリングレート設定
+	{
+		int column(0), row(0);
+		// リストの列
+		switch (mpeg_ver)
+		{
+		case MPEG_VERSION::MPEG_V1:column = 0; break;
+		case MPEG_VERSION::MPEG_V2:column = 1; break;
+		case MPEG_VERSION::MPEG_V2_5:column = 2; break;
+		}
+
+		// リストの行
+		switch (sampling_rate & 0x03)
+		{
+		case 0x00:row = 0; break;
+		case 0x01:row = 1; break;
+		case 0x02:row = 2; break;
+		case 0x03:break;	// 「予約」らしい。よく分からん
+		}
+
+		wfx->nSamplesPerSec = sampring_rate_list[row][column];			// サンプリングレート
+	}
+
+	// ビットレート設定
+	{
+		int column(0), row(0);
+		// リストの列
+		column = 4;		// 現状リストの右端の数字以外の数字がまず見ないし使わない数字なので今は右端を指定
+
+		// リストの行
+		switch (bit_rate & 0x0f)
+		{
+		case 0x01:row = 0; break;
+		case 0x02:row = 1; break;
+		case 0x03:row = 2; break;
+		case 0x04:row = 3; break;
+		default:assert(0); break;	// まずビットレートで40以上ってあるのか・・・？
+		}
+		wfx->wBitsPerSample = bit_rate_list[row][column];				// サンプルあたりのビット数
+	}
+
+	wfx->wFormatTag = WAVE_FORMAT_PCM;								// フォーマットID(wav形式に変換するのでWAVE)
+	wfx->nChannels = (channel_mode & 0x3) ? 1 : 2;					// チャンネル数(要はステレオかモノラルか)
+	wfx->nBlockAlign = wfx->nChannels * wfx->wBitsPerSample / 8;	// ブロックサイズ(nChannels と wBitsPerSample の積を 8 で割った値)
+	wfx->nAvgBytesPerSec = wfx->nSamplesPerSec * wfx->nBlockAlign;	// データ速度 byte/sec(nSamplesPerSec と nBlockAlign の積)
+
+
+	typedef struct mpeglayer3waveformat_tag {
+		WAVEFORMATEX  wfx;
+		WORD          wID;
+		DWORD         fdwFlags;
+		WORD          nBlockSize;
+		WORD          nFramesPerBlock;
+		WORD          nCodecDelay;
+	} MPEGLAYER3WAVEFORMAT;
 
 	return buf;
 }

@@ -17,8 +17,8 @@ const SE_Manager::DATA all_dataS[] =
 	// 効果音関係
 	//-------------------------------------------------------------------
 	{ "イエアア",	"DATA/Sound/SE/yeaa.wav", 10, false },
-	{ "波紋出す",	"DATA/Sound/SE/ripple.wav", 20, false },			// 波紋を発動する際に
-	{ "！の音", "DATA/Sound/SE/entry.wav", 10, false },				// 波紋を発動して条件を満たして！が出た時
+	{ "波紋出す",	"DATA/Sound/SE/ripple.wav", 20, false },		// 波紋を発動する際に
+	{ "！の音",		"DATA/Sound/SE/entry.wav", 10, false },			// 波紋を発動して条件を満たして！が出た時
 	{ "カーソル",	"DATA/Sound/SE/cursor_point.wav", 3, false },	// ペーパーボーズのボタンの上にカーソルしたときの音
 	{ "キャンセル", "DATA/Sound/SE/cancel.wav", 2, false },			// 何かしらのキャンセル、失敗したときとか 
 	{ "決定",		"DATA/Sound/SE/decision1.wav", 4, false },		// 何かしらの決定
