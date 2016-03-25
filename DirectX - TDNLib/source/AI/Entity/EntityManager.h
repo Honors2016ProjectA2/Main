@@ -2,6 +2,7 @@
 #include <map>
 #include <cassert>
 #include <string>
+#include "BaseGameEntity.h"
 
 /*
 	エージェントのポインタのマネージャー

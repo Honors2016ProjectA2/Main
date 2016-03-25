@@ -47,4 +47,4 @@ private:
 	MessageDispatcher& operator=(const MessageDispatcher&);
 };
 
-#define Dispatch MessageDispatcher::Instance()
+#define MsgMgr MessageDispatcher::Instance()
