@@ -62,7 +62,7 @@ public:
 	}
 
 	// ★メッセージ
-	bool  HandleMessage(const Massage& msg)const
+	bool  HandleMessage(const Message& msg)const
 	{
 		// 最初に現在のステートが有効で、メッセージの処理ができるか
 		if (m_pCurrentState && m_pCurrentState->OnMessage(m_pOwner, msg))

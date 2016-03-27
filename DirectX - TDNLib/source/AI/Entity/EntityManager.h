@@ -6,11 +6,11 @@
 
 /*
 	エージェントのポインタのマネージャー
-	
-
-
 
 */
+
+
+
 
 class BaseGameEntity;
 
@@ -21,18 +21,19 @@ public:
 	~EntityManager() {};
 
 	//この関数はエンティティのIDで示されたインデックスの位置にある
-	void            RegisterEntity(BaseGameEntity* NewEntity);
+	// エンティティ登録！
+	bool            Register(BaseGameEntity* NewEntity);
 
 	//　パラメータとして与えられたIDを持つエンティティのポインタを返す
-	BaseGameEntity* GetEntityFromID(int id)const;
+	BaseGameEntity* GetEntityFromID(ENTITY_ID id)const;
 
 	// このメソッドはリストからエンティティを削除する
-	void            RemoveEntity(BaseGameEntity* pEntity);
+	bool            Erace(BaseGameEntity* pEntity);
 
 private:
 
 	// 入力を楽にするために
-	typedef std::map<int, BaseGameEntity*> EntityMap;
+	typedef std::map<ENTITY_ID, BaseGameEntity*> EntityMap;
 
 	// エンティティがすぐに調べられる用に
 	// このなかではエンティティへのポインタはそのIDで相互参照される

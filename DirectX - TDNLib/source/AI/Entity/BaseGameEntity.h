@@ -1,6 +1,7 @@
 #pragma once
 #include "../Message/Message.h"
-
+#include "AI\Entity\EntityEnum.h"
+#include "system\ItDebug.h"
 
 /*
 *	この世界の住人は全てこのクラスから派生します。
@@ -16,18 +17,19 @@ class BaseGameEntity
 private:
 
 	// どのエンティティも一意のID番号を持つ
-	int m_ID;
+	ENTITY_ID m_ID;
 
 	// これは次の有効なID。このクラスが生成される度に自動的にこの値は更新される
-	static int m_isNextValidID;
+	//static int m_isNextValidID;
 
 	// IDが正しく設定されたのかを確認するためにコンストラクタの中で呼ばれる
 	// IDを設定し次の有効なIDをインクリメントする前に、これに渡された値が次の有効なID以上であるか確認する。
-	void SetID(int val);
+	//void SetID(int val);
 
 public:
-	BaseGameEntity(int id) { SetID(id); };
-	virtual ~BaseGameEntity() {};
+	// ★ＥｎｔｉｔｙＭＧＲと連携をとるやり方にするぜ！
+	BaseGameEntity(ENTITY_ID id);
+	virtual ~BaseGameEntity();
 
 	// 全てのエンティティにUpdateを引き継ぐよう純粋仮想関数に
 	virtual void Update() = 0;
@@ -41,7 +43,7 @@ public:
 	virtual bool  HandleMessage(const Message& msg) = 0;
 
 	// アクセサー
-	int GetID() { return m_ID; };
+	ENTITY_ID GetID() { return m_ID; };
 
 };
 

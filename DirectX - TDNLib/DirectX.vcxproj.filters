@@ -99,9 +99,6 @@
     <ClCompile Include="TDN\IEX_SkinMesh.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\GossipRippel\GossipRippleManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="source\AI\Message\MessageDispatcher.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -109,6 +106,21 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="source\AI\Entity\EntityManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AI\NPC\PersonManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AI\NPC\BasePerson\BasePerson.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AI\NPC\BasePerson\BasePersonState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GossipRipple\GossipRipple.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GossipRipple\GossipRippleManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -164,9 +176,6 @@
     <ClInclude Include="source\Scene\SceneTitle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\GossipRippel\GossipRippleManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="source\AI\Message\MessageDispatcher.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -183,6 +192,24 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="source\AI\State\state.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AI\NPC\PersonManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AI\NPC\BasePerson\BasePerson.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AI\Entity\EntityEnum.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AI\NPC\BasePerson\BasePersonState.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GossipRipple\GossipRippleManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GossipRipple\GossipRipple.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

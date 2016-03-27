@@ -1,5 +1,6 @@
 #pragma once
 #include "Message.h"
+#include "AI\Entity\EntityEnum.h"
 #include <set>
 
 /*
@@ -24,13 +25,13 @@ public:
 
 	static MessageDispatcher* Instance();
 
-	void DispatchMessage(double  delay,
-		int    sender,
-		int    receiver,
+	void Dispatch(double  delay,
+		ENTITY_ID    sender,
+		ENTITY_ID    receiver,
 		int    msg,
 		void*  ExtraInfo);
 
-	void DispatchDelayedMessages();
+	void DispatchDelayed();
 
 private:
 	// std::setは遅延メッセージのコンテナとして使う

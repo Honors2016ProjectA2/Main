@@ -7,7 +7,7 @@
 
 //class Miner;	// 鉄夫
 
-struct Massage;// 
+struct Message;// 
 
 // State基底クラスをキャラクタ毎に再利用可能に
 // クラステンプレートにすると人生が楽になる。
@@ -34,6 +34,6 @@ public:
 		処理を選択できるように修正する必要がある
 	*/
 	// エージェントからのメッセージを受信した場合、これが実行される
-	virtual bool OnMessage(entity_type*, const Massage&) = 0;
+	virtual bool OnMessage(entity_type*, const Message&) = 0;
 
 };

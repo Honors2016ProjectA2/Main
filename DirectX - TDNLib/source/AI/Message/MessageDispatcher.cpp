@@ -24,9 +24,9 @@ void MessageDispatcher::Discharge(BaseGameEntity* pReceiver,
 }
 
 // メッセージ発送
-void MessageDispatcher::DispatchMessage(double  delay,
-	int    sender,
-	int    receiver,
+void MessageDispatcher::Dispatch(double  delay,
+	ENTITY_ID    sender,
+	ENTITY_ID    receiver,
 	int    msg,
 	void*  ExtraInfo)
 {
@@ -72,7 +72,7 @@ void MessageDispatcher::DispatchMessage(double  delay,
 }
 
 
-void MessageDispatcher::DispatchDelayedMessages()
+void MessageDispatcher::DispatchDelayed()
 {
 
 

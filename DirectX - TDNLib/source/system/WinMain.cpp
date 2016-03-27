@@ -1,6 +1,7 @@
 #include	"TDNLIB.h"
 #include	"Framework.h"
 #include	"../Scene/sceneMain.h"
+#include	"Scene\SceneTitle.h"
 #include	"System.h"
 #include	"../Sound/SoundManager.h"
 

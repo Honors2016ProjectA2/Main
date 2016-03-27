@@ -5,9 +5,9 @@
 
 
 // メッセージタイプ
-enum message_type
+enum MESSAGE_TYPE
 {
-	A,
+	Riple_Red,
 	B,
 };
 
