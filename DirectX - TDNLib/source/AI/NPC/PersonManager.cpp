@@ -144,7 +144,6 @@ bool  PersonManager::HandleMessage(const Message& msg)
 // 当たり判定
 void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 {
-	pRipData->type;
 
 	// 対象
 	for (int b = 0; b < (int)m_PersonData.size(); b++)
@@ -158,8 +157,6 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 		{
 			// 近くにいた人は波紋を飛ばす
 			m_PersonData[b]->ActionGossipRipple();
-
-			// 近くにいた人に波紋のメッセージを送る
 		}
 
 	}

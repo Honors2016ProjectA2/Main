@@ -9,7 +9,7 @@
 //*****************************************************************************
 //		ƒOƒ[ƒoƒ‹•Ï”
 //*****************************************************************************
-//extern iexShader* shader;
+extern tdnShader* shader;
 extern tdnShader* shader2D;
 //extern iexShader* shaderD;
 

@@ -1,6 +1,8 @@
 #include "AI\NPC\BasePerson\BasePerson.h"
 #include "AI\NPC\BasePerson\BasePersonState.h"// カートリッジ
 
+#include "system\System.h"
+
 
 // 初期化
 BasePerson::BasePerson(ENTITY_ID id, PERSON_TYPE type) :BaseGameEntity(id)
@@ -78,7 +80,8 @@ void BasePerson::Update()
 void BasePerson::Render()
 {
 	m_Ripple->Render();	// 波紋描画
-	m_obj->Render();
+	//m_obj->Render();
+	m_obj->Render(shader, "copy");
 }
 
 // ステートマシンのメッセージ

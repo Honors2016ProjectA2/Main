@@ -7,6 +7,7 @@
 //
 //*****************************************************************************************************************************
 
+tdnShader*	shader;
 tdnShader*	shader2D;
 
 //*****************************************************************************************************************************
@@ -41,7 +42,7 @@ void	SYSTEM_Initialize()
 	//KEY_PadAsign( iexInput::xbox360 );	// XBOX360 Controller
 
 	//	シェーダー読み込み
-	//shader = new iexShader("DATA\\SHADER\\3D.fx");
+	shader = new tdnShader("DATA\\SHADER\\3D.fx");
 	shader2D = new tdnShader("DATA\\SHADER\\2D.fx");
 	//shaderD = new iexShader("DATA\\SHADER\\Deferred.fx");
 	//	パーティクルシステム初期化
@@ -50,7 +51,7 @@ void	SYSTEM_Initialize()
 
 void	SYSTEM_Release()
 {
-	//delete	shader;
+	delete	shader;
 	delete	shader2D;
 	//delete	shaderD;
 
