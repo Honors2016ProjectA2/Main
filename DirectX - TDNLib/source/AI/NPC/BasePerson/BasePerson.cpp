@@ -11,7 +11,6 @@ BasePerson::BasePerson(ENTITY_ID id, PERSON_TYPE type) :BaseGameEntity(id)
 
 	m_obj = NULL;
 
-
 	// ステートマシン　引数は自分自身のポインタ
 	m_pStateMachine = new StateMachine<BasePerson>(this);
 	m_pStateMachine->SetGlobalState(PersonGlobalState::GetInstance());// グローバル

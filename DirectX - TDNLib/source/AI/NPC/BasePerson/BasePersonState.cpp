@@ -78,7 +78,7 @@ void PersonWait::Enter(BasePerson *pPerson)
 // 実行中
 void PersonWait::Execute(BasePerson *pPerson)
 {
-	pPerson->SetAngle(pPerson->GetAngle() + 0.1f);
+	//pPerson->SetAngle(pPerson->GetAngle() + 0.1f);
 
 	//// ここで波紋がIsEndになったら
 	//pPerson->GetFSM()->ChangeState(PersonShedWait::GetInstance()->GetInstance());
@@ -142,6 +142,8 @@ void PersonShedWait::Enter(BasePerson *pPerson)
 	pPerson->SetIsShed(true);
 	pPerson->GetRipple()->Action();
 
+	// (仮)噂を流す時にモーションを付ける事だって自由自在
+	pPerson->GetObj()->SetMotion(13);
 
 }
 
@@ -206,14 +208,14 @@ PersonEndWait* PersonEndWait::GetInstance()
 // 入り口
 void PersonEndWait::Enter(BasePerson *pPerson)
 {
-
-
+	// (仮)噂を流す時にモーションを付ける事だって自由自在
+	pPerson->GetObj()->SetMotion(0);
 }
 
 // 実行中
 void PersonEndWait::Execute(BasePerson *pPerson)
 {
-	pPerson->SetAngle(pPerson->GetAngle() + 0.1f);
+	
 }
 
 // 出口

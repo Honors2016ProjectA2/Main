@@ -56,6 +56,8 @@ public:
 	void SetIsShed(bool f) { m_isShed = f; }
 
 	PERSON_TYPE GetPersonType() { return m_PersonType;	}
+	
+	iex3DObj* GetObj() { return m_obj; }
 
 private:
 

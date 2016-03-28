@@ -116,6 +116,7 @@
     <ClCompile Include="source\Animation\AnimationRippleEx.cpp" />
     <ClCompile Include="source\AI\Entity\BaseGameEntity.cpp" />
     <ClCompile Include="source\AI\Entity\EntityManager.cpp" />
+    <ClCompile Include="source\Animation\AnimationUV.cpp" />
     <ClCompile Include="source\GossipRipple\GossipRipple.cpp" />
     <ClCompile Include="source\GossipRipple\GossipRippleManager.cpp" />
     <ClCompile Include="source\Scene\SceneSelect.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="source\Animation\AnimationRippleEx.h" />
     <ClInclude Include="source\AI\Entity\BaseGameEntity.h" />
     <ClInclude Include="source\AI\Entity\EntityManager.h" />
+    <ClInclude Include="source\Animation\AnimationUV.h" />
     <ClInclude Include="source\GossipRipple\GossipRipple.h" />
     <ClInclude Include="source\GossipRipple\GossipRippleManager.h" />
     <ClInclude Include="source\Scene\SceneSelect.h" />

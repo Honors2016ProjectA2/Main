@@ -7,11 +7,13 @@
 #include "GossipRipple\GossipRipple.h"
 #include "GossipRipple\GossipRippleManager.h"
 
+#include "Animation\AnimationUV.h"
+
+
 //GossipRipple* rip;
 
-iex3DObj *airou2;
-
 iexMesh* school;
+
 
 //******************************************************************
 //		‰Šú‰»E‰ğ•ú
@@ -20,23 +22,24 @@ bool sceneMain::Initialize()
 {
 	tdnView::Init();
 	tdnMouse::Initialize(TRUE);
-	tdnView::Set(Vector3(.0f,65.0f,-70.0f), Vector3(.0f, .0f, .0f));
-
+	tdnView::Set(Vector3(.0f,75.0f,-60.0f), Vector3(.0f, .0f, .0f));
 
 	//rip = new GossipRipple(RIPPLE_TYPE::RED, Vector3(-20, 0, 20));
 
 	GossipRippleMgr;
 
 
-	airou2 = new iex3DObj("DATA/CHR/airou_toire.IEM");
-	airou2->SetScale(1.0f);
 
 	PersonMgr;
-	PersonMgr.AddPerson(PERSON_TYPE::RED,Vector3(30, 10, 30));
-	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(10, 10, 30));
-	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(-10, 10, 30));
-	PersonMgr.AddPerson(PERSON_TYPE::BLUE,Vector3(-30, 10, -20));
-	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(-30, 10, 30));
+	PersonMgr.AddPerson(PERSON_TYPE::RED,Vector3(30, 0, 30));
+	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(10, 0, 30));
+	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(-10, 0, 30));
+	PersonMgr.AddPerson(PERSON_TYPE::BLUE,Vector3(-40, 0, -20));
+	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(-30, 0, 30));
+
+	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(10, 0, 10));
+	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(0, 0, -10));
+	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(-20,0, -20));
 
 	school = new iexMesh("Data/Stage/school.imo");
 	school->SetScale(0.8f);
@@ -48,7 +51,6 @@ bool sceneMain::Initialize()
 
 sceneMain::~sceneMain()
 {
-	delete airou2;
 	//delete rip;
 	GossipRippleMgr.Release();
 
@@ -79,12 +81,9 @@ bool sceneMain::Update()
 	}
 	if (KeyBoard('X') == 1)
 	{
-
 		PersonMgr.GetPerson(0)->ActionGossipRipple();
 	}
 	
-	airou2->Animation();
-	airou2->Update();
 
 	//rip->Update();
 	GossipRippleMgr.Update();
@@ -92,6 +91,7 @@ bool sceneMain::Update()
 
 	PersonMgr.Update();
 
+	
 	return true;	
 }
 
@@ -100,7 +100,6 @@ void sceneMain::Render()
 	tdnView::Activate();
 	tdnView::Clear(0xff005522);
 
-	airou2->Render();
 	
 	school->Render();
 
