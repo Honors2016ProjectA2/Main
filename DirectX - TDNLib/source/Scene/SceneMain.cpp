@@ -33,6 +33,8 @@ bool sceneMain::Initialize()
 
 	PersonMgr;
 	PersonMgr.AddPerson(PERSON_TYPE::RED,Vector3(30, 10, 30));
+	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(10, 10, 30));
+	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(-10, 10, 30));
 	PersonMgr.AddPerson(PERSON_TYPE::BLUE,Vector3(-30, 10, -20));
 	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(-30, 10, 30));
 

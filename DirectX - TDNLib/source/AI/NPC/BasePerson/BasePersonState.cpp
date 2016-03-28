@@ -180,7 +180,7 @@ void PersonShedWait::Exit(BasePerson *pPerson)
 		pPerson->GetID(),
 		ENTITY_ID::PERSON_MNG,
 		RIPPLE_VS_PERSON,
-		(void*)&ex.size	// [追記情報]自分のタイプを送る
+		(void*)&ex	// [追記情報]自分のタイプを送る
 		);
 
 }

@@ -51,7 +51,7 @@ public:
 	bool  HandleMessage(const Message& msg);
 
 	// 波紋vs人
-	void RippleVSPerson(int ripPersonNo);
+	void RippleVSPerson(RIPPLE_INFO* pRipData);
 
 	// アクセサ
 	BasePerson* GetPerson(int no);

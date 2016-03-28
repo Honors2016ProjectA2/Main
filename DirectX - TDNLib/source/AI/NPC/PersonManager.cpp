@@ -120,10 +120,13 @@ bool  PersonManager::HandleMessage(const Message& msg)
 	{
 	case MESSAGE_TYPE::RIPPLE_VS_PERSON:
 	{
-		//RIPPLE_INFO exInfo = (RIPPLE_INFO&)msg.ExtraInfo;
-		//float exInfo = (float&)msg.ExtraInfo;
+		// オリジナル構造体のポインタ―型で受け取るぜ！
+
+		RIPPLE_INFO* exInfo = (RIPPLE_INFO*)msg.ExtraInfo;
+		//float* exInfo = (float*)msg.ExtraInfo;
 
 		// ここでＶＳ関数を起動　to be contted 
+		RippleVSPerson(exInfo);
 
 		return true;// [上手くメッセージが届いた!]
 		break;
@@ -139,21 +142,22 @@ bool  PersonManager::HandleMessage(const Message& msg)
 
 // 波紋 vs 人
 // 当たり判定
-void PersonManager::RippleVSPerson(int no)// ←波紋
+void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 {
+	pRipData->type;
 
 	// 対象
 	for (int b = 0; b < (int)m_PersonData.size(); b++)
 	{
-		if (no == b)continue;				// まず同じものは反応しない
+
 		if (m_PersonData[b]->IsShed() == true)continue;// 噂を立てたやつは反応しない
 
 		float ren =
-			Math::Length(m_PersonData[no]->GetPos(), m_PersonData[b]->GetPos());
-		if (ren <= 30)// 30m以内に人が存在すると
+			Math::Length(pRipData->pos, m_PersonData[b]->GetPos());
+		if (ren <= pRipData->size)// 30m以内に人が存在すると
 		{
 			// 近くにいた人は波紋を飛ばす
-			//m_PersonData[b]->ActionGossipRipple();
+			m_PersonData[b]->ActionGossipRipple();
 
 			// 近くにいた人に波紋のメッセージを送る
 		}
