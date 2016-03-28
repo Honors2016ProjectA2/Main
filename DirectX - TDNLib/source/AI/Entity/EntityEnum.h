@@ -14,8 +14,7 @@ namespace GAME_ID
 	{
 		id_error,					//エラーID
 
-		id_red,						// 赤
-		id_blue,					// 青
+		PERSON_MNG,					// マネージャーのID 
 
 		id_person_first,			//人のIDの初め
 		id_person_max = id_person_first + GAME_PERSON_MAX,	//人の最大ID+1

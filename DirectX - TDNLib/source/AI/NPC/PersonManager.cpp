@@ -39,7 +39,8 @@ void PersonManager::Release()
 
 
 // 初期化
-PersonManager::PersonManager()
+PersonManager::PersonManager():
+	BaseGameEntity(ENTITY_ID::PERSON_MNG)// ★人のマネージャー用のＩＤ番号を渡す
 {
 	
 
@@ -107,6 +108,33 @@ void PersonManager::Render()
 	}
 
 
+}
+
+// メッセージ
+bool  PersonManager::HandleMessage(const Message& msg)
+{
+	// まあこのMGRにステートマシンはさすがにいいかな・・・
+	// ということでここで直にメッセージに対する処理を
+
+	switch (msg.Msg)
+	{
+	case MESSAGE_TYPE::RIPPLE_VS_PERSON:
+	{
+		//RIPPLE_INFO exInfo = (RIPPLE_INFO&)msg.ExtraInfo;
+		//float exInfo = (float&)msg.ExtraInfo;
+
+		// ここでＶＳ関数を起動　to be contted 
+
+		return true;// [上手くメッセージが届いた!]
+		break;
+	}
+	default:
+		MyAssert(0, "そんな命令は受け付けてないです");
+		break;
+	}
+
+
+	return false;// [上手くメッセージが届かなかった]
 }
 
 // 波紋 vs 人

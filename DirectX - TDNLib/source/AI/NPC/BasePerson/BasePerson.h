@@ -53,8 +53,13 @@ public:
 	GossipRipple* GetRipple() { return m_Ripple; }
 	
 	bool IsShed() { return m_isShed; };
+	void SetIsShed(bool f) { m_isShed = f; }
+
+	PERSON_TYPE GetPersonType() { return m_PersonType;	}
 
 private:
+
+	PERSON_TYPE m_PersonType;
 
 	iex3DObj* m_obj;
 	Vector3 m_pos;

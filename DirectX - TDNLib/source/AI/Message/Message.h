@@ -1,14 +1,25 @@
 #pragma once
+#include "TDNLIB.h"
 #include <iostream>
 #include <math.h>
 #include <string>
-
+#include "AI\Entity\EntityEnum.h"
 
 // メッセージタイプ
 enum MESSAGE_TYPE
 {
+	RIPPLE_VS_PERSON,
 	Riple_Red,
 	B,
+};
+
+enum class PERSON_TYPE;	// 前方宣言
+// EX_INFO用の構造体
+struct RIPPLE_INFO
+{
+	PERSON_TYPE type;
+	Vector3 pos;
+	float size;
 };
 
 /*
@@ -26,10 +37,10 @@ enum MESSAGE_TYPE
 struct Message
 {
 	// このTelegramを送ったエンティティ
-	int          Sender;
+	ENTITY_ID          Sender;
 
 	// このTelegramを受け取るエンティティ
-	int          Receiver;
+	ENTITY_ID          Receiver;
 
 	// メッセージの内容。　（列挙型に設定されているもの）
 	int          Msg;
@@ -42,14 +53,14 @@ struct Message
 	double       DispatchTime;
 
 	Message() :DispatchTime(-1),
-		Sender(-1),
-		Receiver(-1),
+		Sender(ENTITY_ID::id_error),
+		Receiver(ENTITY_ID::id_error),
 		Msg(-1)
 	{}
 
 	Message(double time,
-		int    sender,
-		int    receiver,
+		ENTITY_ID    sender,
+		ENTITY_ID    receiver,
 		int    msg,
 		void*  info = NULL) : DispatchTime(time),
 		Sender(sender),

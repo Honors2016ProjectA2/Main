@@ -16,7 +16,8 @@ BasePerson::BasePerson(ENTITY_ID id, PERSON_TYPE type) :BaseGameEntity(id)
 	m_pStateMachine->SetCurrentState(PersonWait::GetInstance());
 
 	// キャラクターによって波紋タイプ・人の種類を決める
-	switch (type)
+	m_PersonType = type;
+	switch (m_PersonType)
 	{
 	case PERSON_TYPE::RED:	
 		// キャラクターのモデル
@@ -66,14 +67,6 @@ void BasePerson::Update()
 	// ★ステートマシン更新
 	m_pStateMachine->Update();
 
-	// 波紋
-	m_Ripple->SetPos(m_pos);// 常にプレイヤー追従
-	m_Ripple->Update();
-
-	//if (m_Ripple->IsEnd() == true)
-	//{
-
-	//}
 
 	// 場所更新
 	m_obj->SetPos(m_pos);
@@ -97,8 +90,11 @@ bool BasePerson::HandleMessage(const Message & msg)
 void BasePerson::ActionGossipRipple()
 {
 	// 流したフラグＯＮ
-	m_isShed = true;
-	m_Ripple->Action();
+	//m_isShed = true;
+	//m_Ripple->Action();
+	
+	// 流し中のステートへ
+	m_pStateMachine->ChangeState(PersonShedWait::GetInstance());
 }
 
 

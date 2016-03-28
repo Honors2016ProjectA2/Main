@@ -83,7 +83,10 @@ void PersonWait::Execute(BasePerson *pPerson)
 	//// ここで波紋がIsEndになったら
 	//pPerson->GetFSM()->ChangeState(PersonShedWait::GetInstance()->GetInstance());
 
+	//if ()
+	//{
 
+	//}
 }
 
 // 出口
@@ -122,7 +125,7 @@ bool PersonWait::OnMessage(BasePerson *pPerson, const Message &msg)
 
 
 /***************************************/
-//	流した後の待機
+//	流してる時の待機
 /***************************************/
 
 PersonShedWait* PersonShedWait::GetInstance()
@@ -135,18 +138,50 @@ PersonShedWait* PersonShedWait::GetInstance()
 // 入り口
 void PersonShedWait::Enter(BasePerson *pPerson)
 {
+	// 流したフラグＯＮ!
+	pPerson->SetIsShed(true);
+	pPerson->GetRipple()->Action();
+
 
 }
 
 // 実行中
 void PersonShedWait::Execute(BasePerson *pPerson)
 {
-	pPerson->SetAngle(pPerson->GetAngle() + 0.1f);
+	// 波紋
+	pPerson->GetRipple()->SetPos(pPerson->GetPos());// 常にプレイヤー追従
+	pPerson->GetRipple()->Update();
+
+	// 波紋が出終わったら
+	if (pPerson->GetRipple()->IsEnd()==true)
+	{
+		// 終わる
+		pPerson->GetFSM()->ChangeState(PersonEndWait::GetInstance());
+	}
+
 }
 
 // 出口
 void PersonShedWait::Exit(BasePerson *pPerson)
 {
+	// 人マネージャーにMSG送信
+	/*
+		[内容]波紋内にいたやつ全員
+		噂を流すステートへ
+	*/
+
+	RIPPLE_INFO ex;
+	ex.type = pPerson->GetPersonType();
+	ex.pos = pPerson->GetPos();
+	ex.size = 30;// (仮)
+
+	MsgMgr->Dispatch(
+		MSG_NO_DELAY,
+		pPerson->GetID(),
+		ENTITY_ID::PERSON_MNG,
+		RIPPLE_VS_PERSON,
+		(void*)&ex.size	// [追記情報]自分のタイプを送る
+		);
 
 }
 
@@ -156,6 +191,40 @@ bool PersonShedWait::OnMessage(BasePerson *pPerson, const Message &msg)
 	return false;
 }
 
+
 /***************************************/
-//	
+//	流した後の待機
 /***************************************/
+
+PersonEndWait* PersonEndWait::GetInstance()
+{
+	// ここに変数を作る
+	static PersonEndWait instance;
+	return &instance;
+}
+
+// 入り口
+void PersonEndWait::Enter(BasePerson *pPerson)
+{
+
+
+}
+
+// 実行中
+void PersonEndWait::Execute(BasePerson *pPerson)
+{
+	pPerson->SetAngle(pPerson->GetAngle() + 0.1f);
+}
+
+// 出口
+void PersonEndWait::Exit(BasePerson *pPerson)
+{
+
+}
+
+bool PersonEndWait::OnMessage(BasePerson *pPerson, const Message &msg)
+{
+	// Flaseで返すとグローバルステートのOnMessageの処理へ行く
+	return false;
+}
+

@@ -1,5 +1,6 @@
 #pragma once
 #include "TDNLIB.h"
+#include "AI\Entity\BaseGameEntity.h"
 #include "AI\NPC\BasePerson\BasePerson.h"
 
 
@@ -10,7 +11,7 @@
 
 class BasePerson;
 
-class PersonManager
+class PersonManager:public BaseGameEntity
 {
 public:
 	static PersonManager& GetInstance();
@@ -45,6 +46,9 @@ public:
 	// 更新・描画
 	void Update();
 	void Render();
+
+	// メッセージ更新
+	bool  HandleMessage(const Message& msg);
 
 	// 波紋vs人
 	void RippleVSPerson(int ripPersonNo);

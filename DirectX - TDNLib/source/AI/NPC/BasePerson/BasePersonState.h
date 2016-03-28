@@ -69,7 +69,8 @@ private:
 	PersonWait& operator=(const PersonWait&);
 };
 
-//--------------------流した後の待機
+
+//--------------------流してる時の待機
 class PersonShedWait :public State<BasePerson>
 {
 public:
@@ -95,5 +96,34 @@ private:
 
 	PersonShedWait(const PersonShedWait&);
 	PersonShedWait& operator=(const PersonShedWait&);
+};
+
+
+//--------------------終わった時の待機
+class PersonEndWait :public State<BasePerson>
+{
+public:
+
+	//this is a シングルトン
+	static PersonEndWait* GetInstance();
+
+	// 入る
+	virtual void Enter(BasePerson* pPerson);
+
+	// 実行します
+	virtual void Execute(BasePerson* pPerson);
+
+	// 帰る
+	virtual void Exit(BasePerson* pPerson);
+
+	// エージェントからのメッセージを受信した場合、これが実行される
+	virtual bool OnMessage(BasePerson* pPerson, const Message& msg);
+
+private:
+	PersonEndWait() {};
+	~PersonEndWait() {};
+
+	PersonEndWait(const PersonEndWait&);
+	PersonEndWait& operator=(const PersonEndWait&);
 };
 

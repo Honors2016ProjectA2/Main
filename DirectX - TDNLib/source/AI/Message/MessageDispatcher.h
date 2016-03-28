@@ -16,8 +16,8 @@
 class BaseGameEntity;
 
 // enum“I‚È
-const double SEND_MSG_IMMEDIATELY = 0.0f;
-const int   NO_ADDITIONAL_INFO = 0;
+const double MSG_NO_DELAY = 0.0f;
+const int   MSG_NO_EXINFO= 0;
 
 class MessageDispatcher
 {
