@@ -104,11 +104,11 @@ private:
 
 };
 
-static const int NOT_IN_BUTTON = -1;	// ボタン範囲内がなかった
-
 class IconButtonManager
 {
 public:
+
+	static const int NOT_IN_BUTTON = -1;	// ボタン範囲内がなかった
 
 	IconButtonManager();
 	~IconButtonManager();

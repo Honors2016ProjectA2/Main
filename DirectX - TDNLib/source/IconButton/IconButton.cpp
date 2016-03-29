@@ -36,7 +36,6 @@ void IconButtonManager::TextLoad(char *filename)
 
 		char skip[128];	// “Ç‚Ý”ò‚Î‚µ—p
 		ifs >> skip;
-		ifs >> skip;
 		ifs >> ID;
 		ifs >> skip;
 		ifs >> TexPath;

@@ -116,6 +116,7 @@
     <ClCompile Include="source\Animation\AnimationPanel.cpp" />
     <ClCompile Include="source\Animation\AnimationRipple.cpp" />
     <ClCompile Include="source\Animation\AnimationRippleEx.cpp" />
+    <ClCompile Include="source\Animation\AnimationUV.cpp" />
     <ClCompile Include="source\GossipRipple\GossipRipple.cpp" />
     <ClCompile Include="source\GossipRipple\GossipRippleManager.cpp" />
     <ClCompile Include="source\IconButton\IconButton.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="source\Animation\AnimationPanel.h" />
     <ClInclude Include="source\Animation\AnimationRipple.h" />
     <ClInclude Include="source\Animation\AnimationRippleEx.h" />
+    <ClInclude Include="source\Animation\AnimationUV.h" />
     <ClInclude Include="source\GossipRipple\GossipRipple.h" />
     <ClInclude Include="source\GossipRipple\GossipRippleManager.h" />
     <ClInclude Include="source\IconButton\IconButton.h" />
