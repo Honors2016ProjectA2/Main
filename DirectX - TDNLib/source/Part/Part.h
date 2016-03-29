@@ -6,76 +6,120 @@
 //
 //*****************************************************************************************************************************
 
-class  PartManager
+class sceneMain;
+
+class sceneMainGlobalState :public State<sceneMain>
 {
 public:
-	PartManager();
-	~PartManager();
-	void Update();
-	void Render();
 
-	enum class PART
-	{
-		MAIN,			// ゲームのメイン
-		GAME_CLEAR,		// ゲームオーバー時の処理
-		GAME_OVER,		// ゲームクリア時の処理
-		MAX
-	};
+	//this is a シングルトン
+	static sceneMainGlobalState* GetInstance();
 
-	// パート切り替え
-	void ChangePart(PART p);
+	// 入る
+	virtual void Enter(sceneMain* pMain);
+
+	// 実行します
+	virtual void Execute(sceneMain* pMain);
+
+	// 帰る
+	virtual void Exit(sceneMain* pMain);
+
+	// エージェントからのメッセージを受信した場合、これが実行される
+	virtual bool OnMessage(sceneMain* pMain, const Message& msg);
 
 private:
+	sceneMainGlobalState() {};
+	~sceneMainGlobalState() {};
 
-	class Part
-	{
-	public:
-		class Base
-		{
-		protected:
-			PartManager *mgr;		// 管理してる人の実体(管理してる人のステップを進めるのに使う)
-			int process;		// step担当してるけどさらに中のステップ
-			int timer;			// 汎用的なタイマー
-			enum class CURSOR{ LEFT, RIGHT, NONE }cursor;
-		public:
-			Base(PartManager *mgr) :mgr(mgr), process(0), timer(0){}
-			virtual ~Base(){}
-			virtual void Initialize(){}
-			virtual void Update() = 0;
-			virtual void Render() = 0;
-		};
+	sceneMainGlobalState(const sceneMainGlobalState&);
+	sceneMainGlobalState& operator=(const sceneMainGlobalState&);
+};
 
-		class Main : public Base
-		{
-		public:
-			Main(PartManager *mgr) :Base(mgr){}
-			~Main(){}
-			void Initialize();
-			void Update();
-			void Render();
-		};
 
-		class GameClear : public Base
-		{
-		public:
-			GameClear(PartManager *mgr) :Base(mgr){}
-			~GameClear(){}
-			void Initialize();
-			void Update();
-			void Render();
-		};
+//--------------------メイン
+class sceneMainGame :public State<sceneMain>
+{
+public:
 
-		class GameOver : public Base
-		{
-		public:
-			GameOver(PartManager *mgr) :Base(mgr){}
-			~GameOver(){}
-			void Initialize();
-			void Update();
-			void Render();
-		};
-	};
+	//this is a シングルトン
+	static sceneMainGame* GetInstance();
 
-	Part::Base *part_worker;
+	// 入る
+	virtual void Enter(sceneMain* pMain);
 
+	// 実行します
+	virtual void Execute(sceneMain* pMain);
+
+	// 帰る
+	virtual void Exit(sceneMain* pMain);
+
+	// エージェントからのメッセージを受信した場合、これが実行される
+	virtual bool OnMessage(sceneMain* pMain, const Message& msg);
+
+private:
+	sceneMainGame() {};
+	~sceneMainGame() {};
+
+	sceneMainGame(const sceneMainGame&);
+	sceneMainGame& operator=(const sceneMainGame&);
+
+	// 波紋の回数
+	int m_RippleCount;
+
+};
+
+//--------------------ゲームオーバー
+class sceneMainGameOver :public State<sceneMain>
+{
+public:
+
+	//this is a シングルトン
+	static sceneMainGameOver* GetInstance();
+
+	// 入る
+	virtual void Enter(sceneMain* pMain);
+
+	// 実行します
+	virtual void Execute(sceneMain* pMain);
+
+	// 帰る
+	virtual void Exit(sceneMain* pMain);
+
+	// エージェントからのメッセージを受信した場合、これが実行される
+	virtual bool OnMessage(sceneMain* pMain, const Message& msg);
+
+private:
+	sceneMainGameOver() {};
+	~sceneMainGameOver() {};
+
+	sceneMainGameOver(const sceneMainGameOver&);
+	sceneMainGameOver& operator=(const sceneMainGameOver&);
+};
+
+//--------------------ゲームクリアー
+class sceneMainGameClear :public State<sceneMain>
+{
+public:
+
+	//this is a シングルトン
+	static sceneMainGameClear* GetInstance();
+
+	// 入る
+	virtual void Enter(sceneMain* pMain);
+
+	// 実行します
+	virtual void Execute(sceneMain* pMain);
+
+	// 帰る
+	virtual void Exit(sceneMain* pMain);
+
+	// エージェントからのメッセージを受信した場合、これが実行される
+	virtual bool OnMessage(sceneMain* pMain, const Message& msg);
+
+private:
+	sceneMainGameClear() {};
+	~sceneMainGameClear() {};
+
+	sceneMainGameClear(const sceneMainGameOver&);
+	sceneMainGameClear& operator=(const sceneMainGameOver&);
 };

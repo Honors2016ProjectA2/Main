@@ -1,22 +1,17 @@
 #include	"TDNLIB.h"
-#include	"../system/Framework.h"
-#include	"../system/System.h"
 #include	"SceneMain.h"
 #include	"../Sound/SoundManager.h"
 #include "AI\NPC\PersonManager.h"
 #include "GossipRipple\GossipRipple.h"
 #include "GossipRipple\GossipRippleManager.h"
 #include "../Part/Part.h"
-#include "../Stage/PersonLoader.h"
-
+#include "../IconButton/IconButton.h"
 #include "Animation\AnimationUV.h"
-
+#include "SceneSelect.h"
 
 //GossipRipple* rip;
 
 iexMesh* school;
-int RippleCount;
-PartManager *part_mgr;
 
 
 //******************************************************************
@@ -32,23 +27,19 @@ bool sceneMain::Initialize()
 
 	GossipRippleMgr;
 
-	RippleCount = 3;	// 仮で3
-	part_mgr = new PartManager;
-
-
-	PersonLoader::LoadPerson(0);
-	//PersonMgr;
-	//PersonMgr.AddPerson(PERSON_TYPE::RED,Vector3(30, 10, 30));
-	//PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(10, 10, 30));
-	//PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(-10, 10, 30));
-	//PersonMgr.AddPerson(PERSON_TYPE::BLUE,Vector3(-30, 10, -20));
-	//PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(-30, 10, 30));
-
 	school = new iexMesh("Data/Stage/school.imo");
 	school->SetScale(0.8f);
 	school->SetAngle(PI);
 	school->Update();
 
+	m_pStateMachine = new StateMachine<sceneMain>(this);
+	m_pStateMachine->SetGlobalState(sceneMainGlobalState::GetInstance());// グローバル
+	m_pStateMachine->SetCurrentState(sceneMainGame::GetInstance());
+
+	m_pButtonMgr = new IconButtonManager;
+	m_pButtonMgr->TextLoad("DATA/Text/IconButton/main.txt");
+	m_pButtonMgr->SetEnDis((UINT)BUTTON_ID::YES, EN_DIS_TYPE::DISABLE_VANISH);
+	m_pButtonMgr->SetEnDis((UINT)BUTTON_ID::NO, EN_DIS_TYPE::DISABLE_VANISH);
 	return true;
 }
 
@@ -59,11 +50,9 @@ sceneMain::~sceneMain()
 
 	PersonMgr.Reset();
 	PersonMgr.Release();
-	
+	delete m_pButtonMgr;
 	delete school;
-	delete part_mgr;
-	
-	SoundManager::Release();
+	delete m_pStateMachine;
 }
 
 
@@ -74,42 +63,58 @@ bool sceneMain::Update()
 {
 	tdnMouse::Update();
 
-	if (KeyBoard('Z')==1)
-	{
-	//	rip->Action();
-		float ramX = (rand() % 100)-50;
-		float ramZ = (rand() % 100)-50;
+	// ステートマシン更新
+	m_pStateMachine->Update();
 
-		GossipRippleMgr.AddRipple(RIPPLE_TYPE::RED, Vector3(ramX, 0, ramZ));
-	}
-	//if (KeyBoard('X') == 1)
-	if (tdnMouse::GetLeft() == 3 && RippleCount > 0)
+	// ボタン更新
+	m_pButtonMgr->Update(tdnMouse::GetPos());
+
+	if (tdnMouse::GetLeft() == 3)
 	{
-		FOR(PersonMgr.GetPersonSize())
+		if (m_mode == MODE::GAMECLEAR)
 		{
-			if ((Math::WorldToScreen(PersonMgr.GetPerson(i)->GetPos()) - tdnMouse::GetPos()).Length() < 50)
+			switch ((BUTTON_ID)m_pButtonMgr->GetInButtonNo())
 			{
-				RippleCount--;
-				PersonMgr.GetPerson(i)->ActionGossipRipple();
+			case BUTTON_ID::YES:
+			{
+								   extern Framework *MainFrame;
+								   MainFrame->ChangeScene(new sceneMain);
+								   return true;
+			}
+				break;
+
+			case BUTTON_ID::NO:
+			{
+								  extern Framework *MainFrame;
+								  MainFrame->ChangeScene(new sceneSelect);
+								  return true;
+			}
+				break;
 			}
 		}
-		//PersonMgr.GetPerson(0)->ActionGossipRipple();
+		else if (m_mode == MODE::GAMEOVER)
+		{
+			switch ((BUTTON_ID)m_pButtonMgr->GetInButtonNo())
+			{
+			case BUTTON_ID::YES:
+			{
+								   extern Framework *MainFrame;
+								   MainFrame->ChangeScene(new sceneMain);
+								   return true;
+			}
+				break;
+
+			case BUTTON_ID::NO:
+			{
+								  extern Framework *MainFrame;
+								  MainFrame->ChangeScene(new sceneSelect);
+								  return true;
+			}
+				break;
+			}
+		}
 	}
 
-	part_mgr->Update();
-	if (RippleCount == 0)
-	{
-		part_mgr->ChangePart(PartManager::PART::GAME_OVER);
-	}
-	
-
-	//rip->Update();
-	GossipRippleMgr.Update();
-
-
-	PersonMgr.Update();
-
-	
 	return true;	
 }
 
@@ -117,7 +122,6 @@ void sceneMain::Render()
 {
 	tdnView::Activate();
 	tdnView::Clear(0xff005522);
-
 	
 	school->Render();
 
@@ -126,9 +130,19 @@ void sceneMain::Render()
 
 	PersonMgr.Render();
 
+	if (m_mode == MODE::GAMECLEAR)
+	{
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x80000000);
+		tdnText::Draw(320, 320, 0xffffffff, "ゲームクリア");
+	}
+	else if (m_mode == MODE::GAMEOVER)
+	{
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x80000000);
+		tdnText::Draw(320, 320, 0xffffffff, "ゲームオーバー");
+	}
 	tdnText::Draw(150, 0, 0xffffffff, "シーンメイン");
 
-	tdnText::Draw(320, 30, 0xffffffff, "残り回数 : %d", RippleCount);
+	m_pButtonMgr->Render();
 
-	part_mgr->Render();
+	//tdnText::Draw(320, 30, 0xffffffff, "残り回数 : %d", RippleCount);
 }

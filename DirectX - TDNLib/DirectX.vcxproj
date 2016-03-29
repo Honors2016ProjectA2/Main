@@ -123,7 +123,7 @@
     <ClCompile Include="source\Part\Part.cpp" />
     <ClCompile Include="source\Scene\SceneSelect.cpp" />
     <ClCompile Include="source\Scene\SceneTitle.cpp" />
-    <ClCompile Include="source\Stage\PersonLoader.cpp" />
+    <ClCompile Include="source\Stage\Stage.cpp" />
     <ClCompile Include="TDN\IEX_3DObject.cpp" />
     <ClCompile Include="TDN\IEX_Mesh.cpp" />
     <ClCompile Include="TDN\IEX_SkinMesh.cpp" />
@@ -169,7 +169,7 @@
     <ClInclude Include="source\Part\Part.h" />
     <ClInclude Include="source\Scene\SceneSelect.h" />
     <ClInclude Include="source\Scene\SceneTitle.h" />
-    <ClInclude Include="source\Stage\PersonLoader.h" />
+    <ClInclude Include="source\Stage\Stage.h" />
     <ClInclude Include="TDN\ogg\codec.h" />
     <ClInclude Include="TDN\ogg\ogg.h" />
     <ClInclude Include="TDN\ogg\os_types.h" />

@@ -11,6 +11,7 @@ enum class EN_DIS_TYPE
 	ENABLE,				// 稼働中だよ
 	DISABLE_BLACK,		// 使えない敵なメッセージ
 	DISABLE_WHITE,		// 何か選択中的なメッセージ
+	DISABLE_VANISH		// 消える
 };
 
 class IconButton

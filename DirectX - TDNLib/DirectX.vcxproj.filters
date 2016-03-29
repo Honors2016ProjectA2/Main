@@ -129,10 +129,10 @@
     <ClCompile Include="source\GossipRipple\GossipRippleManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\Stage\PersonLoader.cpp">
+    <ClCompile Include="source\Animation\AnimationUV.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\Animation\AnimationUV.cpp">
+    <ClCompile Include="source\Stage\Stage.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -230,10 +230,10 @@
     <ClInclude Include="source\GossipRipple\GossipRippleManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\Stage\PersonLoader.h">
+    <ClInclude Include="source\Animation\AnimationUV.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\Animation\AnimationUV.h">
+    <ClInclude Include="source\Stage\Stage.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

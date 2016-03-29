@@ -32,6 +32,11 @@ private:
 	// 人データ
 	std::vector<BasePerson*> m_PersonData;
 
+	// うわさが流れた人の総計
+	int m_NumShedPerson;
+
+	// 噂流しの判定した瞬間
+	bool m_bJudgeMoment;
 
 public:
 	// 大量生産
@@ -56,6 +61,10 @@ public:
 	// アクセサ
 	BasePerson* GetPerson(int no);
 	int GetPersonSize() { return (int)m_PersonData.size(); }
+
+	// クリア判定: 全員に噂を流したか
+	bool isAllShed(){ return (m_NumShedPerson == m_PersonData.size()); }
+	bool isJudgeMoment(){ return m_bJudgeMoment; }
 };
 
 

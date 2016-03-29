@@ -40,7 +40,9 @@ void PersonManager::Release()
 
 // 初期化
 PersonManager::PersonManager():
-	BaseGameEntity(ENTITY_ID::PERSON_MNG)// ★人のマネージャー用のＩＤ番号を渡す
+	BaseGameEntity(ENTITY_ID::PERSON_MNG),// ★人のマネージャー用のＩＤ番号を渡す
+	m_NumShedPerson(0),
+	m_bJudgeMoment(false)
 {
 	
 
@@ -88,12 +90,14 @@ void PersonManager::Update()
 	if (m_PersonData.empty())return;// 空だったらリターン
 
 								   // 人たち更新
+	m_bJudgeMoment = false;
+	m_NumShedPerson = 0;
+
 	for (int i = 0; i < (int)m_PersonData.size(); i++)
 	{
+		if (m_PersonData[i]->IsShed()) m_NumShedPerson++;
 		m_PersonData[i]->Update();
 	}
-
-
 }
 
 void PersonManager::Render()
@@ -144,8 +148,8 @@ bool  PersonManager::HandleMessage(const Message& msg)
 // 当たり判定
 void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 {
-
 	// 対象
+	int count(0);
 	for (int b = 0; b < (int)m_PersonData.size(); b++)
 	{
 
@@ -157,10 +161,16 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 		{
 			// 近くにいた人は波紋を飛ばす
 			m_PersonData[b]->ActionGossipRipple();
+			count++;
 		}
 
 	}
 
+	if (count == 0)
+	{
+		// 判定してますよー！
+		m_bJudgeMoment = true;
+	}
 }
 
 BasePerson * PersonManager::GetPerson(int no)

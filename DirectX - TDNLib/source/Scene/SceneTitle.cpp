@@ -54,19 +54,21 @@ bool sceneTitle::Update()
 	airou->Animation();
 	airou->Update();
 
-	// 左クリック
-	if (tdnMouse::GetLeft() == 3)
-	{
-		se->Play("波紋出す", tdnMouse::GetPos());
-	}
-
 	button_mgr->Update(tdnMouse::GetPos());
 
-	if (tdnInput::KeyGet(KEY_ENTER) == 3)
+	// 左クリック
+	if (tdnMouse::GetLeft() == 3)
 	{
 		// シーンチェンジ
 		extern Framework  *MainFrame;
 		MainFrame->ChangeScene(new sceneSelect);
+	}
+
+
+
+	if (tdnInput::KeyGet(KEY_ENTER) == 3)
+	{
+
 	}
 
 	return true;

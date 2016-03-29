@@ -263,7 +263,7 @@ void IconButton::Render()
 	}
 
 #ifdef _DEBUG
-	m_pCollision->RenderDebug();
+	//m_pCollision->RenderDebug();
 #endif
 }
 

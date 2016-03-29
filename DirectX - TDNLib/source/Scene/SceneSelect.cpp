@@ -5,7 +5,7 @@
 #include	"SceneMain.h"
 #include	"../Sound/SoundManager.h"
 #include	"../IconButton/IconButton.h"
-
+#include	"../Stage/Stage.h"
 //******************************************************************
 //		初期化・解放
 //******************************************************************
@@ -39,7 +39,7 @@ bool sceneSelect::Update()
 		if (SelectStageNo != m_pIconMgr->NOT_IN_BUTTON)
 		{
 			// ここで人間の読み込みの数字をどうにか
-			
+			Stage::SetStageNo(SelectStageNo);
 
 			// シーンチェンジ
 			extern Framework  *MainFrame;

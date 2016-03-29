@@ -47,7 +47,7 @@ public:
 	{}
 
 	// FSMを初期化するときなどに使うセッター
-	void SetCurrentState(State<entity_type>* s) {  m_pCurrentState = s; }
+	void SetCurrentState(State<entity_type>* s) { m_pCurrentState = s; m_pCurrentState->Enter(m_pOwner); }	// Enterを追加
 	void SetGlobalState(State<entity_type>* s) {   m_pGlobalState = s; }
 	void SetPreviousState(State<entity_type>* s) { m_pPreviousState = s; }
 
