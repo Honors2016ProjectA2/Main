@@ -99,16 +99,22 @@
     <ClCompile Include="TDN\IEX_SkinMesh.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\AI\Message\MessageDispatcher.cpp">
+    <ClCompile Include="source\Part\Part.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\AI\Entity\BaseGameEntity.cpp">
+    <ClCompile Include="source\IconButton\IconButton.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AI\NPC\PersonManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AI\Message\MessageDispatcher.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="source\AI\Entity\EntityManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\AI\NPC\PersonManager.cpp">
+    <ClCompile Include="source\AI\Entity\BaseGameEntity.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="source\AI\NPC\BasePerson\BasePerson.cpp">
@@ -123,7 +129,7 @@
     <ClCompile Include="source\GossipRipple\GossipRippleManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\Animation\AnimationUV.cpp">
+    <ClCompile Include="source\Stage\PersonLoader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -179,16 +185,10 @@
     <ClInclude Include="source\Scene\SceneTitle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\AI\Message\MessageDispatcher.h">
+    <ClInclude Include="source\Part\Part.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\AI\Message\Message.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="source\AI\Entity\BaseGameEntity.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="source\AI\Entity\EntityManager.h">
+    <ClInclude Include="source\IconButton\IconButton.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="source\AI\State\StateMachine.h">
@@ -200,22 +200,34 @@
     <ClInclude Include="source\AI\NPC\PersonManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\AI\NPC\BasePerson\BasePerson.h">
+    <ClInclude Include="source\AI\Message\MessageDispatcher.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AI\Message\Message.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AI\Entity\EntityManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="source\AI\Entity\EntityEnum.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\AI\NPC\BasePerson\BasePersonState.h">
+    <ClInclude Include="source\AI\Entity\BaseGameEntity.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\GossipRipple\GossipRippleManager.h">
+    <ClInclude Include="source\AI\NPC\BasePerson\BasePerson.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AI\NPC\BasePerson\BasePersonState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="source\GossipRipple\GossipRipple.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\Animation\AnimationUV.h">
+    <ClInclude Include="source\GossipRipple\GossipRippleManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Stage\PersonLoader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

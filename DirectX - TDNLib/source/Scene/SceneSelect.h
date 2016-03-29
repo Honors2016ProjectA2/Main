@@ -1,5 +1,6 @@
 #pragma once
 
+class IconButtonManager;
 
 class sceneSelect : public BaseScene
 {
@@ -12,7 +13,7 @@ public:
 	void Render();
 
 private:
-
+	IconButtonManager *m_pIconMgr;
 
 };
 

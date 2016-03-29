@@ -30,6 +30,7 @@
 #include	<assert.h>		// アサートを扱うヘッダー
 #include	<memory>
 #include	<random>		// メルセンヌ・ツイスターなどを扱うためのヘッダー
+#include	<list>			// 双方向リストを扱うへっだー
 
 /********************************************/
 //	定数	
@@ -494,7 +495,8 @@ namespace Math
 	inline float Length(Vector3 PosA, Vector3 PosB);
 
 
-
+	Vector2 WorldToScreen(const Vector3 &WorldPos);
+	Vector3 ScreenToWorld(const Vector2 &ScreenPos, float ProjectiveSpaceZ);
 
 }
 
@@ -946,6 +948,8 @@ public:
 	inline float GetCenterY(){ return centerY; }
 	inline bool GetTurnOver(){ return isTurnOver; };
 	inline bool GetShiftCenter(){ return isShiftCenter; };
+	inline UINT GetWidth(){ return m_width; }
+	inline UINT GetHeight(){ return m_height; }
 private:
 
 	// unsigned intの理由はGetLevelDescから受け取る情報などがUINTだから

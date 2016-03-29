@@ -6,6 +6,8 @@
 #include "AI\NPC\PersonManager.h"
 #include "GossipRipple\GossipRipple.h"
 #include "GossipRipple\GossipRippleManager.h"
+#include "../Part/Part.h"
+#include "../Stage/PersonLoader.h"
 
 #include "Animation\AnimationUV.h"
 
@@ -13,6 +15,8 @@
 //GossipRipple* rip;
 
 iexMesh* school;
+int RippleCount;
+PartManager *part_mgr;
 
 
 //******************************************************************
@@ -28,18 +32,17 @@ bool sceneMain::Initialize()
 
 	GossipRippleMgr;
 
+	RippleCount = 3;	// 仮で3
+	part_mgr = new PartManager;
 
 
-	PersonMgr;
-	PersonMgr.AddPerson(PERSON_TYPE::RED,Vector3(30, 0, 30));
-	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(10, 0, 30));
-	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(-10, 0, 30));
-	PersonMgr.AddPerson(PERSON_TYPE::BLUE,Vector3(-40, 0, -20));
-	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(-30, 0, 30));
-
-	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(10, 0, 10));
-	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(0, 0, -10));
-	PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(-20,0, -20));
+	PersonLoader::LoadPerson(0);
+	//PersonMgr;
+	//PersonMgr.AddPerson(PERSON_TYPE::RED,Vector3(30, 10, 30));
+	//PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(10, 10, 30));
+	//PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(-10, 10, 30));
+	//PersonMgr.AddPerson(PERSON_TYPE::BLUE,Vector3(-30, 10, -20));
+	//PersonMgr.AddPerson(PERSON_TYPE::RED, Vector3(-30, 10, 30));
 
 	school = new iexMesh("Data/Stage/school.imo");
 	school->SetScale(0.8f);
@@ -58,7 +61,7 @@ sceneMain::~sceneMain()
 	PersonMgr.Release();
 	
 	delete school;
-
+	delete part_mgr;
 	
 	SoundManager::Release();
 }
@@ -79,9 +82,24 @@ bool sceneMain::Update()
 
 		GossipRippleMgr.AddRipple(RIPPLE_TYPE::RED, Vector3(ramX, 0, ramZ));
 	}
-	if (KeyBoard('X') == 1)
+	//if (KeyBoard('X') == 1)
+	if (tdnMouse::GetLeft() == 3 && RippleCount > 0)
 	{
-		PersonMgr.GetPerson(0)->ActionGossipRipple();
+		FOR(PersonMgr.GetPersonSize())
+		{
+			if ((Math::WorldToScreen(PersonMgr.GetPerson(i)->GetPos()) - tdnMouse::GetPos()).Length() < 50)
+			{
+				RippleCount--;
+				PersonMgr.GetPerson(i)->ActionGossipRipple();
+			}
+		}
+		//PersonMgr.GetPerson(0)->ActionGossipRipple();
+	}
+
+	part_mgr->Update();
+	if (RippleCount == 0)
+	{
+		part_mgr->ChangePart(PartManager::PART::GAME_OVER);
 	}
 	
 
@@ -108,6 +126,9 @@ void sceneMain::Render()
 
 	PersonMgr.Render();
 
-	tdnText::Draw(150, 0, 0xfffffffff, "シーンメイン");
+	tdnText::Draw(150, 0, 0xffffffff, "シーンメイン");
 
+	tdnText::Draw(320, 30, 0xffffffff, "残り回数 : %d", RippleCount);
+
+	part_mgr->Render();
 }

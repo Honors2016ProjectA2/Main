@@ -274,6 +274,53 @@ inline float Math::Length(Vector3 PosA, Vector3 PosB)
 	return sqrtf(Vec.x*Vec.x + Vec.y*Vec.y + Vec.z*Vec.z);
 }
 
+Vector2 Math::WorldToScreen(const Vector3 &WorldPos)
+{
+	// 3DÇ2Dç¿ïWÇ…Ç∑ÇÈ
+	//ÉâÉÄÉ_éÆMin~MaxÇÃîÕàÕÇ…ó}Ç¶ÇÈÅ@
+	auto Clamp = [](float val, float Min, float Max){
+		return min(Max, max(val, Min));
+	};
+	Matrix m = matView * matProjection;
+
+	Vector2 ret;
+	ret.x = WorldPos.x * m._11 + WorldPos.y * m._21 + WorldPos.z * m._31 + 1 * m._41;
+	ret.y = WorldPos.x * m._12 + WorldPos.y * m._22 + WorldPos.z * m._32 + 1 * m._42;
+	float w = WorldPos.x * m._14 + WorldPos.y * m._24 + WorldPos.z * m._34 + 1 * m._44;
+
+	if (w == 0) ret.x = ret.y = 0;
+	else{
+		ret.x /= w;
+		ret.y /= w;
+	}
+	ret.x = Clamp(ret.x, -1.0f, 1.0f);
+	ret.y = Clamp(ret.y, -1.0f, 1.0f);
+
+	ret.x = (ret.x + 1) * (tdnSystem::GetScreenSize().right / 2);
+	ret.y = (((ret.y * -1) + 1) * (tdnSystem::GetScreenSize().bottom / 2));
+
+	return ret;
+}
+
+Vector3 Math::ScreenToWorld(const Vector2 &ScreenPos, float ProjectiveSpaceZ)
+{
+	D3DXMATRIX Viewport = {
+		tdnSystem::GetScreenSize().right * 0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -tdnSystem::GetScreenSize().bottom * 0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		tdnSystem::GetScreenSize().right * 0.5f, tdnSystem::GetScreenSize().bottom * 0.5f, 0.0f, 1.0f
+	};
+	D3DXMATRIX InverseView, InverseProjection, InverseViewport;
+	D3DXMatrixInverse(&InverseView, NULL, &matView);
+	D3DXMatrixInverse(&InverseProjection, NULL, &matProjection);
+	D3DXMatrixInverse(&InverseViewport, NULL, &Viewport);
+
+	D3DXVECTOR3 Position;
+	D3DXVec3TransformCoord(&Position, &D3DXVECTOR3(static_cast<FLOAT>(ScreenPos.x), static_cast<FLOAT>(ScreenPos.y), ProjectiveSpaceZ),
+		&(InverseViewport * InverseProjection * InverseView));
+
+	return Vector3(Position.x, Position.y, Position.z);
+}
 
 
 //********************************************************************

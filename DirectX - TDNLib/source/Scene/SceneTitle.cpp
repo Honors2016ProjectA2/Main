@@ -4,9 +4,11 @@
 #include	"SceneTitle.h"
 #include	"SceneSelect.h"
 #include	"../Sound/SoundManager.h"
+#include	"../IconButton/IconButton.h"
 
 iex3DObj *airou;
 Vector3 pos(0, 0, 0);
+IconButtonManager *button_mgr;
 
 //******************************************************************
 //		初期化・解放
@@ -20,12 +22,16 @@ bool sceneTitle::Initialize()
 	airou = new iex3DObj("DATA/CHR/アイルー/airou_toire.IEM");
 	airou->SetScale(1.0f);
 
+	button_mgr = new IconButtonManager;
+	button_mgr->TextLoad("DATA/Text/IconButton/title.txt");
+
 	return true;
 }
 
 sceneTitle::~sceneTitle()
 {
 	delete airou;
+	delete button_mgr;
 }
 
 
@@ -54,6 +60,8 @@ bool sceneTitle::Update()
 		se->Play("波紋出す", tdnMouse::GetPos());
 	}
 
+	button_mgr->Update(tdnMouse::GetPos());
+
 	if (tdnInput::KeyGet(KEY_ENTER) == 3)
 	{
 		// シーンチェンジ
@@ -70,6 +78,7 @@ void sceneTitle::Render()
 	tdnView::Clear(0xff005522);
 
 	airou->Render();
+	button_mgr->Render();
 
 	tdnText::Draw(150, 0, 0xffffffff, "タイトル");
 }

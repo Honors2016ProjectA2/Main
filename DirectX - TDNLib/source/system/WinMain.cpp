@@ -1,7 +1,6 @@
 #include	"TDNLIB.h"
 #include	"Framework.h"
-#include	"../Scene/sceneMain.h"
-#include	"Scene\SceneTitle.h"
+#include	"../Scene/sceneTitle.h"
 #include	"System.h"
 #include	"../Sound/SoundManager.h"
 
@@ -38,7 +37,7 @@ BOOL InitApp(HINSTANCE hInstance, int nCmdShow)									// ƒQ[ƒ€‹N“®‚ÌÅ‰‚Ì
 	SYSTEM_Initialize();
 
 	MainFrame = new Framework();			 // ƒƒCƒ“ƒtƒŒ[ƒ€ƒ[ƒN¶¬
-	MainFrame->ChangeScene(new sceneMain()); // ‰ŠúƒV[ƒ“
+	MainFrame->ChangeScene(new sceneTitle()); // ‰ŠúƒV[ƒ“
 
 	return TRUE;
 }

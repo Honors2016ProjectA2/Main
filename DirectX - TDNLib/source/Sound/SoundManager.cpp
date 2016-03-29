@@ -33,7 +33,7 @@ const SE_Manager::DATA all_dataS[] =
 	{ "女ショックー",	"DATA/Sound/Voice/girl-shock.wav", 2, false },
 	{ "女うそー",		"DATA/Sound/Voice/girl-uso.wav", 2, false },
 
-	{ "END", nullptr }
+	//{ "END", nullptr }
 };
 
 
@@ -44,7 +44,8 @@ const BGM_Manager::DATA all_dataB[] =
 {
 	{ "EoE_A", "DATA/Sound/BGM/Collision_of_ElementsA.wav", false },
 	{ "EoE_B", "DATA/Sound/BGM/Collision_of_ElementsB.wav", false },
-	{ "END", nullptr }
+	
+	//{ "END", nullptr }
 };
 
 
@@ -104,9 +105,9 @@ void SE_Manager::Initialize()
 {
 	play_manager = new tdnSoundSE;
 
-	for (int i = 0;;i++)
+	for (int i = 0; i < _countof(all_dataS); i++)
 	{
-		if (strcmp(all_dataS[i].id, "END") == 0) break;	// 終端
+		//if (strcmp(all_dataS[i].id, "END") == 0) break;	// 終端
 
 		ID[all_dataS[i].id] = i;
 		play_manager->Set(i, all_dataS[i].play_simultaneously, all_dataS[i].file_name, all_dataS[i].b3D);
@@ -222,9 +223,9 @@ void BGM_Manager::Initialize()
 {
 	play_manager = new tdnSoundBGM;
 
-	for (int i = 0;;i++)
+	for (int i = 0; i < _countof(all_dataB); i++)
 	{
-		if (strcmp(all_dataB[i].id, "END") == 0) break;	// 終端
+		//if (strcmp(all_dataB[i].id, "END") == 0) break;	// 終端
 
 		ID[all_dataB[i].id] = i;
 		play_manager->Set(i, all_dataB[i].file_name, all_dataB[i].b3D);

@@ -107,6 +107,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\AI\Entity\BaseGameEntity.cpp" />
+    <ClCompile Include="source\AI\Entity\EntityManager.cpp" />
     <ClCompile Include="source\AI\Message\MessageDispatcher.cpp" />
     <ClCompile Include="source\AI\NPC\BasePerson\BasePerson.cpp" />
     <ClCompile Include="source\AI\NPC\BasePerson\BasePersonState.cpp" />
@@ -114,13 +116,13 @@
     <ClCompile Include="source\Animation\AnimationPanel.cpp" />
     <ClCompile Include="source\Animation\AnimationRipple.cpp" />
     <ClCompile Include="source\Animation\AnimationRippleEx.cpp" />
-    <ClCompile Include="source\AI\Entity\BaseGameEntity.cpp" />
-    <ClCompile Include="source\AI\Entity\EntityManager.cpp" />
-    <ClCompile Include="source\Animation\AnimationUV.cpp" />
     <ClCompile Include="source\GossipRipple\GossipRipple.cpp" />
     <ClCompile Include="source\GossipRipple\GossipRippleManager.cpp" />
+    <ClCompile Include="source\IconButton\IconButton.cpp" />
+    <ClCompile Include="source\Part\Part.cpp" />
     <ClCompile Include="source\Scene\SceneSelect.cpp" />
     <ClCompile Include="source\Scene\SceneTitle.cpp" />
+    <ClCompile Include="source\Stage\PersonLoader.cpp" />
     <ClCompile Include="TDN\IEX_3DObject.cpp" />
     <ClCompile Include="TDN\IEX_Mesh.cpp" />
     <ClCompile Include="TDN\IEX_SkinMesh.cpp" />
@@ -146,9 +148,11 @@
     <ClCompile Include="TDN\TDN_Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\AI\Entity\BaseGameEntity.h" />
     <ClInclude Include="source\AI\Entity\EntityEnum.h" />
-    <ClInclude Include="source\AI\Message\MessageDispatcher.h" />
+    <ClInclude Include="source\AI\Entity\EntityManager.h" />
     <ClInclude Include="source\AI\Message\Message.h" />
+    <ClInclude Include="source\AI\Message\MessageDispatcher.h" />
     <ClInclude Include="source\AI\NPC\BasePerson\BasePerson.h" />
     <ClInclude Include="source\AI\NPC\BasePerson\BasePersonState.h" />
     <ClInclude Include="source\AI\NPC\PersonManager.h" />
@@ -157,13 +161,13 @@
     <ClInclude Include="source\Animation\AnimationPanel.h" />
     <ClInclude Include="source\Animation\AnimationRipple.h" />
     <ClInclude Include="source\Animation\AnimationRippleEx.h" />
-    <ClInclude Include="source\AI\Entity\BaseGameEntity.h" />
-    <ClInclude Include="source\AI\Entity\EntityManager.h" />
-    <ClInclude Include="source\Animation\AnimationUV.h" />
     <ClInclude Include="source\GossipRipple\GossipRipple.h" />
     <ClInclude Include="source\GossipRipple\GossipRippleManager.h" />
+    <ClInclude Include="source\IconButton\IconButton.h" />
+    <ClInclude Include="source\Part\Part.h" />
     <ClInclude Include="source\Scene\SceneSelect.h" />
     <ClInclude Include="source\Scene\SceneTitle.h" />
+    <ClInclude Include="source\Stage\PersonLoader.h" />
     <ClInclude Include="TDN\ogg\codec.h" />
     <ClInclude Include="TDN\ogg\ogg.h" />
     <ClInclude Include="TDN\ogg\os_types.h" />
