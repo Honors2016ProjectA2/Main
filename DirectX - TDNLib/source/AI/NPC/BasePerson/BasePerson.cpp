@@ -22,7 +22,7 @@ BasePerson::BasePerson(ENTITY_ID id, PERSON_TYPE type) :BaseGameEntity(id)
 	{
 	case PERSON_TYPE::RED:	
 		// キャラクターのモデル
-		m_obj = new iex3DObj("DATA/CHR/airou_toire.IEM");
+		m_obj = new iex3DObj("DATA/Chara/jk.IEM");
 		// 波紋の色
 		m_Ripple = new GossipRipple(RIPPLE_TYPE::RED, m_pos);
 
@@ -33,7 +33,7 @@ BasePerson::BasePerson(ENTITY_ID id, PERSON_TYPE type) :BaseGameEntity(id)
 		break;
 	case PERSON_TYPE::BLUE:
 		// キャラクターのモデル
-		m_obj = new iex3DObj("DATA/CHR/nazenaraba_toire/nazenaraba_toire.IEM");
+		m_obj = new iex3DObj("DATA/Chara/dk.IEM");
 		// 波紋の色
 		m_Ripple = new GossipRipple(RIPPLE_TYPE::BLUE, m_pos);
 
@@ -43,7 +43,7 @@ BasePerson::BasePerson(ENTITY_ID id, PERSON_TYPE type) :BaseGameEntity(id)
 		break;
 	case PERSON_TYPE::RED_RUN:
 		// キャラクターのモデル
-		m_obj = new iex3DObj("DATA/CHR/airou_toire.IEM");
+		m_obj = new iex3DObj("DATA/Chara/jk.IEM");
 
 		// 波紋の色
 		m_Ripple = new GossipRipple(RIPPLE_TYPE::RED, m_pos);
@@ -54,7 +54,7 @@ BasePerson::BasePerson(ENTITY_ID id, PERSON_TYPE type) :BaseGameEntity(id)
 		break;
 	case PERSON_TYPE::BLUE_RUN:
 		// キャラクターのモデル
-		m_obj = new iex3DObj("DATA/CHR/nazenaraba_toire/nazenaraba_toire.IEM");
+		m_obj = new iex3DObj("DATA/Chara/dk.IEM");
 
 		// 波紋の色
 		m_Ripple = new GossipRipple(RIPPLE_TYPE::BLUE, m_pos);

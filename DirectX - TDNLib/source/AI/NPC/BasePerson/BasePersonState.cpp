@@ -159,7 +159,7 @@ void PersonShedWait::Enter(BasePerson *pPerson)
 	pPerson->GetRipple()->Action();
 
 	// (仮)噂を流す時にモーションを付ける事だって自由自在
-	pPerson->GetObj()->SetMotion(13);
+	pPerson->GetObj()->SetMotion(0);
 
 }
 

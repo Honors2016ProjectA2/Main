@@ -52,7 +52,7 @@ bool sceneSelect::Update()
 void sceneSelect::Render()
 {
 	tdnView::Activate();
-	tdnView::Clear(0xff005522);
+	tdnView::Clear(0xff0088aa);
 
 	m_pIconMgr->Render();
 	tdnText::Draw(0, 30, 0xff00ffff, "[%.1f] [%.1f]", tdnMouse::GetPos().x, tdnMouse::GetPos().y);
