@@ -129,6 +129,7 @@ void sceneMainGame::Execute(sceneMain *pMain)
 			pMain->SetMode(sceneMain::MODE::GAMECLEAR);
 			//pMain->GetButtonMgr()->SetEnDis((UINT)sceneMain::BUTTON_ID::YES, EN_DIS_TYPE::ENABLE);
 			//pMain->GetButtonMgr()->SetEnDis((UINT)sceneMain::BUTTON_ID::NO, EN_DIS_TYPE::ENABLE);
+			pMain->GetButtonMgr()->SetEnDis(2, EN_DIS_TYPE::DISABLE_BLACK);
 			pMain->GetFSM()->ChangeState(sceneMainGameClear::GetInstance());
 		}
 		else if (RippleCount == 0)
@@ -136,6 +137,7 @@ void sceneMainGame::Execute(sceneMain *pMain)
 			pMain->SetMode(sceneMain::MODE::GAMEOVER);
 			//pMain->GetButtonMgr()->SetEnDis((UINT)sceneMain::BUTTON_ID::YES, EN_DIS_TYPE::ENABLE);
 			//pMain->GetButtonMgr()->SetEnDis((UINT)sceneMain::BUTTON_ID::NO, EN_DIS_TYPE::ENABLE);
+			pMain->GetButtonMgr()->SetEnDis(2, EN_DIS_TYPE::DISABLE_BLACK);
 			pMain->GetFSM()->ChangeState(sceneMainGameOver::GetInstance());
 		}
 	}
