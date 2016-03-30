@@ -28,9 +28,6 @@ int Stage::LoadPerson()
 
 	while (!ifs.eof())
 	{
-		//ifs >> skip;
-		//ifs >> skip;
-
 		int type;
 		Vector3 pos;
 		ifs >> type;

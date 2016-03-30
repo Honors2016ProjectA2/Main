@@ -1,4 +1,34 @@
 #pragma once
+
+enum class HUKIDASHI_TYPE
+{
+	ORIGIN,		// 最初の流す人
+	SUCCESS,	// 成功
+	FAILED,		// 失敗
+};
+
+class Hukidashi
+{
+public:
+	Hukidashi(tdn2DObj *lpImage, const Vector2 &srcXY, int AppTime, const Vector3 &pos) :m_pImage(lpImage), m_SrcXY(srcXY), m_AppTime(AppTime), m_pos(pos) {}
+	void Update(){ m_AppTime--; }
+	void Render();
+
+	bool EraseOK(){ return (m_AppTime <= 0); }
+
+	static const int DEFAULT_APP_TIME = 120;
+
+private:
+	tdn2DObj *m_pImage;		// 画像の実体(参照するだけなのでデリートはしない)
+	Vector2 m_SrcXY;		// 画像取得座標(1枚の画像に複数の吹き出しがあるため)
+	int m_AppTime;			// 出現時間
+	Vector3 m_pos;			// 座標
+	Hukidashi();
+};
+
+
+
+
 //*****************************************************************************************************************************
 //
 //		UIクラス(Singleton)
@@ -18,6 +48,9 @@ public:
 	void Update();
 	void Render();
 
+	// 吹き出しのセット
+	void PushHukidashi(const Vector3 &pos, HUKIDASHI_TYPE success);
+
 private:
 
 	// 静的実体
@@ -36,6 +69,9 @@ private:
 
 	// UIの情報を格納しているリスト
 	std::vector<UIData*> m_Datas;
+
+	// 吹き出しの情報を格納しているリスト
+	std::list<Hukidashi*> m_HukidashiList;
 
 	// DATA/Text/UI/main.txtのIDと結びつける。m_Datas[UI_ID::NOKORI]->lpImage->Render()　と使う
 	enum UI_ID

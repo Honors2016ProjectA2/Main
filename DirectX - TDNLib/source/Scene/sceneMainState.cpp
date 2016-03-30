@@ -7,7 +7,7 @@
 #include "../Stage/Stage.h"
 #include "sceneMainState.h"
 #include "../IconButton/IconButton.h"
-
+#include "../UI/UI.h"
 
 // sceneMainのグローバル変数から
 extern int RippleCount;
@@ -97,14 +97,18 @@ void sceneMainGame::Execute(sceneMain *pMain)
 	{
 		FOR(PersonMgr.GetPersonSize())
 		{
-			if ((Math::WorldToScreen(PersonMgr.GetPerson(i)->GetPos()) - tdnMouse::GetPos()).Length() < 50 && PersonMgr.GetPerson(i)->IsShed() == false)
+			if (!PersonMgr.GetPerson(i)->IsShed() && (Math::WorldToScreen(PersonMgr.GetPerson(i)->GetPos()) - tdnMouse::GetPos()).Length() < 50)
 			{
 				RippleCount--;
 
 				// 噂連鎖が止まるまで使えなくする
 				RippleOK = false;
 
+				// セット
 				PersonMgr.GetPerson(i)->ActionGossipRipple();
+
+				// UIの吹き出し
+				UIMgr.PushHukidashi(PersonMgr.GetPerson(i)->GetPos(), HUKIDASHI_TYPE::ORIGIN);
 			}
 		}
 		//PersonMgr.GetPerson(0)->ActionGossipRipple();

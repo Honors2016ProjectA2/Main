@@ -3,7 +3,7 @@
 
 //@‚Ð‚Æ‚ÌŽí—Þ
 #include "AI\NPC\BasePerson\BasePerson.h"
-
+#include "../../UI/UI.h"
 
 
 // éŒ¾
@@ -166,8 +166,8 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ©”g–ä
 	}
 
 	// “ñlˆÈã‚È‚ç‚±‚È‚Ý
-	if (count2 >= 2)
-	{
+	//if (count2 >= 2)
+	//{
 		for (int b = 0; b < (int)m_PersonData.size(); b++)
 		{
 
@@ -178,15 +178,26 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ©”g–ä
 				Math::Length(pRipData->pos, m_PersonData[b]->GetPos());
 			if (ren <= pRipData->size)// 30mˆÈ“à‚Él‚ª‘¶Ý‚·‚é‚Æ
 			{
-				// ‹ß‚­‚É‚¢‚½l‚Í”g–ä‚ð”ò‚Î‚·
-				m_PersonData[b]->ActionGossipRipple();
+				// “ñlˆÈã‚È‚ç‚±‚È‚Ý
+				if (count2 >= 2)
+				{
+					// ‹ß‚­‚É‚¢‚½l‚Í”g–ä‚ð”ò‚Î‚·
+					m_PersonData[b]->ActionGossipRipple();
 
-				count++;
+					// ¬Œ÷Žž‚Ì‚«o‚µ
+					UIMgr.PushHukidashi(m_PersonData[b]->GetPos(), HUKIDASHI_TYPE::SUCCESS);
+					count++;
+				}
+				else
+				{
+					// Ž¸”sŽž‚Ì‚«o‚µ
+					UIMgr.PushHukidashi(m_PersonData[b]->GetPos(), HUKIDASHI_TYPE::FAILED);
+				}
 			}
 
 		}
 
-	}
+	//}
 
 	if (count == 0)
 	{
