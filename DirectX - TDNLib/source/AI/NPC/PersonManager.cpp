@@ -150,18 +150,40 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 {
 	// 対象
 	int count(0);
+	int count2(0);
+
+	// 何人当たっているか
 	for (int b = 0; b < (int)m_PersonData.size(); b++)
 	{
-
 		if (m_PersonData[b]->IsShed() == true)continue;// 噂を立てたやつは反応しない
+		if (m_PersonData[b]->GetPersonType() == pRipData->type) continue;// 同じタイプはバイバイ
 
-		float ren =
-			Math::Length(pRipData->pos, m_PersonData[b]->GetPos());
+		float ren = Math::Length(pRipData->pos, m_PersonData[b]->GetPos());
 		if (ren <= pRipData->size)// 30m以内に人が存在すると
 		{
-			// 近くにいた人は波紋を飛ばす
-			m_PersonData[b]->ActionGossipRipple();
-			count++;
+			count2++;// (仮)
+		}
+	}
+
+	// 二人以上ならこなみ
+	if (count2 >= 2)
+	{
+		for (int b = 0; b < (int)m_PersonData.size(); b++)
+		{
+
+			if (m_PersonData[b]->IsShed() == true)continue;// 噂を立てたやつは反応しない
+			//if (m_PersonData[b]->GetPersonType() == pRipData->type) continue;// 同じタイプはバイバイ
+
+			float ren =
+				Math::Length(pRipData->pos, m_PersonData[b]->GetPos());
+			if (ren <= pRipData->size)// 30m以内に人が存在すると
+			{
+				// 近くにいた人は波紋を飛ばす
+				m_PersonData[b]->ActionGossipRipple();
+
+				count++;
+			}
+
 		}
 
 	}

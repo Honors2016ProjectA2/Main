@@ -87,6 +87,12 @@ void PersonWait::Execute(BasePerson *pPerson)
 	//{
 
 	//}
+
+	// m_isShed = true になったら流した場所へ行く
+	if (pPerson->IsShed() == true)
+	{
+		pPerson->GetFSM()->ChangeState(PersonShedWait::GetInstance());
+	}
 }
 
 // 出口
@@ -139,7 +145,7 @@ PersonShedWait* PersonShedWait::GetInstance()
 void PersonShedWait::Enter(BasePerson *pPerson)
 {
 	// 流したフラグＯＮ!
-	pPerson->SetIsShed(true);
+	//pPerson->SetIsShed(true);
 	pPerson->GetRipple()->Action();
 
 	// (仮)噂を流す時にモーションを付ける事だって自由自在
@@ -215,7 +221,7 @@ void PersonEndWait::Enter(BasePerson *pPerson)
 // 実行中
 void PersonEndWait::Execute(BasePerson *pPerson)
 {
-	
+
 }
 
 // 出口
@@ -230,3 +236,224 @@ bool PersonEndWait::OnMessage(BasePerson *pPerson, const Message &msg)
 	return false;
 }
 
+
+
+/***************************************/
+//	走る
+/***************************************/
+
+PersonRun* PersonRun::GetInstance()
+{
+	// ここに変数を作る
+	static PersonRun instance;
+	return &instance;
+}
+
+// 入り口
+void PersonRun::Enter(BasePerson *pPerson)
+{
+
+	pPerson->m_orgPos = pPerson->GetPos();
+	pPerson->m_len = 30;
+	pPerson->m_trunPos = pPerson->m_orgPos + Vector3(pPerson->m_len, 0, 0);
+	pPerson->m_trunFlag = false;
+
+	// (仮)噂を流す時にモーションを付ける事だって自由自在
+	pPerson->GetObj()->SetMotion(0);
+}
+
+// 実行中
+void PersonRun::Execute(BasePerson *pPerson)
+{
+	// ターンフラグ
+	if (pPerson->m_trunFlag == true)
+	{
+		pPerson->SetMove(Vector3(-0.5f,0,0));
+		// その距離以下なら
+		if (pPerson->m_orgPos.x >= pPerson->GetPos().x)
+		{
+			pPerson->m_trunFlag = false;
+		}
+	}
+	else
+	{
+		pPerson->SetMove(Vector3(+0.5f, 0, 0));
+		// その距離以下なら
+		if (pPerson->m_trunPos.x <= pPerson->GetPos().x)
+		{
+			pPerson->m_trunFlag = true;
+		}
+	}
+
+
+
+
+	// m_isShed = true になったら流した場所へ行く
+	if (pPerson->IsShed() == true)
+	{
+		pPerson->GetFSM()->ChangeState(PersonShedRun::GetInstance());
+	}
+}
+
+// 出口
+void PersonRun::Exit(BasePerson *pPerson)
+{
+
+}
+
+bool PersonRun::OnMessage(BasePerson *pPerson, const Message &msg)
+{
+	// Flaseで返すとグローバルステートのOnMessageの処理へ行く
+	return false;
+}
+
+
+
+/***************************************/
+//	流してる時の走っている状態
+/***************************************/
+
+PersonShedRun* PersonShedRun::GetInstance()
+{
+	// ここに変数を作る
+	static PersonShedRun instance;
+	return &instance;
+}
+
+// 入り口
+void PersonShedRun::Enter(BasePerson *pPerson)
+{
+	// 流したフラグＯＮ!
+	//pPerson->SetIsShed(true);
+	pPerson->GetRipple()->Action();
+
+	// (仮)噂を流す時にモーションを付ける事だって自由自在
+	pPerson->GetObj()->SetMotion(13);
+
+}
+
+// 実行中
+void PersonShedRun::Execute(BasePerson *pPerson)
+{
+
+	// 波紋
+	pPerson->GetRipple()->SetPos(pPerson->GetPos());// 常にプレイヤー追従
+	pPerson->GetRipple()->Update();
+
+
+	// ターンフラグ
+	if (pPerson->m_trunFlag == true)
+	{
+		pPerson->SetMove(Vector3(-0.5f, 0, 0));
+		// その距離以下なら
+		if (pPerson->m_orgPos.x >= pPerson->GetPos().x)
+		{
+			pPerson->m_trunFlag = false;
+		}
+	}
+	else
+	{
+		pPerson->SetMove(Vector3(+0.5f, 0, 0));
+		// その距離以下なら
+		if (pPerson->m_trunPos.x <= pPerson->GetPos().x)
+		{
+			pPerson->m_trunFlag = true;
+		}
+	}
+
+
+
+	// 波紋が出終わったら
+	if (pPerson->GetRipple()->IsEnd() == true)
+	{
+		// 終わる
+		pPerson->GetFSM()->ChangeState(PersonEndRun::GetInstance());
+	}
+
+}
+
+// 出口
+void PersonShedRun::Exit(BasePerson *pPerson)
+{
+	// 人マネージャーにMSG送信
+	/*
+	[内容]波紋内にいたやつ全員
+	噂を流すステートへ
+	*/
+
+	RIPPLE_INFO ex;
+	ex.type = pPerson->GetPersonType();
+	ex.pos = pPerson->GetPos();
+	ex.size = 30;// (仮)　手打ちでサイズ指定
+
+	MsgMgr->Dispatch(
+		MSG_NO_DELAY,
+		pPerson->GetID(),
+		ENTITY_ID::PERSON_MNG,
+		RIPPLE_VS_PERSON,
+		(void*)&ex	// [追記情報]自分のタイプを送る
+		);
+
+}
+
+bool PersonShedRun::OnMessage(BasePerson *pPerson, const Message &msg)
+{
+	// Flaseで返すとグローバルステートのOnMessageの処理へ行く
+	return false;
+}
+
+
+
+/***************************************/
+//	流した後の待機
+/***************************************/
+
+PersonEndRun* PersonEndRun::GetInstance()
+{
+	// ここに変数を作る
+	static PersonEndRun instance;
+	return &instance;
+}
+
+// 入り口
+void PersonEndRun::Enter(BasePerson *pPerson)
+{
+	// (仮)噂を流す時にモーションを付ける事だって自由自在
+	pPerson->GetObj()->SetMotion(0);
+}
+
+// 実行中
+void PersonEndRun::Execute(BasePerson *pPerson)
+{
+	// ターンフラグ
+	if (pPerson->m_trunFlag == true)
+	{
+		pPerson->SetMove(Vector3(-0.5f, 0, 0));
+		// その距離以下なら
+		if (pPerson->m_orgPos.x >= pPerson->GetPos().x)
+		{
+			pPerson->m_trunFlag = false;
+		}
+	}
+	else
+	{
+		pPerson->SetMove(Vector3(+0.5f, 0, 0));
+		// その距離以下なら
+		if (pPerson->m_trunPos.x <= pPerson->GetPos().x)
+		{
+			pPerson->m_trunFlag = true;
+		}
+	}
+}
+
+// 出口
+void PersonEndRun::Exit(BasePerson *pPerson)
+{
+
+}
+
+bool PersonEndRun::OnMessage(BasePerson *pPerson, const Message &msg)
+{
+	// Flaseで返すとグローバルステートのOnMessageの処理へ行く
+	return false;
+}

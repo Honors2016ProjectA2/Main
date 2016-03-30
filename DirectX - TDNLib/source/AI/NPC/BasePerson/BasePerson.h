@@ -47,6 +47,9 @@ public:
 	Vector3 GetPos() { return m_pos; }
 	void SetPos(Vector3 pos) { m_pos = pos; }
 
+	Vector3 GetMove() { return m_move; }
+	void SetMove(Vector3 move) { m_move = move; }
+
 	float GetAngle() { return m_angle; }
 	void SetAngle(float angle) { m_angle = angle; }
 
@@ -59,12 +62,20 @@ public:
 	
 	iex3DObj* GetObj() { return m_obj; }
 
+	// ç°ÇÕíºÇ…
+	Vector3 m_orgPos;
+	Vector3 m_trunPos;
+	float m_len;
+	bool m_trunFlag;
+
 private:
 
 	PERSON_TYPE m_PersonType;
 
 	iex3DObj* m_obj;
 	Vector3 m_pos;
+	Vector3 m_move;
+
 	float m_angle;
 
 	bool m_isShed;	// ~ÇÕâ\Çó¨ÇµÇΩÇ©

@@ -36,7 +36,7 @@ BasePerson::BasePerson(ENTITY_ID id, PERSON_TYPE type) :BaseGameEntity(id)
 		m_Ripple = new GossipRipple(RIPPLE_TYPE::BLUE, m_pos);
 
 		//(TODO) ステートマシンの設定をここでする。（歩く人・立ち止まる人）
-
+		m_pStateMachine->SetCurrentState(PersonRun::GetInstance());
 		break;
 	default:
 		MyAssert(0, "そんな人物は存在しない");
@@ -44,6 +44,8 @@ BasePerson::BasePerson(ENTITY_ID id, PERSON_TYPE type) :BaseGameEntity(id)
 	}
 
 	m_pos = VECTOR_ZERO;
+	m_move = VECTOR_ZERO;
+
 	m_angle = 0.0f;
 
 
@@ -68,6 +70,25 @@ void BasePerson::Update()
 	// ★ステートマシン更新
 	m_pStateMachine->Update();
 
+	// Move更新
+	m_pos += m_move;
+
+	//if (m_move.x >= 0.3f)
+	//{
+	//	m_move.x -= 0.1f;
+	//}
+	//if (m_move.x <= 0.3f)
+	//{
+	//	m_move.x += 0.1f;
+	//}
+	//if (m_move.z >= 0.3f)
+	//{
+	//	m_move.z -= 0.1f;
+	//}
+	//if (m_move.z >= 0.3f)
+	//{
+	//	m_move.z += 0.1f;
+	//}
 
 	// 場所更新
 	m_obj->SetPos(m_pos);
@@ -92,11 +113,11 @@ bool BasePerson::HandleMessage(const Message & msg)
 void BasePerson::ActionGossipRipple()
 {
 	// 流したフラグＯＮ
-	//m_isShed = true;
+	m_isShed = true;
 	//m_Ripple->Action();
 	
 	// 流し中のステートへ
-	m_pStateMachine->ChangeState(PersonShedWait::GetInstance());
+	//m_pStateMachine->ChangeState(PersonShedWait::GetInstance());
 }
 
 
