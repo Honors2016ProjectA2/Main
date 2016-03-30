@@ -27,6 +27,8 @@ BasePerson::BasePerson(ENTITY_ID id, PERSON_TYPE type) :BaseGameEntity(id)
 		m_Ripple = new GossipRipple(RIPPLE_TYPE::RED, m_pos);
 
 		//(TODO) ステートマシンの設定をここでする。（歩く人・立ち止まる人）
+		m_pStateMachine->SetCurrentState(PersonWait::GetInstance());
+
 
 		break;
 	case PERSON_TYPE::BLUE:
@@ -36,8 +38,31 @@ BasePerson::BasePerson(ENTITY_ID id, PERSON_TYPE type) :BaseGameEntity(id)
 		m_Ripple = new GossipRipple(RIPPLE_TYPE::BLUE, m_pos);
 
 		//(TODO) ステートマシンの設定をここでする。（歩く人・立ち止まる人）
+		m_pStateMachine->SetCurrentState(PersonWait::GetInstance());
+
+		break;
+	case PERSON_TYPE::RED_RUN:
+		// キャラクターのモデル
+		m_obj = new iex3DObj("DATA/CHR/airou_toire.IEM");
+
+		// 波紋の色
+		m_Ripple = new GossipRipple(RIPPLE_TYPE::RED, m_pos);
+
+		//(TODO) ステートマシンの設定をここでする。（歩く人・立ち止まる人）
+		m_pStateMachine->SetCurrentState(PersonRun::GetInstance());
+
+		break;
+	case PERSON_TYPE::BLUE_RUN:
+		// キャラクターのモデル
+		m_obj = new iex3DObj("DATA/CHR/nazenaraba_toire/nazenaraba_toire.IEM");
+
+		// 波紋の色
+		m_Ripple = new GossipRipple(RIPPLE_TYPE::BLUE, m_pos);
+
+		//(TODO) ステートマシンの設定をここでする。（歩く人・立ち止まる人）
 		m_pStateMachine->SetCurrentState(PersonRun::GetInstance());
 		break;
+
 	default:
 		MyAssert(0, "そんな人物は存在しない");
 		break;

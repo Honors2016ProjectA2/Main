@@ -17,7 +17,9 @@ template <class entity_type> class StateMachine;
 enum class PERSON_TYPE
 {
 	RED,
-	BLUE
+	BLUE,
+	RED_RUN,
+	BLUE_RUN
 };
 
 
@@ -32,8 +34,10 @@ public:
 
 	// BaseGameEntityの純粋仮想関数により必須
 	virtual void  Update();
-	//
-	virtual void Render();
+	
+	// 
+	virtual void  Render();
+	
 	// メッセージを取り扱う
 	virtual bool  HandleMessage(const Message& msg);
 

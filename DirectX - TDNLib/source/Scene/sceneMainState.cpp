@@ -97,7 +97,7 @@ void sceneMainGame::Execute(sceneMain *pMain)
 	{
 		FOR(PersonMgr.GetPersonSize())
 		{
-			if ((Math::WorldToScreen(PersonMgr.GetPerson(i)->GetPos()) - tdnMouse::GetPos()).Length() < 50)
+			if ((Math::WorldToScreen(PersonMgr.GetPerson(i)->GetPos()) - tdnMouse::GetPos()).Length() < 50 && PersonMgr.GetPerson(i)->IsShed() == false)
 			{
 				RippleCount--;
 
