@@ -32,6 +32,11 @@ void PersonGlobalState::Exit(BasePerson *pPerson)
 
 }
 
+void PersonGlobalState::Render(BasePerson * pPerson)
+{
+	
+}
+
 //
 bool PersonGlobalState::OnMessage(BasePerson *pPerson, const Message &msg)
 {
@@ -99,6 +104,11 @@ void PersonWait::Execute(BasePerson *pPerson)
 void PersonWait::Exit(BasePerson *pPerson)
 {
 
+}
+
+void PersonWait::Render(BasePerson * pPerson)
+{
+	pPerson->GetObj()->Render(shader, "copy");
 }
 
 bool PersonWait::OnMessage(BasePerson *pPerson, const Message &msg)
@@ -193,6 +203,11 @@ void PersonShedWait::Exit(BasePerson *pPerson)
 
 }
 
+void PersonShedWait::Render(BasePerson * pPerson)
+{
+	pPerson->GetObj()->Render(shader, "copy");
+}
+
 bool PersonShedWait::OnMessage(BasePerson *pPerson, const Message &msg)
 {
 	// Flaseで返すとグローバルステートのOnMessageの処理へ行く
@@ -230,6 +245,11 @@ void PersonEndWait::Exit(BasePerson *pPerson)
 
 }
 
+void PersonEndWait::Render(BasePerson * pPerson)
+{
+	pPerson->GetObj()->Render(shader, "shed");
+}
+
 bool PersonEndWait::OnMessage(BasePerson *pPerson, const Message &msg)
 {
 	// Flaseで返すとグローバルステートのOnMessageの処理へ行く
@@ -259,7 +279,7 @@ void PersonRun::Enter(BasePerson *pPerson)
 	pPerson->m_trunFlag = false;
 
 	// (仮)噂を流す時にモーションを付ける事だって自由自在
-	pPerson->GetObj()->SetMotion(0);
+	pPerson->GetObj()->SetMotion(1);
 }
 
 // 実行中
@@ -268,7 +288,8 @@ void PersonRun::Execute(BasePerson *pPerson)
 	// ターンフラグ
 	if (pPerson->m_trunFlag == true)
 	{
-		pPerson->SetMove(Vector3(-0.5f,0,0));
+		pPerson->SetAngle(-PI / 2);
+		pPerson->SetMove(Vector3(-0.25f,0,0));
 		// その距離以下なら
 		if (pPerson->m_orgPos.x >= pPerson->GetPos().x)
 		{
@@ -277,7 +298,8 @@ void PersonRun::Execute(BasePerson *pPerson)
 	}
 	else
 	{
-		pPerson->SetMove(Vector3(+0.5f, 0, 0));
+		pPerson->SetAngle(PI / 2);
+		pPerson->SetMove(Vector3(+0.25f, 0, 0));
 		// その距離以下なら
 		if (pPerson->m_trunPos.x <= pPerson->GetPos().x)
 		{
@@ -299,6 +321,11 @@ void PersonRun::Execute(BasePerson *pPerson)
 void PersonRun::Exit(BasePerson *pPerson)
 {
 
+}
+
+void PersonRun::Render(BasePerson * pPerson)
+{
+	pPerson->GetObj()->Render(shader, "copy");
 }
 
 bool PersonRun::OnMessage(BasePerson *pPerson, const Message &msg)
@@ -328,7 +355,7 @@ void PersonShedRun::Enter(BasePerson *pPerson)
 	pPerson->GetRipple()->Action();
 
 	// (仮)噂を流す時にモーションを付ける事だって自由自在
-	pPerson->GetObj()->SetMotion(13);
+	pPerson->GetObj()->SetMotion(1);
 
 }
 
@@ -344,7 +371,8 @@ void PersonShedRun::Execute(BasePerson *pPerson)
 	// ターンフラグ
 	if (pPerson->m_trunFlag == true)
 	{
-		pPerson->SetMove(Vector3(-0.5f, 0, 0));
+		pPerson->SetAngle(-PI / 2);
+		pPerson->SetMove(Vector3(-0.25f, 0, 0));
 		// その距離以下なら
 		if (pPerson->m_orgPos.x >= pPerson->GetPos().x)
 		{
@@ -353,7 +381,8 @@ void PersonShedRun::Execute(BasePerson *pPerson)
 	}
 	else
 	{
-		pPerson->SetMove(Vector3(+0.5f, 0, 0));
+		pPerson->SetAngle(PI / 2);
+		pPerson->SetMove(Vector3(+0.25f, 0, 0));
 		// その距離以下なら
 		if (pPerson->m_trunPos.x <= pPerson->GetPos().x)
 		{
@@ -396,6 +425,11 @@ void PersonShedRun::Exit(BasePerson *pPerson)
 
 }
 
+void PersonShedRun::Render(BasePerson * pPerson)
+{
+	pPerson->GetObj()->Render(shader, "copy");
+}
+
 bool PersonShedRun::OnMessage(BasePerson *pPerson, const Message &msg)
 {
 	// Flaseで返すとグローバルステートのOnMessageの処理へ行く
@@ -419,7 +453,7 @@ PersonEndRun* PersonEndRun::GetInstance()
 void PersonEndRun::Enter(BasePerson *pPerson)
 {
 	// (仮)噂を流す時にモーションを付ける事だって自由自在
-	pPerson->GetObj()->SetMotion(0);
+	pPerson->GetObj()->SetMotion(1);
 }
 
 // 実行中
@@ -428,7 +462,8 @@ void PersonEndRun::Execute(BasePerson *pPerson)
 	// ターンフラグ
 	if (pPerson->m_trunFlag == true)
 	{
-		pPerson->SetMove(Vector3(-0.5f, 0, 0));
+		pPerson->SetAngle(-PI / 2);
+		pPerson->SetMove(Vector3(-0.25f, 0, 0));
 		// その距離以下なら
 		if (pPerson->m_orgPos.x >= pPerson->GetPos().x)
 		{
@@ -437,7 +472,8 @@ void PersonEndRun::Execute(BasePerson *pPerson)
 	}
 	else
 	{
-		pPerson->SetMove(Vector3(+0.5f, 0, 0));
+		pPerson->SetAngle(PI / 2);
+		pPerson->SetMove(Vector3(+0.25f, 0, 0));
 		// その距離以下なら
 		if (pPerson->m_trunPos.x <= pPerson->GetPos().x)
 		{
@@ -450,6 +486,11 @@ void PersonEndRun::Execute(BasePerson *pPerson)
 void PersonEndRun::Exit(BasePerson *pPerson)
 {
 
+}
+
+void PersonEndRun::Render(BasePerson * pPerson)
+{
+	pPerson->GetObj()->Render(shader, "shed");
 }
 
 bool PersonEndRun::OnMessage(BasePerson *pPerson, const Message &msg)

@@ -29,6 +29,9 @@ public:
 	virtual void Exit(entity_type*) = 0;
 
 	
+	// [追加]描画
+	virtual void Render(entity_type*) = 0;
+
 	/*
 		BaseGameEntityのステートがメッセージを受け取り
 		処理を選択できるように修正する必要がある

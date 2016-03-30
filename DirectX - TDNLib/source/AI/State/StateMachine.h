@@ -61,6 +61,17 @@ public:
 		if (m_pCurrentState) m_pCurrentState->Execute(m_pOwner);
 	}
 
+	// FSMによる描画
+	void  Render()const
+	{
+		// グローバルステートがあるなら、実行
+		if (m_pGlobalState)   m_pGlobalState->Render(m_pOwner);
+
+		//　現在のステートの実行関数
+		if (m_pCurrentState) m_pCurrentState->Render(m_pOwner);
+	}
+
+
 	// ★メッセージ
 	bool  HandleMessage(const Message& msg)const
 	{

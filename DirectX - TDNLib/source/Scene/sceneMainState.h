@@ -24,6 +24,9 @@ public:
 	// 帰る
 	virtual void Exit(sceneMain* pMain);
 
+	// 描画
+	virtual void Render(sceneMain* pMain);
+
 	// エージェントからのメッセージを受信した場合、これが実行される
 	virtual bool OnMessage(sceneMain* pMain, const Message& msg);
 
@@ -52,6 +55,9 @@ public:
 
 	// 帰る
 	virtual void Exit(sceneMain* pMain);
+
+	// 描画
+	virtual void Render(sceneMain* pMain);
 
 	// エージェントからのメッセージを受信した場合、これが実行される
 	virtual bool OnMessage(sceneMain* pMain, const Message& msg);
@@ -85,6 +91,9 @@ public:
 	// 帰る
 	virtual void Exit(sceneMain* pMain);
 
+	// 描画
+	virtual void Render(sceneMain* pMain);
+
 	// エージェントからのメッセージを受信した場合、これが実行される
 	virtual bool OnMessage(sceneMain* pMain, const Message& msg);
 
@@ -112,6 +121,9 @@ public:
 
 	// 帰る
 	virtual void Exit(sceneMain* pMain);
+
+	// 描画
+	virtual void Render(sceneMain* pMain);
 
 	// エージェントからのメッセージを受信した場合、これが実行される
 	virtual bool OnMessage(sceneMain* pMain, const Message& msg);

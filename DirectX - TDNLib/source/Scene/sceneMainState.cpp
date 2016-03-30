@@ -45,6 +45,10 @@ void sceneMainGlobalState::Exit(sceneMain *pMain)
 
 }
 
+void sceneMainGlobalState::Render(sceneMain * pMain)
+{
+}
+
 //
 bool sceneMainGlobalState::OnMessage(sceneMain *pMain, const Message &msg)
 {
@@ -148,6 +152,10 @@ void sceneMainGame::Exit(sceneMain *pMain)
 
 }
 
+void sceneMainGame::Render(sceneMain * pMain)
+{
+}
+
 bool sceneMainGame::OnMessage(sceneMain *pMain, const Message &msg)
 {
 	// o‚Ä‚¢‚¯I
@@ -181,6 +189,10 @@ void sceneMainGameClear::Execute(sceneMain *pMain)
 void sceneMainGameClear::Exit(sceneMain *pMain)
 {
 
+}
+
+void sceneMainGameClear::Render(sceneMain * pMain)
+{
 }
 
 bool sceneMainGameClear::OnMessage(sceneMain *pMain, const Message &msg)
@@ -217,6 +229,10 @@ void sceneMainGameOver::Execute(sceneMain *pMain)
 void sceneMainGameOver::Exit(sceneMain *pMain)
 {
 
+}
+
+void sceneMainGameOver::Render(sceneMain * pMain)
+{
 }
 
 bool sceneMainGameOver::OnMessage(sceneMain *pMain, const Message &msg)

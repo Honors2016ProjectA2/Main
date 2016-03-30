@@ -98,22 +98,27 @@ void BasePerson::Update()
 	// Move更新
 	m_pos += m_move;
 
-	//if (m_move.x >= 0.3f)
-	//{
-	//	m_move.x -= 0.1f;
-	//}
-	//if (m_move.x <= 0.3f)
-	//{
-	//	m_move.x += 0.1f;
-	//}
-	//if (m_move.z >= 0.3f)
-	//{
-	//	m_move.z -= 0.1f;
-	//}
-	//if (m_move.z >= 0.3f)
-	//{
-	//	m_move.z += 0.1f;
-	//}
+	// 摩擦
+	if (m_move.z > 0.0f)
+	{
+		m_move.z -= 0.1f;
+		if (m_move.z < 0.1f)m_move.z = 0.0f;
+	}
+	if (m_move.z < 0.0f)
+	{
+		m_move.z += 0.1f;
+		if (m_move.z > 0.1f)m_move.z = 0.0f;
+	}
+	if (m_move.x > 0.0f)
+	{
+		m_move.x -= 0.1f;
+		if (m_move.x < 0.1f)m_move.x = 0.0f;
+	}
+	if (m_move.x < 0.0f)
+	{
+		m_move.x += 0.1f;
+		if (m_move.x > 0.1f)m_move.x = 0.0f;
+	}
 
 	// 場所更新
 	m_obj->SetPos(m_pos);
@@ -126,7 +131,8 @@ void BasePerson::Render()
 {
 	m_Ripple->Render();	// 波紋描画
 	//m_obj->Render();
-	m_obj->Render(shader, "copy");
+	//m_obj->Render(shader, "copy");
+	m_pStateMachine->Render();
 }
 
 // ステートマシンのメッセージ
