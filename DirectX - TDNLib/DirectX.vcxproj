@@ -120,10 +120,11 @@
     <ClCompile Include="source\GossipRipple\GossipRipple.cpp" />
     <ClCompile Include="source\GossipRipple\GossipRippleManager.cpp" />
     <ClCompile Include="source\IconButton\IconButton.cpp" />
-    <ClCompile Include="source\Part\Part.cpp" />
+    <ClCompile Include="source\Scene\sceneMainState.cpp" />
     <ClCompile Include="source\Scene\SceneSelect.cpp" />
     <ClCompile Include="source\Scene\SceneTitle.cpp" />
     <ClCompile Include="source\Stage\Stage.cpp" />
+    <ClCompile Include="source\UI\UI.cpp" />
     <ClCompile Include="TDN\IEX_3DObject.cpp" />
     <ClCompile Include="TDN\IEX_Mesh.cpp" />
     <ClCompile Include="TDN\IEX_SkinMesh.cpp" />
@@ -166,10 +167,11 @@
     <ClInclude Include="source\GossipRipple\GossipRipple.h" />
     <ClInclude Include="source\GossipRipple\GossipRippleManager.h" />
     <ClInclude Include="source\IconButton\IconButton.h" />
-    <ClInclude Include="source\Part\Part.h" />
+    <ClInclude Include="source\Scene\sceneMainState.h" />
     <ClInclude Include="source\Scene\SceneSelect.h" />
     <ClInclude Include="source\Scene\SceneTitle.h" />
     <ClInclude Include="source\Stage\Stage.h" />
+    <ClInclude Include="source\UI\UI.h" />
     <ClInclude Include="TDN\ogg\codec.h" />
     <ClInclude Include="TDN\ogg\ogg.h" />
     <ClInclude Include="TDN\ogg\os_types.h" />

@@ -1,0 +1,30 @@
+
+//残り
+ID: 0
+画像ファイルパス: DATA/UI/nokori.png
+座標: 0 0
+
+//残り回数の数字
+ID: 1
+画像ファイルパス: DATA/UI/number.png
+座標: 200 0
+
+//！マーク
+ID: 2
+画像ファイルパス: DATA/UI/bikkuri.png
+座標: 320 320
+
+//自分の吹き出し
+ID: 3
+画像ファイルパス: DATA/UI/hukidashi_self.png
+座標: 320 320
+
+//正解吹き出し
+ID: 4
+画像ファイルパス: DATA/UI/hukidashi_correct.png
+座標: 320 320
+
+//不正解
+ID: 5
+画像ファイルパス: DATA/UI/hukidashi_incorrect.png
+座標: 320 320

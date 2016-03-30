@@ -9,7 +9,7 @@
 enum class EN_DIS_TYPE
 {
 	ENABLE,				// 稼働中だよ
-	DISABLE_BLACK,		// 使えない敵なメッセージ
+	DISABLE_BLACK,		// 使えない的なメッセージ
 	DISABLE_WHITE,		// 何か選択中的なメッセージ
 	DISABLE_VANISH		// 消える
 };
@@ -35,7 +35,9 @@ public:
 	void SetEnable(EN_DIS_TYPE type)
 	{
 		m_EnDisType = type;
-		m_In = false;
+
+		// 無効化するときはm_In(カーソルが範囲内に入っているかのフラグ)をOFFにする
+		if(type != EN_DIS_TYPE::ENABLE) m_In = false;
 	}
 	bool isIn(){ return m_In; }
 	int GetID(){ return m_ID; }
@@ -123,7 +125,8 @@ public:
 	// 範囲内であれば、その画像をプッシュしたときに返ってきた数値が返ってくる。何も範囲内でなければ
 	int GetInButtonNo();
 
-	void SetEnDis(UINT ID, EN_DIS_TYPE type);	// Enable,Disable。ボタンの有効化と無効化
+	// Enable,Disable。ボタンの有効化と無効化
+	void SetEnDis(UINT ID, EN_DIS_TYPE type);
 
 	// リスト消去
 	void Clear();

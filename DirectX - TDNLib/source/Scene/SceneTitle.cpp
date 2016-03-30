@@ -6,10 +6,6 @@
 #include	"../Sound/SoundManager.h"
 #include	"../IconButton/IconButton.h"
 
-iex3DObj *airou;
-Vector3 pos(0, 0, 0);
-IconButtonManager *button_mgr;
-
 //******************************************************************
 //		初期化・解放
 //******************************************************************
@@ -19,19 +15,15 @@ bool sceneTitle::Initialize()
 
 	tdnMouse::Initialize(TRUE);
 
-	airou = new iex3DObj("DATA/CHR/アイルー/airou_toire.IEM");
-	airou->SetScale(1.0f);
-
-	button_mgr = new IconButtonManager;
-	button_mgr->TextLoad("DATA/Text/IconButton/title.txt");
+	//button_mgr = new IconButtonManager;
+	//button_mgr->TextLoad("DATA/Text/IconButton/title.txt");
 
 	return true;
 }
 
 sceneTitle::~sceneTitle()
 {
-	delete airou;
-	delete button_mgr;
+	//delete button_mgr;
 }
 
 
@@ -47,28 +39,14 @@ bool sceneTitle::Update()
 	move.z = -tdnInput::GetAxisY() * 0.0002f;
 	move.y = 0;
 
-	//	移動
-	pos += move;
 
-	tdnView::Set(pos, pos + Vector3(0, 0, 1));
-	airou->Animation();
-	airou->Update();
-
-	button_mgr->Update(tdnMouse::GetPos());
+	//button_mgr->Update(tdnMouse::GetPos());
 
 	// 左クリック
 	if (tdnMouse::GetLeft() == 3)
 	{
 		// シーンチェンジ
-		extern Framework  *MainFrame;
 		MainFrame->ChangeScene(new sceneSelect);
-	}
-
-
-
-	if (tdnInput::KeyGet(KEY_ENTER) == 3)
-	{
-
 	}
 
 	return true;
@@ -79,8 +57,8 @@ void sceneTitle::Render()
 	tdnView::Activate();
 	tdnView::Clear(0xff005522);
 
-	airou->Render();
-	button_mgr->Render();
+	//button_mgr->Render();
 
-	tdnText::Draw(150, 0, 0xffffffff, "タイトル");
+	tdnText::Draw(320, 280, 0xffffffff, "タイトルシーン");
+	tdnText::Draw(320, 320, 0xffffffff, "クリックで選択画面へ");
 }

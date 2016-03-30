@@ -42,7 +42,6 @@ bool sceneSelect::Update()
 			Stage::SetStageNo(SelectStageNo);
 
 			// シーンチェンジ
-			extern Framework  *MainFrame;
 			MainFrame->ChangeScene(new sceneMain);
 		}
 	}
