@@ -139,6 +139,15 @@ bool sceneMain::Update()
 		}
 	}
 
+	if (tdnMouse::GetLeft() == 3)
+	{
+		if (m_pButtonMgr->GetInButtonNo()==2)
+		{
+			MainFrame->ChangeScene(new sceneMain);
+			return true;
+		}
+		
+	}
 	return true;	
 }
 
