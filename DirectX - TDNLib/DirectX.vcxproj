@@ -25,7 +25,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -93,7 +93,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>
       </SDLCheck>
-      <AdditionalIncludeDirectories>./FST/;./SOURCE/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./TDN/;./SOURCE/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -117,6 +117,7 @@
     <ClCompile Include="source\Animation\AnimationRipple.cpp" />
     <ClCompile Include="source\Animation\AnimationRippleEx.cpp" />
     <ClCompile Include="source\Animation\AnimationUV.cpp" />
+    <ClCompile Include="source\Fade\Fade.cpp" />
     <ClCompile Include="source\GossipRipple\GossipRipple.cpp" />
     <ClCompile Include="source\GossipRipple\GossipRippleManager.cpp" />
     <ClCompile Include="source\IconButton\IconButton.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="source\Animation\AnimationRipple.h" />
     <ClInclude Include="source\Animation\AnimationRippleEx.h" />
     <ClInclude Include="source\Animation\AnimationUV.h" />
+    <ClInclude Include="source\Fade\Fade.h" />
     <ClInclude Include="source\GossipRipple\GossipRipple.h" />
     <ClInclude Include="source\GossipRipple\GossipRippleManager.h" />
     <ClInclude Include="source\IconButton\IconButton.h" />

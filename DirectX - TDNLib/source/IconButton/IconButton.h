@@ -24,7 +24,7 @@ public:
 		PUT_WHITE = 0x1 << 1	// ­‚µ”’‚ðãæ‚¹‚·‚é
 	};
 
-	IconButton() :m_pCollision(nullptr), m_EnDisType(EN_DIS_TYPE::ENABLE){}
+	IconButton() :m_pCollision(nullptr), m_EnDisType(EN_DIS_TYPE::ENABLE), m_SEReceive(-1){}
 	void Initialize(int ID, char *TexPath, int dstX, int dstY, BYTE InAction, char* se_ID);
 	~IconButton();
 	void Update(const Vector2 &CursorPos);
@@ -68,6 +68,8 @@ private:
 	tdn2DObj *m_pButton;		// ‰æ‘œŽÀ‘Ì
 	char m_SE_ID[64];			// ”ÍˆÍ“à‚É“ü‚Á‚½Û‚ÌSE‚ÌID
 	EN_DIS_TYPE m_EnDisType;	// —LŒø‚©‚Ç‚¤‚©
+
+	int m_SEReceive;
 
 	class Collision2D
 	{

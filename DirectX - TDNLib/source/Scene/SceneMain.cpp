@@ -9,7 +9,7 @@
 #include "Animation\AnimationUV.h"
 #include "SceneSelect.h"
 #include "../UI/UI.h"
-
+#include "../Fade/Fade.h"
 
 //******************************************************************
 //		グローバル変数
@@ -54,6 +54,9 @@ bool sceneMain::Initialize()
 
 	UIMgr.Initialize();
 
+	Fade::Set(Fade::FLAG::FADE_IN, 6, 0x00000000, 255, 0);
+	m_mode = MODE::MAIN;
+
 	return true;
 }
 
@@ -90,6 +93,16 @@ bool sceneMain::Update()
 
 	// UIマネージャー更新
 	UIMgr.Update();
+
+	Fade::Update();
+
+	if (m_mode != MODE::MAIN)
+	{
+		if (Fade::alpha == 0)
+		{
+			Fade::Set(Fade::FLAG::FADE_OUT, 4, 0x00000000, 1, 128);
+		}
+	}
 
 	if (tdnMouse::GetLeft() == 3)
 	{
@@ -160,17 +173,27 @@ void sceneMain::Render()
 
 	UIMgr.Render();
 
+	Fade::Render();
+
 	if (m_mode == MODE::GAMECLEAR)
 	{
-		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x80000000);
-		tdnText::Draw(580, 380, 0xffffffff, "クリックで進む");
-		lpGameClear->Render(160, 160);
+		//tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x80000000);
+
+		if (Fade::alpha == 128)
+		{
+			tdnText::Draw(580, 380, 0xffffffff, "クリックで進む");
+			lpGameClear->Render(160, 160);
+		}
 	}
 	else if (m_mode == MODE::GAMEOVER)
 	{
-		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x80000000);
-		tdnText::Draw(580, 380, 0xffffffff, "クリックでもう一度プレイ");
-		lpGameOver->Render(160, 160);
+		//tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x80000000);
+
+		if (Fade::alpha == 128)
+		{
+			tdnText::Draw(580, 380, 0xffffffff, "クリックでもう一度プレイ");
+			lpGameOver->Render(160, 160);
+		}
 	}
 
 	m_pButtonMgr->Render();

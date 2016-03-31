@@ -196,6 +196,11 @@ void SE_Manager::Stop_all()
 	play_manager->AllStop();
 }
 
+void SE_Manager::SetTone(LPSTR _ID, int tone)
+{
+	play_manager->SetSpeed(ID[_ID], 1.0f + (float)tone*.048f);
+}
+
 void SE_Manager::SetListener(const Vector2 &pos)
 {
 	m_ListenerPos = pos;

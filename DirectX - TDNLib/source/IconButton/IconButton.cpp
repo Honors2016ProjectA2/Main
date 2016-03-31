@@ -225,12 +225,21 @@ void IconButton::Update(const Vector2 &CursorPos)
 	{
 		if (!m_In)
 		{
-			if (strcmp(m_SE_ID, "\0") != 0) se->Play(m_SE_ID);
+			if (strcmp(m_SE_ID, "\0") != 0)
+			{
+				if (m_SEReceive == TDNSOUND_PLAY_NONE)
+				{
+					char *a = m_SE_ID;
+					char *b = "ƒJ[ƒ\ƒ‹";
+					m_SEReceive = se->Play(b);
+				}
+			}
 		}
 		m_In = true;
 	}
 	else
 	{
+		m_SEReceive = TDNSOUND_PLAY_NONE;
 		m_In = false;
 	}
 }

@@ -13,16 +13,31 @@ extern int RippleCount;
 void UIManager::PushHukidashi(const Vector3 &pos, HUKIDASHI_TYPE type)
 {
 	Vector2 srcXY;
-	if (tdnRandom::Get(0, 1))
+	static int sX = 0;
+	static int sY = 0;
+
+	if (sY == 1)
 	{
-		srcXY.x = 0;
-		srcXY.y = 1;
+		sY = 0;
 	}
-	else
+	else if (sX++ > 3)
 	{
-		srcXY.x = (float)tdnRandom::Get(0, 3);
-		srcXY.y = 0;
+		sX = 0;
+		sY = 1;
 	}
+	srcXY.x = (float)sX;
+	srcXY.y = (float)sY;
+
+	//if (tdnRandom::Get(0, 1))
+	//{
+	//	srcXY.x = 0;
+	//	srcXY.y = 1;
+	//}
+	//else
+	//{
+	//	srcXY.x = (float)tdnRandom::Get(0, 3);
+	//	srcXY.y = 0;
+	//}
 	srcXY.x *= 256;
 	srcXY.y *= 128;
 

@@ -8,6 +8,7 @@
 #include "sceneMainState.h"
 #include "../IconButton/IconButton.h"
 #include "../UI/UI.h"
+#include "../Sound/SoundManager.h"
 
 // sceneMainのグローバル変数から
 extern int RippleCount;
@@ -113,6 +114,11 @@ void sceneMainGame::Execute(sceneMain *pMain)
 
 				// UIの吹き出し
 				UIMgr.PushHukidashi(PersonMgr.GetPerson(i)->GetPos(), HUKIDASHI_TYPE::ORIGIN);
+
+				// 音のトーン戻す
+				se->SetTone("波紋出す", 0);
+
+				break;
 			}
 		}
 		//PersonMgr.GetPerson(0)->ActionGossipRipple();

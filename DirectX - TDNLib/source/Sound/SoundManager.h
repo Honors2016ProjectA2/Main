@@ -66,6 +66,7 @@ public:
 	bool isPlay(LPSTR _ID, int no);
 	int Play(LPSTR _ID, bool loop = false);																			// 簡易版																								// ボリューム設定版
 	int Play(LPSTR _ID, const Vector2 &pos, const Vector2 &move = Vector2(0, 0), bool loop = false);				// 3D設定版
+	void SetTone(LPSTR _ID, int tone);
 	void Stop(LPSTR _ID, int no);																					// Playで返ってきた数値を入れる
 	void Stop_all();																								// 全部止める
 	void SetFX(LPSTR _ID, int no, DXA_FX flag);

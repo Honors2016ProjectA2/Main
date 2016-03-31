@@ -2,7 +2,7 @@
 #include "AI\NPC\BasePerson\BasePerson.h"
 #include "AI\Message\Message.h"
 #include "AI\Message\MessageDispatcher.h"
-
+#include "../../../Sound/SoundManager.h"
 
 /***************************************/
 //	グローバルステート
@@ -161,6 +161,8 @@ void PersonShedWait::Enter(BasePerson *pPerson)
 	// (仮)噂を流す時にモーションを付ける事だって自由自在
 	pPerson->GetObj()->SetMotion(0);
 
+	// 音
+	se->Play("波紋出す",Math::WorldToScreen(pPerson->GetPos()));
 }
 
 // 実行中
@@ -357,6 +359,8 @@ void PersonShedRun::Enter(BasePerson *pPerson)
 	// (仮)噂を流す時にモーションを付ける事だって自由自在
 	pPerson->GetObj()->SetMotion(1);
 
+	// 音
+	se->Play("波紋出す", Math::WorldToScreen(pPerson->GetPos()));
 }
 
 // 実行中

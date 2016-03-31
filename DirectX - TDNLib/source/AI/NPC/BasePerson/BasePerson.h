@@ -66,6 +66,9 @@ public:
 	
 	iex3DObj* GetObj() { return m_obj; }
 
+	// ”g–ä‚ğ—¬‚µ‚Ä‚éÅ’†
+	bool IsShedNow();
+
 	// ¡‚Í’¼‚É
 	Vector3 m_orgPos;
 	Vector3 m_trunPos;

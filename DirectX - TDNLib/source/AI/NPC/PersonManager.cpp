@@ -4,7 +4,7 @@
 //　ひとの種類
 #include "AI\NPC\BasePerson\BasePerson.h"
 #include "../../UI/UI.h"
-
+#include "../../Sound/SoundManager.h"
 
 // 宣言
 PersonManager* PersonManager::pInstance = nullptr;
@@ -42,7 +42,9 @@ void PersonManager::Release()
 PersonManager::PersonManager():
 	BaseGameEntity(ENTITY_ID::PERSON_MNG),// ★人のマネージャー用のＩＤ番号を渡す
 	m_NumShedPerson(0),
-	m_bJudgeMoment(false)
+	m_bJudgeMoment(false),
+	m_combo(0),
+	m_delay(0)
 {
 	
 
@@ -89,8 +91,41 @@ void PersonManager::Update()
 {
 	if (m_PersonData.empty())return;// 空だったらリターン
 
-								   // 人たち更新
-	m_bJudgeMoment = false;
+	// 人たち更新
+
+	// ステージ3のすぐクリアになってしまうバグを直すためのごり押しを超えた何か
+	{
+		if (m_delay > 0)
+		{
+			if (--m_delay == 0)
+			{
+				bool bShedNow(false);
+				for (auto it : m_PersonData)
+				{
+					if (it->IsShedNow())
+					{
+						bShedNow = true;
+					}
+				}
+
+				if (bShedNow)
+				{
+					m_delay = 10;
+				}
+				else
+				{
+					m_bJudgeMoment = true;
+					m_combo = 0;
+				}
+			}
+
+		}
+		else
+		{
+			m_bJudgeMoment = false;
+		}
+	}
+
 	m_NumShedPerson = 0;
 
 	for (int i = 0; i < (int)m_PersonData.size(); i++)
@@ -168,6 +203,7 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 	// 二人以上ならこなみ
 	//if (count2 >= 2)
 	//{
+
 		for (int b = 0; b < (int)m_PersonData.size(); b++)
 		{
 
@@ -186,6 +222,10 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 
 					// 成功時の吹き出し
 					UIMgr.PushHukidashi(m_PersonData[b]->GetPos(), HUKIDASHI_TYPE::SUCCESS);
+
+					// コンボ数を増やす(2人カウントしたら、2トーン上げしまうのでその対処)
+					if (count == 0) se->SetTone("波紋出す", ++m_combo);
+
 					count++;
 				}
 				else
@@ -202,7 +242,8 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 	if (count == 0)
 	{
 		// 判定してますよー！
-		m_bJudgeMoment = true;
+		//m_bJudgeMoment = true;
+		m_delay = 10;
 	}
 }
 

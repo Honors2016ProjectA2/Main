@@ -38,6 +38,12 @@ private:
 	// ‰\—¬‚µ‚Ì”»’è‚µ‚½uŠÔ
 	bool m_bJudgeMoment;
 
+	// ”g–äƒRƒ“ƒ{”
+	int m_combo;
+
+	// ’´ƒSƒŠ‰Ÿ‚µ
+	int m_delay;
+
 public:
 	// ‘å—Ê¶Y
 	/*
@@ -65,6 +71,10 @@ public:
 	// ƒNƒŠƒA”»’è: ‘Sˆõ‚É‰\‚ğ—¬‚µ‚½‚©
 	bool isAllShed(){ return (m_NumShedPerson == m_PersonData.size()); }
 	bool isJudgeMoment(){ return m_bJudgeMoment; }
+
+	// ƒRƒ“ƒ{”
+	int GetRippleCombo(){ return m_combo; }
+	int GetDelay(){ return m_delay; }
 };
 
 

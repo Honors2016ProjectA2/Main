@@ -71,7 +71,7 @@ BasePerson::BasePerson(ENTITY_ID id, PERSON_TYPE type) :BaseGameEntity(id)
 	m_pos = VECTOR_ZERO;
 	m_move = VECTOR_ZERO;
 
-	m_angle = 0.0f;
+	m_angle = PI;	// 0.0¨PI
 
 
 
@@ -151,4 +151,8 @@ void BasePerson::ActionGossipRipple()
 	//m_pStateMachine->ChangeState(PersonShedWait::GetInstance());
 }
 
-
+bool BasePerson::IsShedNow()
+{
+	// ‚¤‚í‚³‚ð—¬‚µ‚Ä‚é“r’†
+	return (m_pStateMachine->isInState((*PersonShedRun::GetInstance())) || m_pStateMachine->isInState((*PersonShedWait::GetInstance())));
+}
