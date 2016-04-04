@@ -87,6 +87,9 @@ void sceneMainGame::Enter(sceneMain *pMain)
 
 	//(仮)
 	PersonMgr.AddPerson(PERSON_TYPE::WAIT, Vector3(0, 0, 0));
+	PersonMgr.AddPerson(PERSON_TYPE::START, Vector3(25, 0, 0));
+	PersonMgr.AddPerson(PERSON_TYPE::WAIT, Vector3(-25, 0, 0));
+	PersonMgr.AddPerson(PERSON_TYPE::START, Vector3(-50, 0, 0));
 }
 
 // 実行中
@@ -103,12 +106,12 @@ void sceneMainGame::Execute(sceneMain *pMain)
 	
 	if (KeyBoard('X') == 1)
 	{	
-		// セット
-		PersonMgr.GetPerson(0)->ActionGossipRipple();
+		// ゴシップスタート
+		PersonMgr.StartGossip();
 	}
 	if (KeyBoard('C') == 1)
 	{
-		// セット
+		// りセット
 		PersonMgr.ResetState();
 	}
 

@@ -7,6 +7,7 @@
 #include "../../Sound/SoundManager.h"
 
 #include "WaitPerson\WaitPerson.h"
+#include "StartPerson\StartPerson.h"
 
 
 // 宣言
@@ -80,6 +81,11 @@ void PersonManager::AddPerson(PERSON_TYPE type,Vector3 pos)
 	{
 	case PERSON_TYPE::WAIT:
 		data = new WaitPerson(id);
+		data->SetPos(pos);
+
+		break;
+	case PERSON_TYPE::START:
+		data = new StartPerson(id);
 		data->SetPos(pos);
 
 		break;
@@ -203,6 +209,22 @@ void PersonManager::ResetState()
 	{
 		m_PersonData[i]->SetIsShed(false);	// 噂流したフラグ=Falseに
 		m_PersonData[i]->ResetState();
+	}
+}
+// スタートの人の波紋を出す！
+void PersonManager::StartGossip()
+{
+	// 全員のステート初期化
+	for (int i = 0; i < (int)m_PersonData.size(); i++)
+	{
+		// 全員に送信
+		MsgMgr->Dispatch(
+			MSG_NO_DELAY,
+			ENTITY_ID::PERSON_MNG,
+			m_PersonData[i]->GetID(),
+			START_GOSSIP,
+			MSG_NO_EXINFO
+			);
 	}
 }
 

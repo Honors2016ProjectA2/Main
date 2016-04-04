@@ -112,6 +112,8 @@
     <ClCompile Include="source\AI\Message\MessageDispatcher.cpp" />
     <ClCompile Include="source\AI\NPC\BasePerson\BasePerson.cpp" />
     <ClCompile Include="source\AI\NPC\PersonManager.cpp" />
+    <ClCompile Include="source\AI\NPC\StartPerson\StartPerson.cpp" />
+    <ClCompile Include="source\AI\NPC\StartPerson\StartPersonState.cpp" />
     <ClCompile Include="source\AI\NPC\WaitPerson\WaitPerson.cpp" />
     <ClCompile Include="source\AI\NPC\WaitPerson\WaitPersonState.cpp" />
     <ClCompile Include="source\Animation\AnimationPanel.cpp" />
@@ -159,6 +161,8 @@
     <ClInclude Include="source\AI\Message\MessageDispatcher.h" />
     <ClInclude Include="source\AI\NPC\BasePerson\BasePerson.h" />
     <ClInclude Include="source\AI\NPC\PersonManager.h" />
+    <ClInclude Include="source\AI\NPC\StartPerson\StartPerson.h" />
+    <ClInclude Include="source\AI\NPC\StartPerson\StartPersonState.h" />
     <ClInclude Include="source\AI\NPC\WaitPerson\WaitPerson.h" />
     <ClInclude Include="source\AI\NPC\WaitPerson\WaitPersonState.h" />
     <ClInclude Include="source\AI\State\state.h" />

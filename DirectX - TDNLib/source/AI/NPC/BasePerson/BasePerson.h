@@ -17,7 +17,7 @@ template <class entity_type> class StateMachine;
 enum class PERSON_TYPE
 {
 	WAIT,
-
+	START
 };
 
 

@@ -64,6 +64,9 @@ public:
 	// ステートリセット&isShed=false
 	void ResetState();
 	
+	// スタートの人の波紋を出す！
+	void StartGossip();
+ 
 	// 波紋vs人
 	void RippleVSPerson(RIPPLE_INFO* pRipData);
 
