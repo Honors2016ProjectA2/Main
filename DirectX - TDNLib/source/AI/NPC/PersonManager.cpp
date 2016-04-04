@@ -194,26 +194,39 @@ bool  PersonManager::HandleMessage(const Message& msg)
 	return false;// [上手くメッセージが届かなかった]
 }
 
+// リセット
+void PersonManager::ResetState()
+{
+
+	// 全員のステート初期化
+	for (int i = 0; i < (int)m_PersonData.size(); i++)
+	{
+		m_PersonData[i]->SetIsShed(false);	// 噂流したフラグ=Falseに
+		m_PersonData[i]->ResetState();
+	}
+}
+
+/*	(現在)一人でもＯＫ・波紋は一回しか反応しない　*/
 // 波紋 vs 人
 // 当たり判定
 void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 {
 	// 対象
 	int count(0);
-	int count2(0);
+	//int count2(0);
 
 	// 何人当たっているか
-	for (int b = 0; b < (int)m_PersonData.size(); b++)
-	{
-		if (m_PersonData[b]->IsShed() == true)continue;// 噂を立てたやつは反応しない
-		if (m_PersonData[b]->GetPersonType() == pRipData->type) continue;// 同じタイプはバイバイ
+	//for (int b = 0; b < (int)m_PersonData.size(); b++)
+	//{
+	//	if (m_PersonData[b]->IsShed() == true)continue;// 噂を立てたやつは反応しない
+	//	if (m_PersonData[b]->GetPersonType() == pRipData->type) continue;// 同じタイプはバイバイ
 
-		float ren = Math::Length(pRipData->pos, m_PersonData[b]->GetPos());
-		if (ren <= pRipData->size)// 30m以内に人が存在すると
-		{
-			count2++;// (仮)
-		}
-	}
+	//	float ren = Math::Length(pRipData->pos, m_PersonData[b]->GetPos());
+	//	if (ren <= pRipData->size)// 30m以内に人が存在すると
+	//	{
+	//		count2++;// (仮)
+	//	}
+	//}
 
 	// 二人以上ならこなみ
 	//if (count2 >= 2)
@@ -230,7 +243,7 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 			if (ren <= pRipData->size)// 30m以内に人が存在すると
 			{
 				// 二人以上ならこなみ
-				if (count2 >= 2)
+				//if (count2 >= 2)
 				{
 					// 近くにいた人は波紋を飛ばす
 					m_PersonData[b]->ActionGossipRipple();
@@ -243,11 +256,11 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 
 					count++;
 				}
-				else
-				{
-					// 失敗時の吹き出し
-					UIMgr.PushHukidashi(m_PersonData[b]->GetPos(), HUKIDASHI_TYPE::FAILED);
-				}
+				//else
+				//{
+				//	// 失敗時の吹き出し
+				//	UIMgr.PushHukidashi(m_PersonData[b]->GetPos(), HUKIDASHI_TYPE::FAILED);
+				//}
 			}
 
 		}

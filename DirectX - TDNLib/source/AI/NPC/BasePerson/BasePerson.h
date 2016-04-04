@@ -67,6 +67,11 @@ public:
 	// 波紋を流してる最中
 	//bool IsShedNow();
 
+	// ★ベースにステートマシンがなく触れないが
+	// virtureを利用して各々のステートマシンに呼びかける事にトライ！
+	virtual void ResetState() = 0; // 初期のステートに戻す
+
+
 	// 今は直に
 	Vector3 m_orgPos;
 	Vector3 m_trunPos;

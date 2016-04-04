@@ -29,7 +29,7 @@ bool sceneMain::Initialize()
 {
 	tdnView::Init();
 	tdnMouse::Initialize(TRUE);
-	tdnView::Set(Vector3(.0f,75.0f,-60.0f), Vector3(.0f, .0f, .0f));
+	tdnView::Set(Vector3(.0f,95.0f,-80.0f), Vector3(.0f, .0f, .0f));
 
 	//rip = new GossipRipple(RIPPLE_TYPE::RED, Vector3(-20, 0, 20));
 

@@ -83,7 +83,10 @@ sceneMainGame* sceneMainGame::GetInstance()
 void sceneMainGame::Enter(sceneMain *pMain)
 {
 	// ステージの番号に応じて人間を読み込む
-	RippleCount = Stage::LoadPerson();
+	//RippleCount = Stage::LoadPerson();
+
+	//(仮)
+	PersonMgr.AddPerson(PERSON_TYPE::WAIT, Vector3(0, 0, 0));
 }
 
 // 実行中
@@ -97,37 +100,44 @@ void sceneMainGame::Execute(sceneMain *pMain)
 
 		GossipRippleMgr.AddRipple(RIPPLE_TYPE::RED, Vector3(ramX, 0, ramZ));
 	}
+	
 	if (KeyBoard('X') == 1)
 	{	
 		// セット
 		PersonMgr.GetPerson(0)->ActionGossipRipple();
 	}
-
-	if (tdnMouse::GetLeft() == 3 && RippleOK)
+	if (KeyBoard('C') == 1)
 	{
-		FOR(PersonMgr.GetPersonSize())
-		{
-			if (!PersonMgr.GetPerson(i)->IsShed() && (Math::WorldToScreen(PersonMgr.GetPerson(i)->GetPos()) - tdnMouse::GetPos()).Length() < 50)
-			{
-				RippleCount--;
-
-				// 噂連鎖が止まるまで使えなくする
-				RippleOK = false;
-
-				// セット
-				PersonMgr.GetPerson(i)->ActionGossipRipple();
-
-				// UIの吹き出し
-				UIMgr.PushHukidashi(PersonMgr.GetPerson(i)->GetPos(), HUKIDASHI_TYPE::ORIGIN);
-
-				// 音のトーン戻す
-				se->SetTone("波紋出す", 0);
-
-				break;
-			}
-		}
-		//PersonMgr.GetPerson(0)->ActionGossipRipple();
+		// セット
+		PersonMgr.ResetState();
 	}
+
+
+	//if (tdnMouse::GetLeft() == 3 && RippleOK)
+	//{
+	//	FOR(PersonMgr.GetPersonSize())
+	//	{
+	//		if (!PersonMgr.GetPerson(i)->IsShed() && (Math::WorldToScreen(PersonMgr.GetPerson(i)->GetPos()) - tdnMouse::GetPos()).Length() < 50)
+	//		{
+	//			RippleCount--;
+	//
+	//			// 噂連鎖が止まるまで使えなくする
+	//			RippleOK = false;
+	//
+	//			// セット
+	//			PersonMgr.GetPerson(i)->ActionGossipRipple();
+	//
+	//			// UIの吹き出し
+	//			UIMgr.PushHukidashi(PersonMgr.GetPerson(i)->GetPos(), HUKIDASHI_TYPE::ORIGIN);
+	//
+	//			// 音のトーン戻す
+	//			se->SetTone("波紋出す", 0);
+	//
+	//			break;
+	//		}
+	//	}
+	//	//PersonMgr.GetPerson(0)->ActionGossipRipple();
+	//}
 
 	// 噂連鎖が止まったら
 	if (PersonMgr.isJudgeMoment())

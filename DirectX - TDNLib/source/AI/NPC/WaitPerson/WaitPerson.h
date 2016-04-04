@@ -18,6 +18,9 @@ public:
 	virtual void  Render();
 	// メッセージを取り扱う
 	virtual bool  HandleMessage(const Message& msg);
+	
+	void ResetState();
+
 
 	// アクセサ
 	// ★ステートマシンのアクセサを作る

@@ -61,6 +61,9 @@ public:
 	// メッセージ更新
 	bool  HandleMessage(const Message& msg);
 
+	// ステートリセット&isShed=false
+	void ResetState();
+	
 	// 波紋vs人
 	void RippleVSPerson(RIPPLE_INFO* pRipData);
 
@@ -75,6 +78,9 @@ public:
 	// コンボ数
 	int GetRippleCombo(){ return m_combo; }
 	int GetDelay(){ return m_delay; }
+
+
+
 };
 
 

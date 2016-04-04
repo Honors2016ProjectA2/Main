@@ -47,3 +47,10 @@ bool WaitPerson::HandleMessage(const Message & msg)
 {
 	return m_pStateMachine->HandleMessage(msg);
 }
+
+void WaitPerson::ResetState()
+{
+	//	一番最初に設定していたステートへ戻す
+	m_pStateMachine->SetCurrentState(StartWait::GetInstance());
+
+}
