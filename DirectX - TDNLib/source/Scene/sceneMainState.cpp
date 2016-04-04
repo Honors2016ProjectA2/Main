@@ -97,6 +97,11 @@ void sceneMainGame::Execute(sceneMain *pMain)
 
 		GossipRippleMgr.AddRipple(RIPPLE_TYPE::RED, Vector3(ramX, 0, ramZ));
 	}
+	if (KeyBoard('X') == 1)
+	{	
+		// ƒZƒbƒg
+		PersonMgr.GetPerson(0)->ActionGossipRipple();
+	}
 
 	if (tdnMouse::GetLeft() == 3 && RippleOK)
 	{

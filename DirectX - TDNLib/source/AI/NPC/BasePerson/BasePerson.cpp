@@ -5,68 +5,70 @@
 
 
 // 初期化
-BasePerson::BasePerson(ENTITY_ID id, PERSON_TYPE type) :BaseGameEntity(id)
+BasePerson::BasePerson(ENTITY_ID id) :BaseGameEntity(id)
 {
 
 
 	m_obj = NULL;
 
 	// ステートマシン　引数は自分自身のポインタ
-	m_pStateMachine = new StateMachine<BasePerson>(this);
-	m_pStateMachine->SetGlobalState(PersonGlobalState::GetInstance());// グローバル
-	m_pStateMachine->SetCurrentState(PersonWait::GetInstance());
+	//m_pStateMachine = new StateMachine<BasePerson>(this);
+	//m_pStateMachine->SetGlobalState(PersonGlobalState::GetInstance());// グローバル
+	//m_pStateMachine->SetCurrentState(PersonWait::GetInstance());
 
 	// キャラクターによって波紋タイプ・人の種類を決める
-	m_PersonType = type;
-	switch (m_PersonType)
-	{
-	case PERSON_TYPE::RED:	
-		// キャラクターのモデル
-		m_obj = new iex3DObj("DATA/Chara/jk.IEM");
-		// 波紋の色
-		m_Ripple = new GossipRipple(RIPPLE_TYPE::RED, m_pos);
+	// 仮　newした先で決める
+	//m_PersonType = PERSON_TYPE::RED;
 
-		//(TODO) ステートマシンの設定をここでする。（歩く人・立ち止まる人）
-		m_pStateMachine->SetCurrentState(PersonWait::GetInstance());
+	//switch (m_PersonType)
+	//{
+	//case PERSON_TYPE::RED:	
+	//	// キャラクターのモデル
+	//	m_obj = new iex3DObj("DATA/Chara/jk.IEM");
+	//	// 波紋の色
+	//	m_Ripple = new GossipRipple(RIPPLE_TYPE::RED, m_pos);
+
+	//	//(TODO) ステートマシンの設定をここでする。（歩く人・立ち止まる人）
+	//	m_pStateMachine->SetCurrentState(PersonWait::GetInstance());
 
 
-		break;
-	case PERSON_TYPE::BLUE:
-		// キャラクターのモデル
-		m_obj = new iex3DObj("DATA/Chara/dk.IEM");
-		// 波紋の色
-		m_Ripple = new GossipRipple(RIPPLE_TYPE::BLUE, m_pos);
+	//	break;
+	//case PERSON_TYPE::BLUE:
+	//	// キャラクターのモデル
+	//	m_obj = new iex3DObj("DATA/Chara/dk.IEM");
+	//	// 波紋の色
+	//	m_Ripple = new GossipRipple(RIPPLE_TYPE::BLUE, m_pos);
 
-		//(TODO) ステートマシンの設定をここでする。（歩く人・立ち止まる人）
-		m_pStateMachine->SetCurrentState(PersonWait::GetInstance());
+	//	//(TODO) ステートマシンの設定をここでする。（歩く人・立ち止まる人）
+	//	m_pStateMachine->SetCurrentState(PersonWait::GetInstance());
 
-		break;
-	case PERSON_TYPE::RED_RUN:
-		// キャラクターのモデル
-		m_obj = new iex3DObj("DATA/Chara/jk.IEM");
+	//	break;
+	//case PERSON_TYPE::RED_RUN:
+	//	// キャラクターのモデル
+	//	m_obj = new iex3DObj("DATA/Chara/jk.IEM");
 
-		// 波紋の色
-		m_Ripple = new GossipRipple(RIPPLE_TYPE::RED, m_pos);
+	//	// 波紋の色
+	//	m_Ripple = new GossipRipple(RIPPLE_TYPE::RED, m_pos);
 
-		//(TODO) ステートマシンの設定をここでする。（歩く人・立ち止まる人）
-		m_pStateMachine->SetCurrentState(PersonRun::GetInstance());
+	//	//(TODO) ステートマシンの設定をここでする。（歩く人・立ち止まる人）
+	//	m_pStateMachine->SetCurrentState(PersonRun::GetInstance());
 
-		break;
-	case PERSON_TYPE::BLUE_RUN:
-		// キャラクターのモデル
-		m_obj = new iex3DObj("DATA/Chara/dk.IEM");
+	//	break;
+	//case PERSON_TYPE::BLUE_RUN:
+	//	// キャラクターのモデル
+	//	m_obj = new iex3DObj("DATA/Chara/dk.IEM");
 
-		// 波紋の色
-		m_Ripple = new GossipRipple(RIPPLE_TYPE::BLUE, m_pos);
+	//	// 波紋の色
+	//	m_Ripple = new GossipRipple(RIPPLE_TYPE::BLUE, m_pos);
 
-		//(TODO) ステートマシンの設定をここでする。（歩く人・立ち止まる人）
-		m_pStateMachine->SetCurrentState(PersonRun::GetInstance());
-		break;
+	//	//(TODO) ステートマシンの設定をここでする。（歩く人・立ち止まる人）
+	//	m_pStateMachine->SetCurrentState(PersonRun::GetInstance());
+	//	break;
 
-	default:
-		MyAssert(0, "そんな人物は存在しない");
-		break;
-	}
+	//default:
+	//	MyAssert(0, "そんな人物は存在しない");
+	//	break;
+	//}
 
 	m_pos = VECTOR_ZERO;
 	m_move = VECTOR_ZERO;
@@ -85,7 +87,7 @@ BasePerson::~BasePerson()
 {
 
 	SAFE_DELETE(m_Ripple);
-	SAFE_DELETE(m_pStateMachine);	
+	//SAFE_DELETE(m_pStateMachine);	
 	SAFE_DELETE(m_obj);
 
 }
@@ -93,7 +95,7 @@ BasePerson::~BasePerson()
 void BasePerson::Update()
 {
 	// ★ステートマシン更新
-	m_pStateMachine->Update();
+	//m_pStateMachine->Update();
 
 	// Move更新
 	m_pos += m_move;
@@ -132,14 +134,14 @@ void BasePerson::Render()
 	m_Ripple->Render();	// 波紋描画
 	//m_obj->Render();
 	//m_obj->Render(shader, "copy");
-	m_pStateMachine->Render();
+	//m_pStateMachine->Render();
 }
 
 // ステートマシンのメッセージ
-bool BasePerson::HandleMessage(const Message & msg)
-{
-	return m_pStateMachine->HandleMessage(msg);
-}
+//bool BasePerson::HandleMessage(const Message & msg)
+//{
+//	return m_pStateMachine->HandleMessage(msg);
+//}
 
 void BasePerson::ActionGossipRipple()
 {
@@ -151,8 +153,8 @@ void BasePerson::ActionGossipRipple()
 	//m_pStateMachine->ChangeState(PersonShedWait::GetInstance());
 }
 
-bool BasePerson::IsShedNow()
-{
-	// うわさを流してる途中
-	return (m_pStateMachine->isInState((*PersonShedRun::GetInstance())) || m_pStateMachine->isInState((*PersonShedWait::GetInstance())));
-}
+//bool BasePerson::IsShedNow()
+//{
+//	// うわさを流してる途中
+//	return (m_pStateMachine->isInState((*PersonShedRun::GetInstance())) || m_pStateMachine->isInState((*PersonShedWait::GetInstance())));
+//}

@@ -16,10 +16,8 @@ template <class entity_type> class StateMachine;
 
 enum class PERSON_TYPE
 {
-	RED,
-	BLUE,
-	RED_RUN,
-	BLUE_RUN
+	WAIT,
+
 };
 
 
@@ -29,7 +27,7 @@ enum class PERSON_TYPE
 class BasePerson :public BaseGameEntity
 {
 public:
-	BasePerson(ENTITY_ID id, PERSON_TYPE type);
+	BasePerson(ENTITY_ID id);
 	virtual ~BasePerson();
 
 	// BaseGameEntityの純粋仮想関数により必須
@@ -39,14 +37,14 @@ public:
 	virtual void  Render();
 	
 	// メッセージを取り扱う
-	virtual bool  HandleMessage(const Message& msg);
+	virtual bool  HandleMessage(const Message& msg) = 0;
 
 	// 噂を流す波紋
 	void ActionGossipRipple();
 
 	// アクセサ
 	// ★この形にするからステートマシンのアクセサを作る
-	StateMachine<BasePerson>* GetFSM()const { return m_pStateMachine; }
+	//StateMachine<BasePerson>* GetFSM()const { return m_pStateMachine; }
 
 	Vector3 GetPos() { return m_pos; }
 	void SetPos(Vector3 pos) { m_pos = pos; }
@@ -67,7 +65,7 @@ public:
 	iex3DObj* GetObj() { return m_obj; }
 
 	// 波紋を流してる最中
-	bool IsShedNow();
+	//bool IsShedNow();
 
 	// 今は直に
 	Vector3 m_orgPos;
@@ -75,7 +73,7 @@ public:
 	float m_len;
 	bool m_trunFlag;
 
-private:
+protected:
 
 	PERSON_TYPE m_PersonType;
 
@@ -88,7 +86,7 @@ private:
 	bool m_isShed;	// ~は噂を流したか
 
 	// ★ステートマシン
-	StateMachine<BasePerson>*  m_pStateMachine;
+	// StateMachine<BasePerson>*  m_pStateMachine;
 
 	// 一人に一つ波紋
 	GossipRipple* m_Ripple;

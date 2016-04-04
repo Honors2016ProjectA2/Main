@@ -6,6 +6,9 @@
 #include "../../UI/UI.h"
 #include "../../Sound/SoundManager.h"
 
+#include "WaitPerson\WaitPerson.h"
+
+
 // 宣言
 PersonManager* PersonManager::pInstance = nullptr;
 
@@ -72,8 +75,20 @@ void PersonManager::AddPerson(PERSON_TYPE type,Vector3 pos)
 
 	ENTITY_ID id = (ENTITY_ID)(GAME_ID::id_person_first + m_IDcount);
 
-	data = new BasePerson(id, type);
-	data->SetPos(pos);
+	// ここでキャラクターのデータを変える
+	switch (type)
+	{
+	case PERSON_TYPE::WAIT:
+		data = new WaitPerson(id);
+		data->SetPos(pos);
+
+		break;
+	default:
+		MyAssert(0, "そんな奴はいない");
+		break;
+	}
+
+
 
 	// 配列に加える
 	m_PersonData.push_back(data);
@@ -94,37 +109,37 @@ void PersonManager::Update()
 	// 人たち更新
 
 	// ステージ3のすぐクリアになってしまうバグを直すためのごり押しを超えた何か
-	{
-		if (m_delay > 0)
-		{
-			if (--m_delay == 0)
-			{
-				bool bShedNow(false);
-				for (auto it : m_PersonData)
-				{
-					if (it->IsShedNow())
-					{
-						bShedNow = true;
-					}
-				}
+	//{
+	//	if (m_delay > 0)
+	//	{
+	//		if (--m_delay == 0)
+	//		{
+	//			bool bShedNow(false);
+	//			for (auto it : m_PersonData)
+	//			{
+	//				if (it->IsShedNow())
+	//				{
+	//					bShedNow = true;
+	//				}
+	//			}
 
-				if (bShedNow)
-				{
-					m_delay = 10;
-				}
-				else
-				{
-					m_bJudgeMoment = true;
-					m_combo = 0;
-				}
-			}
+	//			if (bShedNow)
+	//			{
+	//				m_delay = 10;
+	//			}
+	//			else
+	//			{
+	//				m_bJudgeMoment = true;
+	//				m_combo = 0;
+	//			}
+	//		}
 
-		}
-		else
-		{
-			m_bJudgeMoment = false;
-		}
-	}
+	//	}
+	//	else
+	//	{
+	//		m_bJudgeMoment = false;
+	//	}
+	//}
 
 	m_NumShedPerson = 0;
 
