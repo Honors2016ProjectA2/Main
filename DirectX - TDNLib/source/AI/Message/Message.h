@@ -11,6 +11,7 @@ enum MESSAGE_TYPE
 	RIPPLE_VS_PERSON,
 	Riple_Red,
 	START_GOSSIP,
+	GOAL_GOSSIP
 };
 
 enum class PERSON_TYPE;	// ‘O•ûéŒ¾

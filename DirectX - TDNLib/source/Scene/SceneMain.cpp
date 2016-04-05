@@ -10,6 +10,7 @@
 #include "SceneSelect.h"
 #include "../UI/UI.h"
 #include "../Fade/Fade.h"
+#include "JudgeManager\JudgeManager.h"
 
 //******************************************************************
 //		ƒOƒ[ƒoƒ‹•Ï”
@@ -34,6 +35,7 @@ bool sceneMain::Initialize()
 	//rip = new GossipRipple(RIPPLE_TYPE::RED, Vector3(-20, 0, 20));
 
 	GossipRippleMgr;
+	JudgeMgr;
 
 	school = new iexMesh("Data/Stage/school.imo");
 	school->SetScale(0.8f);

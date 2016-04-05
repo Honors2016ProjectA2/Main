@@ -15,6 +15,7 @@ namespace GAME_ID
 		id_error,					//エラーID
 
 		PERSON_MNG,					// マネージャーのID 
+		JUDGE_MNG,					// ジャッジマネージャー
 
 		id_person_first,			//人のIDの初め
 		id_person_max = id_person_first + GAME_PERSON_MAX,	//人の最大ID+1

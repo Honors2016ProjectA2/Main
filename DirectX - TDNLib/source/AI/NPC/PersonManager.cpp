@@ -8,6 +8,7 @@
 
 #include "WaitPerson\WaitPerson.h"
 #include "StartPerson\StartPerson.h"
+#include "GoalPerson\GoalPerson.h"
 
 
 // éŒ¾
@@ -86,6 +87,11 @@ void PersonManager::AddPerson(PERSON_TYPE type,Vector3 pos)
 		break;
 	case PERSON_TYPE::START:
 		data = new StartPerson(id);
+		data->SetPos(pos);
+
+		break;
+	case PERSON_TYPE::GOAL:
+		data = new GoalPerson(id);
 		data->SetPos(pos);
 
 		break;

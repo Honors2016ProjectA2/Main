@@ -111,6 +111,8 @@
     <ClCompile Include="source\AI\Entity\EntityManager.cpp" />
     <ClCompile Include="source\AI\Message\MessageDispatcher.cpp" />
     <ClCompile Include="source\AI\NPC\BasePerson\BasePerson.cpp" />
+    <ClCompile Include="source\AI\NPC\GoalPerson\GoalPerson.cpp" />
+    <ClCompile Include="source\AI\NPC\GoalPerson\GoalPersonState.cpp" />
     <ClCompile Include="source\AI\NPC\PersonManager.cpp" />
     <ClCompile Include="source\AI\NPC\StartPerson\StartPerson.cpp" />
     <ClCompile Include="source\AI\NPC\StartPerson\StartPersonState.cpp" />
@@ -124,6 +126,7 @@
     <ClCompile Include="source\GossipRipple\GossipRipple.cpp" />
     <ClCompile Include="source\GossipRipple\GossipRippleManager.cpp" />
     <ClCompile Include="source\IconButton\IconButton.cpp" />
+    <ClCompile Include="source\JudgeManager\JudgeManager.cpp" />
     <ClCompile Include="source\Scene\sceneMainState.cpp" />
     <ClCompile Include="source\Scene\SceneSelect.cpp" />
     <ClCompile Include="source\Scene\SceneTitle.cpp" />
@@ -160,6 +163,8 @@
     <ClInclude Include="source\AI\Message\Message.h" />
     <ClInclude Include="source\AI\Message\MessageDispatcher.h" />
     <ClInclude Include="source\AI\NPC\BasePerson\BasePerson.h" />
+    <ClInclude Include="source\AI\NPC\GoalPerson\GoalPerson.h" />
+    <ClInclude Include="source\AI\NPC\GoalPerson\GoalPersonState.h" />
     <ClInclude Include="source\AI\NPC\PersonManager.h" />
     <ClInclude Include="source\AI\NPC\StartPerson\StartPerson.h" />
     <ClInclude Include="source\AI\NPC\StartPerson\StartPersonState.h" />
@@ -175,6 +180,7 @@
     <ClInclude Include="source\GossipRipple\GossipRipple.h" />
     <ClInclude Include="source\GossipRipple\GossipRippleManager.h" />
     <ClInclude Include="source\IconButton\IconButton.h" />
+    <ClInclude Include="source\JudgeManager\JudgeManager.h" />
     <ClInclude Include="source\Scene\sceneMainState.h" />
     <ClInclude Include="source\Scene\SceneSelect.h" />
     <ClInclude Include="source\Scene\SceneTitle.h" />

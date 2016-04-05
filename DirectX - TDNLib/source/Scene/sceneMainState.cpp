@@ -9,6 +9,7 @@
 #include "../IconButton/IconButton.h"
 #include "../UI/UI.h"
 #include "../Sound/SoundManager.h"
+#include "JudgeManager\JudgeManager.h"
 
 // sceneMainのグローバル変数から
 extern int RippleCount;
@@ -90,6 +91,7 @@ void sceneMainGame::Enter(sceneMain *pMain)
 	PersonMgr.AddPerson(PERSON_TYPE::START, Vector3(25, 0, 0));
 	PersonMgr.AddPerson(PERSON_TYPE::WAIT, Vector3(-25, 0, 0));
 	PersonMgr.AddPerson(PERSON_TYPE::START, Vector3(-50, 0, 0));
+	PersonMgr.AddPerson(PERSON_TYPE::GOAL, Vector3(-80, 0, 0));
 }
 
 // 実行中
