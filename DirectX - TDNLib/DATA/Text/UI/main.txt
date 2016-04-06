@@ -28,3 +28,13 @@ ID: 4
 ID: 5
 画像ファイルパス: DATA/UI/hukidashi_incorrect.png
 座標: 320 320
+
+//ゲームクリア
+ID: 6
+画像ファイルパス: DATA/UI/game_clear.png
+座標: 160 160
+
+//ゲームオーバー
+ID: 7
+画像ファイルパス: DATA/UI/game_over.png
+座標: 160 160

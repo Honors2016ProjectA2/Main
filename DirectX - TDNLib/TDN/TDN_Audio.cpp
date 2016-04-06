@@ -2,6 +2,11 @@
 #include	"TDNLIB.h"
 #include	"../source/system/ItDebug.h"
 
+// acm関数(MP3等の圧縮音声データの解凍を行う)用のインクルード
+#include<mmreg.h>
+#include<msacm.h>
+
+
 HRESULT result_sound;
 
 //**************************************************************************************************************
@@ -511,6 +516,8 @@ LPBYTE tdnSoundBuffer::LoadMP3(LPSTR fname, LPDWORD size, LPWAVEFORMATEX wfx)
 		WORD          nFramesPerBlock;
 		WORD          nCodecDelay;
 	} MPEGLAYER3WAVEFORMAT;
+
+	
 
 	return buf;
 }

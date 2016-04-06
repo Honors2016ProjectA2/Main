@@ -494,10 +494,39 @@ namespace Math
 	*/
 	inline float Length(Vector3 PosA, Vector3 PosB);
 
-
+	/**
+	*@brief						座標変換
+	*@param[in]		WorldPos	ワールド座標
+	*@return		ワールド座標から変換されたスクリーン座標を返す
+	*/
 	Vector2 WorldToScreen(const Vector3 &WorldPos);
+
+	/**
+	*@brief								座標変換
+	*@param[in]		ScreenPos			スクリーン座標
+	*@param[in]		ProjectiveSpaceZ	カメラのプロジェクションのNearとFarのパーセンテージ(0.0～1.0)
+	*@return		スクリーン座標から変換されたワールド座標を返す
+	*/
 	Vector3 ScreenToWorld(const Vector2 &ScreenPos, float ProjectiveSpaceZ);
 
+	/**
+	*@brief								座標変換
+	*@param[in]		ScreenPos			スクリーン座標
+	*@param[in]		PlateNormal			平面の法線(基本的に上方向)	
+	*@param[in]		Shift				原点からのPlateNormal方向の移動量
+	*@return		スクリーン座標からのNearとFarのベクトルによるRayを飛ばし、平面による交点の座標を返す
+	*/
+	Vector3 ScreenToWorldPlate(const Vector2 &ScreenPos, Vector3 &PlateNormal = Vector3(0, 1, 0), float Shift = .0f);
+
+	/**
+	*@brief									ベジエ計算
+	*@param[in]		out						計算結果吐き出し
+	*@param[in]		pos_array				座標の配列(複数の点)
+	*@param[in]		num_elements_array		配列の個数
+	*@param[in]		percentage				どれぐらいの割合の位置か(0.0～1.0)
+	*@return		ベジエ計算を行い、outに吐き出す関数
+	*/
+	void Bezier(Vector3 *out, Vector3 pos_array[], int num_elements_array, float percentage);
 }
 
 
@@ -1060,7 +1089,9 @@ public:
 	// 線
 	static void DrawLine(float x1, float y1, float x2, float y2, DWORD color = 0xFFFFFFFF, float size = 1.0f);
 	static void DrawLine3D(Vector3 pos1, Vector3 pos2, DWORD color = 0xFFFFFFFF, float size = 1.0f, u32 dwFlag = RS::COPY);
-
+	// 円(2D)
+	static void Circle2D(int cx, int cy, float r, u32 dwFlags, COLOR color, float z = .0f);
+	static void Circle2D(int cx, int cy, float r, tdnShader* shader, char* name, COLOR color, float z = .0f);
 private:
 
 };

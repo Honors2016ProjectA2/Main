@@ -890,3 +890,41 @@ technique red
 		PixelShader = compile ps_3_0 PS_red();
 	}
 }
+
+
+
+////------------------------------------------------------
+////		カラーオーバーレイ
+////------------------------------------------------------
+float3	put_color = { 1.0f, 1.0f, 1.0f };
+float over_ray_alpha = 0.5f;
+
+//------------------------------------------------------
+//		ピクセルシェーダー	
+//------------------------------------------------------
+float4 PS_color_over_ray(VS_OUTPUT_G In) : COLOR
+{
+	float4	OUT;
+	float4	col = tex2D(DecaleSamp, In.Tex);
+
+		// オーバーレイ適用
+		col.rgb = ((col.rgb * (1.0f - over_ray_alpha)) + (put_color * over_ray_alpha));
+
+	//	ピクセル色決定
+	OUT.rgb = col;
+	OUT.a = col.a;
+
+	return OUT;
+}
+technique color_over_ray
+{
+	pass P0
+	{
+		AlphaBlendEnable = true;
+		BlendOp = Add;
+		SrcBlend = SrcAlpha;
+		DestBlend = InvSrcAlpha;
+		VertexShader = compile vs_2_0 VS_pass1();
+		PixelShader = compile ps_2_0 PS_color_over_ray();
+	}
+}

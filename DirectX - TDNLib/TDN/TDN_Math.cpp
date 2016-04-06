@@ -274,6 +274,10 @@ inline float Math::Length(Vector3 PosA, Vector3 PosB)
 	return sqrtf(Vec.x*Vec.x + Vec.y*Vec.y + Vec.z*Vec.z);
 }
 
+
+//********************************************************************
+//						座標変換
+//********************************************************************
 Vector2 Math::WorldToScreen(const Vector3 &WorldPos)
 {
 	// 3Dを2D座標にする
@@ -320,6 +324,78 @@ Vector3 Math::ScreenToWorld(const Vector2 &ScreenPos, float ProjectiveSpaceZ)
 		&(InverseViewport * InverseProjection * InverseView));
 
 	return Vector3(Position.x, Position.y, Position.z);
+}
+
+Vector3 Math::ScreenToWorldPlate(const Vector2 &ScreenPos, Vector3 &PlateNormal, float Shift)
+{
+	// スクリーン上からのプロジェクションのNearとFarを求める
+	Vector3 NearPosition = Math::ScreenToWorld(ScreenPos, 0.0f);
+	Vector3 FarPosition = Math::ScreenToWorld(ScreenPos, 1.0f);
+
+	// Nearの座標とFarの座標を使って単位ベクトルを作る
+	Vector3 Direction = FarPosition - NearPosition;
+	Direction.Normalize();
+
+
+	/*	線と平面による交点判定
+	AXの長さ: XBの長さ = PAとNの内積 : PBとNの内積
+	※内積はマイナス値になる場合があるので、絶対値を使ってください。
+
+	交点X = A + ベクトルAB * (PAとNの内積 / (PAとNの内積 + PBとNの内積))
+	*/
+
+	static const float dist = 65535;	// とりあえずでかい値(交点をとるため、あまり小さいと平面に届かない)
+
+	Vector3 PA = NearPosition;
+	Vector3 PB = (NearPosition + Direction * dist);
+	float XB = abs(Vector3Dot(PA, PlateNormal));
+
+	float pa_n = abs(Vector3Dot(PA, PlateNormal));
+	float pb_n = abs(Vector3Dot(PB, PlateNormal));
+
+	return (NearPosition + ((NearPosition + Direction * dist) - NearPosition) * (pa_n / (pa_n + pb_n)));
+}
+
+//********************************************************************
+//						ベジエ曲線
+//********************************************************************
+void Math::Bezier(Vector3 *out, Vector3 pos_array[], int num_elements_array, float percentage)
+{
+	assert(num_elements_array > 0);
+
+	float b = percentage;
+	float a = 1 - b;
+
+	/*				//		参考資料		//
+	//ベジェ曲線↓　まず　　最初と中間　　　　次に　　　　中間と最後
+	pos->x = a*a*a* p1.x + 3 * a*a*b*p2.x + 3 * a*b*b*p2.x + b*b*b*p3.x;
+	pos->y = a*a*a* p1.y + 3 * a*a*b*p2.y + 3 * a*b*b*p2.y + b*b*b*p3.y;
+	pos->z = a*a*a* p1.z + 3 * a*a*b*p2.z + 3 * a*b*b*p2.z + b*b*b*p3.z;
+	*/
+
+	// 2点間の直線の場合、ベジエ計算をするとおかしくなるので、割合による直線の計算にする
+	if (num_elements_array == 2)
+	{
+		*out = pos_array[0] * a + pos_array[1] * b;
+		return;
+	}
+
+	// 始点
+	*out = pos_array[0] * (float)pow(a, num_elements_array);
+
+	// 中間
+	for (int i = 1; i < num_elements_array - 1; i++)	// -1なのは終点を省くから
+	{
+		float mult = b;
+		for (int j = 1; j < num_elements_array - 1; j++)
+		{
+			mult *= (j >= i) ? a : b;
+		}
+		*out += pos_array[i] * (num_elements_array * mult);
+	}
+
+	// 終点
+	*out += pos_array[num_elements_array - 1] * (float)pow(b, num_elements_array);
 }
 
 
