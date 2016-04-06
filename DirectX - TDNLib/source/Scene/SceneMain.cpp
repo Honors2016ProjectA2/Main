@@ -10,14 +10,13 @@
 #include "SceneSelect.h"
 #include "../UI/UI.h"
 #include "../Fade/Fade.h"
-#include "JudgeManager\JudgeManager.h"
+#include "../JudgeManager/JudgeManager.h"
 
 //******************************************************************
 //		グローバル変数
 //******************************************************************
 //GossipRipple* rip;
 iexMesh* school;
-tdn2DObj *lpGameOver, *lpGameClear;
 
 // 現状、誰に持たせるべきか分からないのでここにおいとく
 int RippleCount(0);
@@ -37,27 +36,35 @@ bool sceneMain::Initialize()
 	GossipRippleMgr;
 	JudgeMgr;
 
+	// ステージモデル初期化
 	school = new iexMesh("Data/Stage/school.imo");
 	school->SetScale(0.8f);
 	school->SetAngle(PI);
 	school->Update();
 
-	m_pStateMachine = new StateMachine<sceneMain>(this);
-	m_pStateMachine->SetGlobalState(sceneMainGlobalState::GetInstance());// グローバル
-	m_pStateMachine->SetCurrentState(sceneMainGame::GetInstance());
-
+	// ボタン管理さん初期化
 	m_pButtonMgr = new IconButtonManager;
 	m_pButtonMgr->TextLoad("DATA/Text/IconButton/main.txt");
+
+	// ボタンの有効・無効
 	m_pButtonMgr->SetEnDis((UINT)BUTTON_ID::YES, EN_DIS_TYPE::DISABLE_VANISH);
 	m_pButtonMgr->SetEnDis((UINT)BUTTON_ID::NO, EN_DIS_TYPE::DISABLE_VANISH);
 
-	lpGameClear = new tdn2DObj("DATA/UI/game_clear.png");
-	lpGameOver = new tdn2DObj("DATA/UI/game_over.png");
+	// シーンメインステートマシン初期化
+	m_pStateMachine = new StateMachine<sceneMain>(this);
+	m_pStateMachine->SetGlobalState(sceneMainGlobalState::GetInstance());// グローバル
+	m_pStateMachine->SetCurrentState(sceneMainSetPart::GetInstance());
+	g_GameState = GAME_STATE::INTRO;
 
+	// ゲームクリアの画像初期化
+	//lpGameClear = new tdn2DObj("DATA/UI/game_clear.png");
+	//lpGameOver = new tdn2DObj("DATA/UI/game_over.png");
+
+	// UI管理さん初期化
 	UIMgr.Initialize();
 
+	// フェード初期化
 	Fade::Set(Fade::FLAG::FADE_IN, 6, 0x00000000, 255, 0);
-	m_mode = MODE::MAIN;
 
 	return true;
 }
@@ -66,15 +73,15 @@ sceneMain::~sceneMain()
 {
 	//delete rip;
 	GossipRippleMgr.Release();
-
+	JudgeMgr.Release();
 	PersonMgr.Reset();
 	PersonMgr.Release();
 	delete m_pButtonMgr;
 	delete school;
 	delete m_pStateMachine;
 
-	delete lpGameClear;
-	delete lpGameOver;
+	//delete lpGameClear;
+	//delete lpGameOver;
 
 	UIMgr.Release();
 }
@@ -85,6 +92,7 @@ sceneMain::~sceneMain()
 //******************************************************************
 bool sceneMain::Update()
 {
+	// マウス更新
 	tdnMouse::Update();
 
 	// ステートマシン更新
@@ -96,67 +104,84 @@ bool sceneMain::Update()
 	// UIマネージャー更新
 	UIMgr.Update();
 
+	// フェード更新
 	Fade::Update();
 
-	if (m_mode != MODE::MAIN)
+	// ゲームクリアかゲームオーバー状態なら
+	//if (m_mode != MODE::MAIN)
+	//{
+	//	// まだフェードしてないとき
+	//	if (Fade::alpha == 0)
+	//	{
+	//		// ブラックフェードON
+	//		Fade::Set(Fade::FLAG::FADE_OUT, 4, 0x00000000, 1, 128);
+	//	}
+	//}
+
+	// 左クリック
+	if (tdnMouse::GetLeft() == 3)
 	{
-		if (Fade::alpha == 0)
+		// ゲームクリア状態なら
+		if (g_GameState == GAME_STATE::GAME_CLEAR)
 		{
-			Fade::Set(Fade::FLAG::FADE_OUT, 4, 0x00000000, 1, 128);
+			// セレクト画面に戻る
+			MainFrame->ChangeScene(new sceneSelect);
+			return true;
+			//switch ((BUTTON_ID)m_pButtonMgr->GetInButtonNo())
+			//{
+			//case BUTTON_ID::YES:
+			//{
+			//					   extern Framework *MainFrame;
+			//					   MainFrame->ChangeScene(new sceneMain);
+			//					   return true;
+			//}
+			//	break;
+			//
+			//case BUTTON_ID::NO:
+			//{
+			//					  extern Framework *MainFrame;
+			//					  MainFrame->ChangeScene(new sceneSelect);
+			//					  return true;
+			//}
+			//	break;
+			//}
+		}
+
+		// ゲームオーバー状態なら
+		else if (g_GameState == GAME_STATE::GAME_OVER)
+		{
+			// もう一度シーンメインを読み込む
+			MainFrame->ChangeScene(new sceneMain);
+			return true;
+			//switch ((BUTTON_ID)m_pButtonMgr->GetInButtonNo())
+			//{
+			//case BUTTON_ID::YES:
+			//{
+			//					   extern Framework *MainFrame;
+			//					   MainFrame->ChangeScene(new sceneMain);
+			//					   return true;
+			//}
+			//	break;
+			//
+			//case BUTTON_ID::NO:
+			//{
+			//					  extern Framework *MainFrame;
+			//					  MainFrame->ChangeScene(new sceneSelect);
+			//					  return true;
+			//}
+			//	break;
+			//}
+		}
+
+		// リトライボタン
+		else if (m_pButtonMgr->GetInButtonNo() == 2)
+		{
+			// もう一度読み込む
+			MainFrame->ChangeScene(new sceneMain);
+			return true;
 		}
 	}
 
-	if (tdnMouse::GetLeft() == 3)
-	{
-		if (m_mode == MODE::GAMECLEAR)
-		{
-			MainFrame->ChangeScene(new sceneSelect);
-			//switch ((BUTTON_ID)m_pButtonMgr->GetInButtonNo())
-			//{
-			//case BUTTON_ID::YES:
-			//{
-			//					   extern Framework *MainFrame;
-			//					   MainFrame->ChangeScene(new sceneMain);
-			//					   return true;
-			//}
-			//	break;
-			//
-			//case BUTTON_ID::NO:
-			//{
-			//					  extern Framework *MainFrame;
-			//					  MainFrame->ChangeScene(new sceneSelect);
-			//					  return true;
-			//}
-			//	break;
-			//}
-		}
-		else if (m_mode == MODE::GAMEOVER)
-		{
-			MainFrame->ChangeScene(new sceneMain);
-			//switch ((BUTTON_ID)m_pButtonMgr->GetInButtonNo())
-			//{
-			//case BUTTON_ID::YES:
-			//{
-			//					   extern Framework *MainFrame;
-			//					   MainFrame->ChangeScene(new sceneMain);
-			//					   return true;
-			//}
-			//	break;
-			//
-			//case BUTTON_ID::NO:
-			//{
-			//					  extern Framework *MainFrame;
-			//					  MainFrame->ChangeScene(new sceneSelect);
-			//					  return true;
-			//}
-			//	break;
-			//}
-		}
-		else if (m_pButtonMgr->GetInButtonNo() == 2)
-		{
-			MainFrame->ChangeScene(new sceneMain);
-		}
-	}
 
 	return true;	
 }
@@ -172,31 +197,21 @@ void sceneMain::Render()
 	GossipRippleMgr.Render();
 
 	PersonMgr.Render();
+	m_pStateMachine->Render();
 
 	UIMgr.Render();
 
-	Fade::Render();
+	// フェードはUIに書く(フェードの上に画像を置くことがあるから)
+	//Fade::Render();
 
-	if (m_mode == MODE::GAMECLEAR)
-	{
-		//tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x80000000);
-
-		if (Fade::alpha == 128)
-		{
-			tdnText::Draw(580, 380, 0xffffffff, "クリックで進む");
-			lpGameClear->Render(160, 160);
-		}
-	}
-	else if (m_mode == MODE::GAMEOVER)
-	{
-		//tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x80000000);
-
-		if (Fade::alpha == 128)
-		{
-			tdnText::Draw(580, 380, 0xffffffff, "クリックでもう一度プレイ");
-			lpGameOver->Render(160, 160);
-		}
-	}
+	//if (m_mode == MODE::GAMECLEAR)
+	//{
+	//	//tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x80000000);
+	//}
+	//else if (m_mode == MODE::GAMEOVER)
+	//{
+	//	//tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x80000000);
+	//}
 
 	m_pButtonMgr->Render();
 }

@@ -81,6 +81,7 @@ void IconButtonManager::TextLoad(char *filename)
 				v *= len;
 				MaxPos = CenterPos + v;
 
+				// 判定委譲の実体をこの中で作成している
 				set->SetCollisionSqure(MinPos, MaxPos);
 			}
 
@@ -96,6 +97,7 @@ void IconButtonManager::TextLoad(char *filename)
 				Vector2 CenterPos(lpImage->GetWidth() *.5f + dstX, lpImage->GetHeight() *.5f + dstY);
 				delete lpImage;
 
+				// 判定委譲の実体をこの中で作成している
 				set->SetCollisionCircle(CenterPos, radius);
 			}
 			else assert(0);
@@ -116,7 +118,7 @@ void IconButtonManager::TextLoad(char *filename)
 //******************************************************************
 //		初期化・解放
 //******************************************************************
-IconButtonManager::IconButtonManager() :m_Number(0)
+IconButtonManager::IconButtonManager()
 {
 	m_List.clear();
 }
@@ -137,17 +139,19 @@ void IconButtonManager::Clear()
 //******************************************************************
 void IconButtonManager::Update(const Vector2 &CursorPos)
 {
+	// リストの中身更新
 	for (auto it : m_List)
 	{
-		it->Update(CursorPos);
+		it->Update(CursorPos);	// 更新
 	}
 }
 
 void IconButtonManager::Render()
 {
+	// リストの中身描画
 	for (auto it : m_List)
 	{
-		it->Render();
+		it->Render();		// 描画
 	}
 }
 
@@ -158,9 +162,10 @@ int IconButtonManager::GetInButtonNo()
 
 	for (UINT i = 0; i < m_List.size(); i++)
 	{
-		// カーソルの範囲内の画像さん
+		// カーソルの範囲内に入ってる画像
 		if (m_List[i]->isIn())
 		{
+			// その画像のIDを返す
 			ButtonNo = m_List[i]->GetID();
 			break;
 		}
@@ -215,7 +220,8 @@ IconButton::~IconButton()
 void IconButton::Update(const Vector2 &CursorPos)
 {
 	// 稼働状態かどうか
-	if (m_EnDisType != EN_DIS_TYPE::ENABLE)return;
+	//if (m_EnDisType != EN_DIS_TYPE::ENABLE)return;
+	if (m_EnDisType == EN_DIS_TYPE::DISABLE_VANISH) return;
 
 	// アイコン範囲内時
 	if (
@@ -246,6 +252,7 @@ void IconButton::Update(const Vector2 &CursorPos)
 
 void IconButton::Render()
 {
+	// ボタン有効状態
 	if (m_EnDisType == EN_DIS_TYPE::ENABLE)
 	{
 		m_pButton->SetARGB(0xffffffff);
@@ -257,6 +264,7 @@ void IconButton::Render()
 		else m_pButton->Render(m_dstX, m_dstY);
 	}
 
+	// ボタン無効状態(やや黒くする)
 	else if (m_EnDisType == EN_DIS_TYPE::DISABLE_BLACK)
 	{
 		m_pButton->SetARGB((BYTE)252, (BYTE)128, (BYTE)128, (BYTE)128);
@@ -264,6 +272,7 @@ void IconButton::Render()
 		m_pButton->Render(m_dstX, m_dstY);
 	}
 
+	// ボタン無効状態(やや白くする)
 	else if (m_EnDisType == EN_DIS_TYPE::DISABLE_WHITE)
 	{
 		m_pButton->SetARGB(0xffffffff);
@@ -279,6 +288,7 @@ void IconButton::Render()
 
 void IconButton::Collision2D::Squre::RenderDebug()
 {
+	// 自分の判定の範囲を描画する
 	tdnPolygon::Rect((int)m_MinPos.x, (int)m_MinPos.y, (int)(m_MaxPos.x - m_MinPos.x), (int)(m_MaxPos.y - m_MinPos.y), RS::COPY, 0x80ff1010);
 }
 
@@ -289,9 +299,11 @@ void IconButton::Collision2D::Circle::RenderDebug()
 
 bool IconButton::Collision2D::Squre::Collision(const Vector2 &pos)
 {
+	// 2D四角判定
 	return (pos.x >= m_MinPos.x && pos.x <= m_MaxPos.x && pos.y >= m_MinPos.y && pos.y <= m_MaxPos.y);
 }
 bool IconButton::Collision2D::Circle::Collision(const Vector2 &pos)
 {
+	// 2D円判定
 	return ((pos - m_CenterPos).LengthSp() < m_Radius * m_Radius);
 }

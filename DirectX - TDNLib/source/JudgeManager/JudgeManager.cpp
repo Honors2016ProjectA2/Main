@@ -108,7 +108,6 @@ JudgeManager::JudgeManager() :
 // 解放
 JudgeManager::~JudgeManager()
 {
-	// メモリリークが出たら、sceneMainにJudgeMgr.Release()を書くと解決する
 	SAFE_DELETE(m_pStateMachine);
 }
 

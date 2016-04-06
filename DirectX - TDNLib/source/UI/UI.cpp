@@ -1,6 +1,8 @@
 #include "TDNLIB.h"
 
 #include "UI.h"
+#include "../Scene/sceneMainState.h"
+#include "../Fade/Fade.h"
 
 // sceneMainのグローバル変数から
 extern int RippleCount;
@@ -12,7 +14,10 @@ extern int RippleCount;
 /*************************/
 void UIManager::PushHukidashi(const Vector3 &pos, HUKIDASHI_TYPE type)
 {
+	// 画像の取ってくる座標
 	Vector2 srcXY;
+
+	// 吹き出しが被らないように静的メンバ変数で管理する
 	static int sX = 0;
 	static int sY = 0;
 
@@ -42,6 +47,8 @@ void UIManager::PushHukidashi(const Vector3 &pos, HUKIDASHI_TYPE type)
 	srcXY.y *= 128;
 
 	tdn2DObj *Image;
+
+	// ここで、自分から発するふきだし、正解したときのふきだし、等の画像を参照する(new自体はUIManagerがしているので参照するだけ)
 	switch (type)
 	{
 	case HUKIDASHI_TYPE::ORIGIN:
@@ -55,7 +62,11 @@ void UIManager::PushHukidashi(const Vector3 &pos, HUKIDASHI_TYPE type)
 		Image = m_Datas[UI_ID::HUKIDASHI_INCORRECT]->lpImage;
 		break;
 	}
+
+	// プッシュデータ作成
 	Hukidashi *data = new Hukidashi(Image, srcXY, Hukidashi::DEFAULT_APP_TIME, pos);
+
+	// リストプッシュ
 	m_HukidashiList.push_back(data);
 }
 
@@ -98,7 +109,7 @@ void UIManager::Initialize()
 		int ID;
 		ifs >> ID;
 
-		assert(ID == count);	// テキストのIDを0から順番に並べてください！！
+		assert(ID == count);	// テキストのIDを0から順番に並べてください！！もしくは、末尾は空白を入れないでください
 		count++;
 
 		// 画像のファイルパス
@@ -173,6 +184,26 @@ void UIManager::Render()
 
 	// 吹き出しリストの描画
 	for (auto it : m_HukidashiList) it->Render();
+
+	/* ゲームオーバー・ゲームクリアの描画 */
+	if (g_GameState == GAME_STATE::GAME_OVER)
+	{
+		if (Fade::alpha == 128)
+		{
+			Fade::Render();
+			ID_Render(UI_ID::GAME_OVER);
+			tdnText::Draw(580, 380, 0xffffffff, "クリックでもう一度プレイ");
+		}
+	}
+	if (g_GameState == GAME_STATE::GAME_CLEAR)
+	{
+		if (Fade::alpha == 128)
+		{
+			Fade::Render();
+			ID_Render(UI_ID::GAME_CLEAR);
+			tdnText::Draw(580, 380, 0xffffffff, "クリックで選択画面に戻る");
+		}
+	}
 }
 
 

@@ -81,7 +81,9 @@ private:
 		BIKKURI				 = 2,	// ！マーク
 		HUKIDASHI_MINE		 = 3,	// 自分が出す吹き出し
 		HUKIDASHI_CORRECT	 = 4,	// 正解時の吹き出し
-		HUKIDASHI_INCORRECT	 = 5	// 不正解
+		HUKIDASHI_INCORRECT	 = 5,	// 不正解
+		GAME_CLEAR=6,
+		GAME_OVER=7
 	};
 
 	// 封印

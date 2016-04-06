@@ -39,7 +39,7 @@ bool sceneSelect::Update()
 		if (SelectStageNo != m_pIconMgr->NOT_IN_BUTTON)
 		{
 			// ここで人間の読み込みの数字をどうにか
-			Stage::SetStageNo(SelectStageNo);
+			StageMgr.SetStageNo(SelectStageNo);
 
 			// シーンチェンジ
 			MainFrame->ChangeScene(new sceneMain);

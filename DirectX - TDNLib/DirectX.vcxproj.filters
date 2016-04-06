@@ -117,6 +117,9 @@
     <ClCompile Include="source\AI\NPC\BasePerson\BasePerson.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="source\AI\NPC\BasePerson\BasePersonState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
     <ClCompile Include="source\GossipRipple\GossipRipple.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -138,25 +141,37 @@
     <ClCompile Include="source\Fade\Fade.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\AI\NPC\WaitPerson\WaitPerson.cpp">
+    <ClCompile Include="source\Camera\Camera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\AI\NPC\WaitPerson\WaitPersonState.cpp">
+    <ClCompile Include="source\Camera\CameraState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\AI\NPC\StartPerson\StartPerson.cpp">
+    <ClCompile Include="source\Camera\EffectCamera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\AI\NPC\StartPerson\StartPersonState.cpp">
+    <ClCompile Include="source\textLoader\textLoader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="source\JudgeManager\JudgeManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\AI\NPC\GoalPerson\GoalPerson.cpp">
+    <ClCompile Include="source\AI\NPC\StartPerson\StartPersonState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AI\NPC\StartPerson\StartPerson.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="source\AI\NPC\GoalPerson\GoalPersonState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AI\NPC\GoalPerson\GoalPerson.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AI\NPC\WaitPerson\WaitPerson.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AI\NPC\WaitPerson\WaitPersonState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -242,6 +257,9 @@
     <ClInclude Include="source\AI\NPC\BasePerson\BasePerson.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="source\AI\NPC\BasePerson\BasePersonState.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
     <ClInclude Include="source\GossipRipple\GossipRipple.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -263,25 +281,37 @@
     <ClInclude Include="source\Fade\Fade.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\AI\NPC\WaitPerson\WaitPerson.h">
+    <ClInclude Include="source\Camera\Camera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\AI\NPC\WaitPerson\WaitPersonState.h">
+    <ClInclude Include="source\Camera\CameraState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\AI\NPC\StartPerson\StartPerson.h">
+    <ClInclude Include="source\Camera\EffectCamera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\AI\NPC\StartPerson\StartPersonState.h">
+    <ClInclude Include="source\textLoader\textLoader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="source\JudgeManager\JudgeManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\AI\NPC\GoalPerson\GoalPerson.h">
+    <ClInclude Include="source\AI\NPC\StartPerson\StartPersonState.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AI\NPC\StartPerson\StartPerson.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="source\AI\NPC\GoalPerson\GoalPersonState.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AI\NPC\GoalPerson\GoalPerson.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AI\NPC\WaitPerson\WaitPerson.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AI\NPC\WaitPerson\WaitPersonState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

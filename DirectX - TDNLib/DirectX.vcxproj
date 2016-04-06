@@ -111,6 +111,9 @@
     <ClCompile Include="source\AI\Entity\EntityManager.cpp" />
     <ClCompile Include="source\AI\Message\MessageDispatcher.cpp" />
     <ClCompile Include="source\AI\NPC\BasePerson\BasePerson.cpp" />
+    <ClCompile Include="source\AI\NPC\BasePerson\BasePersonState.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\AI\NPC\GoalPerson\GoalPerson.cpp" />
     <ClCompile Include="source\AI\NPC\GoalPerson\GoalPersonState.cpp" />
     <ClCompile Include="source\AI\NPC\PersonManager.cpp" />
@@ -122,6 +125,11 @@
     <ClCompile Include="source\Animation\AnimationRipple.cpp" />
     <ClCompile Include="source\Animation\AnimationRippleEx.cpp" />
     <ClCompile Include="source\Animation\AnimationUV.cpp" />
+    <ClCompile Include="source\Camera\Camera.cpp" />
+    <ClCompile Include="source\Camera\CameraState.cpp" />
+    <ClCompile Include="source\Camera\EffectCamera.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\Fade\Fade.cpp" />
     <ClCompile Include="source\GossipRipple\GossipRipple.cpp" />
     <ClCompile Include="source\GossipRipple\GossipRippleManager.cpp" />
@@ -131,6 +139,7 @@
     <ClCompile Include="source\Scene\SceneSelect.cpp" />
     <ClCompile Include="source\Scene\SceneTitle.cpp" />
     <ClCompile Include="source\Stage\Stage.cpp" />
+    <ClCompile Include="source\textLoader\textLoader.cpp" />
     <ClCompile Include="source\UI\UI.cpp" />
     <ClCompile Include="TDN\IEX_3DObject.cpp" />
     <ClCompile Include="TDN\IEX_Mesh.cpp" />
@@ -163,6 +172,9 @@
     <ClInclude Include="source\AI\Message\Message.h" />
     <ClInclude Include="source\AI\Message\MessageDispatcher.h" />
     <ClInclude Include="source\AI\NPC\BasePerson\BasePerson.h" />
+    <ClInclude Include="source\AI\NPC\BasePerson\BasePersonState.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\AI\NPC\GoalPerson\GoalPerson.h" />
     <ClInclude Include="source\AI\NPC\GoalPerson\GoalPersonState.h" />
     <ClInclude Include="source\AI\NPC\PersonManager.h" />
@@ -176,6 +188,11 @@
     <ClInclude Include="source\Animation\AnimationRipple.h" />
     <ClInclude Include="source\Animation\AnimationRippleEx.h" />
     <ClInclude Include="source\Animation\AnimationUV.h" />
+    <ClInclude Include="source\Camera\Camera.h" />
+    <ClInclude Include="source\Camera\CameraState.h" />
+    <ClInclude Include="source\Camera\EffectCamera.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\Fade\Fade.h" />
     <ClInclude Include="source\GossipRipple\GossipRipple.h" />
     <ClInclude Include="source\GossipRipple\GossipRippleManager.h" />
@@ -185,6 +202,7 @@
     <ClInclude Include="source\Scene\SceneSelect.h" />
     <ClInclude Include="source\Scene\SceneTitle.h" />
     <ClInclude Include="source\Stage\Stage.h" />
+    <ClInclude Include="source\textLoader\textLoader.h" />
     <ClInclude Include="source\UI\UI.h" />
     <ClInclude Include="TDN\ogg\codec.h" />
     <ClInclude Include="TDN\ogg\ogg.h" />
