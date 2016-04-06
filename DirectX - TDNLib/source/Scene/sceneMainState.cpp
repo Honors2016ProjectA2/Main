@@ -151,9 +151,9 @@ void sceneMainSetPart::Enter(sceneMain *pMain)
 
 	// ※西田くんへ　ここで設置する人間のタイプを設定してるので、完成したらここのWAITをそれぞれのタイプに設定してください
 
-	ButtonPersonMap[SELECT_BUTTON_COLOR::BLUE] = PERSON_TYPE::WAIT;		// 一番左のボタン(多分WAITで大丈夫)
-	ButtonPersonMap[SELECT_BUTTON_COLOR::RED] = PERSON_TYPE::WAIT;		// 真ん中のボタン(噂を広げるのを止めるやつ)
-	ButtonPersonMap[SELECT_BUTTON_COLOR::GREEN] = PERSON_TYPE::WAIT;	// 右のボタン(1.5倍の範囲を持つやつ)
+	ButtonPersonMap[SELECT_BUTTON_COLOR::BLUE] = PERSON_TYPE::START;		// 一番左のボタン(多分WAITで大丈夫)
+	ButtonPersonMap[SELECT_BUTTON_COLOR::RED] = PERSON_TYPE::STOP;		// 真ん中のボタン(噂を広げるのを止めるやつ)
+	ButtonPersonMap[SELECT_BUTTON_COLOR::GREEN] = PERSON_TYPE::STRONG;	// 右のボタン(1.5倍の範囲を持つやつ)
 }
 
 // 実行中

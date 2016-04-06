@@ -111,14 +111,15 @@
     <ClCompile Include="source\AI\Entity\EntityManager.cpp" />
     <ClCompile Include="source\AI\Message\MessageDispatcher.cpp" />
     <ClCompile Include="source\AI\NPC\BasePerson\BasePerson.cpp" />
-    <ClCompile Include="source\AI\NPC\BasePerson\BasePersonState.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="source\AI\NPC\GoalPerson\GoalPerson.cpp" />
     <ClCompile Include="source\AI\NPC\GoalPerson\GoalPersonState.cpp" />
     <ClCompile Include="source\AI\NPC\PersonManager.cpp" />
     <ClCompile Include="source\AI\NPC\StartPerson\StartPerson.cpp" />
     <ClCompile Include="source\AI\NPC\StartPerson\StartPersonState.cpp" />
+    <ClCompile Include="source\AI\NPC\StopPerson\StopPerson.cpp" />
+    <ClCompile Include="source\AI\NPC\StopPerson\StopPersonState.cpp" />
+    <ClCompile Include="source\AI\NPC\StrongPerson\StrongPerson.cpp" />
+    <ClCompile Include="source\AI\NPC\StrongPerson\StrongPersonState.cpp" />
     <ClCompile Include="source\AI\NPC\WaitPerson\WaitPerson.cpp" />
     <ClCompile Include="source\AI\NPC\WaitPerson\WaitPersonState.cpp" />
     <ClCompile Include="source\Animation\AnimationPanel.cpp" />
@@ -127,9 +128,6 @@
     <ClCompile Include="source\Animation\AnimationUV.cpp" />
     <ClCompile Include="source\Camera\Camera.cpp" />
     <ClCompile Include="source\Camera\CameraState.cpp" />
-    <ClCompile Include="source\Camera\EffectCamera.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="source\Fade\Fade.cpp" />
     <ClCompile Include="source\GossipRipple\GossipRipple.cpp" />
     <ClCompile Include="source\GossipRipple\GossipRippleManager.cpp" />
@@ -172,14 +170,15 @@
     <ClInclude Include="source\AI\Message\Message.h" />
     <ClInclude Include="source\AI\Message\MessageDispatcher.h" />
     <ClInclude Include="source\AI\NPC\BasePerson\BasePerson.h" />
-    <ClInclude Include="source\AI\NPC\BasePerson\BasePersonState.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="source\AI\NPC\GoalPerson\GoalPerson.h" />
     <ClInclude Include="source\AI\NPC\GoalPerson\GoalPersonState.h" />
     <ClInclude Include="source\AI\NPC\PersonManager.h" />
     <ClInclude Include="source\AI\NPC\StartPerson\StartPerson.h" />
     <ClInclude Include="source\AI\NPC\StartPerson\StartPersonState.h" />
+    <ClInclude Include="source\AI\NPC\StopPerson\StopPerson.h" />
+    <ClInclude Include="source\AI\NPC\StopPerson\StopPersonState.h" />
+    <ClInclude Include="source\AI\NPC\StrongPerson\StrongPerson.h" />
+    <ClInclude Include="source\AI\NPC\StrongPerson\StrongPersonState.h" />
     <ClInclude Include="source\AI\NPC\WaitPerson\WaitPerson.h" />
     <ClInclude Include="source\AI\NPC\WaitPerson\WaitPersonState.h" />
     <ClInclude Include="source\AI\State\state.h" />

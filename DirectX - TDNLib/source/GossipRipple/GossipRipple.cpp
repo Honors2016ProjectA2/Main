@@ -6,6 +6,9 @@ GossipRipple::GossipRipple(RIPPLE_TYPE type, Vector3 pos)
 	m_Type = type;	// 波紋の色のタイプ
 
 	m_uvObj = NULL;
+	m_Pos = pos;
+	m_Size = 0.1f;
+
 	switch (m_Type)// タイプによってUVエフェクトを変える
 	{
 	case RIPPLE_TYPE::WHITE:
@@ -16,14 +19,15 @@ GossipRipple::GossipRipple(RIPPLE_TYPE type, Vector3 pos)
 		break;
 	case RIPPLE_TYPE::BLUE:
 		m_uvObj = new AnimationUV("DATA/UV/Blue/wave.imo", 0.00f, 0.01f, 60, false, 1, 45);
+		
+		m_Size = 0.25f;// (仮)サイズでかく
 		break;
 	default:
 		MyAssert(0, "ねぇよ");
 		break;
 	}
 
-	m_Pos = pos;
-	m_Size = 1.0f;
+
 	//m_Flame = 0;
 
 	//isAction = false;
@@ -46,7 +50,7 @@ void GossipRipple::Action()
 	// 初期化
 	//isEnd = false;
 	//m_Flame = 0;
-	m_Size = 1.0f;
+	//m_Size = 1.0f;
 }
 
 // 更新
@@ -63,10 +67,10 @@ void GossipRipple::Update()
 	//}
 
 	//m_Size += 0.01f;
-	//obj->SetScale(m_Size);
+	//m_uvObj->GetObj()->SetScale(m_Size);
 	//obj->SetPos(m_Pos);
 	//obj->Update();
-	m_uvObj->Update(m_Pos, VECTOR_ZERO, 0.1f);
+	m_uvObj->Update(m_Pos, VECTOR_ZERO, m_Size);
 }
 
 // 描画

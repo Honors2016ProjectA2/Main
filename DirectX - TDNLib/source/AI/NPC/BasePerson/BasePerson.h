@@ -18,7 +18,9 @@ enum class PERSON_TYPE
 {
 	WAIT,
 	START,
-	GOAL
+	GOAL,
+	STOP,
+	STRONG
 };
 
 

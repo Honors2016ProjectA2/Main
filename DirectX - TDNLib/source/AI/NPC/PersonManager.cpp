@@ -9,7 +9,8 @@
 #include "WaitPerson\WaitPerson.h"
 #include "StartPerson\StartPerson.h"
 #include "GoalPerson\GoalPerson.h"
-
+#include "StopPerson\StopPerson.h"
+#include "StrongPerson\StrongPerson.h"
 
 // 宣言
 PersonManager* PersonManager::pInstance = nullptr;
@@ -92,6 +93,16 @@ void PersonManager::AddPerson(PERSON_TYPE type,Vector3 pos)
 		break;
 	case PERSON_TYPE::GOAL:
 		data = new GoalPerson(id);
+		data->SetPos(pos);
+
+		break;
+	case PERSON_TYPE::STOP:
+		data = new StopPerson(id);
+		data->SetPos(pos);
+
+		break;
+	case PERSON_TYPE::STRONG:
+		data = new StrongPerson(id);
 		data->SetPos(pos);
 
 		break;
@@ -254,7 +265,23 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 	//	{
 	//		count2++;// (仮)
 	//	}
-	//}
+	//}	
+
+	// ★止める人がいたら波紋を出さない
+	for (int b = 0; b < (int)m_PersonData.size(); b++)
+	{
+		if (m_PersonData[b]->IsShed() == true)continue;// 噂を立てたやつは反応しない
+
+		float ren = Math::Length(pRipData->pos, m_PersonData[b]->GetPos());
+		if (ren <= pRipData->size)// 30m以内に人が存在すると
+		{
+			if (m_PersonData[b]->GetPersonType() == PERSON_TYPE::STOP)
+			{
+				return;// 止める人がいたらコンティニュー
+			}
+
+		}
+	}
 
 	// 二人以上ならこなみ
 	//if (count2 >= 2)
@@ -265,6 +292,7 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 
 			if (m_PersonData[b]->IsShed() == true)continue;// 噂を立てたやつは反応しない
 			//if (m_PersonData[b]->GetPersonType() == pRipData->type) continue;// 同じタイプはバイバイ
+		
 
 			float ren =
 				Math::Length(pRipData->pos, m_PersonData[b]->GetPos());

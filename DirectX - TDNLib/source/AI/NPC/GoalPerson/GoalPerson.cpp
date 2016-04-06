@@ -10,7 +10,7 @@ GoalPerson::GoalPerson(ENTITY_ID id) :BasePerson(id)
 	m_Ripple = new GossipRipple(RIPPLE_TYPE::RED, m_pos);// 仮　newした先で決める
 
 														 // ステートマシン
-	m_PersonType = PERSON_TYPE::WAIT;
+	m_PersonType = PERSON_TYPE::GOAL;
 
 	// ステートマシン　引数は自分自身のポインタ
 	m_pStateMachine = new StateMachine<GoalPerson>(this);
