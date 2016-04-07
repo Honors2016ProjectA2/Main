@@ -38,3 +38,23 @@ ID: 6
 ID: 7
 画像ファイルパス: DATA/UI/game_over.png
 座標: 160 160
+
+//右上の枠
+ID: 8
+画像ファイルパス: DATA/UI/frame.png
+座標: 960 30
+
+//特定の人間に流せ
+ID: 9
+画像ファイルパス: DATA/UI/goal_person.png
+座標: 960 30
+
+//全員に流せ
+ID: 10
+画像ファイルパス: DATA/UI/all_shed.png
+座標: 960 30
+
+//奴には流すな
+ID: 11
+画像ファイルパス: DATA/UI/dont_shed.png
+座標: 960 30

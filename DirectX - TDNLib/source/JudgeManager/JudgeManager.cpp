@@ -204,8 +204,16 @@ void JudgeManager::SetClearFlag(CLEAR_FLAG flag)
 void JudgeManager::SetClearFlag(BYTE flag)
 {
 	// 条件に応じて、ステートを変更
-	if (flag & (BYTE)CLEAR_FLAG::ALL_SHED) m_pStateMachine->SetCurrentState(Judge::AllShed::GetInstance());
-	else if (flag & (BYTE)CLEAR_FLAG::GOAL_PERSON) m_pStateMachine->SetCurrentState(Judge::GoalPerson::GetInstance());
+	if (flag & (BYTE)CLEAR_FLAG::ALL_SHED)
+	{
+		m_ClearFlag = CLEAR_FLAG::ALL_SHED;
+		m_pStateMachine->SetCurrentState(Judge::AllShed::GetInstance());
+	}
+	else if (flag & (BYTE)CLEAR_FLAG::GOAL_PERSON)
+	{
+		m_ClearFlag = CLEAR_FLAG::GOAL_PERSON;
+		m_pStateMachine->SetCurrentState(Judge::GoalPerson::GetInstance());
+	}
 	else MyAssert(0, "例外: 意図しないクリアフラグが設定されました");
 
 	// 特定人物に流すなフラグの設定

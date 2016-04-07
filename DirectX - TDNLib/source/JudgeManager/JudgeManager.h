@@ -35,6 +35,10 @@ public:
 	void SetClearFlag(CLEAR_FLAG flag);
 	void SetClearFlag(BYTE flag);			// ビット演算を利用して、特定人物に流さないかつ、全員にor特定人物に流せができる！！
 
+	// 条件のアクセサ
+	CLEAR_FLAG GetClearFlag(){ return m_ClearFlag; }
+	bool isDontShedPerson(){ return m_bDontShed; }
+
 	// 現在の状態定数
 	enum class JUDGEMODE
 	{
@@ -56,6 +60,9 @@ private:
 
 	// ステートマシン(HandleMessageで使うので)
 	StateMachine<JudgeManager> *m_pStateMachine;
+
+	// クリア条件(UIからのアクセスとかで)
+	CLEAR_FLAG m_ClearFlag;
 
 	// こいつには流すなフラグ
 	bool m_bDontShed;

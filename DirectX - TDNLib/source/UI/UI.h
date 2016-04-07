@@ -51,6 +51,8 @@ public:
 	// 吹き出しのセット
 	void PushHukidashi(const Vector3 &pos, HUKIDASHI_TYPE success);
 
+
+
 private:
 
 	// 静的実体
@@ -83,7 +85,11 @@ private:
 		HUKIDASHI_CORRECT	 = 4,	// 正解時の吹き出し
 		HUKIDASHI_INCORRECT	 = 5,	// 不正解
 		GAME_CLEAR=6,
-		GAME_OVER=7
+		GAME_OVER=7,
+		MIGIUE_FRAME=8,
+		GOAL_PERSON=9,
+		ALL_SHED=10,
+		NAGASUNA=11,
 	};
 
 	// 封印

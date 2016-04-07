@@ -3,10 +3,10 @@
 #include "UI.h"
 #include "../Scene/sceneMainState.h"
 #include "../Fade/Fade.h"
+#include "../JudgeManager/JudgeManager.h"
 
 // sceneMainのグローバル変数から
 extern int RippleCount;
-
 
 
 /*************************/
@@ -185,23 +185,34 @@ void UIManager::Render()
 	// 吹き出しリストの描画
 	for (auto it : m_HukidashiList) it->Render();
 
-	/* ゲームオーバー・ゲームクリアの描画 */
-	if (g_GameState == GAME_STATE::GAME_OVER)
+	/* 右上の条件とか */
 	{
-		if (Fade::alpha == 128)
-		{
-			Fade::Render();
-			ID_Render(UI_ID::GAME_OVER);
-			tdnText::Draw(580, 380, 0xffffffff, "クリックでもう一度プレイ");
-		}
+		ID_Render(UI_ID::MIGIUE_FRAME);
+		if (JudgeMgr.GetClearFlag() == CLEAR_FLAG::GOAL_PERSON) ID_Render(UI_ID::GOAL_PERSON);
+		else if (JudgeMgr.GetClearFlag() == CLEAR_FLAG::ALL_SHED)ID_Render(UI_ID::ALL_SHED);
+
+		if (JudgeMgr.isDontShedPerson())ID_Render(UI_ID::NAGASUNA);
 	}
-	if (g_GameState == GAME_STATE::GAME_CLEAR)
+
+	/* ゲームオーバー・ゲームクリアの描画 */
 	{
-		if (Fade::alpha == 128)
+		if (g_GameState == GAME_STATE::GAME_OVER)
 		{
-			Fade::Render();
-			ID_Render(UI_ID::GAME_CLEAR);
-			tdnText::Draw(580, 380, 0xffffffff, "クリックで選択画面に戻る");
+			if (Fade::alpha == 128)
+			{
+				Fade::Render();
+				ID_Render(UI_ID::GAME_OVER);
+				tdnText::Draw(580, 380, 0xffffffff, "クリックでもう一度プレイ");
+			}
+		}
+		if (g_GameState == GAME_STATE::GAME_CLEAR)
+		{
+			if (Fade::alpha == 128)
+			{
+				Fade::Render();
+				ID_Render(UI_ID::GAME_CLEAR);
+				tdnText::Draw(580, 380, 0xffffffff, "クリックで選択画面に戻る");
+			}
 		}
 	}
 }
