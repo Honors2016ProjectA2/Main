@@ -11,6 +11,7 @@
 #include "../UI/UI.h"
 #include "../Fade/Fade.h"
 #include "../JudgeManager/JudgeManager.h"
+#include "Tutorial.h"
 
 //******************************************************************
 //		グローバル変数
@@ -200,6 +201,8 @@ void sceneMain::Render()
 	m_pStateMachine->Render();
 
 	UIMgr.Render();
+
+	m_pStateMachine->Render2D();
 
 	// フェードはUIに書く(フェードの上に画像を置くことがあるから)
 	//Fade::Render();

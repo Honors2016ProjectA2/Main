@@ -117,6 +117,9 @@
     <ClCompile Include="source\AI\NPC\BasePerson\BasePerson.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="source\AI\NPC\BasePerson\BasePersonState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
     <ClCompile Include="source\GossipRipple\GossipRipple.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -144,6 +147,9 @@
     <ClCompile Include="source\Camera\CameraState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="source\Camera\EffectCamera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
     <ClCompile Include="source\textLoader\textLoader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -168,16 +174,19 @@
     <ClCompile Include="source\AI\NPC\WaitPerson\WaitPersonState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\AI\NPC\StopPerson\StopPerson.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="source\AI\NPC\StopPerson\StopPersonState.cpp">
+    <ClCompile Include="source\Scene\Tutorial.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="source\AI\NPC\StrongPerson\StrongPerson.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="source\AI\NPC\StrongPerson\StrongPersonState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AI\NPC\StopPerson\StopPersonState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AI\NPC\StopPerson\StopPerson.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -263,6 +272,9 @@
     <ClInclude Include="source\AI\NPC\BasePerson\BasePerson.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="source\AI\NPC\BasePerson\BasePersonState.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
     <ClInclude Include="source\GossipRipple\GossipRipple.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -317,16 +329,19 @@
     <ClInclude Include="source\AI\NPC\WaitPerson\WaitPersonState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\AI\NPC\StopPerson\StopPerson.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="source\AI\NPC\StopPerson\StopPersonState.h">
+    <ClInclude Include="source\Scene\Tutorial.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="source\AI\NPC\StrongPerson\StrongPerson.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="source\AI\NPC\StrongPerson\StrongPersonState.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AI\NPC\StopPerson\StopPersonState.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AI\NPC\StopPerson\StopPerson.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

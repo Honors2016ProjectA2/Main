@@ -10,7 +10,7 @@
 #include "../Sound/SoundManager.h"
 #include "../Fade/Fade.h"
 #include "../JudgeManager/JudgeManager.h"
-
+#include "Tutorial.h"
 
 // sceneMainのグローバル変数から
 extern int RippleCount;
@@ -97,7 +97,7 @@ void sceneMainIntro::Execute(sceneMain *pMain)
 	// 一定時間経過で、ゲームに移行
 	if (++m_timer > 180)
 	{
-		pMain->GetFSM()->ChangeState(sceneMainGame::GetInstance());
+		pMain->GetFSM()->ChangeState(sceneMainSetPart::GetInstance());
 	}
 }
 
@@ -130,6 +130,11 @@ sceneMainSetPart* sceneMainSetPart::GetInstance()
 	return &instance;
 }
 
+sceneMainSetPart::~sceneMainSetPart()
+{
+	SAFE_DELETE(m_pTutorial);
+};
+
 // 入り口
 void sceneMainSetPart::Enter(sceneMain *pMain)
 {
@@ -141,17 +146,30 @@ void sceneMainSetPart::Enter(sceneMain *pMain)
 	//PersonMgr.AddPerson(PERSON_TYPE::START, Vector3(-50, 0, 0));
 	//PersonMgr.AddPerson(PERSON_TYPE::GOAL, Vector3(-80, 0, 0));
 
+	// ★チュートリアルのステージならチュートリアル実行ポインタをnew
+	int StageNo(StageMgr.GetStageNo());
+	if (StageNo < 1)
+	{
+		if (m_pTutorial) delete m_pTutorial;
+		m_pTutorial = new TutorialManager;
+		m_pTutorial->Initialize(pMain, StageNo);
+	}
+	else
+	{
+		// 青いボタンを選択状態に
+		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::BLUE, EN_DIS_TYPE::DISABLE_WHITE);
+		m_SelectButtonColor = (int)SELECT_BUTTON_COLOR::BLUE;
+
+		m_pTutorial = nullptr;
+	}
+
 	// 設置するときに表示するメッシュの初期化
 	m_HoldMesh = nullptr;
-
-	// 青いボタンを選択状態に
-	pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::BLUE, EN_DIS_TYPE::DISABLE_WHITE);
-	m_SelectButtonColor = (int)SELECT_BUTTON_COLOR::BLUE;
 
 
 	// ※西田くんへ　ここで設置する人間のタイプを設定してるので、完成したらここのWAITをそれぞれのタイプに設定してください
 
-	ButtonPersonMap[SELECT_BUTTON_COLOR::BLUE] = PERSON_TYPE::START;		// 一番左のボタン(多分WAITで大丈夫)
+	ButtonPersonMap[SELECT_BUTTON_COLOR::BLUE] = PERSON_TYPE::WAIT;		// 一番左のボタン(多分WAITで大丈夫)
 	ButtonPersonMap[SELECT_BUTTON_COLOR::RED] = PERSON_TYPE::STOP;		// 真ん中のボタン(噂を広げるのを止めるやつ)
 	ButtonPersonMap[SELECT_BUTTON_COLOR::GREEN] = PERSON_TYPE::STRONG;	// 右のボタン(1.5倍の範囲を持つやつ)
 }
@@ -159,16 +177,26 @@ void sceneMainSetPart::Enter(sceneMain *pMain)
 // 実行中
 void sceneMainSetPart::Execute(sceneMain *pMain)
 {
+	if (m_pTutorial)
+	{
+		// チュートリアルの説明終わって後はゲーム進行って時
+		if (!m_pTutorial->Update(pMain))
+		{
+			delete m_pTutorial, m_pTutorial = nullptr;
+		}
+		return;
+	}
+
 	// キーボードによる設置人間変更
-	if (KeyBoardTRG(KB_Z))
+	if (KeyBoardTRG(KB_1))
 	{
 		ChangeSelectButton(pMain, SELECT_BUTTON_COLOR::BLUE);
 	}
-	else if (KeyBoardTRG(KB_X))
+	else if (KeyBoardTRG(KB_2))
 	{
 		ChangeSelectButton(pMain, SELECT_BUTTON_COLOR::RED);
 	}
-	else if (KeyBoardTRG(KB_C))
+	else if (KeyBoardTRG(KB_3))
 	{
 		ChangeSelectButton(pMain, SELECT_BUTTON_COLOR::GREEN);
 	}
@@ -283,7 +311,7 @@ void sceneMainSetPart::Execute(sceneMain *pMain)
 			pMain->GetButtonMgr()->SetEnDis(6, EN_DIS_TYPE::DISABLE_BLACK);
 
 			// ステートを波紋流れてるのを見るだけのステートにする
-			pMain->GetFSM()->ChangeState(sceneMainGame::GetInstance());
+			pMain->GetFSM()->ChangeState(sceneMainGossip::GetInstance());
 			break;
 
 			/* 何もボタンに入っていないとき */
@@ -314,11 +342,25 @@ void sceneMainSetPart::Exit(sceneMain *pMain)
 
 void sceneMainSetPart::Render(sceneMain * pMain)
 {
+	if (m_pTutorial)
+	{
+		m_pTutorial->Render(pMain);
+		return;
+	}
+
 	if (m_HoldMesh)
 	{
 		m_HoldMesh->SetPos(m_HoldMeshPos);
 		m_HoldMesh->Update();
 		m_HoldMesh->Render(RS::COPY, .5f);
+	}
+}
+
+void sceneMainSetPart::Render2D(sceneMain *pMain)
+{
+	if (m_pTutorial)
+	{
+		m_pTutorial->Render2D(pMain);
 	}
 }
 
@@ -383,21 +425,21 @@ void sceneMainSetPart::ChangeSelectButton(sceneMain *pMain, SELECT_BUTTON_COLOR 
 //*****************************************************************************************************************************
 //			うわさが流れてるパート
 //*****************************************************************************************************************************
-sceneMainGame* sceneMainGame::GetInstance()
+sceneMainGossip* sceneMainGossip::GetInstance()
 {
 	// ここに変数を作る
-	static sceneMainGame instance;
+	static sceneMainGossip instance;
 	return &instance;
 }
 
 // 入り口
-void sceneMainGame::Enter(sceneMain *pMain)
+void sceneMainGossip::Enter(sceneMain *pMain)
 {
 
 }
 
 // 実行中
-void sceneMainGame::Execute(sceneMain *pMain)
+void sceneMainGossip::Execute(sceneMain *pMain)
 {
 	if (KeyBoard('Z') == 1)
 	{
@@ -518,16 +560,16 @@ void sceneMainGame::Execute(sceneMain *pMain)
 }
 
 // 出口
-void sceneMainGame::Exit(sceneMain *pMain)
+void sceneMainGossip::Exit(sceneMain *pMain)
 {
 
 }
 
-void sceneMainGame::Render(sceneMain * pMain)
+void sceneMainGossip::Render(sceneMain * pMain)
 {
 }
 
-bool sceneMainGame::OnMessage(sceneMain *pMain, const Message &msg)
+bool sceneMainGossip::OnMessage(sceneMain *pMain, const Message &msg)
 {
 	// 出ていけ！
 	return false;

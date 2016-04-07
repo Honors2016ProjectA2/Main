@@ -229,7 +229,7 @@ void IconButton::Update(const Vector2 &CursorPos)
 		m_pCollision->Collision(CursorPos)
 		)
 	{
-		if (!m_In)
+		if (!m_In && m_EnDisType == EN_DIS_TYPE::ENABLE)
 		{
 			if (strcmp(m_SE_ID, "\0") != 0)
 			{
@@ -262,6 +262,14 @@ void IconButton::Render()
 			);
 		if (m_InActionFlag & IN_ACTION::PUT_WHITE && m_In) m_pButton->Render(m_dstX, m_dstY, shader2D, "color_over_ray");
 		else m_pButton->Render(m_dstX, m_dstY);
+	}
+
+	// ボタン無効状態
+	else if (m_EnDisType == EN_DIS_TYPE::DISABLE)
+	{
+		m_pButton->SetARGB(0xffffffff);
+		m_pButton->SetScale(1);
+		m_pButton->Render(m_dstX, m_dstY);
 	}
 
 	// ボタン無効状態(やや黒くする)

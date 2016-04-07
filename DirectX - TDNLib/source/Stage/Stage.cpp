@@ -44,13 +44,16 @@ struct MyMap
 int Stage::LoadPerson()
 {
 	char filename[128];
-	sprintf_s(filename, 128, "DATA/Text/Stage/stage%d.txt", m_StageNo);
+
+	// ★重要　プログラムは0からのスタートだが、テキストでのステージの名前は1からのスタートで、その誤差をここで埋めている！(+1)
+	sprintf_s(filename, 128, "DATA/Text/Stage/stage%d.txt", m_StageNo + 1);
+
 	std::ifstream ifs(filename);
 
 	// ここで引っかかったらステージの番号がおかしいか、ステージのテキストが存在しない
 	assert(ifs);
 
-	char skip[16];		// 読み飛ばし用変数
+	char skip[32];		// 読み飛ばし用変数
 
 	// 波紋回数読み込み
 	int RippleCount;
@@ -89,7 +92,8 @@ int Stage::LoadPerson()
 	MyMap<CLEAR_FLAG> ClearFlagList[]=
 	{
 		{ "GOAL_PERSON", CLEAR_FLAG::GOAL_PERSON },
-		{ "ALL_SHED", CLEAR_FLAG::ALL_SHED }
+		{ "ALL_SHED", CLEAR_FLAG::ALL_SHED },
+		{ "DONT_SHED_PERSON", CLEAR_FLAG::DONT_SHED_PERSON }
 	};
 
 	MyMap<PERSON_TYPE> PersonTypeList[]=
@@ -100,16 +104,24 @@ int Stage::LoadPerson()
 	};
 
 	// ループ文でテキストからとってきた文字列に応じて定数を設定(クリア条件)
+	BYTE ClearFlagBit(0x00);
 	for (int i = 0; i < _countof(ClearFlagList); i++)
 	{
 		if (ClearFlagList[i].Check(cClearFlag))
 		{
-			// ★文字列一致したので、ジャッジ管理クラスにクリア条件を
-			JudgeMgr.SetClearFlag(ClearFlagList[i].enum_flag);
+			// ★文字列一致したので、クリア条件はこれだ！
+			ClearFlagBit |= (BYTE)ClearFlagList[i].enum_flag;
 			break;
 		}
 	}
 
+	// うわさを流してはいけない人間がいるか
+	char DontShed[4];
+	ifs >> skip;
+	ifs >> DontShed;
+	
+	if (strcmp(DontShed, "ON") == 0)
+		ClearFlagBit |= (BYTE)CLEAR_FLAG::DONT_SHED_PERSON;	// ビット演算で流してはいけないフラグを設定(○○かつこいつに流すな。をしたいため)
 
 	while (!ifs.eof())
 	{
@@ -139,6 +151,9 @@ int Stage::LoadPerson()
 		// 人間リストに追加
 		PersonMgr.AddPerson(type, pos);
 	}
+
+	// ★ジャッジ君にクリア条件を設定(何故一番下に書くのかというと、設定した時点で人間の設置情報を参照する場合があるから)
+	JudgeMgr.SetClearFlag(ClearFlagBit);
 
 	return RippleCount;
 }

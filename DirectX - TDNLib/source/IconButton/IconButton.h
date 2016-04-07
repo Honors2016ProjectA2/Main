@@ -10,6 +10,7 @@
 enum class EN_DIS_TYPE
 {
 	ENABLE,				// 稼働中だよ
+	DISABLE,			// 普通に描画されるが使えない
 	DISABLE_BLACK,		// 使えない的なメッセージ
 	DISABLE_WHITE,		// 何か選択中的なメッセージ
 	DISABLE_VANISH		// 消える

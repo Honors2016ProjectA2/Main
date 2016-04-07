@@ -1,5 +1,5 @@
 #include "JudgeManager.h"
-
+#include "../AI/NPC/PersonManager.h"
 
 //**************************************************************************************************
 //
@@ -17,10 +17,26 @@ bool Judge::GlobalState::OnMessage(JudgeManager *pJudge, const Message &msg)
 
 //===============================================================================
 //		全員に流す
+void Judge::AllShed::Enter(JudgeManager *pJudge)
+{
+	m_ShedCount = 0;
+
+	// 全員なので、リストのサイズ
+	// ★TODO:うわさを流してはいけない人間はカウントしないようにしたい！！！
+	m_GoalCount = PersonMgr.GetPersonSize();
+}
 bool Judge::AllShed::OnMessage(JudgeManager *pJudge, const Message &msg)
 {
 	switch (msg.Msg)
 	{
+	case MESSAGE_TYPE::SHED_GOSSIP:
+		// 全員流した！
+		if (++m_ShedCount >= m_GoalCount)
+		{
+			pJudge->SetJudgeMode(JudgeManager::JUDGEMODE::GAME_CLEAR);
+		}
+		break;
+
 	case MESSAGE_TYPE::GOAL_GOSSIP:
 	{
 		MyAssert(0, "クリア条件は全員に流すと設定されていますが、ゴールとなる人間がいます");
@@ -41,6 +57,9 @@ bool Judge::GoalPerson::OnMessage(JudgeManager *pJudge, const Message &msg)
 {
 	switch (msg.Msg)
 	{
+	case MESSAGE_TYPE::SHED_GOSSIP:
+		break;
+
 	case MESSAGE_TYPE::GOAL_GOSSIP:
 	{
 		/*ここに来たらゲームクリア！あとはクリア処理頼みます*/
@@ -154,18 +173,31 @@ bool JudgeManager::HandleMessage(const Message & msg)
 //**************************************************************************************************
 void JudgeManager::SetClearFlag(CLEAR_FLAG flag)
 {
-	// 条件に応じて、ステートを変更
-	switch (flag)
-	{
-	case CLEAR_FLAG::ALL_SHED:
-		m_pStateMachine->SetCurrentState(Judge::AllShed::GetInstance());
-		break;
+	SetClearFlag((BYTE)flag);	// 下の関数を呼び出す
 
-	case CLEAR_FLAG::GOAL_PERSON:
-		m_pStateMachine->SetCurrentState(Judge::GoalPerson::GetInstance());
-		break;
-	default:
-		MyAssert(0, "例外: 意図しないクリアフラグが設定されました");
-		break;
-	}
+	// 条件に応じて、ステートを変更
+	//switch (flag)
+	//{
+	//case CLEAR_FLAG::ALL_SHED:
+	//	m_pStateMachine->SetCurrentState(Judge::AllShed::GetInstance());
+	//	break;
+	//
+	//case CLEAR_FLAG::GOAL_PERSON:
+	//	m_pStateMachine->SetCurrentState(Judge::GoalPerson::GetInstance());
+	//	break;
+	//default:
+	//	MyAssert(0, "例外: 意図しないクリアフラグが設定されました");
+	//	break;
+	//}
+}
+
+void JudgeManager::SetClearFlag(BYTE flag)
+{
+	// 条件に応じて、ステートを変更
+	if (flag & (BYTE)CLEAR_FLAG::ALL_SHED) m_pStateMachine->SetCurrentState(Judge::AllShed::GetInstance());
+	else if (flag & (BYTE)CLEAR_FLAG::GOAL_PERSON) m_pStateMachine->SetCurrentState(Judge::GoalPerson::GetInstance());
+	else MyAssert(0, "例外: 意図しないクリアフラグが設定されました");
+
+	// 特定人物に流すなフラグの設定
+	m_bDontShed = !(!(flag & (BYTE)CLEAR_FLAG::DONT_SHED_PERSON));
 }

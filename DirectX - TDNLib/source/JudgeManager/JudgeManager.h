@@ -15,8 +15,9 @@ class BasePerson;
 // クリア条件定数
 enum class CLEAR_FLAG
 {
-	ALL_SHED = 0,		// 全員に流したら
-	GOAL_PERSON = 1		// 特定キャラに噂を流したら
+	ALL_SHED = 1,			// 全員に流したら
+	GOAL_PERSON = 2,		// 特定キャラに噂を流したら
+	DONT_SHED_PERSON = 4	// こいつには流すな！
 };
 
 class JudgeManager :public BaseGameEntity
@@ -32,6 +33,7 @@ public:
 
 	// クリア条件設定
 	void SetClearFlag(CLEAR_FLAG flag);
+	void SetClearFlag(BYTE flag);			// ビット演算を利用して、特定人物に流さないかつ、全員にor特定人物に流せができる！！
 
 	// 現在の状態定数
 	enum class JUDGEMODE
@@ -55,7 +57,8 @@ private:
 	// ステートマシン(HandleMessageで使うので)
 	StateMachine<JudgeManager> *m_pStateMachine;
 
-
+	// こいつには流すなフラグ
+	bool m_bDontShed;
 
 	// 封印
 	JudgeManager();
@@ -128,7 +131,7 @@ namespace Judge
 		}
 
 		// 入る
-		void Enter(JudgeManager* pJudge){}
+		void Enter(JudgeManager* pJudge);
 
 		// 実行します
 		void Execute(JudgeManager* pJudge){}
@@ -143,7 +146,10 @@ namespace Judge
 		virtual bool OnMessage(JudgeManager* pJudge, const Message& msg);
 
 	private:
-		AllShed() {};
+		int m_ShedCount;	// 何人流したか
+		int m_GoalCount;	// クリアに必要な回数
+
+		AllShed() :m_ShedCount(0), m_GoalCount(0) {};
 		~AllShed() {};
 		AllShed(const AllShed&){}
 		AllShed& operator=(const AllShed&){}

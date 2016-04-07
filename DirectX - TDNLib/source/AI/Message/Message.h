@@ -11,7 +11,9 @@ enum MESSAGE_TYPE
 	RIPPLE_VS_PERSON,
 	Riple_Red,
 	START_GOSSIP,
-	GOAL_GOSSIP
+	GOAL_GOSSIP,
+
+	SHED_GOSSIP		// うわさを流したとき、ジャッジマネージャに送信する。(プレイヤーが設置した人間だったら送信しないようにしたい)
 };
 
 enum class PERSON_TYPE;	// 前方宣言

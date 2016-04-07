@@ -71,6 +71,15 @@ public:
 		if (m_pCurrentState) m_pCurrentState->Render(m_pOwner);
 	}
 
+	// 画像とかの描画が必要になったので、2Dの描画も作りました
+	void  Render2D()const
+	{
+		// グローバルステートがあるなら、実行
+		if (m_pGlobalState)   m_pGlobalState->Render2D(m_pOwner);
+
+		//　現在のステートの実行関数
+		if (m_pCurrentState) m_pCurrentState->Render2D(m_pOwner);
+	}
 
 	// ★メッセージ
 	bool  HandleMessage(const Message& msg)const

@@ -11,6 +11,9 @@
 // 定数の前方宣言
 enum class PERSON_TYPE;
 
+// クラスの前方宣言
+class TutorialManager;
+
 // ボタンのID（シーンメインからここに移植しました）
 enum BUTTON_ID
 {
@@ -39,19 +42,19 @@ public:
 	static sceneMainGlobalState* GetInstance();
 
 	// 入る
-	virtual void Enter(sceneMain* pMain);
+	void Enter(sceneMain* pMain);
 
 	// 実行します
-	virtual void Execute(sceneMain* pMain);
+	void Execute(sceneMain* pMain);
 
 	// 帰る
-	virtual void Exit(sceneMain* pMain);
+	void Exit(sceneMain* pMain);
 
 	// 描画
-	virtual void Render(sceneMain* pMain);
+	void Render(sceneMain* pMain);
 
 	// エージェントからのメッセージを受信した場合、これが実行される
-	virtual bool OnMessage(sceneMain* pMain, const Message& msg);
+	bool OnMessage(sceneMain* pMain, const Message& msg);
 
 private:
 	sceneMainGlobalState() {};
@@ -70,19 +73,19 @@ public:
 	static sceneMainIntro* GetInstance();
 
 	// 入る
-	virtual void Enter(sceneMain* pMain);
+	void Enter(sceneMain* pMain);
 
 	// 実行します
-	virtual void Execute(sceneMain* pMain);
+	void Execute(sceneMain* pMain);
 
 	// 帰る
-	virtual void Exit(sceneMain* pMain);
+	void Exit(sceneMain* pMain);
 
 	// 描画
-	virtual void Render(sceneMain* pMain);
+	void Render(sceneMain* pMain);
 
 	// エージェントからのメッセージを受信した場合、これが実行される
-	virtual bool OnMessage(sceneMain* pMain, const Message& msg);
+	bool OnMessage(sceneMain* pMain, const Message& msg);
 
 private:
 	sceneMainIntro():m_timer(0) {};
@@ -104,23 +107,24 @@ public:
 	static sceneMainSetPart* GetInstance();
 
 	// 入る
-	virtual void Enter(sceneMain* pMain);
+	void Enter(sceneMain* pMain);
 
 	// 実行します
-	virtual void Execute(sceneMain* pMain);
+	void Execute(sceneMain* pMain);
 
 	// 帰る
-	virtual void Exit(sceneMain* pMain);
+	void Exit(sceneMain* pMain);
 
 	// 描画
-	virtual void Render(sceneMain* pMain);
+	void Render(sceneMain* pMain);
+	void Render2D(sceneMain* pMain);
 
 	// エージェントからのメッセージを受信した場合、これが実行される
-	virtual bool OnMessage(sceneMain* pMain, const Message& msg);
+	bool OnMessage(sceneMain* pMain, const Message& msg);
 
 private:
-	sceneMainSetPart(){};
-	~sceneMainSetPart() {};
+	sceneMainSetPart() :m_HoldMesh(nullptr),m_pTutorial(nullptr){};
+	~sceneMainSetPart();
 
 	sceneMainSetPart(const sceneMainSetPart&);
 	sceneMainSetPart& operator=(const sceneMainSetPart&);
@@ -144,37 +148,40 @@ private:
 
 	// 選択ボタン色切り替え
 	void ChangeSelectButton(sceneMain *pMain, SELECT_BUTTON_COLOR next);
+
+	// チュートリアルを実行するポインタ
+	TutorialManager *m_pTutorial;
 };
 
-//--------------------メイン(うわさが流れてるパート)
-class sceneMainGame :public State<sceneMain>
+//--------------------うわさが流れてるパート
+class sceneMainGossip :public State<sceneMain>
 {
 public:
 
 	//this is a シングルトン
-	static sceneMainGame* GetInstance();
+	static sceneMainGossip* GetInstance();
 
 	// 入る
-	virtual void Enter(sceneMain* pMain);
+	void Enter(sceneMain* pMain);
 
 	// 実行します
-	virtual void Execute(sceneMain* pMain);
+	void Execute(sceneMain* pMain);
 
 	// 帰る
-	virtual void Exit(sceneMain* pMain);
+	void Exit(sceneMain* pMain);
 
 	// 描画
-	virtual void Render(sceneMain* pMain);
+	void Render(sceneMain* pMain);
 
 	// エージェントからのメッセージを受信した場合、これが実行される
-	virtual bool OnMessage(sceneMain* pMain, const Message& msg);
+	bool OnMessage(sceneMain* pMain, const Message& msg);
 
 private:
-	sceneMainGame() {};
-	~sceneMainGame() {};
+	sceneMainGossip() {};
+	~sceneMainGossip() {};
 
-	sceneMainGame(const sceneMainGame&);
-	sceneMainGame& operator=(const sceneMainGame&);
+	sceneMainGossip(const sceneMainGossip&);
+	sceneMainGossip& operator=(const sceneMainGossip&);
 };
 
 //--------------------ゲームオーバー
@@ -186,19 +193,19 @@ public:
 	static sceneMainGameOver* GetInstance();
 
 	// 入る
-	virtual void Enter(sceneMain* pMain);
+	void Enter(sceneMain* pMain);
 
 	// 実行します
-	virtual void Execute(sceneMain* pMain);
+	void Execute(sceneMain* pMain);
 
 	// 帰る
-	virtual void Exit(sceneMain* pMain);
+	void Exit(sceneMain* pMain);
 
 	// 描画
-	virtual void Render(sceneMain* pMain);
+	void Render(sceneMain* pMain);
 
 	// エージェントからのメッセージを受信した場合、これが実行される
-	virtual bool OnMessage(sceneMain* pMain, const Message& msg);
+	bool OnMessage(sceneMain* pMain, const Message& msg);
 
 private:
 	sceneMainGameOver() {};
@@ -218,16 +225,16 @@ public:
 	static sceneMainGameClear* GetInstance();
 
 	// 入る
-	virtual void Enter(sceneMain* pMain);
+	void Enter(sceneMain* pMain);
 
 	// 実行します
-	virtual void Execute(sceneMain* pMain);
+	void Execute(sceneMain* pMain);
 
 	// 帰る
-	virtual void Exit(sceneMain* pMain);
+	void Exit(sceneMain* pMain);
 
 	// 描画
-	virtual void Render(sceneMain* pMain);
+	void Render(sceneMain* pMain);
 
 	// エージェントからのメッセージを受信した場合、これが実行される
 	virtual bool OnMessage(sceneMain* pMain, const Message& msg);
