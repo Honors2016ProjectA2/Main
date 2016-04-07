@@ -20,7 +20,8 @@ enum class PERSON_TYPE
 	START,
 	GOAL,
 	STOP,
-	STRONG
+	STRONG,
+	GAMEOVER
 };
 
 

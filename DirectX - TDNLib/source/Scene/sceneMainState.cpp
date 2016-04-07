@@ -140,7 +140,8 @@ void sceneMainSetPart::Enter(sceneMain *pMain)
 {
 	// ステージの番号に応じて人間を読み込む
 	RippleCount = StageMgr.LoadPerson();
-	//PersonMgr.AddPerson(PERSON_TYPE::WAIT, Vector3(0, 0, 0));
+	// でばっぐ用
+	PersonMgr.AddPerson(PERSON_TYPE::GAMEOVER, Vector3(20, 0, 20));
 	//PersonMgr.AddPerson(PERSON_TYPE::START, Vector3(25, 0, 0));
 	//PersonMgr.AddPerson(PERSON_TYPE::WAIT, Vector3(-25, 0, 0));
 	//PersonMgr.AddPerson(PERSON_TYPE::START, Vector3(-50, 0, 0));

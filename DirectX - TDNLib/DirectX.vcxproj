@@ -114,6 +114,8 @@
     <ClCompile Include="source\AI\NPC\BasePerson\BasePersonState.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="source\AI\NPC\GameOverPerson\GameOverPerson.cpp" />
+    <ClCompile Include="source\AI\NPC\GameOverPerson\GameOverPersonState.cpp" />
     <ClCompile Include="source\AI\NPC\GoalPerson\GoalPerson.cpp" />
     <ClCompile Include="source\AI\NPC\GoalPerson\GoalPersonState.cpp" />
     <ClCompile Include="source\AI\NPC\PersonManager.cpp" />
@@ -180,6 +182,8 @@
     <ClInclude Include="source\AI\NPC\BasePerson\BasePersonState.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="source\AI\NPC\GameOverPerson\GameOverPerson.h" />
+    <ClInclude Include="source\AI\NPC\GameOverPerson\GameOverPersonState.h" />
     <ClInclude Include="source\AI\NPC\GoalPerson\GoalPerson.h" />
     <ClInclude Include="source\AI\NPC\GoalPerson\GoalPersonState.h" />
     <ClInclude Include="source\AI\NPC\PersonManager.h" />

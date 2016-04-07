@@ -11,6 +11,7 @@
 #include "GoalPerson\GoalPerson.h"
 #include "StopPerson\StopPerson.h"
 #include "StrongPerson\StrongPerson.h"
+#include "GameOverPerson\GameOverPerson.h"
 
 // éŒ¾
 PersonManager* PersonManager::pInstance = nullptr;
@@ -103,6 +104,11 @@ void PersonManager::AddPerson(PERSON_TYPE type,Vector3 pos)
 		break;
 	case PERSON_TYPE::STRONG:
 		data = new StrongPerson(id);
+		data->SetPos(pos);
+
+		break;
+	case PERSON_TYPE::GAMEOVER:
+		data = new GameOverPerson(id);
 		data->SetPos(pos);
 
 		break;
