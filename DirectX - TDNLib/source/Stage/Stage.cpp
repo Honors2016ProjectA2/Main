@@ -100,7 +100,8 @@ int Stage::LoadPerson()
 	{
 		{ "WAIT", PERSON_TYPE::WAIT },
 		{ "START", PERSON_TYPE::START },
-		{ "GOAL", PERSON_TYPE::GOAL }
+		{ "GOAL", PERSON_TYPE::GOAL },
+		{ "GAMEOVER", PERSON_TYPE::GAMEOVER },
 	};
 
 	// ループ文でテキストからとってきた文字列に応じて定数を設定(クリア条件)
