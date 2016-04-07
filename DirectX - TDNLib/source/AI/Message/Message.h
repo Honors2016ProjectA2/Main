@@ -13,7 +13,8 @@ enum MESSAGE_TYPE
 	START_GOSSIP,
 	GOAL_GOSSIP,
 
-	SHED_GOSSIP		// うわさを流したとき、ジャッジマネージャに送信する。(プレイヤーが設置した人間だったら送信しないようにしたい)
+	SHED_GOSSIP,		// うわさを流したとき、ジャッジマネージャに送信する。(プレイヤーが設置した人間だったら送信しないようにしたい)
+	GAMEOVER			// うわさを流してはいけないヤツに噂を流したら、ジャッジマネージャに送信する
 };
 
 enum class PERSON_TYPE;	// 前方宣言

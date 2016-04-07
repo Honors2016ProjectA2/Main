@@ -146,11 +146,13 @@ void sceneMainSetPart::Enter(sceneMain *pMain)
 	//PersonMgr.AddPerson(PERSON_TYPE::START, Vector3(-50, 0, 0));
 	//PersonMgr.AddPerson(PERSON_TYPE::GOAL, Vector3(-80, 0, 0));
 
+	// チュートリアルポインタを空にする(これをしないと何故かメモリリークしてしまう)
+	SAFE_DELETE(m_pTutorial);
+
 	// ★チュートリアルのステージならチュートリアル実行ポインタをnew
 	int StageNo(StageMgr.GetStageNo());
 	if (StageNo < 1)
 	{
-		if (m_pTutorial) delete m_pTutorial;
 		m_pTutorial = new TutorialManager;
 		m_pTutorial->Initialize(pMain, StageNo);
 	}
@@ -159,8 +161,6 @@ void sceneMainSetPart::Enter(sceneMain *pMain)
 		// 青いボタンを選択状態に
 		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::BLUE, EN_DIS_TYPE::DISABLE_WHITE);
 		m_SelectButtonColor = (int)SELECT_BUTTON_COLOR::BLUE;
-
-		m_pTutorial = nullptr;
 	}
 
 	// 設置するときに表示するメッシュの初期化

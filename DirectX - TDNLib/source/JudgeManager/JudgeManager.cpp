@@ -37,6 +37,11 @@ bool Judge::AllShed::OnMessage(JudgeManager *pJudge, const Message &msg)
 		}
 		break;
 
+	case MESSAGE_TYPE::GAMEOVER:
+		// 流してはいけないヤツに流したとか
+		pJudge->SetJudgeMode(JudgeManager::JUDGEMODE::GAME_OVER);
+		break;
+
 	case MESSAGE_TYPE::GOAL_GOSSIP:
 	{
 		MyAssert(0, "クリア条件は全員に流すと設定されていますが、ゴールとなる人間がいます");
@@ -58,6 +63,11 @@ bool Judge::GoalPerson::OnMessage(JudgeManager *pJudge, const Message &msg)
 	switch (msg.Msg)
 	{
 	case MESSAGE_TYPE::SHED_GOSSIP:
+		break;
+
+	case MESSAGE_TYPE::GAMEOVER:
+		// 流してはいけないヤツに流したとか
+		pJudge->SetJudgeMode(JudgeManager::JUDGEMODE::GAME_OVER);
 		break;
 
 	case MESSAGE_TYPE::GOAL_GOSSIP:
