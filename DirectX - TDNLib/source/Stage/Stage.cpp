@@ -157,16 +157,17 @@ int Stage::LoadPerson()
 		switch (type)
 		{
 		case PERSON_TYPE::WAIT:
-		case PERSON_TYPE::START:
 		case PERSON_TYPE::GOAL:
 		case PERSON_TYPE::STRONG:
 			PersonMgr.AddPerson(type, pos, true);
 			break;
 		case PERSON_TYPE::STOP:
 		case PERSON_TYPE::GAMEOVER:
+		case PERSON_TYPE::START:
 			PersonMgr.AddPerson(type, pos, false);
 			break;
 		default:
+			MyAssert(0, "例外: 意図しないタイプがテキストに書かれています");
 			break;
 		}
 		
