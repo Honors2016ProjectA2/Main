@@ -23,7 +23,7 @@ void Judge::AllShed::Enter(JudgeManager *pJudge)
 
 	// 全員なので、リストのサイズ
 	// ★TODO:うわさを流してはいけない人間はカウントしないようにしたい
-	m_GoalCount = PersonMgr.GetPersonSize();
+	m_GoalCount = PersonMgr.GetMaxStayPerson();
 }
 bool Judge::AllShed::OnMessage(JudgeManager *pJudge, const Message &msg)
 {

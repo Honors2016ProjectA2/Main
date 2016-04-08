@@ -157,20 +157,12 @@ int Stage::LoadPerson()
 		switch (type)
 		{
 		case PERSON_TYPE::WAIT:
-			PersonMgr.AddPerson(type, pos, true);
-			break;
 		case PERSON_TYPE::START:
-			PersonMgr.AddPerson(type, pos, true);
-			break;
 		case PERSON_TYPE::GOAL:
-			PersonMgr.AddPerson(type, pos, true);
-			break;
-		case PERSON_TYPE::STOP:
-			PersonMgr.AddPerson(type, pos, false);
-			break;
 		case PERSON_TYPE::STRONG:
 			PersonMgr.AddPerson(type, pos, true);
 			break;
+		case PERSON_TYPE::STOP:
 		case PERSON_TYPE::GAMEOVER:
 			PersonMgr.AddPerson(type, pos, false);
 			break;

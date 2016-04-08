@@ -170,6 +170,15 @@ void ShedWait::Exit(WaitPerson *pPerson)
 		RIPPLE_VS_PERSON,
 		(void*)&ex	// [追記情報]自分のタイプを送る
 		);
+
+	// ジャッジ君に流したことを伝える
+	MsgMgr->Dispatch(
+		MSG_NO_DELAY,
+		pPerson->GetID(),
+		ENTITY_ID::JUDGE_MNG,
+		MESSAGE_TYPE::SHED_GOSSIP,
+		nullptr	// [追記情報]自分のタイプを送る
+		);
 }
 
 void ShedWait::Render(WaitPerson * pPerson)
