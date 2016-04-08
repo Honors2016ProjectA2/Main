@@ -23,7 +23,8 @@ enum BUTTON_ID
 	BLUE = 3,
 	RED = 4,
 	GREEN = 5,
-	START = 6
+	START = 6,
+	MAX
 };
 
 // ゲーム状態定数
@@ -83,6 +84,7 @@ public:
 
 	// 描画
 	void Render(sceneMain* pMain);
+	void Render2D(sceneMain* pMain);
 
 	// エージェントからのメッセージを受信した場合、これが実行される
 	bool OnMessage(sceneMain* pMain, const Message& msg);
@@ -96,6 +98,20 @@ private:
 
 	// イントロのタイマー
 	int m_timer;
+
+	// ステップ(順番に)
+	int m_step;
+
+	// クリア条件の画像
+	tdn2DObj *m_pImage;
+	Vector2 m_ImagePos;
+
+	// ステップを進めるプチ関数
+	void NextStep()
+	{
+		m_step++;
+		m_timer = 0;
+	}
 };
 
 //--------------------設置パート
@@ -172,6 +188,7 @@ public:
 
 	// 描画
 	void Render(sceneMain* pMain);
+	void Render2D(sceneMain* pMain);
 
 	// エージェントからのメッセージを受信した場合、これが実行される
 	bool OnMessage(sceneMain* pMain, const Message& msg);
@@ -203,6 +220,7 @@ public:
 
 	// 描画
 	void Render(sceneMain* pMain);
+	void Render2D(sceneMain* pMain);
 
 	// エージェントからのメッセージを受信した場合、これが実行される
 	bool OnMessage(sceneMain* pMain, const Message& msg);
@@ -235,6 +253,7 @@ public:
 
 	// 描画
 	void Render(sceneMain* pMain);
+	void Render2D(sceneMain* pMain);
 
 	// エージェントからのメッセージを受信した場合、これが実行される
 	virtual bool OnMessage(sceneMain* pMain, const Message& msg);

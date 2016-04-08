@@ -2,6 +2,9 @@
 #include "Stage.h"
 #include "AI\NPC\PersonManager.h"
 #include "../JudgeManager/JudgeManager.h"
+#include "../Camera/Camera.h"
+#include "../AI/Message/Message.h"
+#include "../AI/Message/MessageDispatcher.h"
 
 //**************************************************************************************************
 //		実体取得
@@ -43,6 +46,7 @@ struct MyMap
 
 int Stage::LoadPerson()
 {
+	/* テキストからデータ読み込み */
 	char filename[128];
 
 	// ★重要　プログラムは0からのスタートだが、テキストでのステージの名前は1からのスタートで、その誤差をここで埋めている！(+1)

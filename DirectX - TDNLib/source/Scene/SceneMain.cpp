@@ -12,6 +12,8 @@
 #include "../Fade/Fade.h"
 #include "../JudgeManager/JudgeManager.h"
 #include "Tutorial.h"
+#include "../Camera/Camera.h"
+#include "../Stage/Stage.h"
 
 //******************************************************************
 //		グローバル変数
@@ -22,20 +24,38 @@ iexMesh* school;
 // 現状、誰に持たせるべきか分からないのでここにおいとく
 int RippleCount(0);
 
+// イントロ飛ばすのめんどくさかったらfalseにすると幸せになれる
+static const bool IntroON = true;
+
 
 //******************************************************************
 //		初期化・解放
 //******************************************************************
 bool sceneMain::Initialize()
 {
-	tdnView::Init();
+	// マウス初期化
 	tdnMouse::Initialize(TRUE);
-	tdnView::Set(Vector3(.0f,95.0f,-80.0f), Vector3(.0f, .0f, .0f));
+
+	// カメラ初期化
+	CameraMgr.Initialize(IntroON);
+	//tdnView::Init();
+	// tdnView::Set(Vector3(.0f, 95.0f, -80.0f), Vector3(.0f, .0f, .0f));
+
 
 	//rip = new GossipRipple(RIPPLE_TYPE::RED, Vector3(-20, 0, 20));
 
 	GossipRippleMgr;
 	JudgeMgr;
+
+	// ★ステージの読み込みをここに移植しました。(JudgeManagerのクリア条件の設定をこの中でやっているので、それより前にクリア条件を参照するとうまくいかなくなったため)
+	// ステージの番号に応じて人間を読み込む
+	RippleCount = StageMgr.LoadPerson();
+	// でばっぐ用
+	//PersonMgr.AddPerson(PERSON_TYPE::GAMEOVER, Vector3(20, 0, 20));
+	//PersonMgr.AddPerson(PERSON_TYPE::START, Vector3(25, 0, 0));
+	//PersonMgr.AddPerson(PERSON_TYPE::WAIT, Vector3(-25, 0, 0));
+	//PersonMgr.AddPerson(PERSON_TYPE::START, Vector3(-50, 0, 0));
+	//PersonMgr.AddPerson(PERSON_TYPE::GOAL, Vector3(-80, 0, 0));
 
 	// ステージモデル初期化
 	school = new iexMesh("Data/Stage/school.imo");
@@ -54,7 +74,8 @@ bool sceneMain::Initialize()
 	// シーンメインステートマシン初期化
 	m_pStateMachine = new StateMachine<sceneMain>(this);
 	m_pStateMachine->SetGlobalState(sceneMainGlobalState::GetInstance());// グローバル
-	m_pStateMachine->SetCurrentState(sceneMainSetPart::GetInstance());
+	if (IntroON) m_pStateMachine->SetCurrentState(sceneMainIntro::GetInstance());
+	else         m_pStateMachine->SetCurrentState(sceneMainSetPart::GetInstance());
 	g_GameState = GAME_STATE::INTRO;
 
 	// ゲームクリアの画像初期化
@@ -80,7 +101,7 @@ sceneMain::~sceneMain()
 	delete m_pButtonMgr;
 	delete school;
 	delete m_pStateMachine;
-
+	CameraMgr.Release();
 	//delete lpGameClear;
 	//delete lpGameOver;
 
@@ -104,6 +125,9 @@ bool sceneMain::Update()
 
 	// UIマネージャー更新
 	UIMgr.Update();
+
+	// カメラ更新
+	CameraMgr.Update();
 
 	// フェード更新
 	Fade::Update();
@@ -189,9 +213,10 @@ bool sceneMain::Update()
 
 void sceneMain::Render()
 {
-	tdnView::Activate();
-	tdnView::Clear(0xff005522);
-	
+	//tdnView::Activate();
+	//tdnView::Clear(0xff005522);
+	CameraMgr.Activate();
+
 	school->Render();
 
 	//rip->Render();
@@ -200,7 +225,7 @@ void sceneMain::Render()
 	PersonMgr.Render();
 	m_pStateMachine->Render();
 
-	UIMgr.Render();
+	//UIMgr.Render();	// イントロで表示させないようにしたかったのでStateのRender2Dに移植しました
 
 	m_pStateMachine->Render2D();
 

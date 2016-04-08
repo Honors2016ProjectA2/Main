@@ -91,6 +91,23 @@ void PersonManager::AddPerson(PERSON_TYPE type,Vector3 pos)
 		data = new StartPerson(id);
 		data->SetPos(pos);
 
+		// ★追加 スタートの人間だったらカメラ演出に必要なので座標を送ってあげる！(ここでイントロカメラのスイッチがONになる)
+		//if (type == PERSON_TYPE::START)
+		{
+			// 構造体作成
+			INTRO_CAMERA_INFO ex;
+			ex.start_person_pos = pos;	// 噂スタート人の座標
+
+			// カメラマネージャーに情報送信
+			MsgMgr->Dispatch(
+				MSG_NO_DELAY,
+				ENTITY_ID::PERSON_MNG,
+				ENTITY_ID::CAMERA_MNG,
+				MESSAGE_TYPE::START_INTRO_CAMERA,	// イントロカメラ稼働！
+				(void*)&ex	// [追記情報]自分のタイプを送る
+				);
+		}
+
 		break;
 	case PERSON_TYPE::GOAL:
 		data = new GoalPerson(id);

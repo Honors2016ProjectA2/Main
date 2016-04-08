@@ -14,7 +14,10 @@ enum MESSAGE_TYPE
 	GOAL_GOSSIP,
 
 	SHED_GOSSIP,		// うわさを流したとき、ジャッジマネージャに送信する。(プレイヤーが設置した人間だったら送信しないようにしたい)
-	GAMEOVER			// うわさを流してはいけないヤツに噂を流したら、ジャッジマネージャに送信する
+	GAMEOVER,			// うわさを流してはいけないヤツに噂を流したら、ジャッジマネージャに送信する
+
+	START_INTRO_CAMERA,	// ？→カメラ　ゲームが始まってイントロカメラ発動してくださいメッセージ
+	//END_INTRO_CAMRA		// カメラ→sceneMainState カメラ演出が終わったというメッセージ(シーンメインにBaseEntityを継承させるとUpdateの箇所等で面倒なことになるので、廃止)
 };
 
 enum class PERSON_TYPE;	// 前方宣言
@@ -24,6 +27,14 @@ struct RIPPLE_INFO
 	PERSON_TYPE type;
 	Vector3 pos;
 	float size;
+};
+
+/* カメラマネージャにデータを送る時の構造体 */
+
+// イントロ発動メッセージ送信のときにいれる構造体
+struct INTRO_CAMERA_INFO
+{
+	Vector3 start_person_pos;	// うわさを流す人間の座標
 };
 
 /*

@@ -22,7 +22,7 @@ void Judge::AllShed::Enter(JudgeManager *pJudge)
 	m_ShedCount = 0;
 
 	// 全員なので、リストのサイズ
-	// ★TODO:うわさを流してはいけない人間はカウントしないようにしたい！！！
+	// ★TODO:うわさを流してはいけない人間はカウントしないようにしたい
 	m_GoalCount = PersonMgr.GetPersonSize();
 }
 bool Judge::AllShed::OnMessage(JudgeManager *pJudge, const Message &msg)
@@ -123,7 +123,8 @@ void JudgeManager::Release()
 
 // 初期化
 JudgeManager::JudgeManager() :
-	BaseGameEntity(ENTITY_ID::JUDGE_MNG)// ★ジャッジマネージャー用のＩＤ番号を渡す
+	BaseGameEntity(ENTITY_ID::JUDGE_MNG),// ★ジャッジマネージャー用のＩＤ番号を渡す
+	m_ClearFlag(CLEAR_FLAG::GOAL_PERSON)
 {
 	// 判定状態初期化
 	m_JudgeMode = JUDGEMODE::NONE;

@@ -23,8 +23,9 @@
 
 void IconButtonManager::TextLoad(char *filename)
 {
+	/* テキストからデータ読み込み */
 	std::ifstream ifs(filename);
-	assert(ifs);
+	assert(ifs);	// データがないかファイル名間違ってる！
 
 	while (!ifs.eof())
 	{
@@ -186,6 +187,19 @@ void IconButtonManager::SetEnDis(UINT ID, EN_DIS_TYPE type)
 	}
 }
 
+void IconButtonManager::SetEnDis(UINT ID, BYTE BitType)
+{
+	assert(ID < m_List.size());
+	for (auto it : m_List)
+	{
+		if (it->GetID() == ID)
+		{
+			it->SetEnable(BitType);
+			break;
+		}
+	}
+}
+
 
 //*****************************************************************************************************************************
 //
@@ -221,7 +235,7 @@ void IconButton::Update(const Vector2 &CursorPos)
 {
 	// 稼働状態かどうか
 	//if (m_EnDisType != EN_DIS_TYPE::ENABLE)return;
-	if (m_EnDisType == EN_DIS_TYPE::DISABLE_VANISH) return;
+	if (m_EnDisType & (BYTE)EN_DIS_TYPE::DISABLE_VANISH) return;
 
 	// アイコン範囲内時
 	if (
@@ -229,7 +243,7 @@ void IconButton::Update(const Vector2 &CursorPos)
 		m_pCollision->Collision(CursorPos)
 		)
 	{
-		if (!m_In && m_EnDisType == EN_DIS_TYPE::ENABLE)
+		if (!m_In && m_EnDisType & (BYTE)EN_DIS_TYPE::ENABLE)
 		{
 			if (strcmp(m_SE_ID, "\0") != 0)
 			{
@@ -252,8 +266,23 @@ void IconButton::Update(const Vector2 &CursorPos)
 
 void IconButton::Render()
 {
+	// 縁取り(下に敷くので一番上に書く)
+	if (m_EnDisType & (BYTE)EN_DIS_TYPE::BORDERING)
+	{
+		// めちゃくちゃだけど、とりあえず縁取り作成
+		const float s = 1.05f;
+		const int w = 256, h = 256;
+		const int X = (int)((m_dstX + w * .5f) + (w * -.5f * s)), Y = (int)((m_dstY + h * .5f) + (h * -.5f * s));
+		tdnPolygon::Rect(
+			X, 
+			Y, 
+			(int)((w * .5f * s)+m_dstX-X+.5f),
+			(int)((h * .5f * s)+m_dstY-Y+.5f),
+			RS::COPY, 0xff000000);
+	}
+
 	// ボタン有効状態
-	if (m_EnDisType == EN_DIS_TYPE::ENABLE)
+	if (m_EnDisType & (BYTE)EN_DIS_TYPE::ENABLE)
 	{
 		m_pButton->SetARGB(0xffffffff);
 		m_pButton->SetScale((m_InActionFlag & IN_ACTION::UP_SCALE && m_In) ?
@@ -265,7 +294,7 @@ void IconButton::Render()
 	}
 
 	// ボタン無効状態
-	else if (m_EnDisType == EN_DIS_TYPE::DISABLE)
+	else if (m_EnDisType & (BYTE)EN_DIS_TYPE::DISABLE)
 	{
 		m_pButton->SetARGB(0xffffffff);
 		m_pButton->SetScale(1);
@@ -273,7 +302,7 @@ void IconButton::Render()
 	}
 
 	// ボタン無効状態(やや黒くする)
-	else if (m_EnDisType == EN_DIS_TYPE::DISABLE_BLACK)
+	else if (m_EnDisType & (BYTE)EN_DIS_TYPE::DISABLE_BLACK)
 	{
 		m_pButton->SetARGB((BYTE)252, (BYTE)128, (BYTE)128, (BYTE)128);
 		m_pButton->SetScale(1);
@@ -281,7 +310,7 @@ void IconButton::Render()
 	}
 
 	// ボタン無効状態(やや白くする)
-	else if (m_EnDisType == EN_DIS_TYPE::DISABLE_WHITE)
+	else if (m_EnDisType & (BYTE)EN_DIS_TYPE::DISABLE_WHITE)
 	{
 		m_pButton->SetARGB(0xffffffff);
 		m_pButton->SetScale(1);

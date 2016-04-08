@@ -11,11 +11,11 @@
 #include	"../textLoader\textLoader.h"
 
 // 前方宣言
-class Camera;
+class CameraManager;
 class EffectCamera;
 
 //--------------------グローバルステート
-class CameraGlobalState:public State<Camera>
+class CameraGlobalState :public State<CameraManager>
 {
 public:
 
@@ -23,19 +23,19 @@ public:
 	static CameraGlobalState* GetInstance();
 
 	// 入る
-	virtual void Enter(Camera* pCamera);
+	virtual void Enter(CameraManager* pCamera);
 
 	// 実行します
-	virtual void Execute(Camera* pCamera);
+	virtual void Execute(CameraManager* pCamera);
 
 	// 帰る
-	virtual void Exit(Camera* pCamera);
+	virtual void Exit(CameraManager* pCamera);
 
 	// 描画
-	virtual void Render(Camera* pCamera);
+	virtual void Render(CameraManager* pCamera);
 
 	// エージェントからのメッセージを受信した場合、これが実行される
-	virtual bool OnMessage(Camera* pCamera, const Message& msg);
+	virtual bool OnMessage(CameraManager* pCamera, const Message& msg);
 
 private:
 	CameraGlobalState() {};
@@ -46,7 +46,7 @@ private:
 
 
 //--------------------固定カメラ
-class FixCameraState :public State<Camera>
+class FixCameraState :public State<CameraManager>
 {
 public:
 
@@ -54,19 +54,19 @@ public:
 	static FixCameraState* GetInstance();
 
 	// 入る
-	virtual void Enter(Camera* pCamera);
+	virtual void Enter(CameraManager* pCamera);
 
 	// 実行します
-	virtual void Execute(Camera* pCamera);
+	virtual void Execute(CameraManager* pCamera);
 
 	// 帰る
-	virtual void Exit(Camera* pCamera);
+	virtual void Exit(CameraManager* pCamera);
 
 	// 描画
-	virtual void Render(Camera* pCamera);
+	virtual void Render(CameraManager* pCamera);
 
 	// エージェントからのメッセージを受信した場合、これが実行される
-	virtual bool OnMessage(Camera* pCamera, const Message& msg);
+	virtual bool OnMessage(CameraManager* pCamera, const Message& msg);
 
 private:
 	FixCameraState() {};
@@ -74,6 +74,57 @@ private:
 
 	FixCameraState(const FixCameraState&);
 	FixCameraState& operator=(const FixCameraState&);
+
+};
+
+//--------------------イントロ演出用カメラ
+class IntroCameraState :public State<CameraManager>
+{
+public:
+
+	//this is a シングルトン
+	static IntroCameraState* GetInstance();
+
+	// 入る
+	virtual void Enter(CameraManager* pCamera);
+
+	// 実行します
+	virtual void Execute(CameraManager* pCamera);
+
+	// 帰る
+	virtual void Exit(CameraManager* pCamera);
+
+	// 描画
+	virtual void Render(CameraManager* pCamera);
+
+	// エージェントからのメッセージを受信した場合、これが実行される
+	virtual bool OnMessage(CameraManager* pCamera, const Message& msg);
+
+private:
+	int m_step;		// 演出のステップ
+	int m_timer;	// 演出での時間を計る時に
+
+	Vector3 m_StartPos, m_StartTarget;	// 開始時の座標(移動して、最後に元の位置に戻る際に必要になる)
+
+	Vector3 m_NextPos, m_NextTarget;	// 目標位置(補間で使う)
+	float m_SlerpPow;					// 補間にかける力(0 ～ 1.0f)
+
+	Vector3 m_StartPersonPos;		// 噂をスタートする人の座標(メッセージから受け取る)
+
+	bool m_bAction;	// 最初はfalseでtrueになったら稼働する
+
+	// ステップを進めるプチ関数
+	void NextStep()
+	{
+		m_step++;
+		m_timer = 0;
+	}
+
+	IntroCameraState() {};
+	~IntroCameraState() {};
+
+	IntroCameraState(const IntroCameraState&);
+	IntroCameraState& operator=(const IntroCameraState&);
 
 };
 
@@ -96,7 +147,7 @@ public:
 };
 
 //--------------------エフェクトカメラ(スクリプト)
-class EffectCameraState :public State<Camera>,textLoader
+class EffectCameraState :public State<CameraManager>, textLoader
 {
 public:
 
@@ -104,19 +155,19 @@ public:
 	static EffectCameraState* GetInstance();
 
 	// 入る
-	virtual void Enter(Camera* pCamera);
+	virtual void Enter(CameraManager* pCamera);
 
 	// 実行します
-	virtual void Execute(Camera* pCamera);
+	virtual void Execute(CameraManager* pCamera);
 
 	// 帰る
-	virtual void Exit(Camera* pCamera);
+	virtual void Exit(CameraManager* pCamera);
 
 	// 描画
-	virtual void Render(Camera* pCamera);
+	virtual void Render(CameraManager* pCamera);
 
 	// エージェントからのメッセージを受信した場合、これが実行される
-	virtual bool OnMessage(Camera* pCamera, const Message& msg);
+	virtual bool OnMessage(CameraManager* pCamera, const Message& msg);
 
 private:
 	EffectCameraState() {};

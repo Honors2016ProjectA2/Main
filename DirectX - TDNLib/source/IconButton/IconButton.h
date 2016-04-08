@@ -9,11 +9,13 @@
 // ボタン有効・無効フラグ定数
 enum class EN_DIS_TYPE
 {
-	ENABLE,				// 稼働中だよ
-	DISABLE,			// 普通に描画されるが使えない
-	DISABLE_BLACK,		// 使えない的なメッセージ
-	DISABLE_WHITE,		// 何か選択中的なメッセージ
-	DISABLE_VANISH		// 消える
+	ENABLE = 1,					// 稼働中だよ
+	DISABLE = 1 << 1,			// 普通に描画されるが使えない
+	DISABLE_BLACK = 1 << 2,		// 使えない的なメッセージ
+	DISABLE_WHITE = 1 << 3,		// 何か選択中的なメッセージ
+	DISABLE_VANISH = 1 << 4,	// 消える
+
+	BORDERING = 1 << 5			// 縁取る
 };
 
 class IconButton
@@ -27,7 +29,7 @@ public:
 	};
 
 	// 初期化・解放・更新・描画
-	IconButton() :m_pCollision(nullptr), m_EnDisType(EN_DIS_TYPE::ENABLE), m_SEReceive(-1){}
+	IconButton() :m_pCollision(nullptr), m_EnDisType((BYTE)EN_DIS_TYPE::ENABLE), m_SEReceive(-1){}
 	void Initialize(int ID, char *TexPath, int dstX, int dstY, BYTE InAction, char* se_ID);
 	~IconButton();
 	void Update(const Vector2 &CursorPos);
@@ -36,10 +38,14 @@ public:
 	// ボタンの有効・無効の設定
 	void SetEnable(EN_DIS_TYPE type)
 	{
-		m_EnDisType = type;
+		SetEnable((BYTE)type);	// 下記の関数を呼び出す
+	}
+	void SetEnable(BYTE BitType)
+	{
+		m_EnDisType = BitType;
 
 		// 無効化するときはm_In(カーソルが範囲内に入っているかのフラグ)をOFFにする
-		if(type != EN_DIS_TYPE::ENABLE) m_In = false;
+		if (BitType != (BYTE)EN_DIS_TYPE::ENABLE) m_In = false;
 	}
 
 	// ゲッタ・セッタ
@@ -68,10 +74,10 @@ private:
 	//int m_srcW;
 	//int m_srcH;
 	bool m_In;				// 範囲内
-	BYTE m_InActionFlag;		//
-	tdn2DObj *m_pButton;		// 画像実体
-	char m_SE_ID[64];			// 範囲内に入った際のSEのID
-	EN_DIS_TYPE m_EnDisType;	// 有効かどうか
+	BYTE m_InActionFlag;	//
+	tdn2DObj *m_pButton;	// 画像実体
+	char m_SE_ID[64];		// 範囲内に入った際のSEのID
+	BYTE m_EnDisType;		// 有効かどうか
 
 	int m_SEReceive;		// 1フレーム毎にSEを呼ばないように使う用
 
@@ -135,6 +141,7 @@ public:
 
 	// Enable,Disable。ボタンの有効化と無効化
 	void SetEnDis(UINT ID, EN_DIS_TYPE type);
+	void SetEnDis(UINT ID, BYTE BitType);
 
 	// リスト消去
 	void Clear();

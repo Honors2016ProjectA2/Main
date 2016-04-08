@@ -11,6 +11,7 @@
 #include "../Fade/Fade.h"
 #include "../JudgeManager/JudgeManager.h"
 #include "Tutorial.h"
+#include "../Camera/Camera.h"
 
 // sceneMainのグローバル変数から
 extern int RippleCount;
@@ -88,30 +89,129 @@ sceneMainIntro* sceneMainIntro::GetInstance()
 // 入り口
 void sceneMainIntro::Enter(sceneMain *pMain)
 {
+	// タイマー初期化
 	m_timer = 0;
+
+	// ステップ初期化
+	m_step = 0;
+
+	// 画像の位置初期化
+	m_ImagePos = Vector2(-1024, 320);
+
+	// (TODO)★★★tdn2DObjはシングルトンデストラクタで消されるとエラーが出るのでステート内のExitで消しているが、
+	// 無論Exitに行くまでにゲームが終了するともれなくメモリリークが発生する
+	if (JudgeMgr.GetClearFlag() == CLEAR_FLAG::GOAL_PERSON)
+		m_pImage = new tdn2DObj("DATA/UI/goal_personIntro.png");
+	else if (JudgeMgr.GetClearFlag() == CLEAR_FLAG::ALL_SHED)
+		m_pImage = new tdn2DObj("DATA/UI/all_shedIntro.png");
+	else assert(0);
+
+	// ボタン全部OFF
+	for (UINT i = 0; i < BUTTON_ID::MAX; i++)
+	{
+		pMain->GetButtonMgr()->SetEnDis(i, EN_DIS_TYPE::DISABLE_VANISH);
+	}
 }
 
 // 実行中
 void sceneMainIntro::Execute(sceneMain *pMain)
 {
-	// 一定時間経過で、ゲームに移行
-	if (++m_timer > 180)
+	GossipRippleMgr.Update();
+
+	PersonMgr.Update();
+
+	// 左クリックでイントロスキップ
+	if (tdnMouse::GetLeft() == 3)
 	{
+		// ゲームに移行
 		pMain->GetFSM()->ChangeState(sceneMainSetPart::GetInstance());
+	}
+
+	// カメラさんがイントロ中なのでまだ動かない(ここのイントロパートはカメラ演出が終わってからのパート)
+	if (CameraMgr.isIntro()) return;
+
+	switch (m_step)
+	{
+	case 0:
+		/* フェードを入れるだけの仕事 */
+
+		// ブラックフェードON
+		Fade::Set(Fade::FLAG::FADE_OUT, 4, 0x00000000, 1, 128);
+
+		// 次のステップへ
+		NextStep();
+		break;
+
+	case 1:
+		/* クリア条件の画像を左から右へ移動させるだけの仕事 */
+
+	{
+			  // 目標座標(中央揃え的な計算で出す)
+			  const int GoalX = tdnSystem::GetScreenSize().right / 2 - m_pImage->GetWidth() / 2;
+
+			  // 特急A列車でGOGO！！  真ん中に到着したら
+			  if ((m_ImagePos.x += 12) > GoalX)
+			  {
+				  m_ImagePos.x = (float)GoalX;
+				  // 次のステップへ
+				  NextStep();
+			  }
+	}
+		break;
+
+	case 2:
+		/* クリア条件を3秒眺めるだけの仕事 */
+
+		if (++m_timer > 180)NextStep();
+		break;
+
+	case 3:
+		/* クリア条件の画像をさよならー */
+
+		// 特急A列車でGOGO！！
+		if ((m_ImagePos.x += 12) > tdnSystem::GetScreenSize().right + 320)
+		{
+			// フェード解除
+			Fade::Set(Fade::FLAG::FADE_IN, 4, 0x00000000, 128, 0);
+
+			// 次のステップへ
+			NextStep();
+		}
+		break;
+
+	case 4:
+		/* フェード消えるまで待つだけの仕事 */
+
+		// フェードが終わったら
+		if (Fade::isFadeStop())
+		{
+			// ゲームに移行
+			pMain->GetFSM()->ChangeState(sceneMainSetPart::GetInstance());
+		}
+		break;
 	}
 }
 
 // 出口
 void sceneMainIntro::Exit(sceneMain *pMain)
 {
-
+	// (TODO)★ Enter参照
+	delete m_pImage;
 }
 
 void sceneMainIntro::Render(sceneMain * pMain)
 {
-	tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x80000000);
-	tdnText::Draw(640, 320, 0xffffffff, "ゲームイントロ");
-	tdnText::Draw(640, 360, 0xffffffff, "%.1f", 3.0f - m_timer / 60.0f);
+
+}
+
+void sceneMainIntro::Render2D(sceneMain *pMain)
+{
+	Fade::Render();
+
+	// フェードの上に画像を置く
+	m_pImage->Render((int)m_ImagePos.x, (int)m_ImagePos.y);
+
+	tdnText::Draw(640, 620, 0x88ffffff, "イントロ再生中: 左クリックでスキップ");
 }
 
 bool sceneMainIntro::OnMessage(sceneMain *pMain, const Message &msg)
@@ -138,15 +238,6 @@ sceneMainSetPart::~sceneMainSetPart()
 // 入り口
 void sceneMainSetPart::Enter(sceneMain *pMain)
 {
-	// ステージの番号に応じて人間を読み込む
-	RippleCount = StageMgr.LoadPerson();
-	// でばっぐ用
-	//PersonMgr.AddPerson(PERSON_TYPE::GAMEOVER, Vector3(20, 0, 20));
-	//PersonMgr.AddPerson(PERSON_TYPE::START, Vector3(25, 0, 0));
-	//PersonMgr.AddPerson(PERSON_TYPE::WAIT, Vector3(-25, 0, 0));
-	//PersonMgr.AddPerson(PERSON_TYPE::START, Vector3(-50, 0, 0));
-	//PersonMgr.AddPerson(PERSON_TYPE::GOAL, Vector3(-80, 0, 0));
-
 	// チュートリアルポインタを空にする(これをしないと何故かメモリリークしてしまう)
 	SAFE_DELETE(m_pTutorial);
 
@@ -159,8 +250,12 @@ void sceneMainSetPart::Enter(sceneMain *pMain)
 	}
 	else
 	{
-		// 青いボタンを選択状態に
-		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::BLUE, EN_DIS_TYPE::DISABLE_WHITE);
+		// ボタン有効化
+		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::RETRY, EN_DIS_TYPE::ENABLE);
+		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::START, EN_DIS_TYPE::ENABLE);
+		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::RED, EN_DIS_TYPE::ENABLE);
+		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::GREEN, EN_DIS_TYPE::ENABLE);
+		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::BLUE, EN_DIS_TYPE::DISABLE_WHITE);	// 青いボタンを選択状態に
 		m_SelectButtonColor = (int)SELECT_BUTTON_COLOR::BLUE;
 	}
 
@@ -359,6 +454,10 @@ void sceneMainSetPart::Render(sceneMain * pMain)
 
 void sceneMainSetPart::Render2D(sceneMain *pMain)
 {
+	// UI描画
+	UIMgr.Render();
+
+	// チュートリアルでの描画
 	if (m_pTutorial)
 	{
 		m_pTutorial->Render2D(pMain);
@@ -388,7 +487,7 @@ void sceneMainSetPart::ChangeSelectButton(sceneMain *pMain, SELECT_BUTTON_COLOR 
 		{
 			pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::RED, EN_DIS_TYPE::ENABLE);
 		}
-		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::BLUE, EN_DIS_TYPE::DISABLE_WHITE);
+		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::BLUE, (BYTE)((BYTE)EN_DIS_TYPE::DISABLE_WHITE | (BYTE)EN_DIS_TYPE::BORDERING));
 		m_SelectButtonColor = (int)SELECT_BUTTON_COLOR::BLUE;
 		break;
 
@@ -402,7 +501,7 @@ void sceneMainSetPart::ChangeSelectButton(sceneMain *pMain, SELECT_BUTTON_COLOR 
 		{
 			pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::GREEN, EN_DIS_TYPE::ENABLE);
 		}
-		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::RED, EN_DIS_TYPE::DISABLE_WHITE);
+		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::RED, (BYTE)((BYTE)EN_DIS_TYPE::DISABLE_WHITE | (BYTE)EN_DIS_TYPE::BORDERING));
 		m_SelectButtonColor = (int)SELECT_BUTTON_COLOR::RED;
 		break;
 
@@ -416,7 +515,7 @@ void sceneMainSetPart::ChangeSelectButton(sceneMain *pMain, SELECT_BUTTON_COLOR 
 		{
 			pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::RED, EN_DIS_TYPE::ENABLE);
 		}
-		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::GREEN, EN_DIS_TYPE::DISABLE_WHITE);
+		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::GREEN, (BYTE)((BYTE)EN_DIS_TYPE::DISABLE_WHITE | (BYTE)EN_DIS_TYPE::BORDERING));
 		m_SelectButtonColor = (int)SELECT_BUTTON_COLOR::GREEN;
 		break;
 	}
@@ -570,6 +669,12 @@ void sceneMainGossip::Render(sceneMain * pMain)
 {
 }
 
+void sceneMainGossip::Render2D(sceneMain *pMain)
+{
+	// UI描画
+	UIMgr.Render();
+}
+
 bool sceneMainGossip::OnMessage(sceneMain *pMain, const Message &msg)
 {
 	// 出ていけ！
@@ -607,6 +712,12 @@ void sceneMainGameClear::Exit(sceneMain *pMain)
 
 void sceneMainGameClear::Render(sceneMain * pMain)
 {
+}
+
+void sceneMainGameClear::Render2D(sceneMain *pMain)
+{
+	// UI描画
+	UIMgr.Render();
 }
 
 bool sceneMainGameClear::OnMessage(sceneMain *pMain, const Message &msg)
@@ -648,6 +759,12 @@ void sceneMainGameOver::Exit(sceneMain *pMain)
 void sceneMainGameOver::Render(sceneMain * pMain)
 {
 
+}
+
+void sceneMainGameOver::Render2D(sceneMain *pMain)
+{
+	// UI描画
+	UIMgr.Render();
 }
 
 bool sceneMainGameOver::OnMessage(sceneMain *pMain, const Message &msg)
