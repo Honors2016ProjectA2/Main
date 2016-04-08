@@ -154,7 +154,30 @@ int Stage::LoadPerson()
 		ifs >> pos.z;
 
 		// 人間リストに追加
-		PersonMgr.AddPerson(type, pos);
+		switch (type)
+		{
+		case PERSON_TYPE::WAIT:
+			PersonMgr.AddPerson(type, pos, true);
+			break;
+		case PERSON_TYPE::START:
+			PersonMgr.AddPerson(type, pos, true);
+			break;
+		case PERSON_TYPE::GOAL:
+			PersonMgr.AddPerson(type, pos, true);
+			break;
+		case PERSON_TYPE::STOP:
+			PersonMgr.AddPerson(type, pos, false);
+			break;
+		case PERSON_TYPE::STRONG:
+			PersonMgr.AddPerson(type, pos, true);
+			break;
+		case PERSON_TYPE::GAMEOVER:
+			PersonMgr.AddPerson(type, pos, false);
+			break;
+		default:
+			break;
+		}
+		
 	}
 
 	// ★ジャッジ君にクリア条件を設定(何故一番下に書くのかというと、設定した時点で人間の設置情報を参照する場合があるから)

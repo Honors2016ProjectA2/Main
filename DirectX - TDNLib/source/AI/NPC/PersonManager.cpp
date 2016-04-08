@@ -72,7 +72,7 @@ PersonManager::~PersonManager()
 }
 
 // キャラ追加
-void PersonManager::AddPerson(PERSON_TYPE type,Vector3 pos)
+void PersonManager::AddPerson(PERSON_TYPE type,Vector3 pos, bool isStay)
 {
 	// 人
 	BasePerson* data;
@@ -111,22 +111,18 @@ void PersonManager::AddPerson(PERSON_TYPE type,Vector3 pos)
 		break;
 	case PERSON_TYPE::GOAL:
 		data = new GoalPerson(id);
-		data->SetPos(pos);
 
 		break;
 	case PERSON_TYPE::STOP:
 		data = new StopPerson(id);
-		data->SetPos(pos);
 
 		break;
 	case PERSON_TYPE::STRONG:
 		data = new StrongPerson(id);
-		data->SetPos(pos);
 
 		break;
 	case PERSON_TYPE::GAMEOVER:
 		data = new GameOverPerson(id);
-		data->SetPos(pos);
 
 		break;
 	default:
@@ -134,7 +130,9 @@ void PersonManager::AddPerson(PERSON_TYPE type,Vector3 pos)
 		break;
 	}
 
-
+	// ここで設定を変更
+	data->SetPos(pos);
+	data->SetIsStay(isStay);
 
 	// 配列に加える
 	m_PersonData.push_back(data);
@@ -386,5 +384,19 @@ void PersonManager::ProductRipple()
 			);
 	}
 
+}
+
+// 最大数取得
+int PersonManager::GetMaxStayPerson()
+{
+	// ふぉｒ分でキャラクター全部見て
+	// フラグの立ってるやつをカウント
+	int ret = 0;
+	for (int i = 0; i < (int)m_PersonData.size(); i++)
+	{
+		ret += m_PersonData[i]->IsStay();
+
+	}
+	return ret;
 }
 

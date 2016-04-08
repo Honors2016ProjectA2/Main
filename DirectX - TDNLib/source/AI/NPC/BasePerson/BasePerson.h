@@ -64,6 +64,9 @@ public:
 	bool IsShed() { return m_isShed; };
 	void SetIsShed(bool f) { m_isShed = f; }
 
+	bool IsStay() { return m_isStay; };
+	void SetIsStay(bool f) { m_isStay = f; }
+
 	PERSON_TYPE GetPersonType() { return m_PersonType;	}
 	
 	iex3DObj* GetObj() { return m_obj; }
@@ -93,6 +96,9 @@ protected:
 	float m_angle;
 
 	bool m_isShed;	// ~は噂を流したか
+
+	bool m_isStay;  // 最初からいるか
+
 
 	// ★ステートマシン
 	// StateMachine<BasePerson>*  m_pStateMachine;

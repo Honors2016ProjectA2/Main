@@ -49,7 +49,7 @@ public:
 	/*
 		中で勝手にＩＤを振る
 	*/
-	void AddPerson(PERSON_TYPE type, Vector3 pos);
+	void AddPerson(PERSON_TYPE type, Vector3 pos, bool isStay = false );
 
 	//	リセット
 	void Reset();
@@ -85,6 +85,7 @@ public:
 	// 演出用Ｒｉｐ
 	void ProductRipple();
 
+	int GetMaxStayPerson();
 
 };
 

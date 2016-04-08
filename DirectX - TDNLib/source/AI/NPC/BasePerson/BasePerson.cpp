@@ -79,6 +79,7 @@ BasePerson::BasePerson(ENTITY_ID id) :BaseGameEntity(id)
 
 	
 	m_isShed = false;	// ‰\‚ð—¬‚µ‚½‚©
+	m_isStay = false;
 }
 
 
