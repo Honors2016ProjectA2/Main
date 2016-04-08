@@ -48,7 +48,6 @@ void GossipRipple::Action()
 
 	//isAction = true;
 	// ‰Šú‰»
-	//isEnd = false;
 	//m_Flame = 0;
 	//m_Size = 1.0f;
 }

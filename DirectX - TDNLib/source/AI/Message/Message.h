@@ -18,6 +18,8 @@ enum MESSAGE_TYPE
 
 	START_INTRO_CAMERA,	// ？→カメラ　ゲームが始まってイントロカメラ発動してくださいメッセージ
 	//END_INTRO_CAMRA		// カメラ→sceneMainState カメラ演出が終わったというメッセージ(シーンメインにBaseEntityを継承させるとUpdateの箇所等で面倒なことになるので、廃止)
+
+	PRODUCT_RIPPLE,// 演出用波紋
 };
 
 enum class PERSON_TYPE;	// 前方宣言

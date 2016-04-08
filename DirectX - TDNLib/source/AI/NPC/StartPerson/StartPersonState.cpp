@@ -24,7 +24,8 @@ void StartPersonGlobalState::Enter(StartPerson *pPerson)
 // 実行中
 void StartPersonGlobalState::Execute(StartPerson *pPerson)
 {
-
+	// 波紋は常に更新
+	pPerson->GetRipple()->Update();
 }
 
 // 出口
@@ -38,11 +39,30 @@ void StartPersonGlobalState::Render(StartPerson * pPerson)
 
 }
 
-//
+// ★★★
+// ここで特に意味のない波紋をだす命令を受けつける
 bool StartPersonGlobalState::OnMessage(StartPerson *pPerson, const Message &msg)
 {
+	// メッセージタイプ
+	switch (msg.Msg)
+	{
+	case MESSAGE_TYPE::PRODUCT_RIPPLE:
 
-	 // Flaseで返すとグローバルステートなので正真正銘の終り
+		MyDebugString("ID[%d]　が演出用波紋をだした\n", (int)pPerson->GetID());
+		pPerson->GetRipple()->Action();
+		// 波紋
+		pPerson->GetRipple()->SetPos(pPerson->GetPos());// 常にプレイヤー追従
+
+
+		return true;
+
+		break;
+	default:
+
+		break;
+	}//end switch
+
+	 // Flaseで返すとグローバルステートのOnMessageの処理へ行く
 	return false;
 }
 
@@ -139,7 +159,7 @@ void FirstShed::Execute(StartPerson *pPerson)
 {
 	// 波紋
 	pPerson->GetRipple()->SetPos(pPerson->GetPos());// 常にプレイヤー追従
-	pPerson->GetRipple()->Update();
+
 
 
 	// m_isShed = true になったら流した場所へ行く

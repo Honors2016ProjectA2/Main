@@ -8,7 +8,7 @@
 #include "../AI/State/state.h"
 #include "../AI/State/StateMachine.h"
 #include "../AI/Message/MessageDispatcher.h"
-
+#include "../AI/NPC/PersonManager.h"
 
 //*****************************************************************************************************************************
 //			グローバルステート
@@ -208,7 +208,7 @@ void IntroCameraState::Execute(CameraManager *pCamera)
 			NextStep();
 
 			// 効果のないTDN波紋を出してもらう！
-
+			PersonMgr.ProductRipple();
 
 		}
 		break;

@@ -82,6 +82,8 @@ public:
 	int GetRippleCombo(){ return m_combo; }
 	int GetDelay(){ return m_delay; }
 
+	// ‰‰o—p‚q‚‰‚
+	void ProductRipple();
 
 
 };

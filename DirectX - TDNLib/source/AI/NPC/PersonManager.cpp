@@ -371,3 +371,20 @@ BasePerson * PersonManager::GetPerson(int no)
 
 }
 
+void PersonManager::ProductRipple()
+{
+	// 全員に演出用のメッセージ送る
+	for (int i = 0; i < (int)m_PersonData.size(); i++)
+	{
+		// 全員に送信
+		MsgMgr->Dispatch(
+			MSG_NO_DELAY,
+			ENTITY_ID::PERSON_MNG,
+			m_PersonData[i]->GetID(),
+			PRODUCT_RIPPLE,
+			MSG_NO_EXINFO
+			);
+	}
+
+}
+
