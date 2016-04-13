@@ -17,6 +17,8 @@ StartPerson::StartPerson(ENTITY_ID id) :BasePerson(id)
 	m_RangeObj = new iexMesh("DATA/Range/range.IMO");
 	m_RangeObj->SetScale(m_RipSize);
 
+	m_startPic = new tdn2DObj("Data/UI/start.png");
+
 	//m_RangeObj->SetScale()
 
 	// ステートマシン
@@ -31,6 +33,8 @@ StartPerson::StartPerson(ENTITY_ID id) :BasePerson(id)
 StartPerson::~StartPerson()
 {
 	SAFE_DELETE(m_pStateMachine);
+	SAFE_DELETE(m_startPic);
+
 }
 
 void StartPerson::Update()
@@ -44,11 +48,21 @@ void StartPerson::Update()
 
 void StartPerson::Render()
 {
+
+
 	// このステートマシンの描画
 	m_pStateMachine->Render();
 
 	// ベースのRender
 	BasePerson::Render();
+	
+}
+
+void StartPerson::UIRender()
+{
+	//tdnRenderState::Set()
+	m_startPic->SetScale(12.0f);
+	m_startPic->Render3D(m_pos + Vector3(0, 30, 0),RS::COPY_NOZ);
 }
 
 // ステートマシンのメッセージ

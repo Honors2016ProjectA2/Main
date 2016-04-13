@@ -40,7 +40,8 @@ public:
 	// 
 	virtual void  Render();
 	virtual void  RangeRender();
-	
+	virtual void  UIRender();
+
 	// メッセージを取り扱う
 	virtual bool  HandleMessage(const Message& msg) = 0;
 

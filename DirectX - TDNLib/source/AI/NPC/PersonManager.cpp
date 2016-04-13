@@ -210,11 +210,20 @@ void PersonManager::Render()
 								   // l‚½‚¿•`‰æ
 	for (int i = 0; i < (int)m_PersonData.size(); i++)
 	{
-		m_PersonData[i]->Render();
+
 		m_PersonData[i]->RangeRender();
+
+		m_PersonData[i]->Render();
+
+
+
 	}
+	// l‚½‚¿‚Ì‚t‚h•`‰æ
+	for (int i = 0; i < (int)m_PersonData.size(); i++)
+	{
 
-
+		m_PersonData[i]->UIRender();
+	}
 }
 
 // ƒƒbƒZ[ƒW

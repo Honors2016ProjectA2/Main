@@ -17,6 +17,8 @@ public:
 	// BaseGameEntityの純粋仮想関数により必須
 	virtual void  Update();
 	virtual void  Render();
+	virtual void  UIRender();
+
 	// メッセージを取り扱う
 	virtual bool  HandleMessage(const Message& msg);
 
@@ -29,4 +31,8 @@ private:
 
 	// ★ステートマシンを新たにベースパーソンから継承先に
 	StateMachine<GoalPerson>*  m_pStateMachine;
+
+	// ゴール
+	tdn2DObj* m_goalPic;
+
 };

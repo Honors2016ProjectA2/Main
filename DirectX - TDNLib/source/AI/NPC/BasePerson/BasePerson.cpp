@@ -154,6 +154,13 @@ void BasePerson::RangeRender()
 	m_RangeObj->Render(shader, "copy");// 距離
 }
 
+void BasePerson::UIRender()
+{
+
+}
+
+
+
 // ステートマシンのメッセージ
 //bool BasePerson::HandleMessage(const Message & msg)
 //{

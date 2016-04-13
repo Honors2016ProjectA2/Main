@@ -9,6 +9,9 @@ GoalPerson::GoalPerson(ENTITY_ID id) :BasePerson(id)
 	// 波紋の色// キャラクターによって波紋タイプ・人の種類を決める
 	m_Ripple = new GossipRipple(RIPPLE_TYPE::RED, m_pos);// 仮　newした先で決める
 
+	
+	m_goalPic = new tdn2DObj("Data/UI/goal.png");
+
 
 	m_RipSize = 30;
 	// レンジの色
@@ -27,6 +30,7 @@ GoalPerson::GoalPerson(ENTITY_ID id) :BasePerson(id)
 GoalPerson::~GoalPerson()
 {
 	SAFE_DELETE(m_pStateMachine);
+	SAFE_DELETE(m_goalPic);
 }
 
 void GoalPerson::Update()
@@ -45,6 +49,12 @@ void GoalPerson::Render()
 
 	// ベースのRender
 	BasePerson::Render();
+}
+
+void GoalPerson::UIRender()
+{
+	m_goalPic->SetScale(12.0f);
+	m_goalPic->Render3D(m_pos + Vector3(0, 30, 0), RS::COPY_NOZ);
 }
 
 // ステートマシンのメッセージ
