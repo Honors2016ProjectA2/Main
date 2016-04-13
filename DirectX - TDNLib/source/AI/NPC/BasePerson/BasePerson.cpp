@@ -10,7 +10,7 @@ BasePerson::BasePerson(ENTITY_ID id) :BaseGameEntity(id)
 
 
 	m_obj = NULL;
-	m_RangeObj = NULL;
+	//m_RangeObj = NULL;
 
 	// ステートマシン　引数は自分自身のポインタ
 	//m_pStateMachine = new StateMachine<BasePerson>(this);
@@ -130,20 +130,28 @@ void BasePerson::Update()
 	m_obj->SetAngle(m_angle);
 	m_obj->Update();
 	m_obj->Animation();
+
+	m_Ripple->SetPos(m_pos+Vector3(0,0.1f,0));
+	//m_Ripple->Update();
+
+	m_RangeObj->SetScale(m_RipSize);
+	m_RangeObj->SetPos(m_pos);
+	m_RangeObj->Update();
 }
 
 void BasePerson::Render()
 {
 	m_Ripple->Render();	// 波紋描画
 
-	m_RangeObj->SetScale(m_RipSize);
-	m_RangeObj->SetPos(m_pos);
-	m_RangeObj->Update();
-	m_RangeObj->Render();// 距離
-
+	
 	//m_obj->Render();
 	//m_obj->Render(shader, "copy");
 	//m_pStateMachine->Render();
+}
+
+void BasePerson::RangeRender()
+{
+	m_RangeObj->Render(shader, "copy");// 距離
 }
 
 // ステートマシンのメッセージ
