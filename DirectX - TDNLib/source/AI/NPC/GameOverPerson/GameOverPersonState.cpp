@@ -162,7 +162,7 @@ void ShedGameOver::Exit(GameOverPerson *pPerson)
 	RIPPLE_INFO ex;
 	ex.type = pPerson->GetPersonType();
 	ex.pos = pPerson->GetPos();
-	ex.size = 30;// (仮)　手打ちでサイズ指定
+	ex.size = pPerson->GetRipSize();// (仮)　手打ちでサイズ指定
 
 	// ★★★
 	// ゲームオーバーをジャッジ君へ送る

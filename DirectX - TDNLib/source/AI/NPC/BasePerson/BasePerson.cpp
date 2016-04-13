@@ -10,6 +10,7 @@ BasePerson::BasePerson(ENTITY_ID id) :BaseGameEntity(id)
 
 
 	m_obj = NULL;
+	m_RangeObj = NULL;
 
 	// ステートマシン　引数は自分自身のポインタ
 	//m_pStateMachine = new StateMachine<BasePerson>(this);
@@ -76,7 +77,7 @@ BasePerson::BasePerson(ENTITY_ID id) :BaseGameEntity(id)
 	m_angle = PI;	// 0.0→PI
 
 
-
+	m_RipSize = 30;
 	
 	m_isShed = false;	// 噂を流したか
 	m_isStay = false;
@@ -90,6 +91,7 @@ BasePerson::~BasePerson()
 	SAFE_DELETE(m_Ripple);
 	//SAFE_DELETE(m_pStateMachine);	
 	SAFE_DELETE(m_obj);
+	SAFE_DELETE(m_RangeObj);
 
 }
 
@@ -133,6 +135,12 @@ void BasePerson::Update()
 void BasePerson::Render()
 {
 	m_Ripple->Render();	// 波紋描画
+
+	m_RangeObj->SetScale(m_RipSize);
+	m_RangeObj->SetPos(m_pos);
+	m_RangeObj->Update();
+	m_RangeObj->Render();// 距離
+
 	//m_obj->Render();
 	//m_obj->Render(shader, "copy");
 	//m_pStateMachine->Render();
