@@ -53,7 +53,7 @@ public:
 
 	// クリアしたか、ゲームオーバーになったかのセッター
 	// クリアしたよーメッセージを受信するのはマネージャーではなく、持っているステートマシンが受信するので、ステートマシンからのアクセスが必要になる)
-	void SetJudgeMode(JUDGEMODE mode){ m_JudgeMode = mode; }
+	void SetJudgeMode(JUDGEMODE mode){ if (m_JudgeMode != JUDGEMODE::GAME_OVER) m_JudgeMode = mode; }
 
 private:
 	static JudgeManager* pInstance;
@@ -141,7 +141,7 @@ namespace Judge
 		void Enter(JudgeManager* pJudge);
 
 		// 実行します
-		void Execute(JudgeManager* pJudge){}
+		void Execute(JudgeManager* pJudge);
 
 		// 帰る
 		void Exit(JudgeManager* pJudge){}
@@ -178,7 +178,7 @@ namespace Judge
 		virtual void Enter(JudgeManager* pJudge){}
 
 		// 実行します
-		virtual void Execute(JudgeManager* pJudge){}
+		virtual void Execute(JudgeManager* pJudge);
 
 		// 帰る
 		virtual void Exit(JudgeManager* pJudge){}

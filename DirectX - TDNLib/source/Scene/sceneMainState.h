@@ -17,8 +17,8 @@ class TutorialManager;
 // ボタンのID（シーンメインからここに移植しました）
 enum BUTTON_ID
 {
-	YES = 0,	// コンティニュー等の
-	NO = 1,
+	CONTINUE_YES = 0,
+	CONTINUE_NO = 1,
 	RETRY = 2,
 	BLUE = 3,
 	RED = 4,

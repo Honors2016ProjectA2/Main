@@ -41,8 +41,10 @@ private:
 	// 波紋コンボ数
 	int m_combo;
 
-	// 超ゴリ押し
-	int m_delay;
+	// 波紋コンボ時間
+	int m_ComboTimer;
+	static const int COMBO_TIMER = 90;	// 継続時間
+	bool m_ComboAction;
 
 	// ★ジャギーボうし
 	float m_posUp;
@@ -83,7 +85,7 @@ public:
 
 	// コンボ数
 	int GetRippleCombo(){ return m_combo; }
-	int GetDelay(){ return m_delay; }
+	bool isComboEnd(){ return (m_ComboTimer <= 0 && m_ComboAction == true); }
 
 	// 演出用Ｒｉｐ
 	void ProductRipple();

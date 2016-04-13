@@ -4,6 +4,7 @@
 #include "AI\Message\Message.h"
 #include "AI\Message\MessageDispatcher.h"
 #include "../../../Sound/SoundManager.h"
+#include "../../../UI/UI.h"
 
 /***************************************/
 //	グローバルステート
@@ -172,13 +173,19 @@ void ShedWait::Exit(WaitPerson *pPerson)
 		);
 
 	// ジャッジ君に流したことを伝える
-	MsgMgr->Dispatch(
-		MSG_NO_DELAY,
-		pPerson->GetID(),
-		ENTITY_ID::JUDGE_MNG,
-		MESSAGE_TYPE::SHED_GOSSIP,
-		nullptr	// [追記情報]自分のタイプを送る
-		);
+	if (pPerson->IsStay())
+	{
+		MsgMgr->Dispatch(
+			MSG_NO_DELAY,
+			pPerson->GetID(),
+			ENTITY_ID::JUDGE_MNG,
+			MESSAGE_TYPE::SHED_GOSSIP,
+			nullptr	// [追記情報]自分のタイプを送る
+			);
+	}
+
+	// 成功時の吹き出し
+	UIMgr.PushHukidashi(pPerson->GetPos(), HUKIDASHI_TYPE::SUCCESS);
 }
 
 void ShedWait::Render(WaitPerson * pPerson)

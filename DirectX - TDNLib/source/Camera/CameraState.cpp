@@ -190,7 +190,7 @@ void IntroCameraState::Execute(CameraManager *pCamera)
 	{
 	case 0:
 		/* 一定時間ステージを見下ろすだけの仕事 */
-		if (++m_timer > 120)		// 時間過ぎたら
+		if (++m_timer > 90)		// 時間過ぎたら
 		{
 			// 次のステップへ！
 			NextStep();
@@ -202,7 +202,7 @@ void IntroCameraState::Execute(CameraManager *pCamera)
 		break;
 	case 1:
 		/* 一定時間うわさを流す人を見てるだけの仕事 */
-		if (++m_timer > 120)
+		if (++m_timer > 90)
 		{
 			// 次のステップへ！
 			NextStep();
@@ -214,7 +214,7 @@ void IntroCameraState::Execute(CameraManager *pCamera)
 		break;
 	case 2:
 		/* 一定時間TDN波紋を見てるだけの仕事 */
-		if (++m_timer > 180)
+		if (++m_timer > 120)
 		{
 			// 次のステップへ！
 			NextStep();
@@ -225,7 +225,7 @@ void IntroCameraState::Execute(CameraManager *pCamera)
 		break;
 	case 3:
 		/* スタート地点に帰るだけの仕事 */
-		if (++m_timer > 120)
+		if (++m_timer > 90)
 		{
 			// カメラの仕事は終わり！
 			//MsgMgr->Dispatch(

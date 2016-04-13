@@ -51,10 +51,10 @@ PersonManager::PersonManager():
 	m_NumShedPerson(0),
 	m_bJudgeMoment(false),
 	m_combo(0),
-	m_delay(0),
+	m_ComboAction(false),
 	m_posUp(0)
 {
-	
+	m_ComboTimer = COMBO_TIMER;
 
 }
 
@@ -156,7 +156,11 @@ void PersonManager::Update()
 
 	// 人たち更新
 
-	// ステージ3のすぐクリアになってしまうバグを直すためのごり押しを超えた何か
+	// 噂の流れが続いているか止まっているかの判定
+	if (m_ComboAction)
+	{
+		if (m_ComboTimer > 0) m_ComboTimer--;
+	}
 	//{
 	//	if (m_delay > 0)
 	//	{
@@ -276,6 +280,10 @@ void PersonManager::StartGossip()
 // 当たり判定
 void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 {
+	// コンボ継続！
+	m_ComboTimer = COMBO_TIMER;
+	m_ComboAction = true;
+
 	// 対象
 	int count(0);
 	//int count2(0);
@@ -331,7 +339,7 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 					m_PersonData[b]->ActionGossipRipple();
 
 					// 成功時の吹き出し
-					UIMgr.PushHukidashi(m_PersonData[b]->GetPos(), HUKIDASHI_TYPE::SUCCESS);
+					//UIMgr.PushHukidashi(m_PersonData[b]->GetPos(), HUKIDASHI_TYPE::SUCCESS);
 
 					// コンボ数を増やす(2人カウントしたら、2トーン上げしまうのでその対処)
 					if (count == 0) se->SetTone("波紋出す", ++m_combo);
@@ -353,7 +361,7 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 	{
 		// 判定してますよー！
 		//m_bJudgeMoment = true;
-		m_delay = 10;
+		//m_delay = 10;
 	}
 }
 

@@ -16,7 +16,7 @@ public:
 
 	bool EraseOK(){ return (m_AppTime <= 0); }
 
-	static const int DEFAULT_APP_TIME = 120;
+	static const int DEFAULT_APP_TIME = 114514;
 
 private:
 	tdn2DObj *m_pImage;		// 画像の実体(参照するだけなのでデリートはしない)
@@ -51,7 +51,24 @@ public:
 	// 吹き出しのセット
 	void PushHukidashi(const Vector3 &pos, HUKIDASHI_TYPE success);
 
+	// DATA/Text/UI/main.txtのIDと結びつける。m_Datas[UI_ID::NOKORI]->lpImage->Render()　と使う
+	enum UI_ID
+	{
+		NOKORI = 0,	// 残り
+		NOKORI_NUMBER = 1,	// 残りの回数
+		BIKKURI = 2,	// ！マーク
+		HUKIDASHI_MINE = 3,	// 自分が出す吹き出し
+		HUKIDASHI_CORRECT = 4,	// 正解時の吹き出し
+		HUKIDASHI_INCORRECT = 5,	// 不正解
+		GAME_CLEAR = 6,
+		GAME_OVER = 7,
+		MIGIUE_FRAME = 8,
+		GOAL_PERSON = 9,
+		ALL_SHED = 10,
+		NAGASUNA = 11,
+	};
 
+	tdn2DObj *GetImage(UI_ID id){ return m_Datas[id]->lpImage; }
 
 private:
 
@@ -74,23 +91,6 @@ private:
 
 	// 吹き出しの情報を格納しているリスト
 	std::list<Hukidashi*> m_HukidashiList;
-
-	// DATA/Text/UI/main.txtのIDと結びつける。m_Datas[UI_ID::NOKORI]->lpImage->Render()　と使う
-	enum UI_ID
-	{
-		NOKORI				 = 0,	// 残り
-		NOKORI_NUMBER		 = 1,	// 残りの回数
-		BIKKURI				 = 2,	// ！マーク
-		HUKIDASHI_MINE		 = 3,	// 自分が出す吹き出し
-		HUKIDASHI_CORRECT	 = 4,	// 正解時の吹き出し
-		HUKIDASHI_INCORRECT	 = 5,	// 不正解
-		GAME_CLEAR=6,
-		GAME_OVER=7,
-		MIGIUE_FRAME=8,
-		GOAL_PERSON=9,
-		ALL_SHED=10,
-		NAGASUNA=11,
-	};
 
 	// 封印
 	UIManager(){}

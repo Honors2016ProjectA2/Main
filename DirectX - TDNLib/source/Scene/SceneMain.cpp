@@ -68,8 +68,8 @@ bool sceneMain::Initialize()
 	m_pButtonMgr->TextLoad("DATA/Text/IconButton/main.txt");
 
 	// ボタンの有効・無効
-	m_pButtonMgr->SetEnDis((UINT)BUTTON_ID::YES, EN_DIS_TYPE::DISABLE_VANISH);
-	m_pButtonMgr->SetEnDis((UINT)BUTTON_ID::NO, EN_DIS_TYPE::DISABLE_VANISH);
+	//m_pButtonMgr->SetEnDis((UINT)BUTTON_ID::YES, EN_DIS_TYPE::DISABLE_VANISH);
+	//m_pButtonMgr->SetEnDis((UINT)BUTTON_ID::NO, EN_DIS_TYPE::DISABLE_VANISH);
 
 	// シーンメインステートマシン初期化
 	m_pStateMachine = new StateMachine<sceneMain>(this);
@@ -129,6 +129,9 @@ bool sceneMain::Update()
 	// カメラ更新
 	CameraMgr.Update();
 
+	// ジャッジマネージャー更新
+	JudgeMgr.Update();
+
 	// フェード更新
 	Fade::Update();
 
@@ -175,27 +178,19 @@ bool sceneMain::Update()
 		// ゲームオーバー状態なら
 		else if (g_GameState == GAME_STATE::GAME_OVER)
 		{
-			// もう一度シーンメインを読み込む
-			MainFrame->ChangeScene(new sceneMain);
-			return true;
-			//switch ((BUTTON_ID)m_pButtonMgr->GetInButtonNo())
-			//{
-			//case BUTTON_ID::YES:
-			//{
-			//					   extern Framework *MainFrame;
-			//					   MainFrame->ChangeScene(new sceneMain);
-			//					   return true;
-			//}
-			//	break;
-			//
-			//case BUTTON_ID::NO:
-			//{
-			//					  extern Framework *MainFrame;
-			//					  MainFrame->ChangeScene(new sceneSelect);
-			//					  return true;
-			//}
-			//	break;
-			//}
+			switch ((BUTTON_ID)m_pButtonMgr->GetInButtonNo())
+			{
+			case BUTTON_ID::CONTINUE_YES:	// リトライ
+				// もう一度シーンメインを読み込む
+				MainFrame->ChangeScene(new sceneMain);
+				return true;
+				break;
+			case BUTTON_ID::CONTINUE_NO:	// やめる
+				// ステージセレクト画面に飛ぶ
+				MainFrame->ChangeScene(new sceneSelect);
+				return true;
+				break;
+			}
 		}
 
 		// リトライボタン

@@ -257,6 +257,10 @@ void sceneMainSetPart::Enter(sceneMain *pMain)
 		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::GREEN, EN_DIS_TYPE::ENABLE);
 		pMain->GetButtonMgr()->SetEnDis((UINT)BUTTON_ID::BLUE, EN_DIS_TYPE::DISABLE_WHITE);	// 青いボタンを選択状態に
 		m_SelectButtonColor = (int)SELECT_BUTTON_COLOR::BLUE;
+
+		// コンティニュー用のボタン等は非表示(無効化)する
+		pMain->GetButtonMgr()->SetEnDis(BUTTON_ID::CONTINUE_YES, EN_DIS_TYPE::DISABLE_VANISH);
+		pMain->GetButtonMgr()->SetEnDis(BUTTON_ID::CONTINUE_NO, EN_DIS_TYPE::DISABLE_VANISH);
 	}
 
 	// 設置するときに表示するメッシュの初期化
@@ -620,38 +624,49 @@ void sceneMainGossip::Execute(sceneMain *pMain)
 	//}
 
 	// ★ジャッジくんが判定を出してたら、モード切替
-	if (JudgeMgr.isGameClear())
+	if (JudgeMgr.isGameOver())
 	{
-		// グローバルのゲームステートをチェンジ
-		g_GameState = GAME_STATE::GAME_CLEAR;
+		if (Fade::alpha == 0)
+		{
+			// ボタン有効・無効設定
+			//pMain->GetButtonMgr()->SetEnDis((UINT)sceneMain::BUTTON_ID::YES, EN_DIS_TYPE::ENABLE);
+			//pMain->GetButtonMgr()->SetEnDis((UINT)sceneMain::BUTTON_ID::NO, EN_DIS_TYPE::ENABLE);
+			pMain->GetButtonMgr()->SetEnDis(2, EN_DIS_TYPE::DISABLE_BLACK);
 
-		// ボタン有効・無効設定
-		//pMain->GetButtonMgr()->SetEnDis((UINT)sceneMain::BUTTON_ID::YES, EN_DIS_TYPE::ENABLE);
-		//pMain->GetButtonMgr()->SetEnDis((UINT)sceneMain::BUTTON_ID::NO, EN_DIS_TYPE::ENABLE);
-		pMain->GetButtonMgr()->SetEnDis(2, EN_DIS_TYPE::DISABLE_BLACK);
+			// ブラックフェードON
+			Fade::Set(Fade::FLAG::FADE_OUT, 4, 0x00000000, 1, 128);
+		}
+		else if (Fade::alpha == 128)
+		{
+			// グローバルのゲームステートをチェンジ
+			g_GameState = GAME_STATE::GAME_OVER;
 
-		// ステートチェンジ(ゲームステート→クリアステートに)
-		pMain->GetFSM()->ChangeState(sceneMainGameClear::GetInstance());
-
-		// ブラックフェードON
-		Fade::Set(Fade::FLAG::FADE_OUT, 4, 0x00000000, 1, 128);
+			// ステートチェンジ(ゲームステート→ゲームオーバーステートに)
+			pMain->GetFSM()->ChangeState(sceneMainGameOver::GetInstance());
+		}
 	}
-	else if (JudgeMgr.isGameOver())
+	else if (JudgeMgr.isGameClear())
 	{
-		// グローバルのゲームステートをチェンジ
-		g_GameState = GAME_STATE::GAME_OVER;
+		if (Fade::alpha == 0)
+		{
+			// ボタン有効・無効設定
+			//pMain->GetButtonMgr()->SetEnDis((UINT)sceneMain::BUTTON_ID::YES, EN_DIS_TYPE::ENABLE);
+			//pMain->GetButtonMgr()->SetEnDis((UINT)sceneMain::BUTTON_ID::NO, EN_DIS_TYPE::ENABLE);
+			pMain->GetButtonMgr()->SetEnDis(2, EN_DIS_TYPE::DISABLE_BLACK);
 
-		// ボタン有効・無効設定
-		//pMain->GetButtonMgr()->SetEnDis((UINT)sceneMain::BUTTON_ID::YES, EN_DIS_TYPE::ENABLE);
-		//pMain->GetButtonMgr()->SetEnDis((UINT)sceneMain::BUTTON_ID::NO, EN_DIS_TYPE::ENABLE);
-		pMain->GetButtonMgr()->SetEnDis(2, EN_DIS_TYPE::DISABLE_BLACK);
+			// ブラックフェードON
+			Fade::Set(Fade::FLAG::FADE_OUT, 4, 0x00000000, 1, 128);
+		}
+		else if (Fade::alpha == 128)
+		{
+			// グローバルのゲームステートをチェンジ
+			g_GameState = GAME_STATE::GAME_CLEAR;
 
-		// ステートチェンジ(ゲームステート→ゲームオーバーステートに)
-		pMain->GetFSM()->ChangeState(sceneMainGameOver::GetInstance());
-
-		// ブラックフェードON
-		Fade::Set(Fade::FLAG::FADE_OUT, 4, 0x00000000, 1, 128);
+			// ステートチェンジ(ゲームステート→クリアステートに)
+			pMain->GetFSM()->ChangeState(sceneMainGameClear::GetInstance());
+		}
 	}
+
 
 	//rip->Update();
 	GossipRippleMgr.Update();
@@ -741,7 +756,9 @@ sceneMainGameOver* sceneMainGameOver::GetInstance()
 // 入り口
 void sceneMainGameOver::Enter(sceneMain *pMain)
 {
-
+	// ★コンティニュー用のボタン有効化
+	pMain->GetButtonMgr()->SetEnDis(BUTTON_ID::CONTINUE_YES, EN_DIS_TYPE::ENABLE);
+	pMain->GetButtonMgr()->SetEnDis(BUTTON_ID::CONTINUE_NO, EN_DIS_TYPE::ENABLE);
 }
 
 // 実行中

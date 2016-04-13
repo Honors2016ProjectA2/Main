@@ -66,7 +66,7 @@ void CameraManager::Update()
 void CameraManager::Activate()
 {
 	tdnView::Activate();
-	tdnView::Clear(0x0000aa00);
+	tdnView::Clear(0x00000000);
 }
 
 //*****************************************************************************************************************************

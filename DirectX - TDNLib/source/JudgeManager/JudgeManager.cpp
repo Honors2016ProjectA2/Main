@@ -21,20 +21,35 @@ void Judge::AllShed::Enter(JudgeManager *pJudge)
 {
 	m_ShedCount = 0;
 
-	// 全員なので、リストのサイズ
-	// ★TODO:うわさを流してはいけない人間はカウントしないようにしたい
+	// うわさを流すべき人数の設定
 	m_GoalCount = PersonMgr.GetMaxStayPerson();
+}
+void Judge::AllShed::Execute(JudgeManager *pJudge)
+{
+	// コンボ終わってたら
+	if (PersonMgr.isComboEnd())
+	{
+		// 全員に流したらクリア
+		if (m_GoalCount == m_ShedCount)
+		{
+			pJudge->SetJudgeMode(JudgeManager::JUDGEMODE::GAME_CLEAR);
+		}
+		// 流せてなかったらゲームオーバー
+		else
+		{
+			pJudge->SetJudgeMode(JudgeManager::JUDGEMODE::GAME_OVER);
+		}
+	}
+
 }
 bool Judge::AllShed::OnMessage(JudgeManager *pJudge, const Message &msg)
 {
 	switch (msg.Msg)
 	{
 	case MESSAGE_TYPE::SHED_GOSSIP:
-		// 全員流した！
-		if (++m_ShedCount >= m_GoalCount)
-		{
-			pJudge->SetJudgeMode(JudgeManager::JUDGEMODE::GAME_CLEAR);
-		}
+		// 流す人数カウント
+		m_ShedCount++;
+
 		break;
 
 	case MESSAGE_TYPE::GAMEOVER:
@@ -44,8 +59,8 @@ bool Judge::AllShed::OnMessage(JudgeManager *pJudge, const Message &msg)
 
 	case MESSAGE_TYPE::GOAL_GOSSIP:
 	{
-		MyAssert(0, "クリア条件は全員に流すと設定されていますが、ゴールとなる人間がいます");
-		break;
+									  MyAssert(0, "クリア条件は全員に流すと設定されていますが、ゴールとなる人間がいます");
+									  break;
 	}
 	default:
 		MyAssert(0, "そんな命令は受け付けてないです");
@@ -58,6 +73,14 @@ bool Judge::AllShed::OnMessage(JudgeManager *pJudge, const Message &msg)
 
 //===============================================================================
 //		特定人物に流す
+void Judge::GoalPerson::Execute(JudgeManager *pJudge)
+{
+	// コンボ終わってたらゲームオーバー
+	if (PersonMgr.isComboEnd())
+	{
+		pJudge->SetJudgeMode(JudgeManager::JUDGEMODE::GAME_OVER);
+	}
+}
 bool Judge::GoalPerson::OnMessage(JudgeManager *pJudge, const Message &msg)
 {
 	switch (msg.Msg)

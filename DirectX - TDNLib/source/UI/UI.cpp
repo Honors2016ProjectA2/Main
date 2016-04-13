@@ -198,22 +198,23 @@ void UIManager::Render()
 	{
 		if (g_GameState == GAME_STATE::GAME_OVER)
 		{
-			if (Fade::alpha == 128)
-			{
+			//if (Fade::alpha == 128)
+			//{
 				Fade::Render();
 				ID_Render(UI_ID::GAME_OVER);
-				tdnText::Draw(580, 380, 0xffffffff, "クリックでもう一度プレイ");
-			}
+				//tdnText::Draw(580, 380, 0xffffffff, "クリックでもう一度プレイ");
+			//}
 		}
-		if (g_GameState == GAME_STATE::GAME_CLEAR)
+		else if (g_GameState == GAME_STATE::GAME_CLEAR)
 		{
-			if (Fade::alpha == 128)
-			{
+			//if (Fade::alpha == 128)
+			//{
 				Fade::Render();
 				ID_Render(UI_ID::GAME_CLEAR);
 				tdnText::Draw(580, 380, 0xffffffff, "クリックで選択画面に戻る");
-			}
+			//}
 		}
+		else Fade::Render();
 	}
 }
 
@@ -223,10 +224,12 @@ void UIManager::Render()
 void Hukidashi::Render()
 {
 	// α
-	m_pImage->SetARGB((BYTE)(255 * ((float)m_AppTime / DEFAULT_APP_TIME)), (BYTE)255, (BYTE)255, (BYTE)255);
+	m_pImage->SetARGB((BYTE)255, (BYTE)255, (BYTE)255, (BYTE)255);
 
-	//m_pImage->Render3D(m_pos, 256, 128, (int)m_SrcXY.x, (int)m_SrcXY.y, 256, 128);
-	m_pImage->Render((int)Math::WorldToScreen(m_pos).x - 20, (int)Math::WorldToScreen(m_pos).y - 160, 256, 128, (int)m_SrcXY.x, (int)m_SrcXY.y, 256, 128);
+	m_pImage->SetScale(.5f);
+	//m_pImage->Render3D(m_pos+Vector3(20,30,0), 256, 128, (int)m_SrcXY.x, (int)m_SrcXY.y, 256, 128);
+	
+	m_pImage->Render((int)Math::WorldToScreen(m_pos).x - 60, (int)Math::WorldToScreen(m_pos).y - 150, 256, 128, (int)m_SrcXY.x, (int)m_SrcXY.y, 256, 128);
 }
 
 
