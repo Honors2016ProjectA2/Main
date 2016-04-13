@@ -112,7 +112,7 @@ void GoalShed::Enter(GoalPerson *pPerson)
 	pPerson->GetRipple()->Action();
 
 	// (仮)噂を流す時にモーションを付ける事だって自由自在
-	pPerson->GetObj()->SetMotion(0);
+	pPerson->GetObj()->SetMotion(2);
 
 	// 音
 	se->Play("波紋出す", Math::WorldToScreen(pPerson->GetPos()));
