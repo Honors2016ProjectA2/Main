@@ -10,6 +10,11 @@ WaitPerson::WaitPerson(ENTITY_ID id) :BasePerson(id)
 	// 波紋の色// キャラクターによって波紋タイプ・人の種類を決める
 	m_Ripple = new GossipRipple(RIPPLE_TYPE::RED, m_pos);// 仮　newした先で決める
 	
+	m_RipSize = 30;
+	// レンジの色
+	m_RangeObj = new iexMesh("DATA/range/range.IMO");
+	m_RangeObj->SetScale(m_RipSize);
+
 	// ステートマシン
 	m_PersonType = PERSON_TYPE::WAIT;
 

@@ -39,6 +39,7 @@ public:
 	
 	// 
 	virtual void  Render();
+	virtual void  RangeRender();
 	
 	// メッセージを取り扱う
 	virtual bool  HandleMessage(const Message& msg) = 0;
@@ -71,6 +72,9 @@ public:
 	
 	iex3DObj* GetObj() { return m_obj; }
 
+	iexMesh* GetRangeObj() { return m_RangeObj; }
+	float GetRipSize() { return m_RipSize; }
+
 	// 波紋を流してる最中
 	//bool IsShedNow();
 
@@ -78,12 +82,6 @@ public:
 	// virtureを利用して各々のステートマシンに呼びかける事にトライ！
 	virtual void ResetState() = 0; // 初期のステートに戻す
 
-
-	// 今は直に
-	Vector3 m_orgPos;
-	Vector3 m_trunPos;
-	float m_len;
-	bool m_trunFlag;
 
 protected:
 
@@ -93,10 +91,13 @@ protected:
 	Vector3 m_pos;
 	Vector3 m_move;
 
+	iexMesh* m_RangeObj;
+
+
 	float m_angle;
+	
 
 	bool m_isShed;	// ~は噂を流したか
-
 	bool m_isStay;  // 最初からいるか
 
 
@@ -105,6 +106,7 @@ protected:
 
 	// 一人に一つ波紋
 	GossipRipple* m_Ripple;
+	float m_RipSize;
 
 };
 

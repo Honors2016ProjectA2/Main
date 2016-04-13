@@ -44,6 +44,9 @@ private:
 	// ’´ƒSƒŠ‰Ÿ‚µ
 	int m_delay;
 
+	// šƒWƒƒƒM[ƒ{‚¤‚µ
+	float m_posUp;
+
 public:
 	// ‘å—Ê¶Y
 	/*

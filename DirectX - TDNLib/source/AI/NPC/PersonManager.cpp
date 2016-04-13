@@ -51,7 +51,8 @@ PersonManager::PersonManager():
 	m_NumShedPerson(0),
 	m_bJudgeMoment(false),
 	m_combo(0),
-	m_delay(0)
+	m_delay(0),
+	m_posUp(0)
 {
 	
 
@@ -74,6 +75,9 @@ PersonManager::~PersonManager()
 // ÉLÉÉÉâí«â¡
 void PersonManager::AddPerson(PERSON_TYPE type,Vector3 pos, bool isStay)
 {
+	m_posUp += 0.1f;
+	pos.y += m_posUp;
+
 	// êl
 	BasePerson* data;
 
@@ -143,7 +147,7 @@ void PersonManager::AddPerson(PERSON_TYPE type,Vector3 pos, bool isStay)
 void PersonManager::Reset()
 {
 	m_IDcount = 0;
-
+	m_posUp = 0.0f;
 }
 
 void PersonManager::Update()
@@ -203,6 +207,7 @@ void PersonManager::Render()
 	for (int i = 0; i < (int)m_PersonData.size(); i++)
 	{
 		m_PersonData[i]->Render();
+		m_PersonData[i]->RangeRender();
 	}
 
 

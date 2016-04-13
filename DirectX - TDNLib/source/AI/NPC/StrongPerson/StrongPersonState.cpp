@@ -162,7 +162,7 @@ void ShedStrong::Exit(StrongPerson *pPerson)
 	ex.type = pPerson->GetPersonType();
 	ex.pos = pPerson->GetPos();
 	// ★★★　この人はサイズがでかい
-	ex.size = 60;// (仮)　手打ちでサイズ指定
+	ex.size = pPerson->GetRipSize();// (仮)　手打ちでサイズ指定
 
 	MsgMgr->Dispatch(
 		MSG_NO_DELAY,
