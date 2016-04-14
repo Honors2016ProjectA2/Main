@@ -266,6 +266,9 @@ void sceneMainSetPart::Enter(sceneMain *pMain)
 	// 設置するときに表示するメッシュの初期化
 	m_HoldMesh = nullptr;
 
+	// 設置IDリスト初期化
+	m_SetIDList.clear();
+
 
 	// ※西田くんへ　ここで設置する人間のタイプを設定してるので、完成したらここのWAITをそれぞれのタイプに設定してください
 
@@ -417,17 +420,38 @@ void sceneMainSetPart::Execute(sceneMain *pMain)
 			/* 何もボタンに入っていないとき */
 		case IconButtonManager::NOT_IN_BUTTON:
 
+			const int sub = (ButtonPersonMap[(SELECT_BUTTON_COLOR)m_SelectButtonColor] == PERSON_TYPE::STRONG) ? 2 : 1;
+
 			// 設置回数が残っているなら
-			if (RippleCount > 0)
+			if (RippleCount >= sub)
 			{
-				RippleCount--;
+				// 強い波紋を持つ人は2ポイント消費する
+				RippleCount -= sub;
 
 				// 選んだボタンの種類に応じて人間を設置する
-				PersonMgr.AddPerson(ButtonPersonMap[(SELECT_BUTTON_COLOR)m_SelectButtonColor], m_HoldMeshPos);
+				ENTITY_ID id = PersonMgr.AddPerson(ButtonPersonMap[(SELECT_BUTTON_COLOR)m_SelectButtonColor], m_HoldMeshPos);
+
+				// 設置した人間のidを格納する。
+				m_SetIDList.push_back(id);
 			}
 			break;
 		}
 	}
+
+	// 右クリックで設置した人間を消す
+	if (tdnMouse::GetRight() == 3)
+	{
+		auto id = m_SetIDList.begin();
+		if (id != m_SetIDList.end())
+		{
+			// 人管理クラスに削除を依頼
+			RippleCount += PersonMgr.ErasePerson(*id);
+
+			// 依頼したので、自分の持ってる設置した人間のリスト項目を削除
+			id = m_SetIDList.erase(id);
+		}
+	}
+
 	//rip->Update();
 	GossipRippleMgr.Update();
 

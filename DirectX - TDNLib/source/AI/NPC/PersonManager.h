@@ -30,7 +30,9 @@ private:
 	PersonManager& operator=(const PersonManager&);
 
 	// 人データ
-	std::vector<BasePerson*> m_PersonData;
+	//std::vector<BasePerson*> m_PersonData;
+	std::list<BasePerson*> m_PersonData;
+	std::list<BasePerson*>::iterator m_it;
 
 	// うわさが流れた人の総計
 	int m_NumShedPerson;
@@ -54,7 +56,7 @@ public:
 	/*
 		中で勝手にＩＤを振る
 	*/
-	void AddPerson(PERSON_TYPE type, Vector3 pos, bool isStay = false );
+	ENTITY_ID AddPerson(PERSON_TYPE type, Vector3 pos, bool isStay = false );
 
 	//	リセット
 	void Reset();
@@ -91,6 +93,9 @@ public:
 	void ProductRipple();
 
 	int GetMaxStayPerson();
+
+	// パーソン消す
+	int ErasePerson(ENTITY_ID id);
 
 };
 

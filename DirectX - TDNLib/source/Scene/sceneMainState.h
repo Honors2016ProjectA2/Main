@@ -7,6 +7,7 @@
 //*****************************************************************************************************************************
 
 #include "../Scene/SceneMain.h"
+#include "../AI/Entity/EntityEnum.h"
 
 // 定数の前方宣言
 enum class PERSON_TYPE;
@@ -167,6 +168,9 @@ private:
 
 	// チュートリアルを実行するポインタ
 	TutorialManager *m_pTutorial;
+
+	// 設置した人間のidを管理するリスト
+	std::list<ENTITY_ID> m_SetIDList;
 };
 
 //--------------------うわさが流れてるパート

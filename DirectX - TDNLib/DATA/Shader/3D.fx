@@ -182,6 +182,40 @@ technique shed
 }
 
 
+//------------------------------------------------------
+//		ピクセルシェーダー	
+//------------------------------------------------------
+float4 PS_Red(VS_OUTPUT In) : COLOR
+{
+	float4	OUT;
+
+	//	ピクセル色決定
+	OUT = In.Color * tex2D(DecaleSamp, In.Tex);
+
+	OUT.r += 0.5f;
+
+
+	return OUT;
+}
+
+//------------------------------------------------------
+//		通常描画テクニック
+//------------------------------------------------------
+technique red
+{
+	pass P0
+	{
+		AlphaBlendEnable = true;
+		BlendOp = Add;
+		SrcBlend = SrcAlpha;
+		DestBlend = InvSrcAlpha;
+		CullMode = CCW;
+		ZEnable = true;
+
+		VertexShader = compile vs_2_0 VS_Basic();
+		PixelShader = compile ps_2_0 PS_Red();
+	}
+}
 
 
 //**************************************

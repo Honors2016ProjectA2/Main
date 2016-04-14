@@ -63,9 +63,9 @@ PersonManager::PersonManager():
 PersonManager::~PersonManager()
 {
 	// 全部消して
-	for (int i = 0; i < (int)m_PersonData.size(); i++)
+	for (auto it : m_PersonData)
 	{
-		SAFE_DELETE(m_PersonData[i]);
+		SAFE_DELETE(it);
 	}
 
 	//　データを空に
@@ -73,7 +73,7 @@ PersonManager::~PersonManager()
 }
 
 // キャラ追加
-void PersonManager::AddPerson(PERSON_TYPE type,Vector3 pos, bool isStay)
+ENTITY_ID PersonManager::AddPerson(PERSON_TYPE type,Vector3 pos, bool isStay)
 {
 	m_posUp += 0.1f;
 	pos.y += m_posUp;
@@ -142,6 +142,9 @@ void PersonManager::AddPerson(PERSON_TYPE type,Vector3 pos, bool isStay)
 	m_PersonData.push_back(data);
 
 	++m_IDcount;// 次の人の番号へ
+
+	// 設置した人のIDを返す
+	return id;
 }
 
 void PersonManager::Reset()
@@ -195,10 +198,10 @@ void PersonManager::Update()
 
 	m_NumShedPerson = 0;
 
-	for (int i = 0; i < (int)m_PersonData.size(); i++)
+	for (auto it : m_PersonData)
 	{
-		if (m_PersonData[i]->IsShed()) m_NumShedPerson++;
-		m_PersonData[i]->Update();
+		if (it->IsShed()) m_NumShedPerson++;
+		it->Update();
 	}
 }
 
@@ -208,21 +211,20 @@ void PersonManager::Render()
 
 
 								   // 人たち描画
-	for (int i = 0; i < (int)m_PersonData.size(); i++)
+	for (auto it : m_PersonData)
 	{
 
-		m_PersonData[i]->RangeRender();
+		it->RangeRender();
 
-		m_PersonData[i]->Render();
-
+		it->Render();
 
 
 	}
 	// 人たちのＵＩ描画
-	for (int i = 0; i < (int)m_PersonData.size(); i++)
+	for (auto it : m_PersonData)
 	{
 
-		m_PersonData[i]->UIRender();
+		it->UIRender();
 	}
 }
 
@@ -261,23 +263,23 @@ void PersonManager::ResetState()
 {
 
 	// 全員のステート初期化
-	for (int i = 0; i < (int)m_PersonData.size(); i++)
+	for (auto it : m_PersonData)
 	{
-		m_PersonData[i]->SetIsShed(false);	// 噂流したフラグ=Falseに
-		m_PersonData[i]->ResetState();
+		it->SetIsShed(false);	// 噂流したフラグ=Falseに
+		it->ResetState();
 	}
 }
 // スタートの人の波紋を出す！
 void PersonManager::StartGossip()
 {
 	// 全員のステート初期化
-	for (int i = 0; i < (int)m_PersonData.size(); i++)
+	for (auto it : m_PersonData)
 	{
 		// 全員に送信
 		MsgMgr->Dispatch(
 			MSG_NO_DELAY,
 			ENTITY_ID::PERSON_MNG,
-			m_PersonData[i]->GetID(),
+			it->GetID(),
 			START_GOSSIP,
 			MSG_NO_EXINFO
 			);
@@ -311,14 +313,14 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 	//}	
 
 	// ★止める人がいたら波紋を出さない
-	for (int b = 0; b < (int)m_PersonData.size(); b++)
+	for (auto it : m_PersonData)
 	{
-		if (m_PersonData[b]->IsShed() == true)continue;// 噂を立てたやつは反応しない
+		if (it->IsShed() == true)continue;// 噂を立てたやつは反応しない
 
-		float ren = Math::Length(pRipData->pos, m_PersonData[b]->GetPos());
+		float ren = Math::Length(pRipData->pos, it->GetPos());
 		if (ren <= pRipData->size)// 30m以内に人が存在すると
 		{
-			if (m_PersonData[b]->GetPersonType() == PERSON_TYPE::STOP)
+			if (it->GetPersonType() == PERSON_TYPE::STOP)
 			{
 				return;// 止める人がいたらコンティニュー
 			}
@@ -330,22 +332,22 @@ void PersonManager::RippleVSPerson(RIPPLE_INFO* pRipData)// ←波紋
 	//if (count2 >= 2)
 	//{
 
-		for (int b = 0; b < (int)m_PersonData.size(); b++)
+	for (auto it : m_PersonData)
 		{
 
-			if (m_PersonData[b]->IsShed() == true)continue;// 噂を立てたやつは反応しない
+			if (it->IsShed() == true)continue;// 噂を立てたやつは反応しない
 			//if (m_PersonData[b]->GetPersonType() == pRipData->type) continue;// 同じタイプはバイバイ
 		
 
 			float ren =
-				Math::Length(pRipData->pos, m_PersonData[b]->GetPos());
+				Math::Length(pRipData->pos, it->GetPos());
 			if (ren <= pRipData->size)// 30m以内に人が存在すると
 			{
 				// 二人以上ならこなみ
 				//if (count2 >= 2)
 				{
 					// 近くにいた人は波紋を飛ばす
-					m_PersonData[b]->ActionGossipRipple();
+					it->ActionGossipRipple();
 
 					// 成功時の吹き出し
 					//UIMgr.PushHukidashi(m_PersonData[b]->GetPos(), HUKIDASHI_TYPE::SUCCESS);
@@ -387,20 +389,28 @@ BasePerson * PersonManager::GetPerson(int no)
 		MyAssert(0, "指定した場所にデータがない");
 	}
 
-	return  m_PersonData[no];
+	int i(0);
+	m_it = m_PersonData.begin();
+	while (i != no)
+	{
+		m_it++;
+		i++;
+	}
+
+	return (*m_it);
 
 }
 
 void PersonManager::ProductRipple()
 {
 	// 全員に演出用のメッセージ送る
-	for (int i = 0; i < (int)m_PersonData.size(); i++)
+	for (auto it : m_PersonData)
 	{
 		// 全員に送信
 		MsgMgr->Dispatch(
 			MSG_NO_DELAY,
 			ENTITY_ID::PERSON_MNG,
-			m_PersonData[i]->GetID(),
+			it->GetID(),
 			PRODUCT_RIPPLE,
 			MSG_NO_EXINFO
 			);
@@ -414,11 +424,34 @@ int PersonManager::GetMaxStayPerson()
 	// ふぉｒ分でキャラクター全部見て
 	// フラグの立ってるやつをカウント
 	int ret = 0;
-	for (int i = 0; i < (int)m_PersonData.size(); i++)
+	for (auto it : m_PersonData)
 	{
-		ret += m_PersonData[i]->IsStay();
+		ret += it->IsStay();
 
 	}
 	return ret;
+}
+
+// 引数にidをもらってそのidのパーソンを消す処理
+int PersonManager::ErasePerson(ENTITY_ID id)
+{
+	// 削除した際に回復する設置ポイント
+	int recover(0);
+
+	for (auto it = m_PersonData.begin(); it != m_PersonData.end();)
+	{
+		if ((*it)->GetID() == id)
+		{
+			// コストに応じて回復量を
+			if ((*it)->GetPersonType() == PERSON_TYPE::STRONG) recover = 2;
+			else recover = 1;
+
+			delete (*it);
+			it = m_PersonData.erase(it);
+			break;
+		}
+		it++;
+	}
+	return recover;
 }
 
