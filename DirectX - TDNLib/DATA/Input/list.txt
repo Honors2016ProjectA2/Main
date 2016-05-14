@@ -1,6 +1,0 @@
-NAME: Elecom Wired Gamepad|
-ID: GAMEPAD
-
-NAME: PAD A|
-ID: NORI_GAMEPAD
-
