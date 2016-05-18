@@ -866,7 +866,7 @@ public:
 		ret = mesh->Create( data );
 
 		std::string filepath;
-		float seekl = filename.find_last_of( "/" );
+		UINT seekl = filename.find_last_of( "/" );
 		filepath = filename.substr( 0, seekl + 1 );
 		filepath += materialList[0].tex;
 		mesh->texture = tdnTexture::Load( "DATA/mqo/box/box.png" );

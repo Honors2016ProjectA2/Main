@@ -45,6 +45,7 @@
 //	マクロ	
 /********************************************/
 #define SAFE_DELETE(p) if(p){ delete p;p=nullptr;}
+#define SAFE_DELETE_ARRAY(p) if(p){delete[] p;p=nullptr;}
 #define SAFE_RELEASE(p) { if(p){ (p)->Release(); (p)=nullptr; } }
 #define FOR(len) for (int i = 0; i < len; i++)
 #define ARGB(a,r,g,b)	((DWORD)( (a<<24) | (r<<16) | (g<<8) | (b) ) )
@@ -942,6 +943,9 @@ public:
 
 	void SetValue(char* name, Texture2D* tex);
 	void SetValue(char* name, Texture2D& tex);
+
+	void SetValue(char* name, tdn2DObj* tex);
+	void SetValue(char* name, tdn2DObj& tex);
 
 	void SetValue(char* name, Matrix* mat);
 	void SetValue(char* name, Matrix& mat);

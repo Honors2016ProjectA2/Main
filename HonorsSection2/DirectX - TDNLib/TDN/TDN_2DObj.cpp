@@ -21,7 +21,8 @@ tdn2DObj::tdn2DObj(const char* fileName)
 	lpTexture = tdnTexture::Load(fileName);
 	if (lpTexture == NULL)
 	{
-		MessageBox(0, "ファイルからテクスチャの読み込みに失敗", "2DObj", MB_OK);
+		//MessageBox(0, "ファイルからテクスチャの読み込みに失敗", "2DObj", MB_OK);
+		MyAssert(0, "エラー: ファイルからテクスチャの読み込みに失敗。\n%s", fileName);	// エラー出してるファイル名の特定
 		return;
 	}
 

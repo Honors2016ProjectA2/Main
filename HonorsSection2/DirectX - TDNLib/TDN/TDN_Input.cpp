@@ -61,6 +61,7 @@ BOOL CALLBACK tdnInputManager::EnumDeviceCallback(const DIDEVICEINSTANCE* pdidi,
 	インスタンスの登録名。たとえば、"Joystick 1"。
 	*/
 	std::ifstream infs("DATA/Input/list.txt");
+	MyAssert(infs, "エラー: TDN_Input\n原因、データフォルダにInput/list.txtが入ってない！");
 
 	// 過去にcontrollerをさしたことがあるか検索
 	bool find(false);
@@ -445,6 +446,7 @@ void tdnInput::Update()
 void tdnInput::PadAsign(LPSTR ID, int no)
 {
 	std::ifstream infs("DATA/Input/key_config.txt");
+	MyAssert(infs, "エラー: TDN_Input\n原因、データフォルダにInput/key_config.txtが入ってない！");
 
 	char str[64];
 

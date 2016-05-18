@@ -34,6 +34,9 @@ tdnShader::tdnShader(char* filename)
 	hr = D3DXCreateEffectFromFile(lpDevice, fileName, NULL, NULL, 0, NULL, &pShader, &pErr);
 	if (FAILED(hr))
 	{
+		// ファイル名を間違えていた場合、pErrはNULLになってしまい、アクセス違反が発生してしまうので、対策
+		MyAssert(pErr, "エラー: シェーダーファイル名を間違えています\nエラーファイル名%s", filename);
+
 		// 出力にエラー表示
 		char*	szBuffer = new char[pErr->GetBufferSize() + 32 ];
 		sprintf(szBuffer, "\terrors: %s\n", (char*)pErr->GetBufferPointer());
@@ -65,6 +68,9 @@ void tdnShader::SetDecaleTexture(Texture2D& decaleTex){ pShader->SetTexture(htex
 
 void tdnShader::SetValue(char* name, Texture2D* tex){ pShader->SetTexture(name, tex); }
 void tdnShader::SetValue(char* name, Texture2D& tex){ pShader->SetTexture(name, &tex); }
+
+void tdnShader::SetValue(char* name, tdn2DObj* tex){ pShader->SetTexture(name, tex->GetTexture()); }
+void tdnShader::SetValue(char* name, tdn2DObj& tex){ pShader->SetTexture(name, tex.GetTexture()); }
 
 void tdnShader::SetValue(char* name, Matrix* mat){ pShader->SetMatrix(name, mat); }
 void tdnShader::SetValue(char* name, Matrix& mat){ pShader->SetMatrix(name, &mat); }

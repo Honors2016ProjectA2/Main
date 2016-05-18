@@ -1,7 +1,5 @@
 //*****************************************************************************************************************************
 #include	"TDNLIB.h"
-#include	"../source/system/ItDebug.h"
-
 // acm関数(MP3等の圧縮音声データの解凍を行う)用のインクルード
 #include<mmreg.h>
 #include<msacm.h>
@@ -266,6 +264,27 @@ LPBYTE tdnSoundBuffer::LoadWAV(LPSTR fname, LPDWORD size, LPWAVEFORMATEX wfx)
 
 	/* フォーマットチャンク侵入 */
 	infs.read(chunkID, 4);
+
+
+	// ★Broadcast Wave Formatか確認
+	if (chunkID[0] == 'b' &&
+		chunkID[1] == 'e' &&
+		chunkID[2] == 'x' &&
+		chunkID[3] == 't')
+	{
+		/* bext chunk とは　「Broad Audio Extension chunk」で、BWFファイル独自のチャンク。名前的にたぶん拡張じゃね？　ただ、ここでは使わないので読み飛ばすだけ */
+
+		// フォーマットチャンクまで読み飛ばす
+		const char FMTCHUNKID[5] = "fmt ";
+		int i = 0;
+		while (i < 4)
+		{
+			infs.read(&chunkID[i], 1);
+			i = (chunkID[i] == FMTCHUNKID[i]) ? i + 1 : 0;
+		}
+	}
+
+
 	MyAssert(
 		chunkID[0] == 'f'&&
 		chunkID[1] == 'm'&&
@@ -2172,29 +2191,4 @@ WAVE_LoadError:	/*	エラー終了	*/
 	mmioClose(hMMIO, 0);
 	if (buf != nullptr) GlobalFree(buf);
 	return nullptr;
-}
-
-void WriteOWD(char *filename, OWDInfo *info)
-{
-	// バイナリ書き出し
-	std::ofstream ofs(filename, std::ios::binary);
-
-	// 何かファイルパス間違えてね？
-	assert(ofs);
-
-	// バージョン
-	BYTE ver = 0;
-	ofs.write((char*)&ver, 1);
-
-	ofs.write((char*)&info->wfx, sizeof(WAVEFORMATEX));
-	ofs.write((char*)&info->size, 4);
-	int remain = info->size; // 書き込むべき残りのバイト数
-	for (int i = 0; remain > 0; i++)
-	{
-		// 1024Bytesずつ書き込む(メモリパンクさせないように)
-		int writeSize = min(1024, remain);
-		ofs.write((char*)&info->data[i*1024], sizeof(char)* writeSize);
-		remain -= writeSize;
-	}
-	//ofs.write((char*)info->data, info->size);
 }
