@@ -27,6 +27,7 @@ Number* num;
 
 Number* num2;
 
+Number* num3;
 //******************************************************************
 //		‰Šú‰»E‰ð•ú
 //******************************************************************
@@ -75,6 +76,8 @@ bool sceneMain::Initialize()
 	num = new Number();
 	num2 = new Number();
 
+	num3 = new Number("Data/Number/number3.png", 128);
+
 	NumberEffect;
 
 	return true;
@@ -103,6 +106,7 @@ sceneMain::~sceneMain()
 
 	SAFE_DELETE(num);
 	SAFE_DELETE(num2);
+	SAFE_DELETE(num3);
 
 	NumberEffect.Release();
 
@@ -171,8 +175,15 @@ bool sceneMain::Update()
 	}
 	if (KeyBoard(KB_K) == 3)
 	{
+		num3->Action();
 		num->Action();
 		HOGE_NUM += 240;
+	}
+	if (KeyBoard(KB_I) == 3)
+	{
+		num3->Action();
+		num->Action();
+		HOGE_NUM += 1;
 	}
 	if (KeyBoard(KB_L) == 3)
 	{
@@ -190,7 +201,12 @@ bool sceneMain::Update()
 	{
 		NumberEffect.AddNumber(500, 400, 114);
 	}
-
+	if (KeyBoard(KB_O) == 3)
+	{
+		num3->GetAnim()->OrderShrink(6, 1.0f, 2.0f);
+		num3->Action();
+		
+	}
 
 	if (HOGE_NUM2 < HOGE_NUM)
 	{
@@ -223,6 +239,7 @@ bool sceneMain::Update()
 
 	num->Update();
 	num2->Update();
+	num3->Update();
 
 	NumberEffect.Update();
 
@@ -268,6 +285,7 @@ void sceneMain::Render()
 
 	num2->Render(500, 500, 114);
 
+	num3->Render(1100, 20, HOGE_NUM);
 	NumberEffect.Render();
 
 

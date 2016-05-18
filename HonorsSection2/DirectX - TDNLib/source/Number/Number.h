@@ -22,6 +22,7 @@ public:
 
 	// (TODO)後で演出を変える分岐をする
 	 Number();
+	 Number(char* name,int picSize);
 	virtual ~Number();
 
 	// 更新・描画

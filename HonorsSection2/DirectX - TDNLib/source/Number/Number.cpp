@@ -35,9 +35,22 @@ Number::Number()
 	m_pic->OrderJump(4, 1.0f, 1.3f);
 	//m_pic->OrderShake(7, 10, 20, 2);
 	//m_pic->OrderRipple(12, 1.0, 0.1f);
+	//m_pic->OrderShrink(6, 1.0f, 3.0f);
 
 	m_picSize = 64;
 	m_picScale = 1;
+}
+
+Number::Number(char * name, int picSize)
+{
+	m_pic = new tdn2DAnim(name);
+	m_pic->OrderJump(4, 1.0f, 1.3f);
+	//m_pic->OrderShake(7, 10, 20, 2);
+	//m_pic->OrderRipple(12, 1.0, 0.1f);
+	//m_pic->OrderShrink(6, 1.0f, 3.0f);
+	m_picSize = picSize;
+	m_picScale = 1;
+
 }
 
 Number::~Number()
