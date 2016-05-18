@@ -2682,3 +2682,18 @@ public:
 };
 
 typedef iex3DObj IEX3DOBJ, *LPIEX3DOBJ;
+
+
+//======================================================
+// 羊ゲーム用定数
+enum class DIR
+{
+	UP, DOWN
+};
+
+const int STAGE_POS_Y[3] =
+{
+	480, 240, 0
+};
+
+const int STAGE_MAX = 3;

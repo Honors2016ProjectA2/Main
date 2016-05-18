@@ -1,8 +1,10 @@
 #include	"TDNLIB.h"
 #include	"Framework.h"
-#include	"../Scene/sceneMain.h"
+#include	"../Scene/Title.h"
+#include	"../Scene/SceneMain.h"
+#include	"../Scene/SceneTest.h"
 #include	"System.h"
-#include "ItDebug.h"
+#include	"../Sound/SoundManager.h"
 
 //*****************************/
 //		WinMain
@@ -31,12 +33,14 @@ BOOL InitApp(HINSTANCE hInstance, int nCmdShow)									// ƒQ[ƒ€‹N“®‚ÌÅ‰‚Ì
 	tdnTexture::Initialize();
 	tdnText::Init();
 	tdnInput::Initialize();
-	
+	SoundManager::Initialize();
+
 	//IEX‚ÌƒVƒXƒeƒ€ŠÖ”‚ğˆê“IÌ—pA˜b‚µ‡‚¢‚ÅSystem.h‚ğ–•Á‚·‚é‚©Œˆ‚ß‚é
 	SYSTEM_Initialize();
 
-	MainFrame = new Framework();			 // ƒƒCƒ“ƒtƒŒ[ƒ€ƒ[ƒN¶¬
-	MainFrame->ChangeScene(new sceneMain()); // ‰ŠúƒV[ƒ“
+	MainFrame = new Framework();					// ƒƒCƒ“ƒtƒŒ[ƒ€ƒ[ƒN¶¬
+	MainFrame->ChangeScene(new sceneMain);			// ‰ŠúƒV[ƒ“
+	//MainFrame->ChangeScene(new sceneTest);		// ¼“c‚­‚ñ—p
 
 	return TRUE;
 }
@@ -51,6 +55,7 @@ BOOL EndApp()																	// ‚±‚Ì’†‚ÅƒVƒXƒeƒ€‚àŠÜ‚ß‚½‘S‚Ä‚ÌŒãˆ—‚ğ‚·‚é‚Ì‚Åƒ
 	tdnSystem::Release();
 	tdnText::CleanUpModule();
 	tdnInput::Release();
+	SoundManager::Release();
 
 	return TRUE;
 }

@@ -108,11 +108,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\Collision\Collision.cpp" />
+    <ClCompile Include="source\CurvePoint\CurvePoint.cpp" />
+    <ClCompile Include="source\Data\DataMNG.cpp" />
+    <ClCompile Include="source\Data\file_manager.cpp" />
     <ClCompile Include="source\Effect\AnimationPanel.cpp" />
     <ClCompile Include="source\Effect\AnimationRipple.cpp" />
     <ClCompile Include="source\Effect\AnimationRippleEx.cpp" />
     <ClCompile Include="source\Effect\AnimationUV.cpp" />
+    <ClCompile Include="source\Enemy\watchman.cpp" />
+    <ClCompile Include="source\IEX_Expansion.cpp" />
+    <ClCompile Include="source\LightCtrl.cpp" />
+    <ClCompile Include="source\MousePointer.cpp" />
     <ClCompile Include="source\Number\Number.cpp" />
+    <ClCompile Include="source\Ready.cpp" />
+    <ClCompile Include="source\Scene\End.cpp" />
+    <ClCompile Include="source\Scene\Explain.cpp" />
+    <ClCompile Include="source\Scene\result.cpp" />
+    <ClCompile Include="source\Scene\SceneMain.cpp" />
+    <ClCompile Include="source\Scene\Title.cpp" />
+    <ClCompile Include="source\Sheep\Sheep.cpp" />
+    <ClCompile Include="source\Stage\StageMNG.cpp" />
+    <ClCompile Include="source\system\FadeCtrl.cpp" />
+    <ClCompile Include="source\system\textLoader.cpp" />
+    <ClCompile Include="source\UI\UIMNG.cpp" />
     <ClCompile Include="TDN\IEX_3DObject.cpp" />
     <ClCompile Include="TDN\IEX_Mesh.cpp" />
     <ClCompile Include="TDN\IEX_SkinMesh.cpp" />
@@ -134,25 +153,44 @@
     <ClCompile Include="TDN\TDN_Text.cpp" />
     <ClCompile Include="TDN\TDN_Texture.cpp" />
     <ClCompile Include="TDN\TDN_View.cpp" />
-    <ClCompile Include="source\Scene\SceneMain.cpp" />
+    <ClCompile Include="source\Scene\SceneTest.cpp" />
     <ClCompile Include="source\Sound\SoundManager.cpp" />
     <ClCompile Include="source\system\Framework.cpp" />
     <ClCompile Include="source\system\System.cpp" />
     <ClCompile Include="SOURCE\system\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\Collision\Collision.h" />
+    <ClInclude Include="source\CurvePoint\CurvePoint.h" />
+    <ClInclude Include="source\Data\DataMNG.h" />
+    <ClInclude Include="source\Data\file_manager.h" />
     <ClInclude Include="source\Effect\AnimationPanel.h" />
     <ClInclude Include="source\Effect\AnimationRipple.h" />
     <ClInclude Include="source\Effect\AnimationRippleEx.h" />
     <ClInclude Include="source\Effect\AnimationUV.h" />
+    <ClInclude Include="source\Enemy\watchman.h" />
+    <ClInclude Include="source\IEX_Expansion.h" />
+    <ClInclude Include="source\LightCtrl.h" />
+    <ClInclude Include="source\MousePointer.h" />
     <ClInclude Include="source\Number\Number.h" />
+    <ClInclude Include="source\Ready.h" />
+    <ClInclude Include="source\Scene\End.h" />
+    <ClInclude Include="source\Scene\Explain.h" />
+    <ClInclude Include="source\Scene\result.h" />
+    <ClInclude Include="source\Scene\SceneMain.h" />
+    <ClInclude Include="source\Scene\Title.h" />
+    <ClInclude Include="source\Sheep\Sheep.h" />
+    <ClInclude Include="source\Stage\StageMNG.h" />
+    <ClInclude Include="source\system\FadeCtrl.h" />
+    <ClInclude Include="source\system\textLoader.h" />
+    <ClInclude Include="source\UI\UIMNG.h" />
     <ClInclude Include="TDN\ogg\codec.h" />
     <ClInclude Include="TDN\ogg\ogg.h" />
     <ClInclude Include="TDN\ogg\os_types.h" />
     <ClInclude Include="TDN\ogg\vorbisenc.h" />
     <ClInclude Include="TDN\ogg\vorbisfile.h" />
     <ClInclude Include="TDN\TDNLIB.h" />
-    <ClInclude Include="source\Scene\SceneMain.h" />
+    <ClInclude Include="source\Scene\SceneTest.h" />
     <ClInclude Include="source\Sound\SoundManager.h" />
     <ClInclude Include="source\system\Framework.h" />
     <ClInclude Include="source\system\BaseScene.h" />

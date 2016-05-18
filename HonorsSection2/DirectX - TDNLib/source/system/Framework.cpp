@@ -2,7 +2,7 @@
 
 //#include	"system.h"
 #include	"Framework.h"
-
+#include	"../Sound/SoundManager.h"
 //#include <time.h>
 
 
@@ -73,6 +73,7 @@ bool Framework::Update()
 	dwGameFrame++;	//	ゲームフレーム数更新
 
 	tdnInput::Update();
+	SoundManager::Update();
 
 	/*動画を再生していたら描画させない*/
 	if (scene != NULL){

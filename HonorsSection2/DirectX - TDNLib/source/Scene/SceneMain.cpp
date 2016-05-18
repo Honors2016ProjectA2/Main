@@ -1,308 +1,303 @@
-#include	"TDNLIB.h"
-#include	"../system/Framework.h"
-#include	"../system/System.h"
 #include	"SceneMain.h"
+#include	"Ready.h"
+#include	"End.h"
+#include	"MousePointer.h"
+#include	"../Stage/StageMNG.h"
+#include	"../CurvePoint/CurvePoint.h"
+#include	"LightCtrl.h"
+#include	"../system/FadeCtrl.h"
 #include	"../Sound/SoundManager.h"
-#include   "Effect\AnimationUV.h"
-#include "Number\Number.h"
+#include	"../Collision/Collision.h"
+#include	"../Data/DataMNG.h"
+#include	"../Sheep/Sheep.h"
+#include	"../Enemy/watchman.h"
+#include	"../UI/UIMNG.h"
+#include	"../system/system.h"
+#include	"result.h"
 
-AnimationUV* animUV;
+namespace{
+	namespace SCENE{
+		enum{
+			INIT, READY, MAIN, END, RESULT,
+		};
+	}
 
-Vector3 cameraPos = Vector3(0, 10, -40);
+	namespace SHAKE{
+		const float WIDTH = 0.05f;
+		const int MAX_TIME = 60;
+		const int WAIT_1 = 20;
+		const int WAIT_2 = 10;
+	}
+}
 
-Surface* backbuffer;
-tdn2DObj* screen;
-
-tdn2DObj* m_Effect;
-
-tdn2DAnim* anim;
-tdn2DObj* anim2;
-//tdn2DAnim* d;
-//tdn2DAnim* d2;
-
-
-tdn2DAnim* app[4];
-
-Number* num;
-
-Number* num2;
-
-Number* num3;
 //******************************************************************
 //		初期化・解放
 //******************************************************************
+
 bool sceneMain::Initialize()
 {
+	srand(timeGetTime());
+
+	tdnMouse::Initialize(FALSE);
 	tdnView::Init();
 
-	BG = new tdn2DObj("Data/BG.png");
+	back = new tdn2DObj("DATA/GameHaikei.png");
+	ready = new Ready();
+	end = new End();
+	pointer = new MousePointer();
+	stage = new StageManager();
+	light = new LightCtrl();
+	dataMNG = new DataManager();
+	m_pSheepMgr = new SheepManager();
+	watchman = new Watchman_mng();
+	uiMNG = new UIManager();
+	result = new Result();
 
-	player = new iex3DObj("Data/player/nazenaraba_toire.IEM");	
-	
-	stage = new iexMesh("Data/Stage/yama2.imo");
-	stage->SetAngle(3.14f);
-	stage->SetScale(0.4f);
-	stage->SetPos(Vector3(0, 0, 20));
-	stage->Update();
+	byunAlpha = new tdn2DObj("DATA/alpha.png");
+	shader2D->SetValue("ByunAlphaMap", byunAlpha);
 
-	tdnSystem::GetDevice()->GetRenderTarget(0, &backbuffer);
-	screen = new tdn2DObj(1280, 720, FMT2D::RENDERTARGET);
+	tdnSystem::GetDevice()->GetRenderTarget(0, &backUp);
+	renderTarget = new tdn2DObj(1280, 720, RENDERTARGET);
 
+	shake.Init();
+	this->Init();
 
-	m_Effect = new tdn2DObj("Data/Effect/nodeEffect.png");
-
-	animUV = new AnimationUV("DATA/UV/wave.imo", 0.00f, 0.01f, 60, false, 1, 45);
-
-	anim = new tdn2DAnim("Data/114514.png");
-	anim->OrderShake(12, 0, 20, 4);
-	anim->OrderJump(4, 1.0f, 0.5f);
-	anim->OrderShrink(12, 1.0f, 3.0f);
-
-	//d = new tdn2DAnim("Data/youmu.png");
-	//d->OrderRipple(12, 1, 0.02f);
-	//d2 = new tdn2DAnim("Data/youmu.png");
-	//d2->OrderRipple(12, 1, 0.02f);
-	
-	for (int i = 0; i < 4; i++)
-	{
-		app[i] = new tdn2DAnim("Data/select.png");
-		app[i]->OrderMoveAppeared(12, 600, i * 128);
-
-	}
-
-	anim2= new tdn2DObj("Data/youmu.png");
-	//anim->OrderRipple(12, 1, 0.02f);
-	
-	num = new Number();
-	num2 = new Number();
-
-	num3 = new Number("Data/Number/number3.png", 128);
-
-	NumberEffect;
+	bgm->Play("MAIN");
 
 	return true;
 }
 
+void sceneMain::Shake::Init()
+{
+	move = Vector2(0,0);
+	timer = 0;
+	beforeFloor = 0;
+}
+
 sceneMain::~sceneMain()
 {
-	SAFE_DELETE(BG);
-	SAFE_DELETE(player);
+	SAFE_DELETE(back);
+	SAFE_DELETE(ready);
+	SAFE_DELETE(end);
+	SAFE_DELETE(pointer);
 	SAFE_DELETE(stage);
-
-	SAFE_DELETE(m_Effect);
-
-	SAFE_DELETE(animUV);
-	SAFE_DELETE(anim);
-
-	SAFE_DELETE(anim2);
-
-	SAFE_DELETE(screen);
-
-	for (int i = 0; i < 4; i++)
-	{
-		SAFE_DELETE(app[i]);
-	}
-	//SoundManager::Release();
-
-	SAFE_DELETE(num);
-	SAFE_DELETE(num2);
-	SAFE_DELETE(num3);
-
-	NumberEffect.Release();
-
-
+	SAFE_DELETE(light);
+	SAFE_DELETE(dataMNG);
+	SAFE_DELETE(m_pSheepMgr);
+	SAFE_DELETE(watchman);
+	SAFE_DELETE(byunAlpha);
+	SAFE_DELETE(uiMNG);
+	SAFE_DELETE(result);
+	SAFE_DELETE(renderTarget);
 }
 
+//******************************************************************
+//		処理
+//******************************************************************
 
-static int HOGE_NUM = 0;
-static int HOGE_NUM2 = 0;
-//******************************************************************
-//		更新・描画
-//******************************************************************
 bool sceneMain::Update()
 {
+	tdnMouse::Update();
+	pointer->Update();
+	FadeControl::Update();
 
-	// SoundManager::Update();
-	if (KeyBoard(KB_F))cameraPos.z += 1;
-	if (KeyBoard(KB_G))cameraPos.z -= 1;
-	tdnView::Set(cameraPos, Vector3(0,10,0));
-	shader->SetValue("VMatrix", matView);
-
-	player->SetAngle(3.14f);
-	player->SetPos(Vector3(10.0f, 0.0f, 0.0f));
-	player->Update();
-	player->Animation();
-	
-	if (KeyBoard(KB_B) == 3)
-	{
-		animUV->Action();
-	}
-	animUV->Update();
-
-	if (KeyBoard(KB_Z) == 3)
-	{
-		anim->Action();
-		//d->Action(12);
-		//d2->Action(24);
-	}
-	if (KeyBoard(KB_X) == 3)
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			app[i]->OrderMoveAppeared(12, 600,  128);
-			app[i]->Action(i * 20);
-		}
-		
-	}
-	if (KeyBoard(KB_C) == 3)
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			app[i]->OrderRipple(12, 1.0f, 0.1f);
-			app[i]->Action();
-		}
-
-	}
-	if (KeyBoard(KB_N) == 3)
-	{
-		num->Action();
-		HOGE_NUM += 100;
-	}
-	if (KeyBoard(KB_M) == 3)
-	{
-		num->Action();
-		HOGE_NUM += 1600;
-	}
-	if (KeyBoard(KB_K) == 3)
-	{
-		num3->Action();
-		num->Action();
-		HOGE_NUM += 240;
-	}
-	if (KeyBoard(KB_I) == 3)
-	{
-		num3->Action();
-		num->Action();
-		HOGE_NUM += 1;
-	}
-	if (KeyBoard(KB_L) == 3)
-	{
-		for (int i = 0; i < 5; i++)
-		{
-			int randX = (rand() % 100) + 250;
-			int randY = (rand() % 500);
-			int score = rand() % 1000;
-
-			NumberEffect.AddNumber(randX, randY, score);
-		}	
-
-	}
-	if (KeyBoard(KB_P) == 3) 
-	{
-		NumberEffect.AddNumber(500, 400, 114);
-	}
-	if (KeyBoard(KB_O) == 3)
-	{
-		num3->GetAnim()->OrderShrink(6, 1.0f, 2.0f);
-		num3->Action();
-		
+	switch(state){
+	case SCENE::INIT:		Init();				break;
+	case SCENE::READY:		ReadyEvent();		break;
+	case SCENE::MAIN:		MainUpdate();		break;
+	case SCENE::END:		EndEvent();			break;
+	case SCENE::RESULT:		ResultUpdate();		break;
 	}
 
-	if (HOGE_NUM2 < HOGE_NUM)
-	{
-		// 桁が3以上離れてると
+	/*　データ受け渡し　*/
+	DataDelivery();
+	/*　当たり判定　*/
+	CollisionMgr->Update(m_pSheepMgr, watchman, dataMNG, stage, uiMNG);
 
-		//if ()
-		//{
-		//	HOGE_NUM2 += 100;
-		//}
-		//else
-		//{
-			HOGE_NUM2 += 21;
-		//}		
-
-	}
-	else
-	{
-		HOGE_NUM2 = HOGE_NUM;
-	}
-
-	anim->Update();
-	
-	//d->Update();
-	//d2->Update();
-
-	for (int i = 0; i < 4; i++)
-	{
-		app[i]->Update();
-	}
-
-	num->Update();
-	num2->Update();
-	num3->Update();
-
-	NumberEffect.Update();
-
-	return true;	
+	return true;
 }
+
+void sceneMain::DataDelivery()
+{
+	uiMNG->Reflection(stage, m_pSheepMgr, watchman, dataMNG);
+	stage->Reflection(dataMNG, pointer);
+	pointer->DataReceive(stage);
+	light->DataReceive(pointer);
+	end->DataReceive(stage);
+	m_pSheepMgr->Set_pointers(pointer, stage, dataMNG);
+	watchman->Set_Pointers(stage, dataMNG);
+	result->Set_MousePointer(pointer);
+	dataMNG->Reflection(uiMNG);
+	shake.SetFloor(stage->floor);
+}
+
+
+void sceneMain::Init()
+{
+	uiMNG->Init();
+	stage->Init();
+	light->Init();
+	dataMNG->Init();
+	ready->Init();
+	end->Init();
+//	watchman->Init();
+//	m_pSheepMgr->Init();
+
+	FadeControl::Setting(FadeControl::MODE::FADE_IN, 30.0f);
+
+	// ここのかっこを0にするとレディーゴーの処理が出る(デバッグの時短でレディーゴーを無しにしてる)
+	state = (1) ? SCENE::MAIN : SCENE::READY;
+	DataDelivery();
+}
+
+void sceneMain::ReadyEvent()
+{
+	if( ready->Update() ){
+		state = SCENE::MAIN;
+		m_pSheepMgr->Start();
+	}
+	uiMNG->Update();
+	light->Update();
+	stage->Update();
+}
+
+void sceneMain::MainUpdate()
+{
+	dataMNG->Update();
+	stage->Update();
+	light->Update();
+	m_pSheepMgr->Update();
+	watchman->Update();
+	uiMNG->Update();
+	shake.Update();
+
+	// タイムが0になったらゲームオーバー処理
+	//if( dataMNG->GetTime() <= 0 ){
+	//	state = SCENE::END;
+	//	watchman->Reset();
+	//	/* 変更 */
+	//	m_pSheepMgr->Reset();
+	//	result->Set_data(dataMNG->GetScore());
+	//	bgm->Stop("MAIN");
+	//	se->Play("TIME_UP");
+	//}
+}
+
+void sceneMain::EndEvent()
+{
+	if( end->Update() ){
+		state = SCENE::RESULT;
+	}
+	uiMNG->Update();
+}
+
+void sceneMain::ResultUpdate()
+{
+	bgm->Play("RESULT");
+	if( FadeControl::IsFade() ) return;
+	if( FadeControl::IsEndFade() ){
+		state = SCENE::INIT;
+		bgm->Stop("RESULT");
+	}
+
+	if (result->Update()){
+		FadeControl::Setting(FadeControl::MODE::FADE_OUT, 30.0f);
+	}
+}
+
+void sceneMain::Shake::Update()
+{
+	if( waitTimer > 0 ){
+		waitTimer--;
+		return;
+	}
+
+	if( timer > 0 ){
+		move = Vector2(timer*SHAKE::WIDTH*(rand()%3-1), timer*SHAKE::WIDTH*(rand()%3-1));
+		timer--;
+	}else{
+		move = Vector2(0, 0);
+	}	
+}
+
+void sceneMain::Shake::SetFloor(int floor)
+{
+	if( floor > beforeFloor ){
+		timer = SHAKE::MAX_TIME;
+		if( floor == 1 ){
+			waitTimer = SHAKE::WAIT_1;
+		}else if( floor == 2 ){
+			waitTimer = SHAKE::WAIT_2;
+		}
+	}
+	beforeFloor = floor;
+}
+
+
+//******************************************************************
+//		描画
+//******************************************************************
 
 void sceneMain::Render()
 {
+	if (state == SCENE::INIT) return;
+	tdnView::Clear(0xffffffff);
 	tdnView::Activate();
 
+	renderTarget->RenderTarget();
+	back->Render(0, 0);
 
-	BG->Render(0, 0, RS::COPY_NOZ);
-	//BG->Render(0, 0, RS::ADD);
-
-
-	screen->RenderTarget();
-	tdnView::Clear(0xff005522);
-
-	player->Render(shader, "copy");
 	stage->Render();
 
-	m_Effect->SetScale(10);
-	m_Effect->Render3D(0,0,0);
-
-	animUV->Render();
-	
-	anim2->Render(100, 90);
-	anim->Render(500, 90);
-	//d->Render(300, 90, RS::ADD);
-	//d2->Render(600, 90, RS::ADD);
-
-	for (int i = 0; i < 4; i++)
-	{
-		app[i]->Render(0, i * 128 , 256, 128, 0, i * 128, 256, 128);
+	switch (state){
+	case SCENE::READY:		ReadyRender();		break;
+	case SCENE::MAIN:		MainRender();		break;
+	case SCENE::END:		EndRender();		break;
+	case SCENE::RESULT:		ResultRender();		break;
 	}
 
+	tdnSystem::GetDevice()->SetRenderTarget(0, backUp);
+	renderTarget->Render((int)shake.move.x, (int)shake.move.y, 1280, 720, 0, 0, 1280, 720);
 
-	tdnSystem::GetDevice()->SetRenderTarget(0, backbuffer);
-	screen->Render(0, 0);
+	//基本的には最後。説明時のみ説明書の後ろにするので別途
+	pointer->Render();
+	FadeControl::Render();
+#ifdef _DEBUG
+	DebugText();
+	CollisionMgr->DebugRender(m_pSheepMgr, watchman, dataMNG, stage, uiMNG);
+#endif
+}
 
-	// 数字描画
-	num->Render(500, 100, HOGE_NUM2);
+void sceneMain::ReadyRender()
+{
+	uiMNG->Render_Front();
+	ready->Render();
+}
 
-	num2->Render(500, 500, 114);
+void sceneMain::MainRender()
+{
+	m_pSheepMgr->Render();
+	watchman->Render();
+	uiMNG->Render_Back();
+	light->Render();
+	uiMNG->Render_Front();
+}
 
-	num3->Render(1100, 20, HOGE_NUM);
-	NumberEffect.Render();
+void sceneMain::EndRender()
+{
+	uiMNG->Render_End();
+	end->Render();
+}
+
+void sceneMain::ResultRender()
+{
+	result->Render();
+}
 
 
-	if (tdnInput::KeyGet(KEY_A) == 1) tdnText::Draw(10, 340, 0xffffff00, "Input : A");
-	if (tdnInput::KeyGet(KEY_B) == 1) tdnText::Draw(10, 360, 0xffffff00, "Input : B");
-	if (tdnInput::KeyGet(KEY_C) == 1) tdnText::Draw(10, 380, 0xffffff00, "Input : C");
-	if (tdnInput::KeyGet(KEY_D) == 1) tdnText::Draw(10, 400, 0xffffff00, "Input : D");
-	if (tdnInput::KeyGet(KEY_L1) == 1) tdnText::Draw(10, 420, 0xffffff00, "Input : L1");
-	if (tdnInput::KeyGet(KEY_L2) == 1) tdnText::Draw(10, 440, 0xffffff00, "Input : L2");
-	if (tdnInput::KeyGet(KEY_L3) == 1) tdnText::Draw(10, 460, 0xffffff00, "Input : L3");
-	if (tdnInput::KeyGet(KEY_R1) == 1) tdnText::Draw(10, 480, 0xffffff00, "Input : R1");
-	if (tdnInput::KeyGet(KEY_R2) == 1) tdnText::Draw(10, 500, 0xffffff00, "Input : R2");
-	if (tdnInput::KeyGet(KEY_R3) == 1) tdnText::Draw(10, 520, 0xffffff00, "Input : R3");
-	if (tdnInput::KeyGet(KEY_START) == 1) tdnText::Draw(10, 540, 0xffffff00, "Input : START");
-	if (tdnInput::KeyGet(KEY_SELECT) == 1) tdnText::Draw(10, 560, 0xffffff00, "Input : SELECT");
-	if (tdnInput::KeyGet(KEY_LEFT) == 1) tdnText::Draw(10, 580, 0xffffff00, "Input : LEFT");
-	if (tdnInput::KeyGet(KEY_RIGHT) == 1) tdnText::Draw(10, 580, 0xffffff00, "Input : RIGHT");
-	if (tdnInput::KeyGet(KEY_UP) == 1) tdnText::Draw(10, 600, 0xffffff00, "Input : UP");
-	if (tdnInput::KeyGet(KEY_DOWN) == 1) tdnText::Draw(10, 600, 0xffffff00, "Input : DOWN");
+void sceneMain::DebugText()
+{
+	//	デバッグ用_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+	//DEBUG_TEXT::DebugText("TEST%d, %s, %d, %c", 1, "aaa", 741, 'A');
+	//	_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 }

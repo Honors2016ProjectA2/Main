@@ -1,11 +1,54 @@
+
 #include	"TDNLIB.h"
 #include	"SoundManager.h"
+
+
+//☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★
+//
+//								サウンド呼び出しID一覧														　☆★
+//
+//☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★
+
+//==============================================================================================
+//				S	E
+//==============================================================================================
+const SE_Manager::DATA all_dataS[] =
+{
+	{ "CURSUR",			"DATA/Sound/SE/se1.wav", 3, false },
+	{ "CLICK",			"DATA/Sound/SE/se4.wav", 3, false },
+	//{ "SHUTTER",		"DATA/Sound/SE/S_open_close.wav", 3, false },
+	{ "BALLOON_N",		"DATA/Sound/SE/wolf.wav", 3, false },
+	{ "BALLOON_R",		"DATA/Sound/SE/se12.wav", 3, false },
+	//{ "POINTING",		"DATA/Sound/SE/se13.wav", 3, false },
+	{ "SPEED_UP",		"DATA/Sound/SE/se14.wav", 3, false },
+	{ "DAMAGE",			"DATA/Sound/SE/eat.wav", 20, false },
+	//{ "NOT_USE",		"DATA/Sound/SE/se16.wav", 3, false },
+	{ "TIME_UP",		"DATA/Sound/SE/se17.wav", 3, false },
+	{ "RANK_OUT",		"DATA/Sound/SE/se20.wav", 3, false },
+	{ "RANK_IN",		"DATA/Sound/SE/se21.wav", 3, false },
+	{ "RESULT_POINT",	"DATA/Sound/SE/se22.wav", 3, false },
+};
+
+//==============================================================================================
+//				B	G	M
+//==============================================================================================
+BGM_Manager::DATA all_dataB[] =
+{
+	{ "TITLE",	"DATA/Sound/BGM/nv_rsta.wav", false },
+	{ "READY",	"DATA/Sound/BGM/se9.wav", false },
+	{ "GO",		"DATA/Sound/BGM/se10.wav", false },
+	{ "MAIN",	"DATA/Sound/BGM/main.wav", false },
+	{ "RESULT", "DATA/Sound/BGM/ResultBGM.wav", false },
+};
+
 
 //**************************************************************************************************************
 //
 //		サウンド管理クラス(winmainとframeworkで使うだけ)
 //
 //**************************************************************************************************************
+//=============================================================================================
+//		初	期	化
 void SoundManager::Initialize()
 {
 	se = new SE_Manager;
@@ -14,16 +57,28 @@ void SoundManager::Initialize()
 	bgm->Initialize();
 }
 
+//=============================================================================================
+//		解		放
 void SoundManager::Release()
 {
-	delete se;
-	delete bgm;
+	SAFE_DELETE(se);
+	SAFE_DELETE(bgm);
 }
 
+//=============================================================================================
+//		更新
 void SoundManager::Update()
 {
 	se->Update();
 	bgm->Update();
+}
+
+
+///********************************************************************************************
+//		リスナー情報設定！
+void SoundManager::SetListenerPos(const Vector2 &pos)
+{
+	se->SetListener(pos);
 }
 
 
@@ -32,15 +87,6 @@ void SoundManager::Update()
 //		SE管理クラス
 //
 //**************************************************************************************************************
-//*********************************************************************************************
-//		パラメータの設定
-//*********************************************************************************************
-//	サウンドデータ(textで読み込むのも良いかもしれない)
-SE_Manager::DATA all_dataS[] =
-{
-	{ "イエアア", "DATA/Sound/SE/yeaa.wav", 20, false },
-	{ "END", nullptr }
-};
 
 
 //=============================================================================================
@@ -49,13 +95,22 @@ void SE_Manager::Initialize()
 {
 	play_manager = new tdnSoundSE;
 
-	for (int i = 0;;i++)
+	for (int i = 0; i < _countof(all_dataS); i++)
 	{
-		if (strcmp(all_dataS[i].id, "END") == 0) break;	// 終端
+		//if (strcmp(all_dataS[i].id, "END") == 0) break;	// 終端
 
 		ID[all_dataS[i].id] = i;
 		play_manager->Set(i, all_dataS[i].play_simultaneously, all_dataS[i].file_name, all_dataS[i].b3D);
 	}
+
+	// リスナーの初期設定
+	m_ListenerPos = Vector2(tdnSystem::GetScreenSize().right * .5f, tdnSystem::GetScreenSize().bottom * .5f);
+	//play_manager->SetListenerAll(
+	//	Vector3(tdnSystem::GetScreenSize().right * .5f, tdnSystem::GetScreenSize().bottom * .5f, 0),	// リスナー座標(画面の真ん中と仮定する)
+	//	Vector3(1, 0, 0),	// 正面ベクトル
+	//	Vector3(0, 1, 0),	// 上方ベクトル
+	//	Vector3(0, 0, 0)	// 移動値
+	//	);
 }
 //
 //=============================================================================================
@@ -78,47 +133,6 @@ SE_Manager::~SE_Manager()
 void SE_Manager::Update()
 {
 	play_manager->UpdateListener();
-
-	if (KeyBoardTRG(KB_1))
-	{
-		play_manager->SetFX(DXA_FX::CHORUS);
-	}
-	else if (KeyBoardTRG(KB_2))
-	{
-		play_manager->SetFX(DXA_FX::COMPRESSOR);
-	}
-	else if (KeyBoardTRG(KB_3))
-	{
-		play_manager->SetFX(DXA_FX::DISTORTION);
-	}
-	else if (KeyBoardTRG(KB_4))
-	{
-		play_manager->SetFX(DXA_FX::ECHO);
-	}
-	else if (KeyBoardTRG(KB_5))
-	{
-		play_manager->SetFX(DXA_FX::ENVREVERB);
-	}
-	else if (KeyBoardTRG(KB_6))
-	{
-		play_manager->SetFX(DXA_FX::FLANGER);
-	}
-	else if (KeyBoardTRG(KB_7))
-	{
-		play_manager->SetFX(DXA_FX::GARGLE);
-	}
-	else if (KeyBoardTRG(KB_8))
-	{
-		play_manager->SetFX(DXA_FX::PARAMEQ);
-	}
-	else if (KeyBoardTRG(KB_9))
-	{
-		//play_manager->SetFX(DXA_FX::DXAFX_WAVESREVERB);
-	}
-	else if (KeyBoardTRG(KB_0))
-	{
-		play_manager->SetFX(DXA_FX::OFF);
-	}
 }
 //
 //=============================================================================================
@@ -129,30 +143,27 @@ void SE_Manager::Update()
 //		処		理
 int SE_Manager::Play_in(int data_num, bool loop)
 {
-	if (data_num != -1)
+	if (data_num != TDNSOUND_PLAY_NONE)
 	{
-		return play_manager->Play(data_num, loop);
+		play_manager->Play(data_num, loop);
 	}
-	return -1;
+	return TDNSOUND_PLAY_NONE;
 }
 
-int SE_Manager::Play_in(int data_num, float volume, bool loop)
+int SE_Manager::Play_in(int data_num, const Vector2 &pos, const Vector2 &move, bool loop)
 {
-	if (data_num != -1)
+	if (data_num != TDNSOUND_PLAY_NONE)
 	{
-		play_manager->SetVolume(data_num, volume);
+		// ステレオ手動で設定してみる
+		static const int DSBPAN_WIDTH = 10000;
+		const int pan = (int)((DSBPAN_WIDTH / 8)*((pos.x - m_ListenerPos.x) / (tdnSystem::GetScreenSize().right / 2)));
+		const int vol = DSBVOLUME_MAX + (int)((DSBVOLUME_MIN / 32) * (sqrtf((m_ListenerPos.x - pos.x)*(m_ListenerPos.x - pos.x)) / m_ListenerPos.x) + (DSBVOLUME_MIN / 16) * (sqrtf((m_ListenerPos.y - pos.y)*(m_ListenerPos.y - pos.y)) / m_ListenerPos.y));
+		play_manager->SetPan(data_num, pan);
+		play_manager->SetVolume(data_num, vol);
+
 		return play_manager->Play(data_num, loop);
 	}
-	return -1;
-}
-
-int SE_Manager::Play_in(int data_num, const Vector3 &pos, const Vector3 &front, const Vector3 &move, bool loop)
-{
-	if (data_num != -1)
-	{
-		return play_manager->Play(data_num, pos, front, move, loop);
-	}
-	return -1;
+	return TDNSOUND_PLAY_NONE;
 }
 
 int SE_Manager::Play(LPSTR _ID, bool loop)
@@ -160,17 +171,9 @@ int SE_Manager::Play(LPSTR _ID, bool loop)
 	return Play_in(ID[_ID], loop);
 }
 
-int SE_Manager::Play(LPSTR _ID, float volume, bool loop)
+int SE_Manager::Play(LPSTR _ID, const Vector2 &pos, const Vector2 &move, bool loop)
 {
-	if (volume < 0) volume = 0;
-	else if (volume > 1.0f) volume = 1.0f;
-
-	return Play_in(ID[_ID], volume, loop);
-}
-
-int SE_Manager::Play(LPSTR _ID, const Vector3 &pos, const Vector3 &front, const Vector3 &move, bool loop)
-{
-	return Play_in(ID[_ID], pos, front, move, loop);
+	return Play_in(ID[_ID], pos, move, loop);
 }
 
 void SE_Manager::Stop(LPSTR _ID, int no)
@@ -183,37 +186,21 @@ void SE_Manager::Stop_all()
 	play_manager->AllStop();
 }
 
-void SE_Manager::Set_listener(const Vector3 &pos, const Vector3 &front, const Vector3 &up, const Vector3 &move)
+void SE_Manager::SetTone(LPSTR _ID, int tone)
 {
-	play_manager->SetListenerAll(pos, front, up, move);
+	play_manager->SetSpeed(ID[_ID], 1.0f + (float)tone*.048f);
+}
+
+void SE_Manager::SetListener(const Vector2 &pos)
+{
+	m_ListenerPos = pos;
+	//play_manager->SetListenerPos(Vector3(pos.x, pos.y, 0));
+	//play_manager->SetListenerMove(Vector3(move.x, move.y, 0));
 }
 //
 //=============================================================================================
 
 
-
-
-//=============================================================================================
-//		ＩＤ一致データ検索
-//int	SE_Manager::Find_data_no(LPSTR _ID)
-//{
-//	int	result = -1;
-//	//	データ数分ループ
-//	for (int i = 0; i < data_count; i++)
-//	{
-//		//	判定
-//		if (strcmp(all_dataS[i].id, _ID) != 0) continue;
-//
-//		//	発見
-//		result = i;
-//		//	ループを抜ける
-//		break;
-//	}
-//
-//	return	result;
-//}
-//
-//=============================================================================================
 
 
 
@@ -223,16 +210,6 @@ void SE_Manager::Set_listener(const Vector3 &pos, const Vector3 &front, const Ve
 //		BGM管理クラス
 //
 //**************************************************************************************************************
-//*********************************************************************************************
-//		パラメータの設定
-//*********************************************************************************************
-//	サウンドデータ(textで読み込むのも良いかもしれない)
-BGM_Manager::DATA all_dataB[] =
-{
-	{ "EoE_A", "DATA/Sound/BGM/Collision_of_ElementsA.wav", false },
-	{ "EoE_B", "DATA/Sound/BGM/Collision_of_ElementsB.wav", false },
-	{ "END", nullptr }
-};
 
 
 //=============================================================================================
@@ -241,13 +218,21 @@ void BGM_Manager::Initialize()
 {
 	play_manager = new tdnSoundBGM;
 
-	for (int i = 0;;i++)
+	for (int i = 0; i < _countof(all_dataB); i++)
 	{
-		if (strcmp(all_dataB[i].id, "END") == 0) break;	// 終端
+		//if (strcmp(all_dataB[i].id, "END") == 0) break;	// 終端
 
 		ID[all_dataB[i].id] = i;
 		play_manager->Set(i, all_dataB[i].file_name, all_dataB[i].b3D);
 	}
+
+	// リスナーの初期設定
+	play_manager->SetListenerAll(
+		Vector3(tdnSystem::GetScreenSize().right * .5f, tdnSystem::GetScreenSize().bottom * .5f, 0),	// リスナー座標(画面の真ん中と仮定する)
+		Vector3(1, 0, 0),	// 正面ベクトル
+		Vector3(0, 1, 0),	// 上方ベクトル
+		Vector3(0, 0, 0)	// 移動値
+		);
 }
 //
 //=============================================================================================
@@ -269,57 +254,6 @@ void BGM_Manager::Update()
 {
 	play_manager->Update();
 	play_manager->UpdateListener();
-
-	if (KeyBoardTRG(KB_1))
-	{
-		effect_no = (int)DXA_FX::CHORUS;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_2))
-	{
-		effect_no = (int)DXA_FX::COMPRESSOR;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_3))
-	{
-		effect_no = (int)DXA_FX::DISTORTION;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_4))
-	{
-		effect_no = (int)DXA_FX::ECHO;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_5))
-	{
-		effect_no = (int)DXA_FX::ENVREVERB;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_6))
-	{
-		effect_no = (int)DXA_FX::FLANGER;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_7))
-	{
-		effect_no = (int)DXA_FX::GARGLE;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_8))
-	{
-		effect_no = (int)DXA_FX::PARAMEQ;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_9))
-	{
-		effect_no = (int)DXA_FX::WAVESREVERB;
-		play_manager->SetFX((DXA_FX)effect_no);
-	}
-	else if (KeyBoardTRG(KB_0))
-	{
-		effect_no = 0;
-		play_manager->SetFX(DXA_FX::OFF);
-	}
 }
 //
 //=============================================================================================
@@ -330,24 +264,15 @@ void BGM_Manager::Update()
 //		処		理
 void BGM_Manager::Play_in(int data_num, bool loop)
 {
-	if (data_num != -1)
+	if (data_num != TDNSOUND_PLAY_NONE)
 	{
-		play_manager->Play(data_num, loop);
-	}
-}
-
-void BGM_Manager::Play_in(int data_num, float volume, bool loop)
-{
-	if (data_num != -1)
-	{
-		play_manager->SetVolume(data_num, volume);
 		play_manager->Play(data_num, loop);
 	}
 }
 
 void BGM_Manager::Play_in(int data_num, const Vector3 &pos, const Vector3 &front, const Vector3 &move, bool loop)
 {
-	if (data_num != -1)
+	if (data_num != TDNSOUND_PLAY_NONE)
 	{
 		play_manager->Play(data_num, pos, front, move, loop);
 	}
@@ -356,14 +281,6 @@ void BGM_Manager::Play_in(int data_num, const Vector3 &pos, const Vector3 &front
 void BGM_Manager::Play(LPSTR _ID, bool loop)
 {
 	Play_in(ID[_ID], loop);
-}
-
-void BGM_Manager::Play(LPSTR _ID, float volume, bool loop)
-{
-	if (volume < 0) volume = 0;
-	else if (volume > 1.0f) volume = 1.0f;
-
-	Play_in(ID[_ID], volume, loop);
 }
 
 void BGM_Manager::Play(LPSTR _ID, const Vector3 &pos, const Vector3 &front, const Vector3 &move, bool loop)
@@ -401,37 +318,14 @@ void BGM_Manager::Cross_fade(LPSTR inID, LPSTR outID, float in_speed, float out_
 	play_manager->CrossFade(ID[inID], ID[outID], in_speed, out_speed, tdnSoundBGM::CROSS_FADE_TYPE::END_OF_ETERNITY, loop);
 }
 
-void BGM_Manager::Set_listener(const Vector3 &pos, const Vector3 &front, const Vector3 &up, const Vector3 &move)
+void BGM_Manager::SetListener(const Vector2 &pos, const Vector2 &move)
 {
-	play_manager->SetListenerAll(pos, front, up, move);
+	play_manager->SetListenerPos(Vector3(pos.x, pos.y, 0));
+	play_manager->SetListenerMove(Vector3(move.x, move.y, 0));
 }
 //
 //=============================================================================================
 
-
-
-
-//=============================================================================================
-//		ＩＤ一致データ検索
-//int	BGN_Manager::Find_data_no(LPSTR _ID)
-//{
-//	int	result = -1;
-//	//	データ数分ループ
-//	for (int i = 0; i < data_count; i++)
-//	{
-//		//	判定
-//		if (strcmp(all_dataB[i].id, _ID) != 0) continue;
-//
-//		//	発見
-//		result = i;
-//		//	ループを抜ける
-//		break;
-//	}
-//
-//	return	result;
-//}
-//
-//=============================================================================================
 
 
 //=============================================================================================
