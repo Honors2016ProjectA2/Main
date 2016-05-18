@@ -55,6 +55,7 @@ bool sceneMain::Initialize()
 	anim = new tdn2DAnim("Data/114514.png");
 	anim->OrderShake(12, 0, 20, 4);
 	anim->OrderJump(4, 1.0f, 0.5f);
+	anim->OrderShrink(12, 1.0f, 3.0f);
 
 	//d = new tdn2DAnim("Data/youmu.png");
 	//d->OrderRipple(12, 1, 0.02f);

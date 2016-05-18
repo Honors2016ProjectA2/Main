@@ -85,7 +85,7 @@ void Number::Render(int x, int y, int num, NUM_KIND kind)
 			int digitNum = number % 10;	// 一番小さい桁を入手
 			number = (int)(number / 10);// 数値の一番小さい桁を消す
 
-			m_pic->Render(x - ((count * 32)*m_picScale), y, m_picSize*m_picScale, m_picSize*m_picScale, digitNum*m_picSize, 0, m_picSize, m_picSize);// 数字描画
+			m_pic->Render(x - ((count * (m_picSize /2))*m_picScale), y, m_picSize*m_picScale, m_picSize*m_picScale, digitNum*m_picSize, 0, m_picSize, m_picSize);// 数字描画
 
 			if (number <= 0)break;// 数値が０以下になったらさよなら
 		}
@@ -202,7 +202,7 @@ void Number_Effect::Update()
 			(*it)->y -= 4;
 
 			// アルファを上げる
-			(*it)->alpha +=40;
+			(*it)->alpha +=50;
 			if ((*it)->alpha >= 255)(*it)->alpha = 255;
 
 			// フレームで調整
@@ -224,7 +224,7 @@ void Number_Effect::Update()
 		case NumberData::STATE::ARRIVAL:
 
 			// y座標を↑にずらす
-			(*it)->y -= 2;
+			(*it)->y -= 1;
 
 			// フレームで時間稼ぎ
 			(*it)->flame++;

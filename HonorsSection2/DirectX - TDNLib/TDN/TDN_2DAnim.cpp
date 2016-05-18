@@ -466,6 +466,80 @@ void AnimAction::Jump::Render(tdn2DObj* pic, int x, int y, int w, int h, int tx,
 }
 
 
+
+/**********************/
+// 集まる用に出現
+/**********************/
+
+AnimAction::Shrink::Shrink(int endFlame, float startScale, float maxScale)
+{
+	m_nowFlame = 0;
+	m_endFlame = endFlame;
+	m_startScale = startScale;
+	m_maxScale = maxScale;
+
+	m_nowScale = m_maxScale;
+
+	float scaleRata = maxScale - startScale;
+
+	m_addScale = scaleRata / endFlame;
+}
+
+AnimAction::Shrink::~Shrink()
+{
+
+}
+
+void AnimAction::Shrink::Update(tdn2DObj * pic)
+{
+	// アクションフラグがたっていないと返す
+	//if (m_bActionFlag == false)return;
+	if (ActionCheck() == false)return;
+
+	// フレーム更新
+	m_nowFlame++;
+	// エンドフレームまで来たら終わる
+	if (m_nowFlame >= m_endFlame)
+	{
+		//m_bActionFlag = false;
+		// 拡大率更新
+		//pic->SetScale(m_startscale);
+		//return;
+	}
+
+	// アルファ処理
+	float alpha = (float)m_nowFlame / (float)m_endFlame;//   0/30=0   60/30=2   1-(0~1)
+	Math::Clamp(alpha, 0.0f, 1.0f);
+
+	//alpha = 1.0f - alpha;
+	pic->SetARGB((int)(alpha * 255), 255, 255, 255);
+
+	// スケールを引いていく
+	m_nowScale -= m_addScale;
+	if (m_nowScale <= m_startScale)
+	{
+		m_nowScale = m_startScale;
+	}
+
+	// 拡大率更新
+	pic->SetScale(m_nowScale);
+
+}
+
+void AnimAction::Shrink::Action(tdn2DObj * pic, int delay)
+{
+	AnimAction::Base::Action(pic, delay);
+	//m_bActionFlag = true; // 実行フラグOn
+
+	// 初期化
+	m_nowFlame = 0;
+
+	m_nowScale = m_maxScale;
+	pic->SetScale(m_nowScale);
+
+}
+
+
 /******************************************/
 // 描画をアニメ用に加工
 /******************************************/
@@ -493,6 +567,12 @@ void tdn2DAnim::OrderJump(int endFlame, float startScale, float addScale)
 {
 	if (m_pAction != nullptr) delete m_pAction;
 	m_pAction = new AnimAction::Jump(endFlame, startScale, addScale);
+}
+
+void tdn2DAnim::OrderShrink(int endFlame, float startScale, float maxScale)
+{
+	if (m_pAction != nullptr) delete m_pAction;
+	m_pAction = new AnimAction::Shrink(endFlame, startScale, maxScale);
 }
 
 

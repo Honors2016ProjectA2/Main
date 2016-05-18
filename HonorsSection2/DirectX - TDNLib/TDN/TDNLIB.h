@@ -1200,7 +1200,7 @@ namespace AnimAction
 	{
 	public:
 		// 引数で設定
-		Jump(int endFlame, float startScale, float maxScale);
+		Jump(int endFlame, float startScale, float addScale);
 		~Jump();
 
 		void Update(tdn2DObj* pic);// tdn2DObjの実態を中へ
@@ -1224,6 +1224,35 @@ namespace AnimAction
 		float m_orgAlpha;
 		float m_alpha;
 	};
+
+	/**
+	*@brief		集まる用に出現
+	*@author		Nishida
+	*/
+	class Shrink :public Base
+	{
+	public:
+		// 引数で設定
+		Shrink(int endFlame, float startScale, float maxScale);
+		~Shrink();
+
+		void Update(tdn2DObj* pic);// tdn2DObjの実態を中へ
+		void Action(tdn2DObj* pic, int delay);// 基本的にアニメの始動
+
+	private:
+		int m_nowFlame;
+		int m_endFlame;
+
+		float m_startScale;
+		float m_maxScale;
+
+		float m_addScale;
+		float m_nowScale;	// 現在のスケール
+
+		float m_orgAlpha;
+		float m_alpha;
+	};
+	
 }
 
 /**
@@ -1248,6 +1277,7 @@ public:
 	void OrderMoveAppeared(int endFlame, int startX, int startY);
 	void OrderShake(int endFlame, float shakeX, float shakeY, int cycle);
 	void OrderJump(int endFlame, float startScale, float addScale);
+	void OrderShrink(int endFlame, float startScale, float maxScale);
 
 	// 実行・始動
 	void Update()
