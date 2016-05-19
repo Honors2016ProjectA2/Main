@@ -5,15 +5,13 @@ class Watchman;
 class Watchman_mng;
 class DataManager;
 class StageManager;
-class UIManager;
 class CurvePoint;
 
 class CollisionManager
 {
 public:
 	static CollisionManager *GetInstance(){ static CollisionManager inst; return &inst; }
-	void Update(SheepManager* sinnMNG, Watchman_mng* manMNG, DataManager* dataMNG, StageManager* stageMNG, UIManager* uiMNG);
-	void DebugRender(SheepManager* sinnMNG, Watchman_mng* manMNG, DataManager* dataMNG, StageManager* stageMNG, UIManager* uiMNG);
+	
 private:
 	bool ShinnnyoAndExclamationPoint(Sheep* sinn, Watchman* man);			//しんにょう　と！（ダメージ判定
 	bool EscapedShinnnyo(Sheep* sinn);									//しんにょう脱走（加点&Time上昇判定

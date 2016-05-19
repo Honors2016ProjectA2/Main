@@ -131,7 +131,6 @@
     <ClCompile Include="source\Stage\StageMNG.cpp" />
     <ClCompile Include="source\system\FadeCtrl.cpp" />
     <ClCompile Include="source\system\textLoader.cpp" />
-    <ClCompile Include="source\UI\UIMNG.cpp" />
     <ClCompile Include="TDN\IEX_3DObject.cpp" />
     <ClCompile Include="TDN\IEX_Mesh.cpp" />
     <ClCompile Include="TDN\IEX_SkinMesh.cpp" />
@@ -183,7 +182,6 @@
     <ClInclude Include="source\Stage\StageMNG.h" />
     <ClInclude Include="source\system\FadeCtrl.h" />
     <ClInclude Include="source\system\textLoader.h" />
-    <ClInclude Include="source\UI\UIMNG.h" />
     <ClInclude Include="TDN\ogg\codec.h" />
     <ClInclude Include="TDN\ogg\ogg.h" />
     <ClInclude Include="TDN\ogg\os_types.h" />

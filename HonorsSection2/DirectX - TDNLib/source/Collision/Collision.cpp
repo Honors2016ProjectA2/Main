@@ -4,7 +4,6 @@
 #include	"../Sheep/Sheep.h"
 #include	"../CurvePoint/CurvePoint.h"
 #include	"../Stage/StageMNG.h"
-#include    "../UI/UIMNG.h"
 #include	"../CurvePoint/CurvePoint.h"
 #include	"../Sound/SoundManager.h"
 
@@ -27,63 +26,6 @@ CollisionManager::CollisionManager()
 	ifs >> GOAL_X;
 }
 
-void CollisionManager::Update(SheepManager* sinnMNG, Watchman_mng* manMNG, DataManager* dataMNG, StageManager* stageMNG, UIManager* uiMNG)
-{
-	for(auto &sinIterator : *sinnMNG->Get_list()){
-
-		//しんにょう脱走（加点&Time上昇判定
-		if( EscapedShinnnyo(sinIterator) ){
-			if (sinIterator->col_check) continue;
-
-			sinIterator->col_check = true;
-			dataMNG->AddTime(sinIterator->Get_floor(),
-							 stageMNG->GetPopupPos(sinIterator->Get_floor(),
-							 sinIterator->Get_pos()->x > 640 ? true : false));		//加点、Time上昇
-			uiMNG->SetPopup(dataMNG->GetDiffTime(), dataMNG->GetPos());
-			dataMNG->AddScore(sinIterator->Get_floor());
-			continue;
-		}
-
-		// 羊と犬
-		for (auto& dogIterator : *stageMNG->GetCurvePointList(sinIterator->Get_floor())){
-			if (ExclamationPointAndCurvePoint(sinIterator, dogIterator)){
-				sinIterator->SetCurve(dogIterator->GetDir());	// 羊に曲がれ命令を出す！
-				//if (manIterator.col_check)continue;
-				//manIterator.col_check = true;
-				//if (manIterator.Get_type() != 1)// ！さんノーマルなら
-					//stageMNG->CurvePointLock(manIterator.Get_floor());
-					//uiMNG->SetPopup(dataMNG->GetDiffTime(), dataMNG->GetPos());
-			}
-		}
-
-		//しんにょう　と！（ダメージ判定
-		for(auto& manIterator : *manMNG->Get_list()){
-			if (ShinnnyoAndExclamationPoint(sinIterator, &manIterator))
-{
-			if (sinIterator->col_check) continue;
-
-			sinIterator->col_check = true;
-			dataMNG->SubTime_Kill(sinIterator->Get_floor(), *sinIterator->Get_pos());		//時間を減少させる
-			uiMNG->SetPopup(dataMNG->GetDiffTime(), dataMNG->GetPos());
-			se->Play("DAMAGE");
-		}
-
-	}
-
-		
-	}
-
-	//犬と狼
-	for(auto& manIterator : *manMNG->Get_list()){
-		for (auto& dogIterator : *stageMNG->GetCurvePointList(manIterator.Get_floor()))
-		{
-			if (ExclamationDogAndWolf(dogIterator, &manIterator)){
-				if (manIterator.col_check)continue;
-				manIterator.col_check = true;
-			}
-		}
-	}
-}
 
 bool CollisionManager::ShinnnyoAndExclamationPoint(Sheep* sinn, Watchman* man)
 {
@@ -142,14 +84,3 @@ bool CollisionManager::ExclamationDogAndWolf(CurvePoint *cp, Watchman* man)
 	return false;
 }
 
-
-void CollisionManager::DebugRender(SheepManager* sinnMNG, Watchman_mng* manMNG, DataManager* dataMNG, StageManager* stageMNG, UIManager* uiMNG)
-{
-	for (int i = 0; i < 3; i++)
-	{
-		for (auto it : *stageMNG->GetCurvePointList(i))
-		{
-			if(it->IsOpening())tdnPolygon::Rect((int)it->GetPos().x - DOG_SIZE, (int)it->GetPos().y, DOG_SIZE, (int)it->GetWidth(), RS::COPY, 0x0fff0000);
-		}
-	}
-}

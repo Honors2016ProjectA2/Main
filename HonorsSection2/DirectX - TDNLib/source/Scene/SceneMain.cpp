@@ -11,7 +11,6 @@
 #include	"../Data/DataMNG.h"
 #include	"../Sheep/Sheep.h"
 #include	"../Enemy/watchman.h"
-#include	"../UI/UIMNG.h"
 #include	"../system/system.h"
 #include	"result.h"
 
@@ -50,7 +49,6 @@ bool sceneMain::Initialize()
 	dataMNG = new DataManager();
 	m_pSheepMgr = new SheepManager();
 	watchman = new Watchman_mng();
-	uiMNG = new UIManager();
 	result = new Result();
 
 	byunAlpha = new tdn2DObj("DATA/alpha.png");
@@ -86,7 +84,6 @@ sceneMain::~sceneMain()
 	SAFE_DELETE(m_pSheepMgr);
 	SAFE_DELETE(watchman);
 	SAFE_DELETE(byunAlpha);
-	SAFE_DELETE(uiMNG);
 	SAFE_DELETE(result);
 	SAFE_DELETE(renderTarget);
 }
@@ -112,14 +109,12 @@ bool sceneMain::Update()
 	/*　データ受け渡し　*/
 	DataDelivery();
 	/*　当たり判定　*/
-	CollisionMgr->Update(m_pSheepMgr, watchman, dataMNG, stage, uiMNG);
 
 	return true;
 }
 
 void sceneMain::DataDelivery()
 {
-	uiMNG->Reflection(stage, m_pSheepMgr, watchman, dataMNG);
 	stage->Reflection(dataMNG, pointer);
 	pointer->DataReceive(stage);
 	light->DataReceive(pointer);
@@ -127,14 +122,12 @@ void sceneMain::DataDelivery()
 	m_pSheepMgr->Set_pointers(pointer, stage, dataMNG);
 	watchman->Set_Pointers(stage, dataMNG);
 	result->Set_MousePointer(pointer);
-	dataMNG->Reflection(uiMNG);
 	shake.SetFloor(stage->floor);
 }
 
 
 void sceneMain::Init()
 {
-	uiMNG->Init();
 	stage->Init();
 	light->Init();
 	dataMNG->Init();
@@ -156,7 +149,6 @@ void sceneMain::ReadyEvent()
 		state = SCENE::MAIN;
 		m_pSheepMgr->Start();
 	}
-	uiMNG->Update();
 	light->Update();
 	stage->Update();
 }
@@ -168,7 +160,6 @@ void sceneMain::MainUpdate()
 	light->Update();
 	m_pSheepMgr->Update();
 	watchman->Update();
-	uiMNG->Update();
 	shake.Update();
 
 	// タイムが0になったらゲームオーバー処理
@@ -188,7 +179,6 @@ void sceneMain::EndEvent()
 	if( end->Update() ){
 		state = SCENE::RESULT;
 	}
-	uiMNG->Update();
 }
 
 void sceneMain::ResultUpdate()
@@ -264,13 +254,11 @@ void sceneMain::Render()
 	FadeControl::Render();
 #ifdef _DEBUG
 	DebugText();
-	CollisionMgr->DebugRender(m_pSheepMgr, watchman, dataMNG, stage, uiMNG);
 #endif
 }
 
 void sceneMain::ReadyRender()
 {
-	uiMNG->Render_Front();
 	ready->Render();
 }
 
@@ -278,14 +266,11 @@ void sceneMain::MainRender()
 {
 	m_pSheepMgr->Render();
 	watchman->Render();
-	uiMNG->Render_Back();
 	light->Render();
-	uiMNG->Render_Front();
 }
 
 void sceneMain::EndRender()
 {
-	uiMNG->Render_End();
 	end->Render();
 }
 

@@ -1,7 +1,6 @@
 //-------- include --------
 #include "DataMNG.h"
 #include "TDNLIB.h"
-#include "../UI/UIMNG.h"
 
 //***********************************************
 //   DataManager class
@@ -60,14 +59,6 @@ void DataManager::Update()
 	}
 }
 
-void DataManager::Reflection(UIManager* ui)
-{
-	if (level < LEVEL_MAX - 1 && score >= LEVEL_UP_SCORE[level])
-	{
-		ui->SetSpeedUp();
-		level++;
-	}
-}
 
 Vector2 DataManager::GetPos()
 {
