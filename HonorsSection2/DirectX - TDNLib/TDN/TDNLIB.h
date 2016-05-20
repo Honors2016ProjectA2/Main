@@ -1009,6 +1009,9 @@ public:
 	virtual void Render(int x, int y, int w, int h, int tx, int ty, int tw, int th, u32 dwFlags = RS::COPY);
 	virtual void Render(int x, int y, int w, int h, int tx, int ty, int tw, int th, tdnShader* shader, char* name);
 
+	// 右端から始める
+	virtual void RenderReversal(int x, int y, int w, int h, int tx, int ty, int tw, int th, u32 dwFlags = RS::COPY);
+
 	// 3D描画
 	virtual void Render3D(float x, float y, float z, u32 dwFlags = RS::COPY);
 	virtual void Render3D(Vector3 pos, u32 dwFlags = RS::COPY);
@@ -1277,7 +1280,7 @@ public:
 	~tdn2DAnim() { SAFE_DELETE(m_pAction); SAFE_DELETE(m_obj);	}
 
 	// 注文
-	void OrderRipple(int endFlame, float startScale, float moveScale);
+	void OrderRipple(int endFlame, float startScale, float addScale);
 	void OrderMoveAppeared(int endFlame, int startX, int startY);
 	void OrderShake(int endFlame, float shakeX, float shakeY, int cycle);
 	void OrderJump(int endFlame, float startScale, float addScale);

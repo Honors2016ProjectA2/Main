@@ -4,7 +4,6 @@
 #include "IEX_Expansion.h"
 
 //------- protorype ---------
-class UIManager;
 
 //-------- DataManager class --------
 class DataManager
@@ -32,7 +31,6 @@ public:
 	~DataManager();
 	void Init();
 	void Update();
-	void Reflection(UIManager* uiMNG);
 	Vector2 GetPos();
 	bool PopTrg();
 	// time

@@ -11,7 +11,6 @@ class LightCtrl;
 class DataManager;
 class SheepManager;
 class Watchman_mng;
-class UIManager;
 class Result;
 
 
@@ -36,7 +35,6 @@ private:
 	DataManager* dataMNG = nullptr;
 	SheepManager* m_pSheepMgr = nullptr;
 	Watchman_mng* watchman = nullptr;
-	UIManager* uiMNG = nullptr;
 	Result * result = nullptr;
 
 	tdn2DObj* byunAlpha = nullptr;

@@ -14,6 +14,9 @@
 #include	"../system/system.h"
 #include	"result.h"
 
+#include	"../UI/UIManager.h"
+
+
 namespace{
 	namespace SCENE{
 		enum{
@@ -86,6 +89,8 @@ sceneMain::~sceneMain()
 	SAFE_DELETE(byunAlpha);
 	SAFE_DELETE(result);
 	SAFE_DELETE(renderTarget);
+	UIMNG.Release();
+
 }
 
 //******************************************************************
@@ -161,6 +166,9 @@ void sceneMain::MainUpdate()
 	m_pSheepMgr->Update();
 	watchman->Update();
 	shake.Update();
+
+	UIMNG.Update();
+
 
 	// タイムが0になったらゲームオーバー処理
 	//if( dataMNG->GetTime() <= 0 ){
@@ -245,6 +253,8 @@ void sceneMain::Render()
 	case SCENE::END:		EndRender();		break;
 	case SCENE::RESULT:		ResultRender();		break;
 	}
+
+	UIMNG.Render();
 
 	tdnSystem::GetDevice()->SetRenderTarget(0, backUp);
 	renderTarget->Render((int)shake.move.x, (int)shake.move.y, 1280, 720, 0, 0, 1280, 720);

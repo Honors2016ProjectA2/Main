@@ -8,13 +8,14 @@
 class Number
 {
 private:
+
+
+public:
 	// 数字の色のタイプ
 	enum class NUM_KIND
 	{
-		NORMAL, HEAL
+		NORMAL, HEAL, COMBO
 	};
-
-public:
 
 	// 実体
 	//static Number& GetInstance();
@@ -23,6 +24,7 @@ public:
 	// (TODO)後で演出を変える分岐をする
 	 Number();
 	 Number(char* name,int picSize);
+	 Number(char* name, int picSize, NUM_KIND kind);
 	virtual ~Number();
 
 	// 更新・描画

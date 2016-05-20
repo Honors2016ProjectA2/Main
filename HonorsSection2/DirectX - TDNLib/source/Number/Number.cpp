@@ -53,6 +53,30 @@ Number::Number(char * name, int picSize)
 
 }
 
+Number::Number(char * name, int picSize, NUM_KIND kind)
+{
+	m_pic = new tdn2DAnim(name);
+	m_pic->OrderJump(4, 1.0f, 1.3f);
+	m_picSize = picSize;
+	m_picScale = 1;
+
+	switch (kind)
+	{
+	case Number::NUM_KIND::NORMAL:
+		m_pic->OrderJump(4, 1.0f, 1.3f);
+		break;
+	case Number::NUM_KIND::HEAL:
+		m_pic->OrderJump(4, 1.0f, 1.3f);
+		break;
+	case Number::NUM_KIND::COMBO:
+		m_pic->OrderShrink(6, 1.0f, 3.0f);
+		break;
+	default:
+		break;
+	}
+
+}
+
 Number::~Number()
 {
 	SAFE_DELETE(m_pic);

@@ -121,6 +121,7 @@
     <ClCompile Include="source\LightCtrl.cpp" />
     <ClCompile Include="source\MousePointer.cpp" />
     <ClCompile Include="source\Number\Number.cpp" />
+    <ClCompile Include="source\pie_graph\pie_graph.cpp" />
     <ClCompile Include="source\Ready.cpp" />
     <ClCompile Include="source\Scene\End.cpp" />
     <ClCompile Include="source\Scene\Explain.cpp" />
@@ -131,6 +132,9 @@
     <ClCompile Include="source\Stage\StageMNG.cpp" />
     <ClCompile Include="source\system\FadeCtrl.cpp" />
     <ClCompile Include="source\system\textLoader.cpp" />
+    <ClCompile Include="source\UI\UIManager.cpp" />
+    <ClInclude Include="source\pie_graph\pie_graph.h" />
+    <ClInclude Include="source\UI\UIManager.h" />
     <ClCompile Include="TDN\IEX_3DObject.cpp" />
     <ClCompile Include="TDN\IEX_Mesh.cpp" />
     <ClCompile Include="TDN\IEX_SkinMesh.cpp" />
