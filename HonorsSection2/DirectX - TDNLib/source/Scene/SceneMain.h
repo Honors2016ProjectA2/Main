@@ -1,5 +1,4 @@
-#ifndef _SCENEMAIN_H_
-#define _SCENEMAIN_H_
+#pragma once
 
 #include	"system/BaseScene.h"
 #include	"IEX_Expansion.h"
@@ -7,7 +6,6 @@ class Ready;
 class End;
 class MousePointer;
 class StageManager;
-class LightCtrl;
 class DataManager;
 class SheepManager;
 class Watchman_mng;
@@ -31,7 +29,6 @@ private:
 	End* end = nullptr;
 	MousePointer* pointer = nullptr;
 	StageManager* stage = nullptr;
-	LightCtrl* light = nullptr;
 	DataManager* dataMNG = nullptr;
 	SheepManager* m_pSheepMgr = nullptr;
 	Watchman_mng* watchman = nullptr;
@@ -73,5 +70,3 @@ private:
 		int beforeFloor;
 	}shake;
 };
-
-#endif // !_SCENEMAIN_H_

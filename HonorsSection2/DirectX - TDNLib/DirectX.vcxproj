@@ -108,6 +108,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\Bokusou\Bokusou.cpp" />
     <ClCompile Include="source\Collision\Collision.cpp" />
     <ClCompile Include="source\CurvePoint\CurvePoint.cpp" />
     <ClCompile Include="source\Data\DataMNG.cpp" />
@@ -118,7 +119,6 @@
     <ClCompile Include="source\Effect\AnimationUV.cpp" />
     <ClCompile Include="source\Enemy\watchman.cpp" />
     <ClCompile Include="source\IEX_Expansion.cpp" />
-    <ClCompile Include="source\LightCtrl.cpp" />
     <ClCompile Include="source\MousePointer.cpp" />
     <ClCompile Include="source\Number\Number.cpp" />
     <ClCompile Include="source\pie_graph\pie_graph.cpp" />
@@ -133,8 +133,6 @@
     <ClCompile Include="source\system\FadeCtrl.cpp" />
     <ClCompile Include="source\system\textLoader.cpp" />
     <ClCompile Include="source\UI\UIManager.cpp" />
-    <ClInclude Include="source\pie_graph\pie_graph.h" />
-    <ClInclude Include="source\UI\UIManager.h" />
     <ClCompile Include="TDN\IEX_3DObject.cpp" />
     <ClCompile Include="TDN\IEX_Mesh.cpp" />
     <ClCompile Include="TDN\IEX_SkinMesh.cpp" />
@@ -163,6 +161,7 @@
     <ClCompile Include="SOURCE\system\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\Bokusou\Bokusou.h" />
     <ClInclude Include="source\Collision\Collision.h" />
     <ClInclude Include="source\CurvePoint\CurvePoint.h" />
     <ClInclude Include="source\Data\DataMNG.h" />
@@ -173,9 +172,9 @@
     <ClInclude Include="source\Effect\AnimationUV.h" />
     <ClInclude Include="source\Enemy\watchman.h" />
     <ClInclude Include="source\IEX_Expansion.h" />
-    <ClInclude Include="source\LightCtrl.h" />
     <ClInclude Include="source\MousePointer.h" />
     <ClInclude Include="source\Number\Number.h" />
+    <ClInclude Include="source\pie_graph\pie_graph.h" />
     <ClInclude Include="source\Ready.h" />
     <ClInclude Include="source\Scene\End.h" />
     <ClInclude Include="source\Scene\Explain.h" />
@@ -186,6 +185,10 @@
     <ClInclude Include="source\Stage\StageMNG.h" />
     <ClInclude Include="source\system\FadeCtrl.h" />
     <ClInclude Include="source\system\textLoader.h" />
+    <ClInclude Include="source\UI\UIManager.h" />
+    <ClInclude Include="source\UI\UIManager_.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="TDN\ogg\codec.h" />
     <ClInclude Include="TDN\ogg\ogg.h" />
     <ClInclude Include="TDN\ogg\os_types.h" />

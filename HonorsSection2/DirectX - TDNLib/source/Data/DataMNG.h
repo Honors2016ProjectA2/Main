@@ -4,6 +4,7 @@
 #include "IEX_Expansion.h"
 
 //------- protorype ---------
+class UIManager;
 
 //-------- DataManager class --------
 class DataManager
@@ -31,6 +32,7 @@ public:
 	~DataManager();
 	void Init();
 	void Update();
+	void Reflection(UIManager* uiMNG);
 	Vector2 GetPos();
 	bool PopTrg();
 	// time
@@ -42,7 +44,7 @@ public:
 	// score
 	int GetScore()const;
 	int GetDiffScore()const;
-	void AddScore(int floorIdx);
+	int AddScore(int floorIdx);
 	void SetpAddScore(int *pScore1, int *pScore2, int *pScore3){ m_pAddScores[0] = pScore1; m_pAddScores[1] = pScore2; m_pAddScores[2] = pScore3; }
 
 };

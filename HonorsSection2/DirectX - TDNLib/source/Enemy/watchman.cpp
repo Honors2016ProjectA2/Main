@@ -19,7 +19,7 @@ type(type)
 	frame = 0;
 	animeframe = 0;
 
-	pos.y = 670.0f - 235.0f * floor;
+	pos.y = (float)STAGE_POS_Y[floor] - LANE_WIDTH / 8;
 	pos.x = (float)1280, move = -speed, obj = files[2];
 
 	process = WALK;
@@ -111,7 +111,7 @@ void Watchman::Render()
 {
 	Get_frame_pos(animepos, animeframe, ((type == TYPE::CRUSHER) ? 2 : 4));
 	obj->SetARGB(alpha);
-	obj->Render((int)pos.x, (int)pos.y - SIZE, SIZE, SIZE, (int)animepos.x, (int)animepos.y, PNGSIZE, PNGSIZE, RS::COPY);
+	obj->Render((int)pos.x, (int)pos.y, SIZE, SIZE, (int)animepos.x, (int)animepos.y, PNGSIZE, PNGSIZE, RS::COPY);
 }
 
 //**************************************************
@@ -289,14 +289,14 @@ void Watchman_mng::create(int floor)
 
 void Watchman_mng::Update()
 {
-	if (dmp && dmp->GetScore() >= 230)
+	if (dmp && dmp->GetScore() >= 2300)
 	{
 		creater[2].num = 1;
 		creater[0].pnum = creater[1].pnum = creater[2].pnum = 1;
 	}
-	else if (dmp && dmp->GetScore() >= 170)
+	else if (dmp && dmp->GetScore() >= 1700)
 		creater[1].num = 1;
-	else if (dmp && dmp->GetScore() >= 110)
+	else if (dmp && dmp->GetScore() >= 1100)
 		creater[0].num = 1;
 
 	if (sp)

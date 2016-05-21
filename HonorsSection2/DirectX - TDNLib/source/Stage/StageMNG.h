@@ -16,16 +16,16 @@ class Watchman_mng;
 class CurvePoint;
 
 // 犬のラジオボタン
-struct CurvePointRadio
-{
-	CurvePoint *p[2];	// 実体
-	bool bCheck[2];		// チェックしたか
-
-	CurvePointRadio(){ FOR(2){ p[i] = nullptr; bCheck[i] = false; } }
-	~CurvePointRadio(){ FOR(2)SAFE_DELETE(p[i]); }
-	void Update(){ FOR(2)p[i]->Update(); }
-	void Render(){ FOR(2)p[i]->Render(); }
-};
+//struct CurvePointRadio
+//{
+//	CurvePoint *p[2];	// 実体
+//	bool bCheck[2];		// チェックしたか
+//
+//	CurvePointRadio(){ FOR(2){ p[i] = nullptr; bCheck[i] = false; } }
+//	~CurvePointRadio(){ FOR(2)SAFE_DELETE(p[i]); }
+//	void Update(){ FOR(2)p[i]->Update(); }
+//	void Render(){ FOR(2)p[i]->Render(); }
+//};
 
 //-------- Stage class ------
 class Stage
@@ -44,13 +44,13 @@ private:
 public:
 	enum StageState { NONE, FALL };
 	StageState state;
-	std::vector<CurvePointRadio*> *m_CPlist;
+	std::vector<CurvePoint*> *m_CPlist;
 
 	//------- method --------
 public:
 	Stage();
 	~Stage();
-	void Init(tdn2DObj* stageImage, Vector2 pos, StageState startState, std::vector<CurvePointRadio*> *CPlist);
+	void Init(Vector2 pos, StageState startState, std::vector<CurvePoint*> *CPlist);
 	void Update();
 	void Render();
 	int GetWidth();
@@ -63,8 +63,7 @@ class StageManager
 public:
 	int floor;         // 出現中の階層数-1
 private:
-	tdn2DObj
-		*stageImage[STAGE_MAX], *m_pDogImage;
+	tdn2DObj *m_pDogImage;
 	enum ImageSrc { STAGE, SHUTTER };
 
 	int APPEND_STAGE_BORDER[STAGE_MAX]; // stage追加タイミングのスコア
@@ -73,7 +72,7 @@ private:
 	Stage* stage[STAGE_MAX];
 
 	std::vector<CurvePoint*> m_CPlists[STAGE_MAX];	// 犬設置リスト(ステージに参照させるのは、テキスト読み込み一括でやりたかったため)
-	std::vector<CurvePointRadio*> m_CPRadios;
+	int m_CPStock;									// 犬のストック
 
 	//------ method --------
 public:
@@ -98,3 +97,6 @@ public:
 	Vector2 GetPopupPos(int floorIdx, bool IsRight);
 	Vector2 GetBalloonPos(int floorIdx);
 };
+
+extern int STAGE_POS_Y[3];
+extern int LANE_WIDTH;

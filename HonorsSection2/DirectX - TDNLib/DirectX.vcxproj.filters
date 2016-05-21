@@ -135,9 +135,6 @@
     <ClCompile Include="source\IEX_Expansion.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\LightCtrl.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="source\MousePointer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -154,6 +151,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="source\Sheep\Sheep.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Bokusou\Bokusou.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="source\UI\UIManager.cpp">
@@ -251,9 +251,6 @@
     <ClInclude Include="source\IEX_Expansion.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\LightCtrl.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="source\MousePointer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -269,7 +266,13 @@
     <ClInclude Include="source\Sheep\Sheep.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="source\Bokusou\Bokusou.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
     <ClInclude Include="source\UI\UIManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\UI\UIManager_.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="source\pie_graph\pie_graph.h">

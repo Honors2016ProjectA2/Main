@@ -71,7 +71,7 @@ void Ready::Init()
 	scale = .0f;
 	state = STATE::READY_RUN;
 
-	bgm->Play("READY");
+	//bgm->Play("READY");
 }
 
 bool Ready::Update()

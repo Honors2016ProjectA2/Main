@@ -59,6 +59,13 @@ void DataManager::Update()
 	}
 }
 
+void DataManager::Reflection(UIManager* ui)
+{
+	if (level < LEVEL_MAX - 1 && score >= LEVEL_UP_SCORE[level])
+	{
+		level++;
+	}
+}
 
 Vector2 DataManager::GetPos()
 {
@@ -148,11 +155,13 @@ int DataManager::GetDiffScore()const
 	return diffScore;
 }
 
-void DataManager::AddScore(int floor)
+int DataManager::AddScore(int floor)
 {
 	int add = *m_pAddScores[floor];
 	diffScore = add;
 	score += add;
+
+	return add;	// ‘«‚µ‚½”‚ğ•Ô‚·(‚±‚Ìî•ñ‚ÍCollision‚©‚çUI‚É“`‚í‚é)
 }
 
 //void DataManager::SubScore(int floor)

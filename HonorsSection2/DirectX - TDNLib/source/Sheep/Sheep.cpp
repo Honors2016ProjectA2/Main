@@ -35,9 +35,9 @@ m_AnimePanel(0)
 
 	col_check = false;
 
-	int addY = tdnRandom::Get(0, textparam.VerticalWidth);	// 上下ちょっとずらす用
+	int addY = tdnRandom::Get(-textparam.VerticalWidth, textparam.VerticalWidth);	// 上下ちょっとずらす用
 
-	pos = Vector2((float)textparam.startX, 575.0f - (240.0f * floor) - (float)addY);
+	pos = Vector2((float)textparam.startX, (float)STAGE_POS_Y[floor] + (float)(LANE_WIDTH / 8) - (float)addY);
 	C_MOVE.x = (float)textparam.speed;
 	C_MOVE.y = 0;
 }
@@ -89,8 +89,8 @@ bool Sheep::Curve()
 		if (++m_AnimePanel >= m_data.NumPanel)m_AnimePanel = 0;
 	}
 
-	const float pow = C_MOVE.Length();	// 普段自分が持ってる移動の力
-	const float addAngle = 0.030f;		// サインカーブを曲げるのに使う
+	const float pow = C_MOVE.Length();					// 普段自分が持ってる移動の力
+	const float addAngle = 0.012f * C_MOVE.Length();		// サインカーブを曲げるのに使う
 
 	// サインカーブ的なので羊の群れを曲げる
 	move = Vector2(cosf(m_sinAngle) * pow, sinf(m_sinAngle) * pow);
@@ -100,8 +100,6 @@ bool Sheep::Curve()
 	// 90度曲がって戻る時
 	if (m_bTurned)
 	{
-		m_sinAngle -= addAngle;
-
 		// 90度曲がり終わったら、曲がったフラグON
 		if ((m_sinAngle -= addAngle) <= 0) process = MODE::WALK;
 	}
@@ -113,7 +111,7 @@ bool Sheep::Curve()
 		if ((m_sinAngle += addAngle) >= PI * 0.5f) m_bTurned = true;
 	}
 	// フロア計算
-	for (int i = 0; i < STAGE_MAX; i++)
+	for (int i = STAGE_MAX - 1; i >= 0; i--)
 	{
 		if (pos.y >= STAGE_POS_Y[i])
 		{
@@ -318,7 +316,7 @@ sp(0)
 	}
 	m_List.clear();
 	// タイマー設定
-	m_CurrentTime = 0;
+	m_CurrentTime = clock();
 }
 
 SheepManager::~SheepManager()

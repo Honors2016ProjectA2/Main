@@ -4,7 +4,6 @@
 #include	"MousePointer.h"
 #include	"../Stage/StageMNG.h"
 #include	"../CurvePoint/CurvePoint.h"
-#include	"LightCtrl.h"
 #include	"../system/FadeCtrl.h"
 #include	"../Sound/SoundManager.h"
 #include	"../Collision/Collision.h"
@@ -13,6 +12,7 @@
 #include	"../Enemy/watchman.h"
 #include	"../system/system.h"
 #include	"result.h"
+#include	"../Bokusou/Bokusou.h"
 
 #include	"../UI/UIManager.h"
 
@@ -43,12 +43,13 @@ bool sceneMain::Initialize()
 	tdnMouse::Initialize(FALSE);
 	tdnView::Init();
 
+	// レーンの幅とか読み込むので、ステージを真っ先にnew
+	stage = new StageManager();
+
 	back = new tdn2DObj("DATA/GameHaikei.png");
 	ready = new Ready();
 	end = new End();
 	pointer = new MousePointer();
-	stage = new StageManager();
-	light = new LightCtrl();
 	dataMNG = new DataManager();
 	m_pSheepMgr = new SheepManager();
 	watchman = new Watchman_mng();
@@ -62,6 +63,9 @@ bool sceneMain::Initialize()
 
 	shake.Init();
 	this->Init();
+
+	// 牧草マネージャー初期化
+	BokusouMgr->Initialize();
 
 	bgm->Play("MAIN");
 
@@ -82,16 +86,14 @@ sceneMain::~sceneMain()
 	SAFE_DELETE(end);
 	SAFE_DELETE(pointer);
 	SAFE_DELETE(stage);
-	SAFE_DELETE(light);
 	SAFE_DELETE(dataMNG);
 	SAFE_DELETE(m_pSheepMgr);
 	SAFE_DELETE(watchman);
 	SAFE_DELETE(byunAlpha);
 	SAFE_DELETE(result);
 	SAFE_DELETE(renderTarget);
-	UIMNG.Release();
-
-}
+	BokusouMgr->Release();
+	UIMNG.Release();}
 
 //******************************************************************
 //		処理
@@ -114,6 +116,7 @@ bool sceneMain::Update()
 	/*　データ受け渡し　*/
 	DataDelivery();
 	/*　当たり判定　*/
+	CollisionMgr->Update(m_pSheepMgr, watchman, dataMNG, stage);
 
 	return true;
 }
@@ -122,7 +125,6 @@ void sceneMain::DataDelivery()
 {
 	stage->Reflection(dataMNG, pointer);
 	pointer->DataReceive(stage);
-	light->DataReceive(pointer);
 	end->DataReceive(stage);
 	m_pSheepMgr->Set_pointers(pointer, stage, dataMNG);
 	watchman->Set_Pointers(stage, dataMNG);
@@ -134,7 +136,6 @@ void sceneMain::DataDelivery()
 void sceneMain::Init()
 {
 	stage->Init();
-	light->Init();
 	dataMNG->Init();
 	ready->Init();
 	end->Init();
@@ -154,7 +155,6 @@ void sceneMain::ReadyEvent()
 		state = SCENE::MAIN;
 		m_pSheepMgr->Start();
 	}
-	light->Update();
 	stage->Update();
 }
 
@@ -162,10 +162,10 @@ void sceneMain::MainUpdate()
 {
 	dataMNG->Update();
 	stage->Update();
-	light->Update();
 	m_pSheepMgr->Update();
 	watchman->Update();
 	shake.Update();
+	BokusouMgr->Update();
 
 	UIMNG.Update();
 
@@ -264,6 +264,7 @@ void sceneMain::Render()
 	FadeControl::Render();
 #ifdef _DEBUG
 	DebugText();
+	CollisionMgr->DebugRender(m_pSheepMgr, watchman, dataMNG, stage);
 #endif
 }
 
@@ -274,9 +275,9 @@ void sceneMain::ReadyRender()
 
 void sceneMain::MainRender()
 {
+	BokusouMgr->Render();
 	m_pSheepMgr->Render();
 	watchman->Render();
-	light->Render();
 }
 
 void sceneMain::EndRender()
