@@ -7,6 +7,7 @@ class DataManager;
 class StageManager;
 class UIManager;
 class CurvePoint;
+class FatSheep;
 
 class CollisionManager
 {
@@ -17,6 +18,7 @@ public:
 private:
 	bool ShinnnyoAndExclamationPoint(Sheep* sinn, Watchman* man);			//しんにょう　と！（ダメージ判定
 	bool EscapedShinnnyo(Sheep* sinn);									//しんにょう脱走（加点&Time上昇判定
+	bool EscapedFatSheep(FatSheep *fat);			// 草食って太った羊が脱出
 	bool ExclamationPointAndCurvePoint(Sheep* sheep, CurvePoint* curve_point);	//羊と犬
 	bool ExclamationDogAndWolf(CurvePoint *cp, Watchman* man);
 

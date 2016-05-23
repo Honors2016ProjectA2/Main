@@ -96,11 +96,16 @@ public:
 	// モード変更
 	void ChangeMode(BOKUSOU_MODE m);
 
+	// セッター
+	void SetFloor(int val){ m_floor = val; }
+
 	// ゲッター
 	BOKUSOU_MODE GetMode(){ return m_pMode->GetMode(); }
 	int GetPosX(){ return (int)m_pos.x; }
 	int GetPosY(){ return (int)m_pos.y; }
 	Vector2 &GetPos(){ return m_pos; }
+	Vector2 &GetCenterPos(){ return m_pos + Vector2(64, 64); }
+	int GetFloor(){ return m_floor; }
 
 	// 消去
 	void Erase(){ m_bErase = true; }
@@ -114,9 +119,8 @@ private:
 	// 牧草のモード委譲ポインタ
 	BokusouMode::Base *m_pMode;
 
-	// 座標
-	Vector2 m_pos;
-
+	Vector2 m_pos;	// 座標
+	int m_floor;
 	bool m_bErase;
 };
 
@@ -139,6 +143,9 @@ public:
 	void Update();
 	void Render();
 
+	// ゲッタ
+	std::list<Bokusou*> *GetList(){ return &m_list; }
+
 	// ★UIマネージャーで呼び出す
 	float GetGaugePercentage(){ return (float)m_CreateTimer / m_CREATETIME; }	// 牧草ゲージのpercent
 
@@ -149,7 +156,13 @@ private:
 	// リスト
 	std::list<Bokusou*> m_list;
 
-	std::vector<Vector2> m_CreatePosList;	// ランダムに生成される座標たち
+	struct CreatePos
+	{
+		Vector2 pos;
+		int floor;		// これ作るためだけに構造体
+		CreatePos(const Vector2 &pos, int floor) :pos(pos), floor(floor){}
+	};
+	std::vector<CreatePos> m_CreatePosList;	// ランダムに生成される座標たち
 	int m_CreateTimer;					// 牧草生成タイマー
 	int m_CREATETIME;					// 生成される時間
 

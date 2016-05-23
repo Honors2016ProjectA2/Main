@@ -155,9 +155,9 @@ int DataManager::GetDiffScore()const
 	return diffScore;
 }
 
-int DataManager::AddScore(int floor)
+int DataManager::AddScore(int floor, float bairitsu)
 {
-	int add = *m_pAddScores[floor];
+	int add = (int)(*m_pAddScores[floor] * bairitsu);
 	diffScore = add;
 	score += add;
 

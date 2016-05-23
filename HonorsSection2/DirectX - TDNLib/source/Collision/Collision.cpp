@@ -7,6 +7,7 @@
 #include	"../CurvePoint/CurvePoint.h"
 #include	"../Sound/SoundManager.h"
 #include	"../UI/UIManager.h"
+#include	"../Bokusou/Bokusou.h"
 
 namespace{
 	int GOAL_X = 0;	// 羊のゴール座標(テキストで読む)
@@ -29,19 +30,40 @@ CollisionManager::CollisionManager()
 
 void CollisionManager::Update(SheepManager* sinnMNG, Watchman_mng* manMNG, DataManager* dataMNG, StageManager* stageMNG)
 {
-	for(auto &sinIterator : *sinnMNG->Get_list()){
+	for (auto &sinIterator : *sinnMNG->Get_list()){
+
+		Vector2 sPos = sinIterator->GetCenterPos();
+
+		// 羊と牧草花の判定
+		for (auto &kusaIterator : *BokusouMgr->GetList())
+		{
+			if (kusaIterator->GetFloor() != sinIterator->Get_floor()) continue;	// レーン違う
+
+			Vector2 kPos = kusaIterator->GetCenterPos();
+
+			// 草範囲内
+			if (sPos.x < kPos.x && sPos.x > kPos.x - 128)
+			{
+				// 当たったやつで太った羊作成
+				if (kusaIterator->GetMode() == BOKUSOU_MODE::BORN)
+					sinnMNG->CreateFatSheep(sinIterator);
+
+				// 草消す
+				kusaIterator->Erase();
+			}
+		}
 
 		//しんにょう脱走（加点&Time上昇判定
-		if( EscapedShinnnyo(sinIterator) ){
+		if (EscapedShinnnyo(sinIterator)){
 			if (sinIterator->col_check) continue;
 
 			sinIterator->col_check = true;
 			dataMNG->AddTime(sinIterator->Get_floor(),
-							 stageMNG->GetPopupPos(sinIterator->Get_floor(),
-							 sinIterator->Get_pos()->x > 640 ? true : false));		//加点、Time上昇
+				stageMNG->GetPopupPos(sinIterator->Get_floor(),
+				sinIterator->Get_pos()->x > 640 ? true : false));		//加点、Time上昇
 
 			// ★UIさんに知らせる
-			UIMNG.AddScore(dataMNG->AddScore(sinIterator->Get_floor()));	// データマネージャーのスコア加算関数で加算したスコアを返すから、それをUIに渡す
+			UIMNG.AddScore(dataMNG->AddScore(sinIterator->Get_floor(), sinIterator->TokutenBairitsu()));	// データマネージャーのスコア加算関数で加算したスコアを返すから、それをUIに渡す
 			UIMNG.ConboCount();
 			continue;
 		}
@@ -53,25 +75,64 @@ void CollisionManager::Update(SheepManager* sinnMNG, Watchman_mng* manMNG, DataM
 				//if (manIterator.col_check)continue;
 				//manIterator.col_check = true;
 				//if (manIterator.Get_type() != 1)// ！さんノーマルなら
-					//stageMNG->CurvePointLock(manIterator.Get_floor());
-					//uiMNG->SetPopup(dataMNG->GetDiffTime(), dataMNG->GetPos());
+				//stageMNG->CurvePointLock(manIterator.Get_floor());
+				//uiMNG->SetPopup(dataMNG->GetDiffTime(), dataMNG->GetPos());
 			}
 		}
 
 		//しんにょう　と！（ダメージ判定
-		for(auto& manIterator : *manMNG->Get_list()){
+		for (auto& manIterator : *manMNG->Get_list()){
 			if (ShinnnyoAndExclamationPoint(sinIterator, &manIterator))
-{
-			if (sinIterator->col_check) continue;
+			{
+				if (sinIterator->col_check) continue;
 
-			sinIterator->col_check = true;
-			dataMNG->SubTime_Kill(sinIterator->Get_floor(), *sinIterator->Get_pos());		//時間を減少させる
-			se->Play("DAMAGE");
+				sinIterator->col_check = true;
+				dataMNG->SubTime_Kill(sinIterator->Get_floor(), *sinIterator->Get_pos());		//時間を減少させる
+				se->Play("DAMAGE");
+			}
+
 		}
 
-	}
+	}	// 羊のfor分
 
-		
+	// 羊と太った羊との判定
+	int FatSheepIndex(0);
+	for (auto &fatIt : *sinnMNG->GetFatList())
+	{
+		// 脱出判定
+		if (EscapedFatSheep(fatIt))
+		{
+			// ★UIさんに知らせる
+			UIMNG.AddScore(dataMNG->AddScore(fatIt->GetFloor(), 10000));	// 得点倍率10000倍
+			UIMNG.ConboCount();
+
+			// 消去
+			fatIt->Erase();
+			continue;
+		}
+
+		int HitCount(0);	// 太った羊にあたってる数
+		for (auto &sheepIt : *sinnMNG->Get_list())
+		{
+			if (fatIt->GetFloor() != sheepIt->Get_floor()) continue;	// レーン違う
+
+			Vector2 sPos = sheepIt->GetCenterPos();
+			Vector2 fPos = fatIt->GetCenterPos();
+
+			// 太ってる羊範囲内
+			if (sPos.x < fPos.x && sPos.x > fPos.x - 192)
+			{
+				// 当たった数カウント
+				HitCount++;
+
+				// 太ってない羊をずらす
+				if(fPos.x - sPos.x < 128)sheepIt->SetPosX(fPos.x - 128);
+			}
+		}
+		// 当たった数に応じて太ってる羊の移動量作成
+		fatIt->SetMove(HitCount * sinnMNG->FatSheepAccel());
+
+		FatSheepIndex++;
 	}
 
 	//犬と狼
@@ -107,6 +168,11 @@ bool CollisionManager::EscapedShinnnyo(Sheep* sinn)
 	sinn->Get_pos2(pos);
 
 	return (pos.x >= GOAL_X);
+}
+
+bool CollisionManager::EscapedFatSheep(FatSheep *fat)
+{
+	return (fat->GetCenterPos().x >= 1400);
 }
 
 bool CollisionManager::ExclamationPointAndCurvePoint(Sheep* sheep, CurvePoint* cp)

@@ -7,11 +7,11 @@
 #include "../Data/DataMNG.h"
 #include "../system/system.h"
 
-Sheep::Sheep(const SheepData &data, tdn2DObj *byu, tdn2DObj *ase, int floor, const SheepTextParam &textparam) :
+Sheep::Sheep(const SheepData &data, tdn2DObj *ase, int floor, const SheepTextParam &textparam) :
 animepos(0, 0),
 floor(floor),
 process(GETOUT),
-m_AnimePanel(0)
+m_AnimePanel(0), m_bErase(false)
 {
 	Move[0] = &Sheep::Get_out;
 	Move[1] = &Sheep::Walk;
@@ -23,9 +23,6 @@ m_AnimePanel(0)
 	alpha = 0xffffffff;
 	frame = 0, animeframe = 0;
 	//move = 5;/* speed */
-
-	this->byu.byu = byu;
-	this->byu.animex = 0;
 
 	this->ase.ase = ase;
 	this->ase.animex = 0;
@@ -47,7 +44,7 @@ Sheep::~Sheep()
 
 //**************************************************
 
-bool Sheep::Get_out()
+void Sheep::Get_out()
 {
 	// Initialize的な役割なのかな
 	animeframe++;
@@ -57,10 +54,8 @@ bool Sheep::Get_out()
 		//obj = file[WALK];
 		animeframe = 0;
 	}
-
-	return true;
 }
-bool Sheep::Walk()
+void Sheep::Walk()
 {
 	animeframe++;
 	if (animeframe > m_data.Animkankaku)
@@ -73,13 +68,9 @@ bool Sheep::Walk()
 	// 本来の移動値
 	move = C_MOVE;
 	pos.x += move.x;
-
-	byu.animex += (int)move.x * 3;
-
-	return true;
 }
 
-bool Sheep::Curve()
+void Sheep::Curve()
 {
 	animeframe++;
 	if (animeframe > m_data.Animkankaku)
@@ -119,13 +110,9 @@ bool Sheep::Curve()
 			break;
 		}
 	}
-
-	byu.animex += (int)move.x * 3;
-
-	return true;
 }
 
-bool Sheep::Caught()
+void Sheep::Caught()
 {
 	if (animeframe < 7)
 	{
@@ -137,12 +124,10 @@ bool Sheep::Caught()
 	{
 		alpha -= 0x0f000000;
 		if (alpha <= 0x00ffffff)
-			return false;
+			m_bErase = true;
 	}
-
-	return true;
 }
-bool Sheep::Crushed()
+void Sheep::Crushed()
 {
 	if (animeframe < 11)
 	{
@@ -152,12 +137,10 @@ bool Sheep::Crushed()
 	}
 	else
 	{
-		return false;
+		m_bErase = true;;
 	}
-
-	return true;
 }
-bool Sheep::Ran_over()
+void Sheep::Ran_over()
 {
 	if (animeframe < 9)
 	{
@@ -166,19 +149,17 @@ bool Sheep::Ran_over()
 
 		if (animeframe > 3)
 		{
-			alpha -= 0x0f000000;				
+			alpha -= 0x0f000000;
 		}
 		frame++;
 	}
 	else
-		return false;
-
-	return true;
+		m_bErase = true;
 }
 
-bool Sheep::Update()
+void Sheep::Update()
 {
-	return (this->*Move[process])();
+	(this->*Move[process])();
 }
 
 void Sheep::Get_frame_pos(Vector2 &pos, int animePanel)
@@ -200,14 +181,9 @@ void Sheep::Render()
 		//許して、美しく綺麗に纏める処理考えるの面倒だったんだ。。。動くコード is びゅーてぃふる
 		if( move.x > 0 ){
 			shader2D->SetValue("moveAngle", .0f);
-			anim += 0.005f;
-			if( anim > 1.0f ) anim -= 1.0f;
 		}else{
 			shader2D->SetValue("moveAngle", 0.125f);
-			anim -= 0.005f;
-			if( anim < 0.0f ) anim += 1.0f;
 		}
-		shader2D->SetValue("animMove", anim);
 		//byu.byu->Render((int)(pos.x + ((move.x > 0) ? -64 : 64)), (int)pos.y, SIZE, SIZE, 0, 0, 128, 128, shader2D, "byun");
 //		byu.byu->Render((int)(pos.x + ((move > 0) ? -64 : 64)), (int)pos.y, SIZE, SIZE, byu.animex, 0, 128, 128);
 		//ase.ase->Render((int)(pos.x + ((move.x > 0) ? -32 : 32)), (int)pos.y, SIZE, SIZE, ase.animex, 0, (move.x > 0) ? -128 : 128, 512);
@@ -253,6 +229,35 @@ void Sheep::Be_ran_over()
 	//obj = file[RAN_OVER];
 }
 
+
+//**************************************************
+//	牧草食って太った羊
+//**************************************************
+FatSheep::FatSheep(tdn2DObj *image, const Vector2 &pos) :m_image(image), m_pos(pos), m_angle(0), m_bErase(false), m_moveX(0)
+{
+
+}
+
+FatSheep::~FatSheep()
+{
+
+}
+
+void FatSheep::Update()
+{
+	// 移動値を足していく
+	m_pos.x += m_moveX;
+	// 移動値に応じて羊を回転させる
+	m_angle -= m_moveX * 0.01f;
+}
+
+void FatSheep::Render()
+{
+	m_image->SetAngle(m_angle);
+	m_image->Render((int)m_pos.x, (int)m_pos.y, 192, 192, 0, 0, 192, 192);
+}
+
+
 //**************************************************
 
 // manager
@@ -260,10 +265,9 @@ void Sheep::Be_ran_over()
 //**************************************************
 
 SheepManager::SheepManager() :
-mp(0),
 sp(0)
 {
-	byu = new tdn2DObj("DATA/byu-n.png");
+	m_pFatSheepImage = new tdn2DObj("DATA/CHR/fat_sheep.png");
 	ase = new tdn2DObj("DATA/ase.png");
 
 	// テキストからパラメータ読み込み
@@ -287,6 +291,10 @@ sp(0)
 	ifs >> skip;
 	ifs >> m_TextParam.speed;
 
+	// 草くって太った羊の速度
+	ifs >> skip;
+	ifs >> m_TextParam.FatSheepAccel;
+
 	// 羊情報読み込み
 	for (int i = 0; i < (int)SHEEP_TYPE::MAX; i++)
 	{
@@ -298,9 +306,9 @@ sp(0)
 		ifs >> path;
 		m_TextParam.data[i].Image = new tdn2DObj(path);
 
-		// スコア読み込み
+		// 得点倍率読み込み
 		ifs >> skip;
-		ifs >> m_TextParam.data[i].score;
+		ifs >> m_TextParam.data[i].magnification;
 
 		// コマのサイズ
 		ifs >> skip;
@@ -313,6 +321,10 @@ sp(0)
 		// コマ進めるフレーム
 		ifs >> skip;
 		ifs >> m_TextParam.data[i].Animkankaku;
+
+		// 出現率
+		ifs >> skip;
+		ifs >> m_TextParam.data[i].percentage;
 	}
 	m_List.clear();
 	// タイマー設定
@@ -325,7 +337,7 @@ SheepManager::~SheepManager()
 	{
 		SAFE_DELETE(m_TextParam.data[i].Image);
 	}
-	SAFE_DELETE(byu);
+	delete m_pFatSheepImage;
 	SAFE_DELETE(ase);
 
 	for (auto it : m_List) delete it;
@@ -337,8 +349,17 @@ SheepManager::~SheepManager()
 void SheepManager::create(int floor)
 {
 	// ランダムに羊のタイプ
-	int r = tdnRandom::Get(0, 2);
-	m_List.push_back(new Sheep(m_TextParam.data[r], byu, ase, floor, m_TextParam));
+	float r = tdnRandom::Get(.0f, 100.0f);
+	for (int i = (int)SHEEP_TYPE::MAX - 1; i >= 0; i--)
+	{
+		// ランダムに取得したパーセントが設定したpercentage範囲内だったらそいつを生成
+		if (r <= m_TextParam.data[i].percentage)
+		{
+			m_List.push_back(new Sheep(m_TextParam.data[i], ase, floor, m_TextParam));
+			break;;
+		}
+		else r -= m_TextParam.data[i].percentage;
+	}
 }
 
 void SheepManager::Update()
@@ -367,12 +388,26 @@ void SheepManager::Update()
 	}
 	else m_CurrentTime = clock();
 
+	// 羊更新
 	for (auto it = m_List.begin(); it != m_List.end(); )
 	{
-		if (!(*it)->Update() || (*it)->Get_pos()->x < -2048 || (*it)->Get_pos()->x > 2048)
+		(*it)->Update();
+		if ((*it)->EraseOK() || (*it)->Get_pos()->x < -2048 || (*it)->Get_pos()->x > 2048)
 		{
 			delete (*it);
 			it = m_List.erase(it);
+		}
+		else it++;
+	}
+
+	// 牧草食って太った羊更新
+	for (auto it = m_FatList.begin(); it != m_FatList.end();)
+	{
+		(*it)->Update();
+		if ((*it)->EraseOK())
+		{
+			delete (*it);
+			it = m_FatList.erase(it);
 		}
 		else it++;
 	}
@@ -382,8 +417,12 @@ void SheepManager::Update()
 
 void SheepManager::Render()
 {
+	// 羊描画
 	for (auto it : m_List)
 	{
 		it->Render();
 	}
+
+	// 草食って太った羊
+	for (auto it : m_FatList) it->Render();
 }

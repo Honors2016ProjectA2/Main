@@ -126,7 +126,7 @@ void sceneMain::DataDelivery()
 	stage->Reflection(dataMNG, pointer);
 	pointer->DataReceive(stage);
 	end->DataReceive(stage);
-	m_pSheepMgr->Set_pointers(pointer, stage, dataMNG);
+	m_pSheepMgr->Set_pointers(stage, dataMNG);
 	watchman->Set_Pointers(stage, dataMNG);
 	result->Set_MousePointer(pointer);
 	shake.SetFloor(stage->floor);

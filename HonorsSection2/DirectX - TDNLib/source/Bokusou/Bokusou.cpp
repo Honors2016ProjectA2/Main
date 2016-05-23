@@ -44,7 +44,7 @@ BokusouManager::BokusouManager()
 		ifs >> x;
 		ifs >> floor;
 
-		m_CreatePosList.push_back(Vector2(x, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 4));
+		m_CreatePosList.push_back(CreatePos(Vector2(x, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 4), floor));
 	}
 }
 
@@ -73,7 +73,11 @@ void BokusouManager::Update()
 	{
 		// 牧草生成！！
 		m_CreateTimer = 0;
-		m_list.push_back(new Bokusou(m_CreatePosList[rand() % m_CreatePosList.size()]));	// 座標リストからランダムに
+
+		int r = rand() % m_CreatePosList.size();	// ランダム値
+		Bokusou *set = new Bokusou(m_CreatePosList[r].pos);	// 座標リストからランダムに
+		set->SetFloor(m_CreatePosList[r].floor);
+		m_list.push_back(set);
 	}
 
 	for (auto it = m_list.begin(); it != m_list.end();)

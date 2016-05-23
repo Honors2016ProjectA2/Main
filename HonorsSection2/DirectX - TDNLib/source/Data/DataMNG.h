@@ -44,7 +44,7 @@ public:
 	// score
 	int GetScore()const;
 	int GetDiffScore()const;
-	int AddScore(int floorIdx);
+	int AddScore(int floorIdx, float bairitsu);
 	void SetpAddScore(int *pScore1, int *pScore2, int *pScore3){ m_pAddScores[0] = pScore1; m_pAddScores[1] = pScore2; m_pAddScores[2] = pScore3; }
 
 };
