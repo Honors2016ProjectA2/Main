@@ -101,6 +101,7 @@ void UIManager::Update()
 }
 void UIManager::Render()
 {
+
 	/****************************************/
 	// ÉXÉRÉA
 	ScoreRender();

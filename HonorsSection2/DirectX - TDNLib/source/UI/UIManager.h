@@ -3,6 +3,8 @@
 #include "Number\Number.h"
 #include "pie_graph\pie_graph.h"
 
+#include "Effect\BaseEffect\BaseEffect.h"
+
 // UI
 
 class UIManager
@@ -43,6 +45,9 @@ private:
 	UIManager(const UIManager&) {}
 	UIManager& operator=(const UIManager&) {}
 
+	void SetGraph(float graph) {
+		m_percent = graph;
+	}
 private: //•Ï”
 
 	int m_score;

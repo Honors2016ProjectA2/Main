@@ -1,0 +1,122 @@
+#include "EffectManager.h"
+
+/*****************************************************************/
+//
+//				エフェクトマネーhジャー
+//
+/*****************************************************************/
+
+/***********************************************/
+// インスタンス化
+/***********************************************/
+EffectManager* EffectManager::m_pInstance = nullptr;
+
+EffectManager& EffectManager::GetInstance()
+{
+	if (!m_pInstance)
+	{
+		m_pInstance = new EffectManager();
+	}
+
+	// TODO: return ステートメントをここに挿入します
+	return *m_pInstance;
+}
+
+void EffectManager::Release()
+{
+	SAFE_DELETE(m_pInstance);
+}
+
+
+/***********************************************/
+// 初期化・解放
+/***********************************************/
+EffectManager::EffectManager()
+{
+
+}
+
+EffectManager::~EffectManager()
+{
+	// 全部消して
+	for (auto it : m_EffectData)
+	{
+		SAFE_DELETE(it);
+	}
+
+	//　データを空に
+	m_EffectData.clear();
+}
+
+
+/***********************************************/
+// 更新
+/***********************************************/
+void EffectManager::Update()
+{
+	// List
+	for (auto it = m_EffectData.begin(); it != m_EffectData.end();)
+	{
+
+		(*it)->Update();
+
+		//if ((*it)->isEnd == true)
+		//{
+		//	// 先に消す
+		//	SAFE_DELETE((*it));
+		//	// 勝手に更新される
+		//	it = m_EffectData.erase(it);
+		//}
+		//else
+		{
+			// 自分で更新
+			it++;
+		}
+	}
+}
+
+
+/***********************************************/
+// 描画
+/***********************************************/
+void EffectManager::Render()
+{
+	// List
+	for (auto it : m_EffectData)
+	{
+		//it->number->Render(it->x, it->y, it->score);
+		it->Render();
+	}
+
+}
+
+/************************************************/
+//	数字追加
+/************************************************/
+void EffectManager::AddEffect(int x, int y, EFFECT_TYPE type)
+{
+	BaseEffect* data;
+
+	switch (type)
+	{
+	case EFFECT_TYPE::PLUS:
+		data = new PlusEffect();
+		break;
+	case EFFECT_TYPE::HIT:
+		data = new HitEffect();
+		break;
+	case EFFECT_TYPE::PUT:
+		data = new PutEffect();
+		break;
+	default:
+		break;
+	}
+
+	data->Action(x, y);
+
+	// 要素追加
+	m_EffectData.push_back(data);
+
+
+}
+

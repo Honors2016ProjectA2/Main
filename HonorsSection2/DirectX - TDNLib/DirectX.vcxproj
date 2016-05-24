@@ -108,6 +108,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\Animation\AnimationPanel.cpp" />
     <ClCompile Include="source\Bokusou\Bokusou.cpp" />
     <ClCompile Include="source\Collision\Collision.cpp" />
     <ClCompile Include="source\CurvePoint\CurvePoint.cpp" />
@@ -117,6 +118,8 @@
     <ClCompile Include="source\Effect\AnimationRipple.cpp" />
     <ClCompile Include="source\Effect\AnimationRippleEx.cpp" />
     <ClCompile Include="source\Effect\AnimationUV.cpp" />
+    <ClCompile Include="source\Effect\BaseEffect\BaseEffect.cpp" />
+    <ClCompile Include="source\Effect\EffectManager.cpp" />
     <ClCompile Include="source\Enemy\watchman.cpp" />
     <ClCompile Include="source\IEX_Expansion.cpp" />
     <ClCompile Include="source\MousePointer.cpp" />
@@ -162,6 +165,7 @@
     <ClCompile Include="SOURCE\system\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\Animation\AnimationPanel.h" />
     <ClInclude Include="source\Bokusou\Bokusou.h" />
     <ClInclude Include="source\Collision\Collision.h" />
     <ClInclude Include="source\CurvePoint\CurvePoint.h" />
@@ -171,6 +175,9 @@
     <ClInclude Include="source\Effect\AnimationRipple.h" />
     <ClInclude Include="source\Effect\AnimationRippleEx.h" />
     <ClInclude Include="source\Effect\AnimationUV.h" />
+    <ClInclude Include="source\Effect\BaseEffect\BaseEffect.h" />
+    <ClInclude Include="source\Effect\EffectManager.h" />
+    <ClInclude Include="source\Effect\PlusEffect\PlusEffect.h" />
     <ClInclude Include="source\Enemy\watchman.h" />
     <ClInclude Include="source\IEX_Expansion.h" />
     <ClInclude Include="source\MousePointer.h" />

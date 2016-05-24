@@ -17,6 +17,7 @@
 #include	"../UI/UIManager.h"
 #include	"../PostEffect/PostEffect.h"
 
+#include	"../Effect/EffectManager.h"
 
 namespace{
 	namespace SCENE{
@@ -39,6 +40,8 @@ namespace{
 
 bool sceneMain::Initialize()
 {
+	EffectMgr;
+
 	srand(timeGetTime());
 
 	tdnMouse::Initialize(FALSE);
@@ -99,7 +102,9 @@ sceneMain::~sceneMain()
 	BokusouMgr->Release();
 	PostEffectMgr.Release();
 
-	UIMNG.Release();}
+	UIMNG.Release();
+	EffectMgr.Release();
+}
 
 //******************************************************************
 //		ˆ—
@@ -126,6 +131,13 @@ bool sceneMain::Update()
 
 	// PosyEffect
 	PostEffectMgr.Update();
+
+	// EffectMGR
+	EffectMgr.Update();
+	if (KeyBoard(KB_F) == 3)
+	{
+		EffectMgr.AddEffect(300, 300, EFFECT_TYPE::PLUS);
+	}
 
 	return true;
 }
@@ -290,7 +302,7 @@ void sceneMain::Render()
 		PostEffectMgr.BloomRender();
 	}
 	
-	
+	EffectMgr.Render();
 
 	//Šî–{“I‚É‚ÍÅŒãBà–¾‚Ì‚İà–¾‘‚ÌŒã‚ë‚É‚·‚é‚Ì‚Å•Ê“r
 	pointer->Render();
