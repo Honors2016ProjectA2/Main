@@ -152,7 +152,7 @@ void UIManager::AddScore(int score)
 void UIManager::ConboUpdate()
 {
 	// ƒGƒlƒ‹ƒM[
-	m_energyRate -= 0.02f;
+	m_energyRate -= 0.03f;
 
 }
 

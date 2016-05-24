@@ -538,7 +538,7 @@ namespace Math
 	*@param[in]		Min						座標の配列(複数の点)
 	*@param[in]		Max						配列の個数
 	*/
-	void Clamp(float val, float Min, float Max);
+	float Clamp(float val, float Min, float Max);
 
 	/**
 	*@brief									0.0f~1.0fで補間されたレートを元に数値をブレンド
@@ -983,7 +983,7 @@ typedef enum FMT2D
 	SYSTEMMEM = 5,
 	HDR = 6,
 	SYSTEMMEM_HDR = 7
-}tdn2D;
+}TDN2D;
 
 /**
 *@brief		2Dオブジェクトを制御するクラス

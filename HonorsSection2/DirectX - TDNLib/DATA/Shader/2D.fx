@@ -21,6 +21,17 @@ sampler DecaleSamp2 = sampler_state
 	AddressV = CLAMP;
 };
 
+// SetSamp
+//sampler DecaleSamp2 = sampler_state
+//{
+//	Texture = <Texture>;
+//	MinFilter = GAUSSIANQUAD;
+//	MagFilter = GAUSSIANQUAD;
+//	MipFilter = NONE;
+//
+//	AddressU = CLAMP;
+//	AddressV = CLAMP;
+//};
 
 // -------------------------------------------------------------
 // 頂点シェーダからピクセルシェーダに渡すデータ
@@ -783,6 +794,35 @@ technique XBlur
 	}
 }
 
+technique YBlur_Add
+{
+	pass P0
+	{
+		AlphaBlendEnable = true;
+		BlendOp = Add;
+		SrcBlend = SrcAlpha;
+		DestBlend = one;
+		CullMode = None;
+		ZEnable = false;
+
+		PixelShader = compile ps_3_0 PS_gaussY();
+	}
+}
+technique XBlur_Add
+{
+	pass P0
+	{
+		AlphaBlendEnable = true;
+		BlendOp = Add;
+		SrcBlend = SrcAlpha;
+		DestBlend = one;
+		CullMode = None;
+		ZEnable = false;
+
+		PixelShader = compile ps_3_0 PS_gaussX();
+	}
+}
+
 float2 texOffset = { 1.0f / 1280.0f, 1.0f / 720.0f };
 //****************************************
 //
@@ -890,3 +930,176 @@ technique red
 		PixelShader = compile ps_3_0 PS_red();
 	}
 }
+
+
+float4 PS_post(VS_OUTPUT_G In) : COLOR
+{
+	float4 OUT;
+OUT.rgba = In.Color * tex2D(DecaleSamp2, In.Tex);
+
+OUT.rgb -= 0.4f;
+//max(OUT.r, 0.0f);
+//max(OUT.g, 0.0f);
+//max(OUT.b, 0.0f);
+
+return OUT;
+}
+
+// レンダーステート集
+// https://msdn.microsoft.com/ja-jp/library/cc324307.aspx
+
+technique post
+{
+	pass P0
+	{
+		AlphaBlendEnable = true;
+		BlendOp = Add;
+		SrcBlend = INVDESTCOLOR;
+		DestBlend = one;
+		// シェーダ
+		VertexShader = compile vs_3_0 VS_pass1();
+		PixelShader = compile ps_3_0 PS_post();
+	}
+}
+
+
+
+//********************************************************************
+//		放射ブラ―(ゴッドレイ用)
+//********************************************************************
+
+// -------------------------------------------------------------
+// 頂点シェーダからピクセルシェーダに渡すデータ
+// -------------------------------------------------------------
+//struct VS_OUTPUT_G
+//{
+//	float4 Pos			: POSITION;
+//	float2 Tex			: TEXCOORD0;
+//	float4 Color		: COLOR0;
+//};
+//
+//float CenterX = 0.5f;
+//float CenterY = 1.0f;
+//
+//float BluePower = 5.0f;
+//const float IMAGE_SIZE = 512.0f;
+//
+////------------------------------------------------------
+////		ピクセルシェーダー	
+////------------------------------------------------------
+//float4 PS_RadialBlur(VS_OUTPUT_G In) : COLOR
+//{
+//	float4	OUT;
+//
+////　放射中心	-1から1を　0から1に
+//float2 ss_center = float2((CenterX + 1.0f) * 0.5f, (-CenterY + 1.0f) * 0.5f);
+//
+////　オフセット
+//float2 uvOffset = (ss_center - In.Tex) * (BluePower / IMAGE_SIZE);
+//
+////　サンプリング数の逆数 　for文で回す回数文色を減らし　完成したときに元の色にする。
+//float InvSampling = 1.0f / 8.0f;
+//
+////　テクスチャ座標　動かすために今のテクスチャーの場所を渡す。
+//float2 uv = In.Tex;
+//
+////　サンプリングの回数だけ実行
+//for (int i = 0; i < 8; i++)
+//{
+//	OUT += tex2D(PointSamp, uv) * InvSampling;
+//	uv += uvOffset;
+//}
+//
+//
+//
+//return OUT;
+//
+//}
+////------------------------------------------------------
+//// テクニック
+////------------------------------------------------------
+//technique RadialBlur
+//{
+//	pass P0
+//	{
+//		AlphaBlendEnable = true;
+//		BlendOp = Add;
+//		SrcBlend = SrcAlpha;
+//		DestBlend = InvSrcAlpha;
+//		CullMode = None;
+//		ZEnable = false;
+//
+//		PixelShader = compile ps_3_0 PS_RadialBlur();
+//	}
+//}
+
+// マルチレンダーターゲットで遊んでみた
+//struct PS_MULTI
+//{
+//	float4 BlurX		:COLOR0;	// ブラ―
+//	float4 Two		:COLOR1;	// 法線情報
+//};
+//
+//
+//PS_MULTI PS_Multi(VS_2D In)// : COLOR
+//{
+//	PS_MULTI OUT = (PS_MULTI)0;
+//
+////テクセルを取得   
+//float2 Texel0 = In.Tex + float2(-TU * 1 * BlurValue, 0.0f);
+//float2 Texel1 = In.Tex + float2(-TU * 2 * BlurValue, 0.0f);
+//float2 Texel2 = In.Tex + float2(-TU * 3 * BlurValue, 0.0f);
+//float2 Texel3 = In.Tex + float2(-TU * 4 * BlurValue, 0.0f);
+//float2 Texel4 = In.Tex + float2(-TU * 5 * BlurValue, 0.0f);
+//
+//float2 Texel5 = In.Tex + float2(TU * 1 * BlurValue, 0.0f);
+//float2 Texel6 = In.Tex + float2(TU * 2 * BlurValue, 0.0f);
+//float2 Texel7 = In.Tex + float2(TU * 3 * BlurValue, 0.0f);
+//float2 Texel8 = In.Tex + float2(TU * 4 * BlurValue, 0.0f);
+//float2 Texel9 = In.Tex + float2(TU * 5 * BlurValue, 0.0f);
+//
+////取得したテクセル位置のカラー情報を取得する。
+////それぞれのカラー値に重みをかけている。この重み値はすべての合計が 1.0f になるように調整する。
+//float4 p0 = tex2D(GaussianSamp, In.Tex) * 0.20f;
+//
+//float4 p1 = tex2D(GaussianSamp, Texel0) * 0.12f;
+//float4 p2 = tex2D(GaussianSamp, Texel1) * 0.10f;
+//float4 p3 = tex2D(GaussianSamp, Texel2) * 0.08f;
+//float4 p4 = tex2D(GaussianSamp, Texel3) * 0.06f;
+//float4 p5 = tex2D(GaussianSamp, Texel4) * 0.04f;
+//
+//float4 p6 = tex2D(GaussianSamp, Texel5) * 0.12f;
+//float4 p7 = tex2D(GaussianSamp, Texel6) * 0.10f;
+//float4 p8 = tex2D(GaussianSamp, Texel7) * 0.08f;
+//float4 p9 = tex2D(GaussianSamp, Texel8) * 0.06f;
+//float4 p10 = tex2D(GaussianSamp, Texel9) * 0.04f;
+//
+////カラーを合成す;
+//OUT.BlurX = p0 + p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9 + p10;
+//OUT.Two.r=1;
+//OUT.Two.g = 1;
+//OUT.Two.b = 1;
+//OUT.Two.a = 1;
+//
+//return OUT;
+//
+//}
+//
+//
+//technique Multi
+//{
+//	pass P0
+//	{
+//		AlphaBlendEnable = true;
+//		BlendOp = Add;
+//		SrcBlend = SrcAlpha;
+//		DestBlend = InvSrcAlpha;
+//		CullMode = None;
+//		ZEnable = false;
+//		// シェーダ
+//		//VertexShader = compile vs_3_0 VS_pass1();
+//		PixelShader = compile ps_3_0 PS_Multi();//PS_gaussX
+//	}
+//}
+
+

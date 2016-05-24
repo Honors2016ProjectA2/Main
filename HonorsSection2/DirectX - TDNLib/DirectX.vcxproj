@@ -122,6 +122,7 @@
     <ClCompile Include="source\MousePointer.cpp" />
     <ClCompile Include="source\Number\Number.cpp" />
     <ClCompile Include="source\pie_graph\pie_graph.cpp" />
+    <ClCompile Include="source\PostEffect\PostEffect.cpp" />
     <ClCompile Include="source\Ready.cpp" />
     <ClCompile Include="source\Scene\End.cpp" />
     <ClCompile Include="source\Scene\Explain.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="source\MousePointer.h" />
     <ClInclude Include="source\Number\Number.h" />
     <ClInclude Include="source\pie_graph\pie_graph.h" />
+    <ClInclude Include="source\PostEffect\PostEffect.h" />
     <ClInclude Include="source\Ready.h" />
     <ClInclude Include="source\Scene\End.h" />
     <ClInclude Include="source\Scene\Explain.h" />

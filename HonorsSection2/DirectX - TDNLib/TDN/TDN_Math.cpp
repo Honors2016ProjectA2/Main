@@ -399,9 +399,9 @@ void Math::Bezier(Vector3 *out, Vector3 pos_array[], int num_elements_array, flo
 }
 
 // •âŠÔ
-void Math::Clamp(float val, float Min, float Max)
+float Math::Clamp(float val, float Min, float Max)
 {
-	min(Max, max(val, Min));
+	return min(Max, max(val, Min));
 }
 
 // ƒuƒŒƒ“ƒh

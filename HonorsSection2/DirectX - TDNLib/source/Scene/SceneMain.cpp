@@ -15,6 +15,7 @@
 #include	"../Bokusou/Bokusou.h"
 
 #include	"../UI/UIManager.h"
+#include	"../PostEffect/PostEffect.h"
 
 
 namespace{
@@ -69,6 +70,9 @@ bool sceneMain::Initialize()
 
 	bgm->Play("MAIN");
 
+	// ポストエフェクト
+	PostEffectMgr;
+
 	return true;
 }
 
@@ -93,6 +97,8 @@ sceneMain::~sceneMain()
 	SAFE_DELETE(result);
 	SAFE_DELETE(renderTarget);
 	BokusouMgr->Release();
+	PostEffectMgr.Release();
+
 	UIMNG.Release();}
 
 //******************************************************************
@@ -117,6 +123,9 @@ bool sceneMain::Update()
 	DataDelivery();
 	/*　当たり判定　*/
 	CollisionMgr->Update(m_pSheepMgr, watchman, dataMNG, stage);
+
+	// PosyEffect
+	PostEffectMgr.Update();
 
 	return true;
 }
@@ -256,8 +265,32 @@ void sceneMain::Render()
 
 	UIMNG.Render();
 
+	/******************************/
+	// ポストエフェクト効果始まり	
+	PostEffectMgr.BloomBigin();
+	renderTarget->Render(0, 0);// レンダーターゲット
+	PostEffectMgr.BloomEnd();
+	/*****************************ポストエフェクトおわり*/
+
+	/******************************/
+	// ブラ―効果始まり	
+	PostEffectMgr.RadialBigin();
+	renderTarget->Render(0, 0);// レンダーターゲット
+	PostEffectMgr.RadialEnd();
+	/*****************************ブラ―おわり*/
+
 	tdnSystem::GetDevice()->SetRenderTarget(0, backUp);
 	renderTarget->Render((int)shake.move.x, (int)shake.move.y, 1280, 720, 0, 0, 1280, 720);
+
+	// ポストエフェクトたち
+	PostEffectMgr.RadialRender();
+
+	//if (KeyBoard(KB_ENTER))
+	{
+		PostEffectMgr.BloomRender();
+	}
+	
+	
 
 	//基本的には最後。説明時のみ説明書の後ろにするので別途
 	pointer->Render();
