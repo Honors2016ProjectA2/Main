@@ -1,5 +1,18 @@
+画像:
+DATA/Stage/haikei_kiso.png
+DATA/Stage/haikei_house_1.png
+DATA/Stage/haikei_house_2.png
+DATA/Stage/haikei_doa_1.png
+DATA/Stage/haikei_doa_2.png
+DATA/Stage/haikei_doa_3.png
+DATA/Stage/haikei_doa_4.png
+DATA/Stage/haikei_doa_5.png
+DATA/Stage/haikei_doa_6.png
+DATA/Stage/haikei_saku.png
+DATA/Stage/haikei_kusa_1.png
+
 レーン幅:
-175
+190
 
 羊レーンが増えるボーダーライン:
 5000 10000 -1
@@ -16,21 +29,21 @@
 DOWN
 
 0
-720
+800
 DOWN
 
 1
-320
+500
 UP
 
 1
-880
+920
 DOWN
 
 2
-160
+460
 UP
 
 2
-1040
+920
 UP

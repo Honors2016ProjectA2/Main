@@ -68,9 +68,11 @@ void BokusouManager::Release()
 void BokusouManager::Update()
 {
 	// –q‘‚ÌŽíƒQ[ƒW‘‰Á
-	//UIMNG.
+	UIMNG.SetGraph((float)m_CreateTimer / m_CREATETIME);
 	if (++m_CreateTimer > m_CREATETIME)
 	{
+		//A—ñŽÔ –q‘¶¬‚µ‚½uŠÔ
+
 		// –q‘¶¬II
 		m_CreateTimer = 0;
 
@@ -104,21 +106,21 @@ void BokusouManager::Render()
 //**************************************************
 //    –q‘ˆÏ÷ƒNƒ‰ƒX
 //**************************************************
-void BokusouMode::Base::Update(Bokusou *pBokusou)
+void BokusouMode::Base::Update()
 {
 	// Ý’èŽžŠÔ‰ß‚¬‚½‚ç
 	if (++m_timer > m_limit)
 	{
-		NextMode(pBokusou);	// ŽŸ‚Ìƒ‚[ƒh‚Ö
+		NextMode();	// ŽŸ‚Ìƒ‚[ƒh‚Ö
 	}
 }
 
-void BokusouMode::Base::Render(Bokusou *pBokusou)
+void BokusouMode::Base::Render()
 {
 	m_pImage->Render(pBokusou->GetPosX(), pBokusou->GetPosY(), 128, 128, m_srcX, 0, 128, 128);
 }
 
-void BokusouMode::Base::NextMode(Bokusou *pBokusou)
+void BokusouMode::Base::NextMode()
 {
 	// ŽŸ‚Ìƒ‚[ƒh‚É•ÏX
 	pBokusou->ChangeMode(m_NextMode);
@@ -127,13 +129,16 @@ void BokusouMode::Base::NextMode(Bokusou *pBokusou)
 //===========================================================
 //		‘o—tˆÇ
 //===========================================================
-BokusouMode::Hutaba::Hutaba(tdn2DObj *image) :Base(image)
+BokusouMode::Hutaba::Hutaba(Bokusou *me, tdn2DObj *image) :Base(me, image)
 {
 	// –{—t‚És‚­
 	m_NextMode = BOKUSOU_MODE::HONBA;
 
 	// ‰æ‘œÀ•W
 	m_srcX = 0;
+
+	// SE‚ÌÄ¶
+	se->Play("–q‘‰è¶‚¦‚½", me->GetPos());
 }
 //void BokusouMode::Hutaba::Update(Bokusou *pBokusou)
 //{
@@ -143,13 +148,16 @@ BokusouMode::Hutaba::Hutaba(tdn2DObj *image) :Base(image)
 //===========================================================
 //		–{—t–¢‰›
 //===========================================================
-BokusouMode::Honba::Honba(tdn2DObj *image) :Base(image)
+BokusouMode::Honba::Honba(Bokusou *me, tdn2DObj *image) :Base(me, image)
 {
 	// ‚Â‚Ú‚Ý‚És‚­
 	m_NextMode = BOKUSOU_MODE::TSUBOMI;
 
 	// ‰æ‘œÀ•W
 	m_srcX = 128;
+
+	// SE‚ÌÄ¶
+	se->Play("–q‘¬’·", me->GetPos());
 }
 //void BokusouMode::Honba::Update(Bokusou *pBokusou)
 //{
@@ -159,13 +167,16 @@ BokusouMode::Honba::Honba(tdn2DObj *image) :Base(image)
 //===========================================================
 //		‚Â‚Ú‚Ý
 //===========================================================
-BokusouMode::Tsubomi::Tsubomi(tdn2DObj *image) :Base(image)
+BokusouMode::Tsubomi::Tsubomi(Bokusou *me, tdn2DObj *image) :Base(me, image)
 {
 	// ç‚¢‚½‚És‚­
 	m_NextMode = BOKUSOU_MODE::SAITA;
 
 	// ‰æ‘œÀ•W
 	m_srcX = 256;
+
+	// SE‚ÌÄ¶
+	se->Play("–q‘¬’·", me->GetPos());
 }
 //void BokusouMode::Tsubomi::Update(Bokusou *pBokusou)
 //{
@@ -176,13 +187,16 @@ BokusouMode::Tsubomi::Tsubomi(tdn2DObj *image) :Base(image)
 //===========================================================
 //		‚³‚¢‚½\
 //===========================================================
-BokusouMode::Saita::Saita(tdn2DObj *image) :Base(image)
+BokusouMode::Saita::Saita(Bokusou *me, tdn2DObj *image) :Base(me, image)
 {
 	// ‚»‚µ‚Ä–qê‚ª’a¶‚µ‚½
 	m_NextMode = BOKUSOU_MODE::BORN;
 
 	// ‰æ‘œÀ•W
 	m_srcX = 128 * 3;
+
+	// SE‚ÌÄ¶
+	se->Play("–q‘¬’·", me->GetPos());
 }
 //void BokusouMode::Saita::Update(Bokusou *pBokusou)
 //{
@@ -192,12 +206,15 @@ BokusouMode::Saita::Saita(tdn2DObj *image) :Base(image)
 //===========================================================
 //		–q‘’a¶
 //===========================================================
-BokusouMode::Born::Born(tdn2DObj *image) :Base(image)
+BokusouMode::Born::Born(Bokusou *me, tdn2DObj *image) :Base(me, image)
 {
 	// ‰æ‘œÀ•W
 	m_srcX = 0;
+
+	// SE‚ÌÄ¶
+	se->Play("–q‘¬’·", me->GetPos());
 }
-void BokusouMode::Born::Update(Bokusou *pBokusou)
+void BokusouMode::Born::Update()
 {
 
 }
@@ -232,7 +249,7 @@ Bokusou::~Bokusou()
 //===========================================================
 void Bokusou::Update()
 {
-	m_pMode->Update(this);
+	m_pMode->Update();
 }
 
 
@@ -242,7 +259,7 @@ void Bokusou::Update()
 //===========================================================
 void Bokusou::Render()
 {
-	m_pMode->Render(this);
+	m_pMode->Render();
 }
 
 void Bokusou::ChangeMode(BOKUSOU_MODE m)
@@ -252,23 +269,23 @@ void Bokusou::ChangeMode(BOKUSOU_MODE m)
 	switch (m)
 	{
 	case BOKUSOU_MODE::HUTABA:
-		m_pMode = new BokusouMode::Hutaba(m_pBokusouFlower);
+		m_pMode = new BokusouMode::Hutaba(this, m_pBokusouFlower);
 		break;
 
 	case BOKUSOU_MODE::HONBA:
-		m_pMode = new BokusouMode::Honba(m_pBokusouFlower);
+		m_pMode = new BokusouMode::Honba(this, m_pBokusouFlower);
 		break;
 
 	case BOKUSOU_MODE::TSUBOMI:
-		m_pMode = new BokusouMode::Tsubomi(m_pBokusouFlower);
+		m_pMode = new BokusouMode::Tsubomi(this, m_pBokusouFlower);
 		break;
 
 	case BOKUSOU_MODE::SAITA:
-		m_pMode = new BokusouMode::Saita(m_pBokusouFlower);
+		m_pMode = new BokusouMode::Saita(this, m_pBokusouFlower);
 		break;
 
 	case BOKUSOU_MODE::BORN:
-		m_pMode = new BokusouMode::Born(m_pBokusouRoll);
+		m_pMode = new BokusouMode::Born(this, m_pBokusouRoll);
 		break;
 	}
 

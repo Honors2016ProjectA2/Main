@@ -24,23 +24,28 @@ int LANE_WIDTH = 0;
 
 //------- constructor,destructor ---------
 
-StageManager::StageManager()
+StageManager::StageManager() :floor(0), m_pDogImage(new tdn2DObj("DATA/CHR/dog.png"))
 {
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
 		stage[i] = nullptr;
 	}
-	floor = 0;
 
 	// image load
-
-
-	m_pDogImage = new tdn2DObj("DATA/CHR/dog.png");
 
 	// テキストから情報取得
 	std::ifstream ifs("DATA/Text/Param/stage.txt");
 
 	char skip[64];	// 読み飛ばし用
+
+	// ステージ画像読み込み
+	ifs >> skip;
+	FOR(StageImage::MAX)
+	{
+		char path[MAX_PATH];
+		ifs >> path;
+		m_pStageImages[i] = new tdn2DObj(path);
+	}
 
 	// レーン幅読み込み
 	ifs >> skip;
@@ -87,7 +92,7 @@ StageManager::StageManager()
 		else if (strcmp(cDir, "DOWN") == 0) dir = DIR::DOWN;
 		else assert(0);	// 例外処理
 
-		m_CPlists[floor].push_back(new CurvePoint(m_pDogImage, Vector2((float)posX, (float)STAGE_POS_Y[floor] - (LANE_WIDTH / 4)), dir));
+		m_CPlists[floor].push_back(new CurvePoint(m_pDogImage, Vector2((float)posX, (float)STAGE_POS_Y[floor] + 20), dir));
 	}
 
 	// 本来はスコアでレーンを追加していくが、今回は最初から3レーン
@@ -101,9 +106,10 @@ StageManager::StageManager()
 
 StageManager::~StageManager()
 {
+	FOR(StageImage::MAX)delete m_pStageImages[i];
 	delete m_pDogImage;
 
-	for (int i = 0; i < STAGE_MAX; i++)
+	FOR(STAGE_MAX)
 	{
 		SAFE_DELETE(stage[i]);
 
@@ -176,6 +182,7 @@ void StageManager::Update()
 				// 犬回収
 				if (it->IsOpening())
 				{
+					se->Play("犬", it->GetPos());
 					m_CPStock++;	// ストック回復
 				}
 
@@ -185,6 +192,7 @@ void StageManager::Update()
 					// ストック残ってたら
 					if (m_CPStock > 0)
 					{
+						se->Play("犬", it->GetPos());
 						m_CPStock--;
 					}
 					else return;	// 残ってなかったら出ていけぇ！！
@@ -196,13 +204,22 @@ void StageManager::Update()
 	}
 }
 
+void StageManager::RenderBack()
+{
+	// 背景描画
+	m_pStageImages[StageImage::BACK]->Render(0,0);
+
+	// 家の後ろ描画
+	m_pStageImages[StageImage::HOUSE_BACK]->Render(0, 0);
+}
+
 void StageManager::Render()
 {
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
-		static const int col[] = { 0x40ff0000, 0x4000ff00, 0x400000ff };
-		// ステージ幅
-		tdnPolygon::Rect(0, STAGE_POS_Y[i], 1280, LANE_WIDTH, RS::COPY, col[i]);
+		//static const int col[] = { 0x40ff0000, 0x4000ff00, 0x400000ff };
+		//// ステージ幅
+		//tdnPolygon::Rect(0, STAGE_POS_Y[i], 1280, LANE_WIDTH, RS::COPY, col[i]);
 
 		stage[i]->Render();
 
@@ -211,6 +228,20 @@ void StageManager::Render()
 		// 入ったら加算されるスコア
 		tdnText::Draw(1200, STAGE_POS_Y[i] + 120, 0xffffffff, "%d", m_AddScore[i]);
 	}
+}
+
+void StageManager::RenderFront()
+{
+	// 家の前描画
+	m_pStageImages[StageImage::HOUSE_FRONT]->Render(0, 0);
+
+	// 家のドア描画
+
+	// 柵描画
+	m_pStageImages[StageImage::SAKU]->Render(0, 0);
+
+	// 草描画
+	m_pStageImages[StageImage::KUSA]->Render(0, 0);
 }
 
 void StageManager::Reflection(DataManager* data, MousePointer* mouse)

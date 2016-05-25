@@ -131,6 +131,7 @@
     <ClCompile Include="source\Scene\result.cpp" />
     <ClCompile Include="source\Scene\SceneMain.cpp" />
     <ClCompile Include="source\Scene\Title.cpp" />
+    <ClCompile Include="source\Shake\Shake.cpp" />
     <ClCompile Include="source\Sheep\Sheep.cpp" />
     <ClCompile Include="source\Stage\StageMNG.cpp" />
     <ClCompile Include="source\system\FadeCtrl.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="source\Scene\result.h" />
     <ClInclude Include="source\Scene\SceneMain.h" />
     <ClInclude Include="source\Scene\Title.h" />
+    <ClInclude Include="source\Shake\Shake.h" />
     <ClInclude Include="source\Sheep\Sheep.h" />
     <ClInclude Include="source\Stage\StageMNG.h" />
     <ClInclude Include="source\system\FadeCtrl.h" />

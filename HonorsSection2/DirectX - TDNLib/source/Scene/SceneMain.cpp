@@ -13,7 +13,7 @@
 #include	"../system/system.h"
 #include	"result.h"
 #include	"../Bokusou/Bokusou.h"
-
+#include	"../Shake/Shake.h"
 #include	"../UI/UIManager.h"
 #include	"../PostEffect/PostEffect.h"
 
@@ -24,13 +24,6 @@ namespace{
 		enum{
 			INIT, READY, MAIN, END, RESULT,
 		};
-	}
-
-	namespace SHAKE{
-		const float WIDTH = 0.05f;
-		const int MAX_TIME = 60;
-		const int WAIT_1 = 20;
-		const int WAIT_2 = 10;
 	}
 }
 
@@ -56,8 +49,10 @@ bool sceneMain::Initialize()
 	pointer = new MousePointer();
 	dataMNG = new DataManager();
 	m_pSheepMgr = new SheepManager();
-	watchman = new Watchman_mng();
 	result = new Result();
+
+	// 敵マネージャ初期k
+	EnemyMgr->Initialize();
 
 	byunAlpha = new tdn2DObj("DATA/alpha.png");
 	shader2D->SetValue("ByunAlphaMap", byunAlpha);
@@ -65,7 +60,7 @@ bool sceneMain::Initialize()
 	tdnSystem::GetDevice()->GetRenderTarget(0, &backUp);
 	renderTarget = new tdn2DObj(1280, 720, RENDERTARGET);
 
-	shake.Init();
+	ShakeMgr->Initialize();
 	this->Init();
 
 	// 牧草マネージャー初期化
@@ -79,13 +74,6 @@ bool sceneMain::Initialize()
 	return true;
 }
 
-void sceneMain::Shake::Init()
-{
-	move = Vector2(0,0);
-	timer = 0;
-	beforeFloor = 0;
-}
-
 sceneMain::~sceneMain()
 {
 	SAFE_DELETE(back);
@@ -95,7 +83,7 @@ sceneMain::~sceneMain()
 	SAFE_DELETE(stage);
 	SAFE_DELETE(dataMNG);
 	SAFE_DELETE(m_pSheepMgr);
-	SAFE_DELETE(watchman);
+	EnemyMgr->Release();
 	SAFE_DELETE(byunAlpha);
 	SAFE_DELETE(result);
 	SAFE_DELETE(renderTarget);
@@ -127,7 +115,7 @@ bool sceneMain::Update()
 	/*　データ受け渡し　*/
 	DataDelivery();
 	/*　当たり判定　*/
-	CollisionMgr->Update(m_pSheepMgr, watchman, dataMNG, stage);
+	CollisionMgr->Update(m_pSheepMgr, dataMNG, stage);
 
 	// PosyEffect
 	PostEffectMgr.Update();
@@ -148,9 +136,8 @@ void sceneMain::DataDelivery()
 	pointer->DataReceive(stage);
 	end->DataReceive(stage);
 	m_pSheepMgr->Set_pointers(stage, dataMNG);
-	watchman->Set_Pointers(stage, dataMNG);
+	EnemyMgr->Set_Pointers(stage, dataMNG);
 	result->Set_MousePointer(pointer);
-	shake.SetFloor(stage->floor);
 }
 
 
@@ -184,8 +171,8 @@ void sceneMain::MainUpdate()
 	dataMNG->Update();
 	stage->Update();
 	m_pSheepMgr->Update();
-	watchman->Update();
-	shake.Update();
+	EnemyMgr->Update();
+	ShakeMgr->Update();
 	BokusouMgr->Update();
 
 	UIMNG.Update();
@@ -224,34 +211,6 @@ void sceneMain::ResultUpdate()
 	}
 }
 
-void sceneMain::Shake::Update()
-{
-	if( waitTimer > 0 ){
-		waitTimer--;
-		return;
-	}
-
-	if( timer > 0 ){
-		move = Vector2(timer*SHAKE::WIDTH*(rand()%3-1), timer*SHAKE::WIDTH*(rand()%3-1));
-		timer--;
-	}else{
-		move = Vector2(0, 0);
-	}	
-}
-
-void sceneMain::Shake::SetFloor(int floor)
-{
-	if( floor > beforeFloor ){
-		timer = SHAKE::MAX_TIME;
-		if( floor == 1 ){
-			waitTimer = SHAKE::WAIT_1;
-		}else if( floor == 2 ){
-			waitTimer = SHAKE::WAIT_2;
-		}
-	}
-	beforeFloor = floor;
-}
-
 
 //******************************************************************
 //		描画
@@ -264,7 +223,11 @@ void sceneMain::Render()
 	tdnView::Activate();
 
 	renderTarget->RenderTarget();
-	back->Render(0, 0);
+	//back->Render(0, 0);
+
+
+	// ステージの後ろ描画
+	stage->RenderBack();
 
 	stage->Render();
 
@@ -274,6 +237,9 @@ void sceneMain::Render()
 	case SCENE::END:		EndRender();		break;
 	case SCENE::RESULT:		ResultRender();		break;
 	}
+
+	// ステージの前描画
+	stage->RenderFront();
 
 	UIMNG.Render();
 
@@ -292,7 +258,7 @@ void sceneMain::Render()
 	/*****************************ブラ―おわり*/
 
 	tdnSystem::GetDevice()->SetRenderTarget(0, backUp);
-	renderTarget->Render((int)shake.move.x, (int)shake.move.y, 1280, 720, 0, 0, 1280, 720);
+	renderTarget->Render((int)ShakeMgr->move.x, (int)ShakeMgr->move.y, 1280, 720, 0, 0, 1280, 720);
 
 	// ポストエフェクトたち
 	PostEffectMgr.RadialRender();
@@ -309,7 +275,7 @@ void sceneMain::Render()
 	FadeControl::Render();
 #ifdef _DEBUG
 	DebugText();
-	CollisionMgr->DebugRender(m_pSheepMgr, watchman, dataMNG, stage);
+	CollisionMgr->DebugRender(m_pSheepMgr, dataMNG, stage);
 #endif
 }
 
@@ -322,7 +288,7 @@ void sceneMain::MainRender()
 {
 	BokusouMgr->Render();
 	m_pSheepMgr->Render();
-	watchman->Render();
+	EnemyMgr->Render();
 }
 
 void sceneMain::EndRender()

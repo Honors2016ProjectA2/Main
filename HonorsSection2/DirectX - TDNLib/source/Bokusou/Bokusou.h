@@ -27,20 +27,21 @@ namespace BokusouMode
 		tdn2DObj *m_pImage;			// 画像
 		int m_timer, m_limit;		// 目標と今の時間
 		int m_srcX;
+		Bokusou *pBokusou;			// 委譲元のポインタ
 	public:
-		Base(tdn2DObj *image) :m_pImage(image), m_timer(0), m_limit(0){}
+		Base(Bokusou *me, tdn2DObj *image) :pBokusou(me), m_pImage(image), m_timer(0), m_limit(0){}
 		virtual ~Base(){}
-		virtual void Update(Bokusou *pBokusou);
-		virtual void Render(Bokusou *pBokusou);
+		virtual void Update();
+		virtual void Render();
 		virtual BOKUSOU_MODE GetMode() = 0;
-		void NextMode(Bokusou *pBokusou);
+		void NextMode();
 		void SetChangeModeTime(int val){ m_limit = val; }
 	};
 
 	class Hutaba:public Base
 	{
 	public:
-		Hutaba(tdn2DObj *image);
+		Hutaba(Bokusou *me, tdn2DObj *image);
 		//void Update(Bokusou *pBokusou);
 		//void Render(Bokusou *pBokusou);
 		BOKUSOU_MODE GetMode(){ return BOKUSOU_MODE::HUTABA; }
@@ -49,7 +50,7 @@ namespace BokusouMode
 	class Honba :public Base
 	{
 	public:
-		Honba(tdn2DObj *image);
+		Honba(Bokusou *me, tdn2DObj *image);
 		//void Update(Bokusou *pBokusou);
 		//void Render(Bokusou *pBokusou);
 		BOKUSOU_MODE GetMode(){ return BOKUSOU_MODE::HONBA; }
@@ -58,7 +59,7 @@ namespace BokusouMode
 	class Tsubomi :public Base
 	{
 	public:
-		Tsubomi(tdn2DObj *image);
+		Tsubomi(Bokusou *me, tdn2DObj *image);
 		//void Update(Bokusou *pBokusou);
 		//void Render(Bokusou *pBokusou);
 		BOKUSOU_MODE GetMode(){ return BOKUSOU_MODE::TSUBOMI; }
@@ -67,7 +68,7 @@ namespace BokusouMode
 	class Saita :public Base
 	{
 	public:
-		Saita(tdn2DObj *image);
+		Saita(Bokusou *me, tdn2DObj *image);
 		//void Update(Bokusou *pBokusou);
 		//void Render(Bokusou *pBokusou);
 		BOKUSOU_MODE GetMode(){ return BOKUSOU_MODE::SAITA; }
@@ -76,8 +77,8 @@ namespace BokusouMode
 	class Born :public Base
 	{
 	public:
-		Born(tdn2DObj *image);
-		void Update(Bokusou *pBokusou);
+		Born(Bokusou *me, tdn2DObj *image);
+		void Update()override;
 		//void Render(Bokusou *pBokusou);
 		BOKUSOU_MODE GetMode(){ return BOKUSOU_MODE::BORN; }
 	};

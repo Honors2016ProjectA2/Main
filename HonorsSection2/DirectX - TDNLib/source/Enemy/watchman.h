@@ -1,123 +1,103 @@
 #pragma once
 #include "IEX_Expansion.h"
 
-class Watchman
+enum class ENEMY_TYPE
 {
-private:
-	tdn2DObj *files[3];
-	tdn2DObj *obj;
-	DWORD alpha;
-	Vector2 pos, animepos;
-	int frame, animeframe;
-	const int PNGSIZE;
-	const int SIZE;
-	int floor;
-
-	int move;
-	enum MODE{ WALK, ENTER };
-	int process;
-	bool erase;
-
-	struct TYPE { enum { NORMAL, CRUSHER, WHEEL }; };
-	int type;
-
-	void Get_frame_pos(Vector2 &pos, int frame, int max);
-
-	bool(Watchman::*update[3])();
-	bool Normal();
-	bool Crusher();
-	bool Wheel();
-public:
-	/* true:R false:L */
-	Watchman(tdn2DObj *file[3], int floor, int size, int pngsize, int speed, int type);
-	~Watchman();
-
-	bool Update();
-	void Render();
-
-	Vector2 *Get_pos(){ return &pos; }
-	void Get_pos2(Vector2 &out)
-	{
-		out = pos;
-		out.x += SIZE * 0.5f;
-		out.y += SIZE;
-	}
-	int Get_floor(){ return floor; }
-	int Get_size(){ return SIZE; }
-
-	void Delete(){ erase = true; }
-
-	bool col_check;
-
-	void Enter(){ process = ENTER; if (type != TYPE::CRUSHER){ frame = animeframe = 0; } }
-
-	int Get_type(){ return type; }
+	WOLF,	// 狼
+	METEO,	// メテオ
+	MAX
 };
 
-//**************************************************
-
-class Watchman_mng
+namespace Enemy
 {
-private:
-	tdn2DObj *files[3];
-	tdn2DObj *files2[3];
-	tdn2DObj *files3[3];
-
-	std::list<Watchman> watchmans;
-
-	const int MENS_DATA_num = 3;
-	struct Mens_data
+	class Base
 	{
-		tdn2DObj *files[3];
-		int size, pngsize;
-		int speed;
+	protected:
+		bool m_bErase;			// 消去フラグ
+		tdn2DObj *m_pImage;		// 敵の画像(マネージャのを参照するだけ)
+		Vector2 m_pos;			// 座標
+		Vector2 m_MoveVec;		// 移動の方向
+		float m_speed;			// 移動速度
+		int m_floor;			// レーン
+		int m_AnimeFrame, m_AnimePanel;	// アニメ関係
+		int W, H;			// 幅と高さ
 
-		Mens_data(tdn2DObj *files[3], int size, int pngsize, int speed) :
-			size(size), pngsize(pngsize), speed(speed){
-			for (int i = 0; i < 3; i++)
-			{
-				this->files[i] = files[i];
-			}
+		// 移動量の類の更新
+		void MoveUpdate();
+	public:
+		Base(tdn2DObj *image, int floor, float speed) :m_bErase(false), m_floor(floor), m_pImage(image), m_AnimeFrame(0), m_AnimePanel(0), m_MoveVec(Vector2(-1, 0)), m_speed(speed){}
+		virtual void Update() = 0;
+		virtual void Render(){}
 
-		};
-	}*MENS_DATA[3];
+		// ゲッター
+		int GetFloor(){ return m_floor; }
+		Vector2 GetCenterPos(){ return Vector2(m_pos.x + W*.5f, m_pos.y + H*.5f); }
+		int GetWidth(){ return W; }
 
-	struct Creater
+		// 消去関係
+		bool EraseOK(){ return m_bErase; }
+		bool Erase(){ m_bErase = true; }
+	};
+
+	class Wolf : public Base
 	{
-		int timer, createtime;
-		bool created;
-		int type;
+	public:
+		Wolf(tdn2DObj *image, int floor, float speed);
+		void Update();
+		void Render();
+	};
 
-		int randnumber[2][3], num;
-		int percentage[2][2], pnum;
-	}creater[3];
-	StageManager *sp;
-	DataManager *dmp;
+	class Meteo : public Base
+	{
+	public:
+		Meteo(tdn2DObj *image, int floor, float speed);
+		void Update();
+		void Render();
+	};
+}
 
-	void create(int floor);
+class EnemyManager
+{
 public:
-	Watchman_mng();
-	~Watchman_mng();
+	// 実体の取得
+	static EnemyManager *GetInstance(){ static EnemyManager i; return &i; }
 
+	void Initialize();
+	void Release();
 	void Update();
 	void Render();
 
 	/* データリセット */
-	void Reset();
+	void Clear();
 
-	std::list<Watchman> *Get_list(){ return &watchmans; }
-	/* 引数の floor は そのデータが作られた階層になる */
-	
-	/* 作られた */
-	bool Created(int floor){ return creater[floor].created; }
-	/* スピード */
-	int Get_speed(int floor){ return MENS_DATA[creater[floor].type]->speed; }
-	/* 作成されるまでの残り時間 */
-	int Create_counter(int floor){ return creater[floor].createtime - creater[floor].timer; }
-	/* タイプ */
-	int Get_type(int floor){ return creater[floor].type; }
-
+	std::list<Enemy::Base*> *GetList(){ return &m_list; }
 	void Set_Pointers(StageManager *sm, DataManager *dm){ sp = sm, dmp = dm; }
 
-	bool col_check;
+private:
+
+	// シングルトンの作法
+	EnemyManager();
+	EnemyManager(const EnemyManager&){}
+	EnemyManager &operator=(const EnemyManager){}
+
+	// 敵の画像
+	tdn2DObj *m_pImages[(int)ENEMY_TYPE::MAX];
+
+	// 敵の移動速度
+	float m_EnemySpeed[(int)ENEMY_TYPE::MAX];
+
+	// 敵たちを格納するリスト
+	std::list<Enemy::Base*> m_list;
+	int m_CreateTimer;					// 敵生成タイマー
+	int m_CREATETIME;					// 生成される時間
+
+	StageManager *sp;
+	DataManager *dmp;
+
+	// 敵生成
+	void Create(int floor, ENEMY_TYPE type);
 };
+
+
+// インスタンス化
+#define EnemyMgr (EnemyManager::GetInstance())

@@ -162,13 +162,16 @@
     <ClCompile Include="source\pie_graph\pie_graph.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\PostEffect\PostEffect.cpp">
+    <ClCompile Include="source\Shake\Shake.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Effect\EffectManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="source\Effect\BaseEffect\BaseEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="source\Effect\EffectManager.cpp">
+    <ClCompile Include="source\PostEffect\PostEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -287,16 +290,19 @@
     <ClInclude Include="source\pie_graph\pie_graph.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\PostEffect\PostEffect.h">
+    <ClInclude Include="source\Shake\Shake.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\Effect\BaseEffect\BaseEffect.h">
+    <ClInclude Include="source\Effect\EffectManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="source\Effect\PlusEffect\PlusEffect.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="source\Effect\EffectManager.h">
+    <ClInclude Include="source\Effect\BaseEffect\BaseEffect.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="source\PostEffect\PostEffect.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

@@ -68,6 +68,7 @@ public:
 	void Stop(LPSTR _ID, int no);																					// Playで返ってきた数値を入れる
 	void Stop_all();																								// 全部止める
 	void SetFX(LPSTR _ID, int no, DXA_FX flag);
+	void SetPos(LPSTR _ID, int no, const Vector2 &pos);
 
 	void SetListener(const Vector2 &pos);			// リスナー情報
 };

@@ -8,7 +8,6 @@ class MousePointer;
 class StageManager;
 class DataManager;
 class SheepManager;
-class Watchman_mng;
 class Result;
 
 
@@ -31,7 +30,6 @@ private:
 	StageManager* stage = nullptr;
 	DataManager* dataMNG = nullptr;
 	SheepManager* m_pSheepMgr = nullptr;
-	Watchman_mng* watchman = nullptr;
 	Result * result = nullptr;
 
 	tdn2DObj* byunAlpha = nullptr;
@@ -58,15 +56,4 @@ private:
 	void ResultRender();
 
 	void DebugText();
-
-	//—h‚êŠÖ˜A
-	struct Shake{
-		void Init();
-		void Update();
-		void SetFloor(int floor);
-		Vector2 move;
-		int timer;
-		int waitTimer;
-		int beforeFloor;
-	}shake;
 };

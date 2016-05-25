@@ -24,6 +24,11 @@ public:
 	void AddScore(int score);
 	void ConboCount();
 
+	// ƒOƒ‰ƒt‚Ìİ’è
+	void SetGraph(float graph) {
+		m_percent = graph;
+	}
+
 private:
 	static UIManager* inst;
 
@@ -44,10 +49,6 @@ private:
 	UIManager();
 	UIManager(const UIManager&) {}
 	UIManager& operator=(const UIManager&) {}
-
-	void SetGraph(float graph) {
-		m_percent = graph;
-	}
 private: //•Ï”
 
 	int m_score;

@@ -11,24 +11,12 @@ private:
 	tdn2DObj* image;
 	const int W;
 	const int H;
-	const int SX;
-	const int SY;
 	const int SW;
 	const int SH;
 	Vector2 pos;
 	CurvePointState state;
-	int timer;
-	int speed;
+	int m_AnimFrame, m_AnimPanel;
 	DIR m_dir;	// —r‚ğ‹È‚°‚é•ûŒü
-#ifdef _SPIC2015_SHUTTER_TYPE_ANIMATION_
-	const int FRAME_MAX = 0;
-	int frame;
-#else
-	const int WAIT_TIME;
-	int waitTimer;
-	const int SPEED_Y;
-	int height;
-#endif
 public:
 	const int LOCK_TIME;
 	int lockTimer;
@@ -40,9 +28,6 @@ public:
 	void Update();
 	void Render();
 	void SetPos(int y);
-	void Open();
-	void Close();
-	void Stop();
 	void Change(){ state = IsOpening() ? CurvePointState::CLOSE : CurvePointState::OPEN; }		// ON_OFF‚ÌØ‚è‘Ö‚¦
 	bool IsOpening();
 	int GetWidth();

@@ -23,10 +23,16 @@ const SE_Manager::DATA all_dataS[] =
 	{ "SPEED_UP",		"DATA/Sound/SE/se14.wav", 3, false },
 	{ "DAMAGE",			"DATA/Sound/SE/eat.wav", 20, false },
 	//{ "NOT_USE",		"DATA/Sound/SE/se16.wav", 3, false },
-	{ "TIME_UP",		"DATA/Sound/SE/se17.wav", 3, false },
 	{ "RANK_OUT",		"DATA/Sound/SE/se20.wav", 3, false },
 	{ "RANK_IN",		"DATA/Sound/SE/se21.wav", 3, false },
-	{ "RESULT_POINT",	"DATA/Sound/SE/se22.wav", 3, false },
+	{ "—rƒŒ[ƒ“•Ï‚í‚é",	"DATA/Sound/SE/arrert.wav", 3, false },
+	{ "–q‘‰è¶‚¦‚½",	"DATA/Sound/SE/born.wav", 3, false },
+	{ "‘¾‚Á‚½—r‰Ÿ‚·",	"DATA/Sound/SE/debuosu.wav", 3, false },
+	{ "–q‘¬’·",	"DATA/Sound/SE/grew.wav", 3, false },
+	{ "Œ¢",	"DATA/Sound/SE/inu.wav", 3, false },
+	{ "‚«‚ç‚ß‚­—r‚³‚ñ",	"DATA/Sound/SE/kiramekuhitsujisan.wav", 3, false },
+	{ "—r‘–‚é",	"DATA/Sound/SE/sheep_run.wav", 3, false },
+	{ "‘¾‚Á‚½—rIN", "DATA/Sound/SE/fat_in.wav", 3, false },
 };
 
 //==============================================================================================
@@ -189,6 +195,16 @@ void SE_Manager::Stop_all()
 void SE_Manager::SetTone(LPSTR _ID, int tone)
 {
 	play_manager->SetSpeed(ID[_ID], 1.0f + (float)tone*.048f);
+}
+
+void SE_Manager::SetPos(LPSTR _ID, int no, const Vector2 &pos)
+{
+	// ƒXƒeƒŒƒIŽè“®‚ÅÝ’è‚µ‚Ä‚Ý‚é
+	static const int DSBPAN_WIDTH = 10000;
+	const int pan = (int)((DSBPAN_WIDTH / 8)*((pos.x - m_ListenerPos.x) / (tdnSystem::GetScreenSize().right / 2)));
+	const int vol = DSBVOLUME_MAX + (int)((DSBVOLUME_MIN / 32) * (sqrtf((m_ListenerPos.x - pos.x)*(m_ListenerPos.x - pos.x)) / m_ListenerPos.x) + (DSBVOLUME_MIN / 16) * (sqrtf((m_ListenerPos.y - pos.y)*(m_ListenerPos.y - pos.y)) / m_ListenerPos.y));
+	play_manager->SetPan(no, pan);
+	play_manager->SetVolume(no, vol);
 }
 
 void SE_Manager::SetListener(const Vector2 &pos)

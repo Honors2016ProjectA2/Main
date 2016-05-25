@@ -1,18 +1,17 @@
-#include	"Collision.h"
-#include	"../Data/DataMNG.h"
-#include	"../Enemy/watchman.h"
-#include	"../Sheep/Sheep.h"
-#include	"../CurvePoint/CurvePoint.h"
-#include	"../Stage/StageMNG.h"
-#include	"../CurvePoint/CurvePoint.h"
-#include	"../Sound/SoundManager.h"
-#include	"../UI/UIManager.h"
-#include	"../Bokusou/Bokusou.h"
+#include "Collision.h"
+#include "../Data/DataMNG.h"
+#include "../CurvePoint/CurvePoint.h"
+#include "../Stage/StageMNG.h"
+#include "../Sound/SoundManager.h"
+#include "../UI/UIManager.h"
+#include "../Bokusou/Bokusou.h"
+#include "../Number/Number.h"
+#include "../Shake/Shake.h"
 
 namespace{
 	int GOAL_X = 0;	// 羊のゴール座標(テキストで読む)
 
-	const int DOG_SIZE = 128;	// 犬のサイズ
+	const int DOG_SIZE = 32;	// 犬のサイズ
 	const int CENTER = 1280/2;
 }
 
@@ -28,7 +27,7 @@ CollisionManager::CollisionManager()
 	ifs >> GOAL_X;
 }
 
-void CollisionManager::Update(SheepManager* sinnMNG, Watchman_mng* manMNG, DataManager* dataMNG, StageManager* stageMNG)
+void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, StageManager* stageMNG)
 {
 	for (auto &sinIterator : *sinnMNG->Get_list()){
 
@@ -62,9 +61,11 @@ void CollisionManager::Update(SheepManager* sinnMNG, Watchman_mng* manMNG, DataM
 				stageMNG->GetPopupPos(sinIterator->Get_floor(),
 				sinIterator->Get_pos()->x > 640 ? true : false));		//加点、Time上昇
 
-			// ★UIさんに知らせる
-			UIMNG.AddScore(dataMNG->AddScore(sinIterator->Get_floor(), sinIterator->TokutenBairitsu()));	// データマネージャーのスコア加算関数で加算したスコアを返すから、それをUIに渡す
-			UIMNG.ConboCount();
+			//A列車 羊がゴールした瞬間
+
+			// スコア加算処理
+			SetScore(dataMNG, sinIterator->Get_floor(), sinIterator->TokutenBairitsu());
+
 			continue;
 		}
 
@@ -81,10 +82,12 @@ void CollisionManager::Update(SheepManager* sinnMNG, Watchman_mng* manMNG, DataM
 		}
 
 		//しんにょう　と！（ダメージ判定
-		for (auto& manIterator : *manMNG->Get_list()){
-			if (ShinnnyoAndExclamationPoint(sinIterator, &manIterator))
+		for (auto& manIterator : *EnemyMgr->GetList()){
+			if (ShinnnyoAndExclamationPoint(sinIterator, manIterator))
 			{
 				if (sinIterator->col_check) continue;
+
+				//A列車 狼と羊が当たった瞬間
 
 				sinIterator->col_check = true;
 				dataMNG->SubTime_Kill(sinIterator->Get_floor(), *sinIterator->Get_pos());		//時間を減少させる
@@ -95,16 +98,21 @@ void CollisionManager::Update(SheepManager* sinnMNG, Watchman_mng* manMNG, DataM
 
 	}	// 羊のfor分
 
-	// 羊と太った羊との判定
+	// 太った羊ループ
 	int FatSheepIndex(0);
 	for (auto &fatIt : *sinnMNG->GetFatList())
 	{
 		// 脱出判定
 		if (EscapedFatSheep(fatIt))
 		{
-			// ★UIさんに知らせる
-			UIMNG.AddScore(dataMNG->AddScore(fatIt->GetFloor(), 10000));	// 得点倍率10000倍
-			UIMNG.ConboCount();
+			//A列車 太った羊がゴールした瞬間
+
+
+			SetScore(dataMNG, fatIt->GetFloor(), 10000);	// 10000倍
+			se->Play("太った羊IN");
+
+			// ゆらす！！
+			ShakeMgr->Set();
 
 			// 消去
 			fatIt->Erase();
@@ -136,33 +144,31 @@ void CollisionManager::Update(SheepManager* sinnMNG, Watchman_mng* manMNG, DataM
 	}
 
 	//犬と狼
-	for(auto& manIterator : *manMNG->Get_list()){
-		for (auto& dogIterator : *stageMNG->GetCurvePointList(manIterator.Get_floor()))
+	for(auto& manIterator : *EnemyMgr->GetList()){
+		for (auto& dogIterator : *stageMNG->GetCurvePointList(manIterator->GetFloor()))
 		{
-			if (ExclamationDogAndWolf(dogIterator, &manIterator)){
-				if (manIterator.col_check)continue;
-				manIterator.col_check = true;
+			if (ExclamationDogAndWolf(dogIterator, manIterator)){
+
 			}
 		}
 	}
 }
 
-bool CollisionManager::ShinnnyoAndExclamationPoint(Sheep* sinn, Watchman* man)
+bool CollisionManager::ShinnnyoAndExclamationPoint(Sheep::Base* sinn, Enemy::Base* enemy)
 {
-	Vector2 sinnPos, manPos;
+	Vector2 sinnPos, wolfPos = enemy->GetCenterPos();
 	sinn->Get_pos2(sinnPos);
-	man->Get_pos2(manPos);
-	Vector2 diff = sinnPos - manPos;
-	if( man->Get_floor() != sinn->Get_floor() ) return false;	//階層が違う
-	int size = (sinn->Get_size() + man->Get_size())/2;
+	Vector2 diff = sinnPos - wolfPos;
+	if( enemy->GetFloor() != sinn->Get_floor() ) return false;	//階層が違う
+	int size = (sinn->Get_size() + enemy->GetWidth())/2;
 	if( diff.x*diff.x < size*size ){
-		sinn->Be_caught(man->Get_type());		//しんにょうに捕まった事を教える
+		sinn->Be_caught(0);		//しんにょうに捕まった事を教える
 		return true;
 	}
 	return false;
 }
 
-bool CollisionManager::EscapedShinnnyo(Sheep* sinn)
+bool CollisionManager::EscapedShinnnyo(Sheep::Base* sinn)
 {
 	Vector2 pos;
 	sinn->Get_pos2(pos);
@@ -175,7 +181,7 @@ bool CollisionManager::EscapedFatSheep(FatSheep *fat)
 	return (fat->GetCenterPos().x >= 1400);
 }
 
-bool CollisionManager::ExclamationPointAndCurvePoint(Sheep* sheep, CurvePoint* cp)
+bool CollisionManager::ExclamationPointAndCurvePoint(Sheep::Base* sheep, CurvePoint* cp)
 {
 	// 犬置いてたら
 	if (cp->IsOpening())
@@ -194,15 +200,15 @@ bool CollisionManager::ExclamationPointAndCurvePoint(Sheep* sheep, CurvePoint* c
 	return false;
 }
 
-bool CollisionManager::ExclamationDogAndWolf(CurvePoint *cp, Watchman* man)
+bool CollisionManager::ExclamationDogAndWolf(CurvePoint *cp, Enemy::Base* enemy)
 {
 	Vector2 WolfPos;
 	Vector2 DogPos;
-	man->Get_pos2(WolfPos);
+	WolfPos = enemy->GetCenterPos();
 	cp->Get_pos2(DogPos);
 	if ((DogPos.x - WolfPos.x)*(DogPos.x - WolfPos.x) < cp->GetWidth() * cp->GetWidth()){
 		if (cp->IsOpening()){
-			man->Enter();
+			//man->Enter();
 			return true;
 		}
 	}
@@ -210,7 +216,7 @@ bool CollisionManager::ExclamationDogAndWolf(CurvePoint *cp, Watchman* man)
 }
 
 
-void CollisionManager::DebugRender(SheepManager* sinnMNG, Watchman_mng* manMNG, DataManager* dataMNG, StageManager* stageMNG)
+void CollisionManager::DebugRender(SheepManager* sinnMNG, DataManager* dataMNG, StageManager* stageMNG)
 {
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
@@ -220,4 +226,14 @@ void CollisionManager::DebugRender(SheepManager* sinnMNG, Watchman_mng* manMNG, 
 			if(it->IsOpening())tdnPolygon::Rect((int)it->GetPos().x - DOG_SIZE, (int)it->GetPos().y, DOG_SIZE, (int)it->GetWidth(), RS::COPY, 0x0fff0000);
 		}
 	}
+}
+
+void CollisionManager::SetScore(DataManager *dataMNG, int floor, float bairitsu)
+{
+	// ★UIさんに知らせる
+	int add = dataMNG->AddScore(floor, bairitsu);// データマネージャーのスコア加算関数で加算したスコアを返すから、それをUIに渡す
+	UIMNG.AddScore(add);
+	UIMNG.ConboCount();
+	// ナンバーエフェクト発動
+	NumberEffect.AddNumber(1100, STAGE_POS_Y[floor] + 32, add);
 }
