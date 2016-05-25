@@ -27,6 +27,7 @@ UIManager::UIManager()
 	
 	// スコア
 	m_score = 0;
+	m_scorePoint = 0;
 	m_scoreNum = new Number();
 	m_scorePic = new tdn2DObj("DATA/UI/score.png");
 
@@ -131,20 +132,51 @@ void UIManager::Render()
 /***********************/
 void UIManager::ScoreUpdate()
 {
+	// テレレレレンって感じに
+	if (m_scorePoint < m_score)
+	{
+		int len = abs(m_scorePoint - m_score);
+		if (len <= 10)
+		{
+			m_scorePoint += 1;
+		}
+		else if (len <= 100)
+		{
+			m_scorePoint += 11;
+		}
+		else if (len <= 1000)
+		{
+			m_scorePoint += 111;
+		}
+		else if (len <= 10000)
+		{
+			m_scorePoint += 1111;
+		}
+		else 
+		{
+			m_scorePoint += 11111;
+		}
 
+		
+	}
+	else
+	{
+		m_scorePoint = m_score;
+	}
+	
 
 }
 
 void UIManager::ScoreRender()
 {
-	m_scoreNum->Render(300, 10, m_score);
+	m_scoreNum->Render(300, 10, m_scorePoint);
 	m_scorePic->Render(350, 20);
 }
 
 void UIManager::AddScore(int score)
 {
 	m_score += score;
-	m_scoreNum->Action();
+	//m_scoreNum->Action();
 }
 
 /***********************/

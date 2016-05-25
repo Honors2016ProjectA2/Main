@@ -51,6 +51,8 @@ private:
 private: //•Ï”
 
 	int m_score;
+	int m_scorePoint;
+
 	int m_combo;
 
 	// ƒXƒRƒA
