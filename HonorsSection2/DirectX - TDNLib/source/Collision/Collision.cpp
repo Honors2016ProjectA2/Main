@@ -12,7 +12,7 @@
 namespace{
 	int GOAL_X = 0;	// —r‚ÌƒS[ƒ‹À•W(ƒeƒLƒXƒg‚Å“Ç‚Þ)
 
-	const int DOG_SIZE = 32;	// Œ¢‚ÌƒTƒCƒY
+	const int DOG_SIZE = 64;	// Œ¢‚ÌƒTƒCƒY
 	const int CENTER = 1280/2;
 }
 
@@ -63,7 +63,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				sinIterator->Get_pos()->x > 640 ? true : false));		//‰Á“_ATimeã¸
 
 			//A—ñŽÔ —r‚ªƒS[ƒ‹‚µ‚½uŠÔ
-			EffectMgr.AddEffect(sinIterator->Get_pos()->x+300, sinIterator->Get_pos()->y+64, EFFECT_TYPE::PUT);
+			EffectMgr.AddEffect((int)sinIterator->Get_pos()->x+300, (int)sinIterator->Get_pos()->y+64, EFFECT_TYPE::PUT);
 
 
 			// ƒXƒRƒA‰ÁŽZˆ—
@@ -91,7 +91,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				if (sinIterator->col_check) continue;
 
 				//A—ñŽÔ ˜T‚Æ—r‚ª“–‚½‚Á‚½uŠÔ
-				EffectMgr.AddEffect(sinIterator->Get_pos()->x + 96, sinIterator->Get_pos()->y+64, EFFECT_TYPE::HIT);
+				EffectMgr.AddEffect((int)sinIterator->Get_pos()->x + 96, (int)sinIterator->Get_pos()->y+64, EFFECT_TYPE::HIT);
 
 				sinIterator->col_check = true;
 				dataMNG->SubTime_Kill(sinIterator->Get_floor(), *sinIterator->Get_pos());		//ŽžŠÔ‚ðŒ¸­‚³‚¹‚é
@@ -110,7 +110,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 		if (EscapedFatSheep(fatIt))
 		{
 			//A—ñŽÔ ‘¾‚Á‚½—r‚ªƒS[ƒ‹‚µ‚½uŠÔ
-			EffectMgr.AddEffect(fatIt->GetCenterPos().x-128, fatIt->GetCenterPos().y , EFFECT_TYPE::PLUS);
+			EffectMgr.AddEffect((int)fatIt->GetCenterPos().x-128, (int)fatIt->GetCenterPos().y , EFFECT_TYPE::PLUS);
 
 
 			SetScore(dataMNG, fatIt->GetFloor(), 10000);	// 10000”{
@@ -171,7 +171,7 @@ bool CollisionManager::ShinnnyoAndExclamationPoint(Sheep::Base* sinn, Enemy::Bas
 	if( enemy->GetFloor() != sinn->Get_floor() ) return false;	//ŠK‘w‚ªˆá‚¤
 	int size = (sinn->Get_size() + enemy->GetWidth())/2;
 	if( diff.x*diff.x < size*size ){
-		sinn->Be_caught(0);		//‚µ‚ñ‚É‚å‚¤‚É•ß‚Ü‚Á‚½Ž–‚ð‹³‚¦‚é
+		sinn->Be_crushed();		//‚µ‚ñ‚É‚å‚¤‚É•ß‚Ü‚Á‚½Ž–‚ð‹³‚¦‚é
 		return true;
 	}
 	return false;

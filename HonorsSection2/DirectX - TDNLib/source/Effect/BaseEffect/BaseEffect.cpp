@@ -39,8 +39,8 @@ void BaseEffect::Action(int x , int y)
 	// エフェクト発動
 	m_pic->Action();
 
-	m_pos.x = x;
-	m_pos.y = y;
+	m_pos.x = (float)x;
+	m_pos.y = (float)y;
 
 }
 

@@ -14,6 +14,7 @@ enum class SHEEP_TYPE
 struct SheepData
 {
 	tdn2DObj *Image;		// 画像
+	tdn2DObj *BoneImage;	// 死んだ骨
 	float magnification;	// 得点倍率
 	int SIZE;				// サイズ(コマの)
 	int NumPanel;			// コマの数
@@ -38,12 +39,12 @@ namespace Sheep
 	protected:
 		int frame, animeframe, m_AnimePanel;
 		Vector2 pos, animepos,
-			move,		// カーブとかで、あとから足すようの移動値
-			C_MOVE;		// 本来持っている固定の移動値
-		DIR m_CurveDir;	// カーブの向き
-		bool m_bTurned;	// サインで直角に曲げた後、戻る野に必要
+			move,			// カーブとかで、あとから足すようの移動値
+			C_MOVE;			// 本来持っている固定の移動値
+		DIR m_CurveDir;		// カーブの向き
+		bool m_bTurned;		// サインで直角に曲げた後、戻る野に必要
 		float m_sinAngle;	// カーブをサインカーブでするので、それ用の変数
-		bool m_bErase;	// 消去フラグ
+		bool m_bErase;		// 消去フラグ
 
 		//const int PNGSIZE;
 		int floor;
@@ -60,7 +61,7 @@ namespace Sheep
 			RAN_OVER	// 轢き殺された？
 		};
 		int process;
-		DWORD alpha;
+		BYTE alpha;
 
 		void Get_frame_pos(Vector2 &pos, int frame);
 
@@ -208,6 +209,7 @@ private:
 	//tdn2DObj *Getfile(int num){ return files[num]; }
 	//tdn2DObj *files[(int)SHEEP_TYPE::MAX];
 	tdn2DObj *m_pFatSheepImage;
+	tdn2DObj *m_pBoneImage;
 	int m_CreateFloor;		// 羊を生成するフロア
 	int m_CurveRange;		// 犬に対して、曲がれ命令出す範囲。
 

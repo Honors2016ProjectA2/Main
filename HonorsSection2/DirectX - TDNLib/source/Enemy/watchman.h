@@ -90,6 +90,7 @@ private:
 	std::list<Enemy::Base*> m_list;
 	int m_CreateTimer;					// 敵生成タイマー
 	int m_CREATETIME;					// 生成される時間
+	int m_NextFloor;
 
 	StageManager *sp;
 	DataManager *dmp;

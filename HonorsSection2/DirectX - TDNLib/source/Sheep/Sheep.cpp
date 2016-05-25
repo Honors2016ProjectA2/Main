@@ -20,7 +20,7 @@ m_AnimePanel(0), m_bErase(false)
 	Move[4] = &Sheep::Base::Crushed;
 	Move[5] = &Sheep::Base::Ran_over;
 
-	alpha = 0xffffffff;
+	alpha = 255;
 	frame = 0, animeframe = 0;
 	//move = 5;/* speed */
 
@@ -28,6 +28,7 @@ m_AnimePanel(0), m_bErase(false)
 
 	memcpy_s(&m_data, sizeof(SheepData), &data, sizeof(SheepData));
 	m_data.Image = data.Image;
+	m_data.BoneImage = data.BoneImage;
 
 	col_check = false;
 
@@ -56,8 +57,7 @@ void Sheep::Base::Get_out()
 }
 void Sheep::Base::Walk()
 {
-	animeframe++;
-	if (animeframe > m_data.Animkankaku)
+	if (++animeframe > m_data.Animkankaku)
 	{
 		animeframe = 0;
 		ase.animex += 128;
@@ -71,8 +71,7 @@ void Sheep::Base::Walk()
 
 void Sheep::Base::Curve()
 {
-	animeframe++;
-	if (animeframe > m_data.Animkankaku)
+	if (++animeframe > m_data.Animkankaku)
 	{
 		animeframe = 0;
 		ase.animex += 128;
@@ -121,22 +120,26 @@ void Sheep::Base::Caught()
 	}
 	else
 	{
-		alpha -= 0x0f000000;
-		if (alpha <= 0x00ffffff)
+		alpha -= 64;
+		if (alpha <= 64)
 			m_bErase = true;
 	}
 }
 void Sheep::Base::Crushed()
 {
-	if (animeframe < 11)
+	if (m_AnimePanel < 5)
 	{
-		if (frame > 2)
-			animeframe++, frame = 0;
-		frame++;
+		if (++animeframe > 4)
+		{
+			animeframe = 0;
+			m_AnimePanel++;
+		}
 	}
 	else
 	{
-		m_bErase = true;;
+		alpha -= 2;
+		if (alpha < 2)
+			m_bErase = true;
 	}
 }
 void Sheep::Base::Ran_over()
@@ -148,7 +151,7 @@ void Sheep::Base::Ran_over()
 
 		if (animeframe > 3)
 		{
-			alpha -= 0x0f000000;
+			alpha -= 64;
 		}
 		frame++;
 	}
@@ -172,7 +175,7 @@ void Sheep::Base::Get_frame_pos(Vector2 &pos, int animePanel)
 
 void Sheep::Base::Render()
 {
-	Get_frame_pos(animepos, m_AnimePanel);
+	//Get_frame_pos(animepos, m_AnimePanel);
 
 	if (process == WALK)
 	{
@@ -188,10 +191,23 @@ void Sheep::Base::Render()
 		//ase.ase->Render((int)(pos.x + ((move.x > 0) ? -32 : 32)), (int)pos.y, SIZE, SIZE, ase.animex, 0, (move.x > 0) ? -128 : 128, 512);
 	}
 
-	m_data.Image->SetARGB(alpha);
-	m_data.Image->Render((int)pos.x, (int)pos.y, m_data.SIZE, m_data.SIZE,
-		(int)animepos.x, (int)animepos.y, (move.x >= 0) ? -m_data.SIZE : m_data.SIZE, m_data.SIZE,
-		RS::COPY);
+	// 生きてる
+	if (process != CRUSHED)
+	{
+		m_data.Image->SetARGB(alpha, (BYTE)255, (BYTE)255, (BYTE)255);
+		m_data.Image->Render((int)pos.x, (int)pos.y, m_data.SIZE, m_data.SIZE,
+			(m_AnimePanel % 4) * m_data.SIZE, (m_AnimePanel / 4) * m_data.SIZE, (move.x >= 0) ? -m_data.SIZE : m_data.SIZE, m_data.SIZE,
+			RS::COPY);
+	}
+
+	// 死んでる
+	else
+	{
+		m_data.BoneImage->SetARGB(alpha, (BYTE)255, (BYTE)255, (BYTE)255);
+		m_data.BoneImage->Render((int)pos.x, (int)pos.y, m_data.SIZE, m_data.SIZE,
+			m_AnimePanel * m_data.SIZE, 0, (move.x >= 0) ? -m_data.SIZE : m_data.SIZE, m_data.SIZE,
+			RS::COPY);
+	}
 }
 
 void Sheep::Base::Be_caught(int type)
@@ -219,6 +235,10 @@ void Sheep::Base::Be_caught(int type)
 }
 void Sheep::Base::Be_crushed()
 {
+	if (col_check) return;
+
+	m_AnimePanel = 0;
+	animeframe = 0;
 	process = CRUSHED; 
 	//obj = file[CRUSHED];
 }
@@ -301,6 +321,7 @@ SheepManager::SheepManager() :
 m_ChangeLaneTime(0), sp(0)
 {
 	m_pFatSheepImage = new tdn2DObj("DATA/CHR/fat_sheep.png");
+	m_pBoneImage = new tdn2DObj("DATA/CHR/hone_motion.png");
 
 	m_CreateFloor = 0;	// 初期羊生成フロア
 	// 次のランダムフロア決定
@@ -345,6 +366,7 @@ m_ChangeLaneTime(0), sp(0)
 		char path[MAX_PATH];
 		ifs >> path;
 		m_TextParam.data[i].Image = new tdn2DObj(path);
+		m_TextParam.data[i].BoneImage = m_pBoneImage;
 
 		// 得点倍率読み込み
 		ifs >> skip;
@@ -378,6 +400,7 @@ SheepManager::~SheepManager()
 		SAFE_DELETE(m_TextParam.data[i].Image);
 	}
 	delete m_pFatSheepImage;
+	delete m_pBoneImage;
 
 	for (auto it : m_List) delete it;
 	m_List.clear();

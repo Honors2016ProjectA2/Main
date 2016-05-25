@@ -76,7 +76,7 @@ void BokusouManager::Update()
 	if (++m_CreateTimer > m_CREATETIME)
 	{
 		// –q‘¶¬‚µ‚½uŠÔ
-		EffectMgr.AddEffect(m_CreatePosList[m_NextPoint].pos.x+64, m_CreatePosList[m_NextPoint].pos.y+64, EFFECT_TYPE::PUT);
+		EffectMgr.AddEffect((int)m_CreatePosList[m_NextPoint].pos.x+64, (int)m_CreatePosList[m_NextPoint].pos.y+64, EFFECT_TYPE::PUT);
 
 
 		// –q‘¶¬II
@@ -224,7 +224,7 @@ BokusouMode::Born::Born(Bokusou *me, tdn2DObj *image) :Base(me, image)
 	se->Play("–q‘¬’·", me->GetPos());
 
 	// ƒGƒtƒFƒNƒg”­“®
-	EffectMgr.AddEffect(me->GetPos().x + 64, me->GetPos().y + 64, EFFECT_TYPE::PLUS);
+	EffectMgr.AddEffect((int)me->GetPos().x + 64, (int)me->GetPos().y + 64, EFFECT_TYPE::PLUS);
 
 }
 void BokusouMode::Born::Update()

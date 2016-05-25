@@ -3,6 +3,7 @@
 #include "../Stage/StageMNG.h"
 #include "watchman.h"
 #include "../Data/DataMNG.h"
+#include "../Effect/EffectManager.h"
 
 
 //**************************************************
@@ -93,6 +94,8 @@ EnemyManager::EnemyManager() :m_CreateTimer(0)
 	// òTÇÃë¨ìxì«Ç›çûÇ›
 	ifs >> skip;
 	ifs >> m_EnemySpeed[(int)ENEMY_TYPE::WOLF];
+
+	m_NextFloor = tdnRandom::Get(0, 2);
 }
 
 void EnemyManager::Initialize()
@@ -141,7 +144,15 @@ void EnemyManager::Update()
 	if (++m_CreateTimer > m_CREATETIME)
 	{
 		m_CreateTimer = 0;
-		Create(rand() % 3, ENEMY_TYPE::WOLF);
+		Create(m_NextFloor, ENEMY_TYPE::WOLF);
+
+		// éüÇÃÉtÉçÉAçÏê¨
+		m_NextFloor = tdnRandom::Get(0, 2);
+	}
+	else if (m_CREATETIME - m_CreateTimer == 180)
+	{
+		//AóÒé‘
+		EffectMgr.AddEffect(1100, STAGE_POS_Y[m_NextFloor] + LANE_WIDTH / 2, EFFECT_TYPE::NOTICE);
 	}
 	for (auto it = m_list.begin(); it != m_list.end();)
 	{
