@@ -91,7 +91,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 
 				sinIterator->col_check = true;
 				dataMNG->SubTime_Kill(sinIterator->Get_floor(), *sinIterator->Get_pos());		//ŠÔ‚ğŒ¸­‚³‚¹‚é
-				se->Play("DAMAGE");
+				se->Play("DAMAGE",sinIterator->GetCenterPos());
 			}
 
 		}
@@ -134,7 +134,11 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				HitCount++;
 
 				// ‘¾‚Á‚Ä‚È‚¢—r‚ğ‚¸‚ç‚·
-				if(fPos.x - sPos.x < 128)sheepIt->SetPosX(fPos.x - 128);
+				if (fPos.x - sPos.x < 128)
+				{
+					sheepIt->SetPos(fPos - Vector2(128, 0));
+					//sheepIt->SetPosX(fPos.x - 128);
+				}
 			}
 		}
 		// “–‚½‚Á‚½”‚É‰‚¶‚Ä‘¾‚Á‚Ä‚é—r‚ÌˆÚ“®—Êì¬

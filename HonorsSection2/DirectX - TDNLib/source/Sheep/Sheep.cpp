@@ -10,7 +10,7 @@
 Sheep::Base::Base(const SheepData &data, int floor, const SheepTextParam &textparam) :
 animepos(0, 0),
 floor(floor),
-process(GETOUT),
+process(WALK),
 m_AnimePanel(0), m_bErase(false)
 {
 	Move[0] = &Sheep::Base::Get_out;
