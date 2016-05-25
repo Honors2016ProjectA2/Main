@@ -30,7 +30,7 @@ public:
 
 	// ’Ç‰Á
 	void AddEffect(int x, int y, EFFECT_TYPE type);
-
+	
 	//// NumberData
 	//NumberData  
 

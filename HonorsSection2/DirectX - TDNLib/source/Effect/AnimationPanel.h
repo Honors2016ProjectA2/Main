@@ -4,7 +4,7 @@
 class AnimationPanel
 {
 public:
-	AnimationPanel(char* _fileName, int _sizeX, int _sizeY, int _endCount, int _upflame, int _upCount, bool loop = false);
+	AnimationPanel(char* _fileName, int _sizeX, int _sizeY, int _endCount, int _upflame, int _upCount, bool loop = false, int loopFlame = 180);
 	~AnimationPanel();
 
 
@@ -12,6 +12,8 @@ public:
 	void Render(int x, int y, DWORD dwFlag = RS::COPY);
 
 	void Action();
+	void Stop();
+
 	bool GetisAction();
 
 private:
@@ -33,4 +35,6 @@ private:
 
 	// ループフラグ
 	bool m_loop;
+	int  m_loopMaxFlame;
+	int  m_loopFlame;
 };

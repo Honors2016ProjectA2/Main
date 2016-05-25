@@ -2,7 +2,7 @@
 
 /*波紋アニメ*/
 
-AnimationPanel::AnimationPanel(char* _fileName, int _sizeX, int _sizeY, int _endCount, int _upflame, int _upCount, bool loop)
+AnimationPanel::AnimationPanel(char* _fileName, int _sizeX, int _sizeY, int _endCount, int _upflame, int _upCount, bool loop, int loopFlame )
 {
 	m_image = new tdn2DObj(_fileName);
 
@@ -22,6 +22,8 @@ AnimationPanel::AnimationPanel(char* _fileName, int _sizeX, int _sizeY, int _end
 	// フラグ
 	isAction = false;
 	m_loop = loop;
+	m_loopMaxFlame = loopFlame;
+	m_loopFlame = 0;
 }
 
 AnimationPanel::~AnimationPanel()
@@ -41,8 +43,14 @@ void AnimationPanel::Update()
 			// ループ分岐
 			if (m_loop)
 			{
+				// 追加　ループフレームを超えてたら終り
+				if (m_loopFlame >= m_loopMaxFlame)
+				{
+					isAction = false;
+				}
 				m_count = 0;
 				m_flame = 0;
+
 			}
 			else isAction = false;
 		}
@@ -50,6 +58,7 @@ void AnimationPanel::Update()
 
 	// 更新
 	m_flame++;
+	m_loopFlame++;// 追加　ループの終り
 	if (m_flame >= m_upflame)
 	{
 		m_flame = 0;
@@ -84,4 +93,12 @@ void AnimationPanel::Action()
 bool AnimationPanel::GetisAction()
 {
 	return isAction;
+}
+
+void AnimationPanel::Stop()
+{
+	isAction = false;
+	// 初期化
+	m_count = 0;
+	m_flame = 0;
 }

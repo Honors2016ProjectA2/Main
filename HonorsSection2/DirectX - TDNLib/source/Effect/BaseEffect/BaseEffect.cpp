@@ -44,3 +44,11 @@ void BaseEffect::Action(int x , int y)
 
 }
 
+void BaseEffect::Stop()
+{
+	// エフェクト止める
+	m_pic->Stop();
+
+
+}
+

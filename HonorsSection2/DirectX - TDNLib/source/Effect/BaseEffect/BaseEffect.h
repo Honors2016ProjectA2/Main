@@ -15,6 +15,9 @@ public:
 	virtual void Update();
 	virtual void Render();
 	virtual void Action(int x = 0, int y = 0);
+	virtual void Stop();
+
+	AnimationPanel* GetPanel() { return m_pic; }
 
 protected:
 	AnimationPanel* m_pic;
@@ -90,7 +93,7 @@ public:
 	NoticeEffect()
 	{
 		m_picSize = 256;
-		m_pic = new AnimationPanel("Data/Effect/bikkuri.png", 512, 512, 1, 120, 1, false);
+		m_pic = new AnimationPanel("Data/Effect/bikkuri.png", 256, 256, 14, 2, 7, true);
 		state = RS::COPY;
 	};
 	~NoticeEffect() {};

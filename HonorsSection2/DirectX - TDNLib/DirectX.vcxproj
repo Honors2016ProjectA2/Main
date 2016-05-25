@@ -108,7 +108,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="source\Animation\AnimationPanel.cpp" />
     <ClCompile Include="source\Bokusou\Bokusou.cpp" />
     <ClCompile Include="source\Collision\Collision.cpp" />
     <ClCompile Include="source\CurvePoint\CurvePoint.cpp" />
@@ -165,7 +164,6 @@
     <ClCompile Include="SOURCE\system\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\Animation\AnimationPanel.h" />
     <ClInclude Include="source\Bokusou\Bokusou.h" />
     <ClInclude Include="source\Collision\Collision.h" />
     <ClInclude Include="source\CurvePoint\CurvePoint.h" />
