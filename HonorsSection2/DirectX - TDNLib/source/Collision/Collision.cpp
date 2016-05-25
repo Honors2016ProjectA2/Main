@@ -7,6 +7,7 @@
 #include "../Bokusou/Bokusou.h"
 #include "../Number/Number.h"
 #include "../Shake/Shake.h"
+#include "Effect\EffectManager.h"
 
 namespace{
 	int GOAL_X = 0;	// —r‚ÌƒS[ƒ‹À•W(ƒeƒLƒXƒg‚Å“Ç‚Þ)
@@ -62,6 +63,8 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				sinIterator->Get_pos()->x > 640 ? true : false));		//‰Á“_ATimeã¸
 
 			//A—ñŽÔ —r‚ªƒS[ƒ‹‚µ‚½uŠÔ
+			EffectMgr.AddEffect(sinIterator->Get_pos()->x+300, sinIterator->Get_pos()->y+64, EFFECT_TYPE::PUT);
+
 
 			// ƒXƒRƒA‰ÁŽZˆ—
 			SetScore(dataMNG, sinIterator->Get_floor(), sinIterator->TokutenBairitsu());
@@ -88,6 +91,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				if (sinIterator->col_check) continue;
 
 				//A—ñŽÔ ˜T‚Æ—r‚ª“–‚½‚Á‚½uŠÔ
+				EffectMgr.AddEffect(sinIterator->Get_pos()->x + 96, sinIterator->Get_pos()->y+64, EFFECT_TYPE::HIT);
 
 				sinIterator->col_check = true;
 				dataMNG->SubTime_Kill(sinIterator->Get_floor(), *sinIterator->Get_pos());		//ŽžŠÔ‚ðŒ¸­‚³‚¹‚é
@@ -106,6 +110,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 		if (EscapedFatSheep(fatIt))
 		{
 			//A—ñŽÔ ‘¾‚Á‚½—r‚ªƒS[ƒ‹‚µ‚½uŠÔ
+			EffectMgr.AddEffect(fatIt->GetCenterPos().x-128, fatIt->GetCenterPos().y , EFFECT_TYPE::PLUS);
 
 
 			SetScore(dataMNG, fatIt->GetFloor(), 10000);	// 10000”{

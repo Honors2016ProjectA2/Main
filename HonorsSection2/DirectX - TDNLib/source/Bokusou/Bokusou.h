@@ -166,6 +166,7 @@ private:
 	std::vector<CreatePos> m_CreatePosList;	// ランダムに生成される座標たち
 	int m_CreateTimer;					// 牧草生成タイマー
 	int m_CREATETIME;					// 生成される時間
+	int m_NextPoint;					// 生成される次のポイント
 
 	// シングルトンの作法
 	BokusouManager();

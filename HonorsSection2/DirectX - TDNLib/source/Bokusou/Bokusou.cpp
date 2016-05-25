@@ -3,6 +3,7 @@
 #include "../Stage/StageMNG.h"
 #include "../Sound/SoundManager.h"
 #include "../UI/UIManager.h"
+#include "Effect\EffectManager.h"
 
 // グローバル変数
 int g_ModeChangeTime[(int)BOKUSOU_MODE::MAX];			// モードが変わっていく時間
@@ -46,6 +47,9 @@ BokusouManager::BokusouManager()
 
 		m_CreatePosList.push_back(CreatePos(Vector2(x, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 4), floor));
 	}
+
+	// 次の生成座標
+	m_NextPoint = tdnRandom::Get(0, m_CreatePosList.size() - 1);
 }
 
 void BokusouManager::Initialize()
@@ -71,15 +75,19 @@ void BokusouManager::Update()
 	UIMNG.SetGraph((float)m_CreateTimer / m_CREATETIME);
 	if (++m_CreateTimer > m_CREATETIME)
 	{
-		//A列車 牧草生成した瞬間
+		// 牧草生成した瞬間
+		EffectMgr.AddEffect(m_CreatePosList[m_NextPoint].pos.x+64, m_CreatePosList[m_NextPoint].pos.y+64, EFFECT_TYPE::PUT);
+
 
 		// 牧草生成！！
 		m_CreateTimer = 0;
 
-		int r = rand() % m_CreatePosList.size();	// ランダム値
-		Bokusou *set = new Bokusou(m_CreatePosList[r].pos);	// 座標リストからランダムに
-		set->SetFloor(m_CreatePosList[r].floor);
+		Bokusou *set = new Bokusou(m_CreatePosList[m_NextPoint].pos);	// 座標リストからランダムに
+		set->SetFloor(m_CreatePosList[m_NextPoint].floor);
 		m_list.push_back(set);
+
+		// 次の生成座標
+		m_NextPoint = tdnRandom::Get(0, m_CreatePosList.size() - 1);
 	}
 
 	for (auto it = m_list.begin(); it != m_list.end();)
@@ -197,6 +205,7 @@ BokusouMode::Saita::Saita(Bokusou *me, tdn2DObj *image) :Base(me, image)
 
 	// SEの再生
 	se->Play("牧草成長", me->GetPos());
+
 }
 //void BokusouMode::Saita::Update(Bokusou *pBokusou)
 //{
@@ -213,6 +222,10 @@ BokusouMode::Born::Born(Bokusou *me, tdn2DObj *image) :Base(me, image)
 
 	// SEの再生
 	se->Play("牧草成長", me->GetPos());
+
+	// エフェクト発動
+	EffectMgr.AddEffect(me->GetPos().x + 64, me->GetPos().y + 64, EFFECT_TYPE::PLUS);
+
 }
 void BokusouMode::Born::Update()
 {

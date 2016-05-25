@@ -57,6 +57,7 @@ public:
 	{
 		m_picSize = 256;
 		m_pic = new AnimationPanel("Data/Effect/eraseEffect.png", 256, 256, 15, 1, 4, false);
+		state = RS::COPY;
 	};
 	~HitEffect() {};
 
@@ -74,7 +75,7 @@ public:
 	PutEffect()
 	{
 		m_picSize = 256;
-		m_pic = new AnimationPanel("Data/Effect/nodeEffect.png", 256, 256, 15, 1, 4, false);
+		m_pic = new AnimationPanel("Data/Effect/nodeEffect.png", 256, 256, 15, 2, 4, false);
 	};
 	~PutEffect() {};
 
