@@ -1,5 +1,7 @@
 #include "UIManager.h"
+#include "particle_2d\particle_2d.h"
 
+//Particle_2d* particle;
 
 UIManager* UIManager::inst = nullptr;
 
@@ -56,6 +58,9 @@ UIManager::UIManager()
 	m_graphRip->OrderRipple(12, 1.0f, 0.1f);
 	m_percent = 0.0f;
 
+	// 
+	//particle = new Particle_2d();
+	//particle->Initialize("DATA/Effect/star.png", 256, 1, 1);
 
 	NumberEffect;
 }
@@ -99,10 +104,23 @@ void UIManager::Update()
 	//仮
 	Debug();
 
+
+	//particle->Set(
+	//	1, 0, 0xFFffffff,
+	//	128, 0x00ffffff,
+	//	0, 0xFFffffff,
+	//	300.0f, 300.0f,
+	//	1.0f, -3.0f,
+	//	0.0f, 0.1f ,
+	//	0.0f,1.0f, 32.0f, RS::ADD);
+
+	//particle->Update();
+
+
 }
 void UIManager::Render()
 {
-
+	
 	/****************************************/
 	// スコア
 	ScoreRender();
@@ -122,6 +140,9 @@ void UIManager::Render()
 	/****************************************/
 	// グラフゲージ
 	GraphRender();
+
+	//particle->Render();
+
 }
 
 
