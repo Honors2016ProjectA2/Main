@@ -108,6 +108,9 @@ void EffectManager::AddEffect(int x, int y, EFFECT_TYPE type)
 	case EFFECT_TYPE::PUT:
 		data = new PutEffect();
 		break;
+	case EFFECT_TYPE::NOTICE:
+		data = new NoticeEffect();
+		break;
 	default:
 		break;
 	}

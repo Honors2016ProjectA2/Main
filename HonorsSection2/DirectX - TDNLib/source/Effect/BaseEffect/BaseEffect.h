@@ -20,6 +20,7 @@ protected:
 	AnimationPanel* m_pic;
 	Vector2 m_pos;
 	int m_picSize;
+	RS state;
 
 };
 
@@ -73,6 +74,26 @@ public:
 		m_pic = new AnimationPanel("Data/Effect/nodeEffect.png", 256, 256, 15, 1, 4, false);
 	};
 	~PutEffect() {};
+
+	void Update() { BaseEffect::Update(); };
+	void Render() { BaseEffect::Render(); };
+	void Action(int x = 0, int y = 0) { BaseEffect::Action(x, y); };
+
+private:
+};
+
+
+
+class NoticeEffect :public BaseEffect
+{
+public:
+	NoticeEffect()
+	{
+		m_picSize = 256;
+		m_pic = new AnimationPanel("Data/Effect/bikkuri.png", 512, 512, 1, 120, 1, false);
+		state = RS::COPY;
+	};
+	~NoticeEffect() {};
 
 	void Update() { BaseEffect::Update(); };
 	void Render() { BaseEffect::Render(); };

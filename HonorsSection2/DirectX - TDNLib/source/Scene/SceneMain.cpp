@@ -136,7 +136,7 @@ bool sceneMain::Update()
 	EffectMgr.Update();
 	if (KeyBoard(KB_F) == 3)
 	{
-		EffectMgr.AddEffect(300, 300, EFFECT_TYPE::PLUS);
+		EffectMgr.AddEffect(300, 300, EFFECT_TYPE::NOTICE);
 	}
 
 	return true;

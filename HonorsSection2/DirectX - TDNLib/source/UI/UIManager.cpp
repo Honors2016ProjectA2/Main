@@ -214,7 +214,6 @@ void UIManager::PointUpdate()
 
 void UIManager::PointRender()
 {
-
 	NumberEffect.Render();
 }
 

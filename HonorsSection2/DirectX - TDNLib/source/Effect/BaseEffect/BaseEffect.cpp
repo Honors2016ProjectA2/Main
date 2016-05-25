@@ -14,6 +14,7 @@ BaseEffect::BaseEffect()
 	m_pic = nullptr;
 	m_pos.x = m_pos.y = 0.0f;
 
+	state = RS::ADD;
 }
 
 BaseEffect::~BaseEffect()
@@ -29,7 +30,7 @@ void BaseEffect::Update()
 
 void BaseEffect::Render()
 {
-	m_pic->Render((int)m_pos.x - (m_picSize / 2), (int)m_pos.y - (m_picSize / 2), RS::ADD);
+	m_pic->Render((int)m_pos.x - (m_picSize / 2), (int)m_pos.y - (m_picSize / 2), state);
 
 }
 
