@@ -63,7 +63,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				sinIterator->Get_pos()->x > 640 ? true : false));		//‰Á“_ATimeã¸
 
 			//A—ñŽÔ —r‚ªƒS[ƒ‹‚µ‚½uŠÔ
-			EffectMgr.AddEffect((int)sinIterator->Get_pos()->x+300, (int)sinIterator->Get_pos()->y+64, EFFECT_TYPE::PUT);
+			EffectMgr.AddEffect((int)sinIterator->Get_pos()->x+220, (int)sinIterator->Get_pos()->y+64, EFFECT_TYPE::INEFFECT_MINI);
 
 
 			// ƒXƒRƒA‰ÁŽZˆ—
@@ -110,7 +110,8 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 		if (EscapedFatSheep(fatIt))
 		{
 			//A—ñŽÔ ‘¾‚Á‚½—r‚ªƒS[ƒ‹‚µ‚½uŠÔ
-			EffectMgr.AddEffect((int)fatIt->GetCenterPos().x-128, (int)fatIt->GetCenterPos().y , EFFECT_TYPE::PLUS);
+			EffectMgr.AddEffect((int)fatIt->GetCenterPos().x-96, (int)fatIt->GetCenterPos().y , EFFECT_TYPE::PLUS);
+			EffectMgr.AddEffect((int)fatIt->GetCenterPos().x+96, (int)fatIt->GetCenterPos().y , EFFECT_TYPE::INEFFECT);
 
 
 			SetScore(dataMNG, fatIt->GetFloor(), 10000);	// 10000”{

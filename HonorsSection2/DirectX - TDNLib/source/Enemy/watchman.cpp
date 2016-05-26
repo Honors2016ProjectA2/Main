@@ -149,7 +149,7 @@ void EnemyManager::Update()
 		// Ÿ‚ÌƒtƒƒAì¬
 		m_NextFloor = tdnRandom::Get(0, 2);
 	}
-	else if (m_CREATETIME - m_CreateTimer == 180)
+	else if (m_CREATETIME - m_CreateTimer == 80)
 	{
 		//A—ñÔ
 		EffectMgr.AddEffect(1100, STAGE_POS_Y[m_NextFloor] + LANE_WIDTH / 2, EFFECT_TYPE::NOTICE);

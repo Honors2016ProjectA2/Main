@@ -111,6 +111,12 @@ void EffectManager::AddEffect(int x, int y, EFFECT_TYPE type)
 	case EFFECT_TYPE::NOTICE:
 		data = new NoticeEffect();
 		break;
+	case EFFECT_TYPE::INEFFECT:
+		data = new InEffect();
+		break;
+	case EFFECT_TYPE::INEFFECT_MINI:
+		data = new InEffectMini();
+		break;
 	default:
 		break;
 	}

@@ -94,10 +94,50 @@ public:
 	NoticeEffect()
 	{
 		m_picSize = 256;
-		m_pic = new AnimationPanel("Data/Effect/bikkuri.png", 256, 256, 14, 2, 7, true);
+		m_pic = new AnimationPanel("Data/Effect/bikkuri.png", 256, 256, 12, 2, 7, true, 60);
 		state = RS::COPY;
 	};
 	~NoticeEffect() {};
+
+	void Update() { BaseEffect::Update(); };
+	void Render() { BaseEffect::Render(); };
+	void Action(int x = 0, int y = 0) { BaseEffect::Action(x, y); };
+
+private:
+};
+
+class InEffect :public BaseEffect
+{
+public:
+	InEffect()
+	{
+		m_picSize = 256;
+		m_pic = new AnimationPanel("Data/Effect/ineffect.png", 256, 256, 15, 1, 4, false);
+		
+		m_pic->GetPic()->SetScale(2.0f);
+		
+		//m_pic = new AnimationPanel("Data/Effect/in2.png", 256, 256, 15, 1, 4, false);
+		//state = RS::COPY;
+	};
+	~InEffect() {};
+
+	void Update() { BaseEffect::Update(); };
+	void Render() { BaseEffect::Render(); };
+	void Action(int x = 0, int y = 0) { BaseEffect::Action(x, y); };
+
+private:
+};
+
+class InEffectMini :public BaseEffect
+{
+public:
+	InEffectMini()
+	{
+		m_picSize = 256;
+		m_pic = new AnimationPanel("Data/Effect/in2.png", 256, 256, 15, 1, 4, false);
+		//state = RS::COPY;
+	};
+	~InEffectMini() {};
 
 	void Update() { BaseEffect::Update(); };
 	void Render() { BaseEffect::Render(); };

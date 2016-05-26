@@ -8,7 +8,7 @@
 /********************/
 	enum class EFFECT_TYPE 
 	{
-		PLUS, HIT, PUT, NOTICE
+		PLUS, HIT, PUT, NOTICE,INEFFECT, INEFFECT_MINI
 	};
 class EffectManager
 {

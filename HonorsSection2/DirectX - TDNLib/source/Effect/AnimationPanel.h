@@ -16,6 +16,7 @@ public:
 
 	bool GetisAction();
 
+	tdn2DObj* GetPic() { return m_image; };
 private:
 	tdn2DObj* m_image;
 
