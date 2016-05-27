@@ -16,9 +16,9 @@
 // ƒOƒ[ƒoƒ‹—Ìˆæ
 int STAGE_POS_Y[3] =
 {
-	0, 0, 0
+	0, 190, 520// š‚±‚±‚¢‚¶‚Á‚½‚ë
 };
-int LANE_WIDTH = 0;
+int LANE_WIDTH = 190;
 
 
 //-------- static field ---------

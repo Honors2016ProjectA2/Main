@@ -206,6 +206,10 @@ public:
 	// ゲッタ
 	int GetOpenFloor(){ return m_CreateFloor; }
 
+	//	タイトルで使う用
+	void SetDownLane() { m_CreateFloor = m_NextChangeFloor = 2; }
+	SheepTextParam *GetSheepTextParam() { return &m_TextParam; }
+
 private:
 	//tdn2DObj *Getfile(int num){ return files[num]; }
 	//tdn2DObj *files[(int)SHEEP_TYPE::MAX];

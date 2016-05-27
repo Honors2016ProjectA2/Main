@@ -1,5 +1,7 @@
 #pragma once
-#include	"IEX_Expansion.h"
+
+class SheepManager;
+class MousePointer;
 
 class Title : public BaseScene
 {
@@ -7,83 +9,41 @@ public:
 	~Title();
 	bool Initialize();
 	bool Update();
+	void DogUpdate();
+	void DogVsMouse();
+	void DogVsSheep();
+
+	void KoyaVsSheep();
 	void Render();
+
 private:
-	struct Object{
-		tdn2DObjEx* obj;
-		float scale;
-		bool isSelected;
-		void Bigger();
-		void Smaller();
-		void Init(char* fileName);
-		void Render(s32 DstX, s32 DstY, s32 DstW, s32 DstH, float shake, float alpha);
-	}logo, start, end;
-	bool isEndGame = false;
-	float shakeTheta = .0f;
-	float alphaTheta = .0f;
-	void ShakeUpdate();
-	void AlphaUpdate();
+	SheepManager *m_pSheepMgr;
 
-	struct ClickBox{
-		int x, y;
-		int width, height;
-		void Set(const int x, const int y, const int width, const int height);	//基点は中心
-		bool OnMouse();
-	}box[2];
-	int nowSelect = -1;
+	// 犬
+	struct 
+	{
+		tdn2DObj* pic;
+		Vector2 pos;
+		int anim;
+		int animFlame;
+	}m_dog;
+	bool m_bDogFlag;
 
-	struct Performance{
-		tdn2DObjEx* obj;
-		int x, y;
-		float roll;
-		int animNum;
-		int animMax;
-		int animFrame;
-		int animChangeFrame;
-		int moveSpeed;
-		int landHeight;
-		int state;
-		int titleSelect;
-		virtual void Init(const int startX, const int startY, const float startRoll, const int startAnim);
-		void SetAnimData(const int animFrame, const int animMax);
-		void SetSelect(int select);
-		bool Animation();
-		virtual void Update();
-		//ジャンプ関連
-		int g;
-		void Jump();
-		void Run();
-	}exPoint;
+	// マウスポインタ―
+	MousePointer* m_pointer;
 
-	struct PerformanceSinn : public Performance{
-		tdn2DObjEx* normal;
-		tdn2DObjEx* change;
-		tdn2DObjEx* death;
-		int step = 0;
-		float scaleX = 1.0f;
-		bool endDeath = false;
-		void Init(const int startX, const int startY, const float startRoll, const int startAnim);
-		void Update();
-		void Reverse();
-		void RunExit();
-		void Death();
-		void SetDeath();
-	}sinn;
+	// 背景
+	tdn2DObj* m_BG;
 
-	struct PerformanceGorilla : public Performance{
-		void Update();
-	}gorilla;
+	// タイトル
+	tdn2DObj* m_titleLogo;
 
-	int state = 0;
-	int timer = 0;
-
-	void SelectWait();
-	void Start();
-	void Exit();
-	void ExitEnd();
-
-public:
-	bool IsEndGame(){
-		return isEndGame;
-	}
+	// 小屋
+	struct
+	{
+		tdn2DObj* pic;
+		tdn2DObj* picBack;
+		Vector2 pos;
+	}m_koya;
+	bool m_bKoyaFlag;
 };

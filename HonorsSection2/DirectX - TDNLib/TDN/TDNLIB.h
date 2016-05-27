@@ -480,7 +480,7 @@ namespace Math
 	*@param[in]		yB		点Bのy軸
 	*@return	AとBの距離を返す
 	*/
-	inline float Length(float xA, float yA, float xB, float yB);
+	float Length(float xA, float yA, float xB, float yB);
 	
 	/**
 	*@brief					距離計算
