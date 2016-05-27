@@ -8,6 +8,7 @@
 #include "../Number/Number.h"
 #include "../Shake/Shake.h"
 #include "Effect\EffectManager.h"
+#include "PostEffect\PostEffect.h"
 
 namespace{
 	int GOAL_X = 0;	// 羊のゴール座標(テキストで読む)
@@ -64,7 +65,12 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 
 			//A列車 羊がゴールした瞬間
 			EffectMgr.AddEffect((int)sinIterator->Get_pos()->x+220, (int)sinIterator->Get_pos()->y+64, EFFECT_TYPE::INEFFECT_MINI);
-
+			
+			//// プロジェクションのポジションを入手
+			//Vector2 projPos = Math::GetProjPos(Vector2((float)sinIterator->Get_pos()->x + 220,
+			//	(float)sinIterator->Get_pos()->y + 64));
+			//// 放射ブラ―発動！
+			//PostEffectMgr.SetRadialBlur(projPos, 15);
 
 			// スコア加算処理
 			SetScore(dataMNG, sinIterator->Get_floor(), sinIterator->TokutenBairitsu());
@@ -111,7 +117,14 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 		{
 			//A列車 太った羊がゴールした瞬間
 			EffectMgr.AddEffect((int)fatIt->GetCenterPos().x-96, (int)fatIt->GetCenterPos().y , EFFECT_TYPE::PLUS);
-			EffectMgr.AddEffect((int)fatIt->GetCenterPos().x+96, (int)fatIt->GetCenterPos().y , EFFECT_TYPE::INEFFECT);
+			EffectMgr.AddEffect((int)fatIt->GetCenterPos().x-256, (int)fatIt->GetCenterPos().y , EFFECT_TYPE::INEFFECT);
+
+			// プロジェクションのポジションを入手
+			Vector2 projPos = Math::GetProjPos(Vector2(
+				(float)fatIt->GetCenterPos().x - 96,
+				(float)fatIt->GetCenterPos().y + 64));
+			// 放射ブラ―発動！
+			PostEffectMgr.SetRadialBlur(projPos, 15);
 
 
 			SetScore(dataMNG, fatIt->GetFloor(), 10000);	// 10000倍

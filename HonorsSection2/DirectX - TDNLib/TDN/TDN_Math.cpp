@@ -411,6 +411,29 @@ float Math::Blend(float Rate, float MinNum, float MaxNum)
 }
 
 
+// 2Dの絵をプロジェクション
+Vector2 Math::GetProjPos(Vector2 pos)
+{
+	Vector2 out;
+	
+	// スクリーンの最大幅で今のポジションを割る
+	out.x = pos.x / tdnSystem::GetScreenSize().right;
+	out.y = pos.y / tdnSystem::GetScreenSize().bottom;
+
+	// 0～1.0へ
+	Math::Clamp(out.x, 0.0f, 1.0f);
+	Math::Clamp(out.y, 0.0f, 1.0f);
+
+	// -1.0～1.0へ
+	out.x *= 2.0f;// まず　0~2.0へ
+	out.x -= 1.0f;// 引いて　-1.0~1.0へ
+
+	out.y *= 2.0f;// まず　0~2.0へ
+	out.y -= 1.0f;// 引いて　-1.0~1.0へ
+
+	return out;
+}
+
 //********************************************************************
 //						Collision
 //********************************************************************

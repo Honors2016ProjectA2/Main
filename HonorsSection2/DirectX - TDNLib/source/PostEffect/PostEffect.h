@@ -19,7 +19,8 @@ public:
 	void RadialBigin();
 	void RadialEnd();
 	void RadialRender();
-	
+	void SetRadialBlur(Vector2 pos,float power);
+
 	void BloomBigin();
 	void BloomEnd();
 	void BloomRender();

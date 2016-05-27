@@ -69,6 +69,18 @@ void PostEffect::RadialRender()
 	m_radialScreen->Render(0, 0, shader2D, "RadialBlur");
 }
 
+// 放射ブラ―セット
+void PostEffect::SetRadialBlur(Vector2 pos, float power)
+{
+	// ブラ―
+	m_bluePower = power;
+	shader2D->SetValue("BluePower", m_bluePower);
+
+	// 場所
+	shader2D->SetValue("CenterX", pos.x);
+	shader2D->SetValue("CenterY", pos.y);
+}
+
 void PostEffect::BloomBigin()
 {
 	m_postBlurScreen->RenderTarget();
@@ -108,23 +120,23 @@ void PostEffect::BloomRender()
 void PostEffect::Ctrl()
 {
 	//if (KeyBoard(KB_ENTER))
-	{
-		if (KeyBoard(KB_Z))
-		{
-			m_blurValue += 0.05f;
-		}
-		if (KeyBoard(KB_X))
-		{
-			m_blurValue -= 0.05f;
-		}
+	//{
+	//	if (KeyBoard(KB_Z))
+	//	{
+	//		m_blurValue += 0.05f;
+	//	}
+	//	if (KeyBoard(KB_X))
+	//	{
+	//		m_blurValue -= 0.05f;
+	//	}
 
-		if (KeyBoard(KB_C))
-		{
-			m_bluePower = 15.0f;
-		}
+	//	if (KeyBoard(KB_C))
+	//	{
+	//		m_bluePower = 15.0f;
+	//	}
 
-	
-	}
+	//
+	//}
 
 }
 
@@ -132,7 +144,7 @@ void PostEffect::Ctrl()
 void PostEffect::BlueUpdate()
 {
 
-	m_bluePower -= 1.5f;
+	m_bluePower -= 1.0f;
 	m_bluePower = Math::Clamp(m_bluePower, 0.0f, 30.0f);
 
 	// ブラ―

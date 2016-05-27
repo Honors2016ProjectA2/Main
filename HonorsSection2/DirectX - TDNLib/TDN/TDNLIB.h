@@ -549,7 +549,12 @@ namespace Math
 	*/
 	float Blend(float Rate, float MinNum, float MaxNum);
 
-
+	/**
+	*@brief									スクリーン空間の場所を返す
+	*@param[in]		Pos						２Dの絵の場所
+	*@return								-1.0f~1.0fの値を返す
+	*/
+	Vector2 GetProjPos(Vector2 Pos);
 
 }
 
