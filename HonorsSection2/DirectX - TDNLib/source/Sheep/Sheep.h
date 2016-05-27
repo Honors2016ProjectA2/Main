@@ -168,6 +168,7 @@ public:
 	void Erase(){ m_bErase = true; }
 
 private:
+	int m_AnimPanel, m_AnimFrame;	// アニメ
 	Vector2 m_pos;		// 座標
 	float m_moveX;		// 移動値
 	tdn2DObj *m_image;	// 自分の画像

@@ -6,6 +6,7 @@
 #include "Sheep.h"
 #include "../Data/DataMNG.h"
 #include "../system/system.h"
+#include "../particle_2d/particle_2d.h"
 
 Sheep::Base::Base(const SheepData &data, int floor, const SheepTextParam &textparam) :
 animepos(0, 0),
@@ -57,6 +58,7 @@ void Sheep::Base::Get_out()
 }
 void Sheep::Base::Walk()
 {
+	// あにめ
 	if (++animeframe > m_data.Animkankaku)
 	{
 		animeframe = 0;
@@ -71,6 +73,7 @@ void Sheep::Base::Walk()
 
 void Sheep::Base::Curve()
 {
+	// あにめ
 	if (++animeframe > m_data.Animkankaku)
 	{
 		animeframe = 0;
@@ -268,13 +271,16 @@ void Sheep::Gold::Update()
 
 	// 音の座標設定
 	se->SetPos("きらめく羊さん", m_seID, pos);
+
+	// きらきらエフェクト
+	if (process != CRUSHED)Particle2dManager::Effect_KiraKira(GetCenterPos(), Vector2(32, 32), 10.0f, 5.0f, 1, 90);
 }
 
 
 //**************************************************
 //	牧草食って太った羊
 //**************************************************
-FatSheep::FatSheep(tdn2DObj *image, const Vector2 &pos) :m_image(image), m_pos(pos), m_angle(0), m_bErase(false), m_moveX(0), m_ReceiveSE(TDNSOUND_PLAY_NONE)
+FatSheep::FatSheep(tdn2DObj *image, const Vector2 &pos) :m_image(image), m_pos(pos), m_angle(0), m_bErase(false), m_moveX(0), m_ReceiveSE(TDNSOUND_PLAY_NONE), m_AnimFrame(0), m_AnimPanel(0)
 {
 
 }
@@ -287,6 +293,13 @@ FatSheep::~FatSheep()
 
 void FatSheep::Update()
 {
+	// アニメ
+	if (++m_AnimFrame > 4)
+	{
+		m_AnimFrame = 0;
+		if (++m_AnimPanel > 3)m_AnimPanel = 0;
+	}
+
 	// SE鳴らしてないときの状態
 	if (m_ReceiveSE == TDNSOUND_PLAY_NONE)
 	{
@@ -307,7 +320,7 @@ void FatSheep::Update()
 void FatSheep::Render()
 {
 	m_image->SetAngle(m_angle);
-	m_image->Render((int)m_pos.x, (int)m_pos.y, 240, 240, 0, 0, 240, 240);
+	m_image->Render((int)m_pos.x, (int)m_pos.y, 240, 240, m_AnimPanel * 240, 0, 240, 240);
 }
 
 
@@ -533,7 +546,7 @@ void SheepManager::Render()
 void SheepManager::CreateFatSheep(Sheep::Base *sheep)
 {
 	sheep->Erase();	// 元の羊を消去
-	FatSheep *set = new FatSheep(m_pFatSheepImage, *sheep->Get_pos() + Vector2(-64, -64));// 太った羊生成
+	FatSheep *set = new FatSheep(m_pFatSheepImage, Vector2(sheep->Get_pos()->x, (float)STAGE_POS_Y[sheep->Get_floor()] - 30));// 太った羊生成
 	set->SetFloor(sheep->Get_floor());	// フロア設定
 	m_FatList.push_back(set);			// リストに突っ込む
 }

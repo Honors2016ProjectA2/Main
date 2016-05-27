@@ -2,6 +2,30 @@
 #include "TDNLIB.h"
 #include "particle_2d.h"
 
+
+//*****************************************************************************
+//		パーティクル管理
+//*****************************************************************************
+Particle_2d *Particle2dManager::m_pParticle2d = nullptr;
+/* 基本関数 */
+void Particle2dManager::Initialize(char *filename, int nParticles, int uindex, int vindex){ if (!m_pParticle2d){ m_pParticle2d = new Particle_2d; }m_pParticle2d->Initialize(filename, nParticles, uindex, vindex); }
+void Particle2dManager::Release(){ SAFE_DELETE(m_pParticle2d); }
+void Particle2dManager::Update(){ assert(m_pParticle2d); m_pParticle2d->Update(); }
+void Particle2dManager::Render(){ assert(m_pParticle2d); m_pParticle2d->Render(); }
+
+
+/* ここからパーティクルセットの関数 */
+//*****************************************************************************
+//		きらきら(移動なし)
+//*****************************************************************************
+void Particle2dManager::Effect_KiraKira(const Vector2 &pos, const Vector2 &Range, float scale, float ScaleFluctuation, int LoopCount, int EndFrame)
+{
+	FOR(LoopCount)
+		m_pParticle2d->Set(3, 0, 1.0f, EndFrame, .0f, (int)(EndFrame * 0.65f), 0.75f, pos + Vector2((float)tdnRandom::Get((int)-Range.x, (int)Range.x), (float)tdnRandom::Get((int)-Range.y, (int)Range.y)), Vector2(0, 0), Vector2(0, 0), 1.0f, 1.0f, 1.0f, scale + tdnRandom::Get(-ScaleFluctuation, ScaleFluctuation), RS::ADD);
+}
+
+
+
 //*****************************************************************************
 //		セット
 //*****************************************************************************
@@ -24,10 +48,8 @@ void Particle_2d_data::Update()
 	if (bFlags == 0) return;
 
 	//	情報更新
-	pdata.Pos_x += pdata.Move_x;
-	pdata.Pos_y += pdata.Move_y;
-	pdata.Move_x+= pdata.Power_x;
-	pdata.Move_y += pdata.Power_y;
+	pdata.pos += pdata.move;
+	pdata.move += pdata.power;
 	pdata.angle += pdata.rotate;
 	pdata.scale *= pdata.stretch;
 
@@ -99,17 +121,17 @@ inline bool Particle_2d_data::SetVertex(TLVERTEX* v, int uindex, int vindex)
 	
 	float scale_2 = pdata.scale * 0.5f;
 
-	v[0].sx = pdata.Pos_x - scale_2;
-	v[0].sy = pdata.Pos_y - scale_2;
+	v[0].sx = pdata.pos.x - scale_2;
+	v[0].sy = pdata.pos.y - scale_2;
 
-	v[1].sx = pdata.Pos_x + scale_2;
-	v[1].sy = pdata.Pos_y - scale_2;
+	v[1].sx = pdata.pos.x + scale_2;
+	v[1].sy = pdata.pos.y - scale_2;
 
-	v[2].sx = pdata.Pos_x - scale_2;
-	v[2].sy = pdata.Pos_y + scale_2;
+	v[2].sx = pdata.pos.x - scale_2;
+	v[2].sy = pdata.pos.y + scale_2;
 
-	v[3].sx = pdata.Pos_x + scale_2;
-	v[3].sy = pdata.Pos_y + scale_2;
+	v[3].sx = pdata.pos.x + scale_2;
+	v[3].sy = pdata.pos.y + scale_2;
 
 	
 
@@ -144,10 +166,9 @@ void	Particle_2d_data::Render(int uindex, int vindex)
 
 
 // 移動
-void Particle_2d_data::Move_pos(float x, float y)
+void Particle_2d_data::MovePos(const Vector2 &move)
 {
-	pdata.Pos_x += x;
-	pdata.Pos_y += y;
+	pdata.pos += move;
 }
 
 ///
@@ -198,7 +219,7 @@ void Particle_2d::Set(LPPARTICLE_2d pd)
 //		データ個別指定
 //------------------------------------------------------
 void Particle_2d::Set(int type, int aFrame, COLOR aColor, int eFrame, COLOR eColor, int mFrame, COLOR mColor,
-	float Pos_x, float Pos_y, float Move_x, float Move_y, float Power_x, float Power_y, float rotate, float stretch, float scale, u8 flag)
+	const Vector2 &Pos, const Vector2 &Move, const Vector2 &Power, float rotate, float stretch, float scale, u8 flag)
 {
 	PARTICLE_2d pd;
 
@@ -210,12 +231,9 @@ void Particle_2d::Set(int type, int aFrame, COLOR aColor, int eFrame, COLOR eCol
 	pd.mFrame = mFrame;
 	pd.mColor = mColor;
 
-	pd.Pos_x = Pos_x;
-	pd.Pos_y = Pos_y;
-	pd.Move_x = Move_x;
-	pd.Move_y = Move_y;
-	pd.Power_x = Power_x;
-	pd.Power_y = Power_y;
+	pd.pos = Pos;
+	pd.move = Move;
+	pd.power = Power;
 	pd.rotate = rotate;
 	pd.stretch = stretch;
 
@@ -231,7 +249,7 @@ void Particle_2d::Set(int type, int aFrame, COLOR aColor, int eFrame, COLOR eCol
 //		データ個別指定
 //------------------------------------------------------
 void	Particle_2d::Set(int type, int aFrame, float aAlpha, int eFrame, float eAlpha, int mFrame, float mAlpha,
-	float Pos_x, float Pos_y, float Move_x, float Move_y, float Power_x, float Power_y,
+	const Vector2 &Pos, const Vector2 &Move, const Vector2 &Power,
 	float r, float g, float b, float scale, u8 flag)
 {
 	COLOR	color;
@@ -241,7 +259,7 @@ void	Particle_2d::Set(int type, int aFrame, float aAlpha, int eFrame, float eAlp
 	ea = ((DWORD)(eAlpha*255.0f) << 24);
 	ma = ((DWORD)(mAlpha*255.0f) << 24);
 	color = ((DWORD)(r*255.0f) << 16) | ((DWORD)(g*255.0f) << 8) | (DWORD)(b*255.0f);
-	Set(type, aFrame, aa | color, eFrame, ea | color, mFrame, ma | color, Pos_x, Pos_y, Move_x, Move_y, Power_x, Power_y, .0f, 1.0f, scale, flag);
+	Set(type, aFrame, aa | color, eFrame, ea | color, mFrame, ma | color, Pos, Move, Power, .0f, 1.0f, scale, flag);
 }
 
 //*****************************************************************************
@@ -306,10 +324,10 @@ void Particle_2d::Render()
 
 
 // パーティクル全体を移動
-void Particle_2d::Move_pos(float x, float y)
+void Particle_2d::MovePos(const Vector2 &move)
 {
 	for (int i = 0; i<nParticles; i++){
 		if (ParticleData[i].bActive() == FALSE) continue;
-		ParticleData[i].Move_pos(x, y);
+		ParticleData[i].MovePos(move);
 	}
 }

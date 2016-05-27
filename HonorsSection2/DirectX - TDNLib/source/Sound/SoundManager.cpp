@@ -29,7 +29,7 @@ const SE_Manager::DATA all_dataS[] =
 	{ "–q‘‰è¶‚¦‚½",	"DATA/Sound/SE/born.wav", 3, false },
 	{ "‘¾‚Á‚½—r‰Ÿ‚·",	"DATA/Sound/SE/debuosu.wav", 3, false },
 	{ "–q‘¬’·",	"DATA/Sound/SE/grew.wav", 3, false },
-	{ "Œ¢",	"DATA/Sound/SE/inu.wav", 3, false },
+	{ "Œ¢",	"DATA/Sound/SE/inu.wav", 6, false },
 	{ "‚«‚ç‚ß‚­—r‚³‚ñ",	"DATA/Sound/SE/kiramekuhitsujisan.wav", 3, false },
 	{ "—r‘–‚é",	"DATA/Sound/SE/sheep_run.wav", 3, false },
 	{ "‘¾‚Á‚½—rIN", "DATA/Sound/SE/fat_in.wav", 3, false },

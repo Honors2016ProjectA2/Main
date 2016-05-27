@@ -4,6 +4,7 @@
 #include "../Sound/SoundManager.h"
 #include "../UI/UIManager.h"
 #include "Effect\EffectManager.h"
+#include "../particle_2d/particle_2d.h"
 
 // グローバル変数
 int g_ModeChangeTime[(int)BOKUSOU_MODE::MAX];			// モードが変わっていく時間
@@ -111,6 +112,8 @@ void BokusouManager::Render()
 }
 
 
+
+
 //**************************************************
 //    牧草委譲クラス
 //**************************************************
@@ -215,7 +218,7 @@ BokusouMode::Saita::Saita(Bokusou *me, tdn2DObj *image) :Base(me, image)
 //===========================================================
 //		牧草誕生
 //===========================================================
-BokusouMode::Born::Born(Bokusou *me, tdn2DObj *image) :Base(me, image)
+BokusouMode::Born::Born(Bokusou *me, tdn2DObj *image) :Base(me, image), m_KiraKiraCoolTime(0)
 {
 	// 画像座標
 	m_srcX = 0;
@@ -229,7 +232,12 @@ BokusouMode::Born::Born(Bokusou *me, tdn2DObj *image) :Base(me, image)
 }
 void BokusouMode::Born::Update()
 {
-
+	// きらきらパーティクル
+	if (++m_KiraKiraCoolTime > 4)
+	{
+		m_KiraKiraCoolTime = 0;
+		Particle2dManager::Effect_KiraKira(pBokusou->GetCenterPos(), Vector2(56, 56), 15.0f, 10.0f);
+	}
 }
 
 //**************************************************

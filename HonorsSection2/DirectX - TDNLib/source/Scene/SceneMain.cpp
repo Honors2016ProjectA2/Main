@@ -16,7 +16,7 @@
 #include	"../Shake/Shake.h"
 #include	"../UI/UIManager.h"
 #include	"../PostEffect/PostEffect.h"
-
+#include	"../particle_2d/particle_2d.h"
 #include	"../Effect/EffectManager.h"
 
 namespace{
@@ -71,6 +71,9 @@ bool sceneMain::Initialize()
 	// ポストエフェクト
 	PostEffectMgr;
 
+	// パーティクル初期化
+	Particle2dManager::Initialize("DATA/Effect/particle.png", 1000, 4, 4);
+
 	return true;
 }
 
@@ -89,7 +92,7 @@ sceneMain::~sceneMain()
 	SAFE_DELETE(renderTarget);
 	BokusouMgr->Release();
 	PostEffectMgr.Release();
-
+	Particle2dManager::Release();
 	UIMNG.Release();
 	EffectMgr.Release();
 }
@@ -103,6 +106,7 @@ bool sceneMain::Update()
 	tdnMouse::Update();
 	pointer->Update();
 	FadeControl::Update();
+	Particle2dManager::Update();
 
 	switch(state){
 	case SCENE::INIT:		Init();				break;
@@ -246,19 +250,19 @@ void sceneMain::Render()
 	/******************************/
 	// ポストエフェクト効果始まり	
 	PostEffectMgr.BloomBigin();
-	renderTarget->Render(0, 0);// レンダーターゲット
+	renderTarget->Render((int)ShakeMgr->move.x, (int)ShakeMgr->move.y);// レンダーターゲット
 	PostEffectMgr.BloomEnd();
 	/*****************************ポストエフェクトおわり*/
 
 	/******************************/
 	// ブラ―効果始まり	
 	PostEffectMgr.RadialBigin();
-	renderTarget->Render(0, 0);// レンダーターゲット
+	renderTarget->Render((int)ShakeMgr->move.x, (int)ShakeMgr->move.y);// レンダーターゲット
 	PostEffectMgr.RadialEnd();
 	/*****************************ブラ―おわり*/
 
 	tdnSystem::GetDevice()->SetRenderTarget(0, backUp);
-	renderTarget->Render((int)ShakeMgr->move.x, (int)ShakeMgr->move.y, 1280, 720, 0, 0, 1280, 720);
+	renderTarget->Render((int)ShakeMgr->move.x, (int)ShakeMgr->move.y);
 
 	// ポストエフェクトたち
 	PostEffectMgr.RadialRender();
@@ -289,6 +293,7 @@ void sceneMain::MainRender()
 	BokusouMgr->Render();
 	m_pSheepMgr->Render();
 	EnemyMgr->Render();
+	Particle2dManager::Render();
 }
 
 void sceneMain::EndRender()

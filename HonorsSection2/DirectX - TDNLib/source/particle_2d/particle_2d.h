@@ -1,6 +1,4 @@
-
-#ifndef PARTICLE_2D
-#define PARTICLE_2D
+#pragma once
 
 typedef struct Tag_particle_2d
 {
@@ -16,9 +14,9 @@ public:
 	int		mFrame;			//	最高フレーム
 	COLOR	mColor;			//	最高カラー
 
-	float		Pos_x, Pos_y;
-	float		Move_x, Move_y;
-	float		Power_x, Power_y;
+	Vector2 pos;
+	Vector2 move;
+	Vector2 power;
 	float		rotate;
 	float		stretch;
 
@@ -54,7 +52,7 @@ public:
 	void Render(int uindex, int vindex);
 
 	// 移動
-	inline void Move_pos(float x, float y);
+	inline void MovePos(const Vector2 &move);
 };
 
 
@@ -80,9 +78,9 @@ public:
 	//	出現
 	void Set(LPPARTICLE_2d pd);
 	void	Set(int type, int aFrame, COLOR aColor, int eFrame, COLOR eColor, int mFrame, COLOR mColor,
-		float Pos_x, float Pos_y, float Move_x, float Move_y, float Power_x, float Power_y, float rotate, float stretch, float scale, u8 flag);
+		const Vector2 &pos, const Vector2 &Move, const Vector2 &Power, float rotate, float stretch, float scale, u8 flag);
 	void	Set(int type, int aFrame, float aAlpha, int eFrame, float eAlpha, int mFrame, float mAlpha,
-		float Pos_x, float Pos_y, float Move_x, float Move_y, float Power_x, float Power_y,
+		const Vector2 &pos, const Vector2 &Move, const Vector2 &Power,
 		float r, float g, float b, float scale, u8 flag);
 
 	//	更新
@@ -94,7 +92,20 @@ public:
 	void Render();
 
 	// 移動
-	void Move_pos(float x, float y);
+	void MovePos(const Vector2 &move);
 };
 
-#endif // !PARTICLE_2D
+// ゲーム作る人はこれを使う
+class Particle2dManager
+{
+public:
+	static void Initialize(char *filename, int nParticles, int uindex, int vindex);
+	static void Release();
+	static void Update();
+	static void Render();
+
+	// パーティクル関数たち
+	static void Effect_KiraKira(const Vector2 &pos, const Vector2 &Range, float scale = 20.0f, float ScaleFluctuation = 5.0f, int LoopCount = 1, int EndFrame = 120);	// きらきらエフェクト
+private:
+	static Particle_2d *m_pParticle2d;
+};

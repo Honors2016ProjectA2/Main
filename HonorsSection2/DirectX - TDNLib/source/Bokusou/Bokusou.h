@@ -76,6 +76,8 @@ namespace BokusouMode
 
 	class Born :public Base
 	{
+	private:
+		int m_KiraKiraCoolTime;
 	public:
 		Born(Bokusou *me, tdn2DObj *image);
 		void Update()override;

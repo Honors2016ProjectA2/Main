@@ -142,8 +142,8 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				// ‘¾‚Á‚Ä‚È‚¢—r‚ð‚¸‚ç‚·
 				if (fPos.x - sPos.x < 128)
 				{
-					sheepIt->SetPos(fPos - Vector2(128, 0));
-					//sheepIt->SetPosX(fPos.x - 128);
+					//sheepIt->SetPos(fPos - Vector2(128, 0));
+					sheepIt->SetPosX(fPos.x - 128);
 				}
 			}
 		}
