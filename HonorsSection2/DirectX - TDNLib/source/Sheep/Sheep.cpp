@@ -8,12 +8,31 @@
 #include "../system/system.h"
 #include "../particle_2d/particle_2d.h"
 
+#include <ppl.h>
+
+void hogehoge()
+{
+	std::vector<float> vector;
+	vector.clear();
+	vector.resize(1000000);
+	Concurrency::parallel_for(0, 1000000, [&](int i)
+	{
+		vector[i] = sqrtf(i);
+	});
+
+	for (int i = 0; i < 1000000; i++)
+	{
+		vector[i] = sqrtf(i);
+	}
+}
+
 Sheep::Base::Base(const SheepData &data, int floor, const SheepTextParam &textparam) :
 animepos(0, 0),
 floor(floor),
 process(WALK),
 m_AnimePanel(0), m_bErase(false)
 {
+	//hogehoge();
 	Move[0] = &Sheep::Base::Get_out;
 	Move[1] = &Sheep::Base::Walk;
 	Move[2] = &Sheep::Base::Curve;
@@ -262,7 +281,7 @@ Sheep::Gold::Gold(const SheepData &data, int floor, const SheepTextParam &textpa
 }
 Sheep::Gold::~Gold()
 {
-	se->Stop("‚«‚ç‚ß‚­—r‚³‚ñ", m_seID);
+	if(m_seID!=TDNSOUND_PLAY_NONE)se->Stop("‚«‚ç‚ß‚­—r‚³‚ñ", m_seID);
 }
 void Sheep::Gold::Update()
 {
@@ -270,7 +289,7 @@ void Sheep::Gold::Update()
 	Sheep::Base::Update();
 
 	// ‰¹‚ÌÀ•WÝ’è
-	se->SetPos("‚«‚ç‚ß‚­—r‚³‚ñ", m_seID, pos);
+	if(m_seID != TDNSOUND_PLAY_NONE)se->SetPos("‚«‚ç‚ß‚­—r‚³‚ñ", m_seID, pos);
 
 	// ‚«‚ç‚«‚çƒGƒtƒFƒNƒg
 	if (process != CRUSHED)Particle2dManager::Effect_KiraKira(GetCenterPos(), Vector2(32, 32), 10.0f, 5.0f, 1, 90);
