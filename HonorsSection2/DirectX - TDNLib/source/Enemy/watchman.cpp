@@ -36,7 +36,7 @@ void Enemy::Wolf::Update()
 	if (++m_AnimeFrame > 5)
 	{
 		m_AnimeFrame = 0;
-		if (++m_AnimePanel > 3) m_AnimePanel = 0;
+		if (++m_AnimePanel > 4) m_AnimePanel = 0;
 	}
 
 	// À•WXV
