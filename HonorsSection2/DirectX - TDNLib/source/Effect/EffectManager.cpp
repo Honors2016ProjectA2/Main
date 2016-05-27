@@ -117,6 +117,9 @@ void EffectManager::AddEffect(int x, int y, EFFECT_TYPE type)
 	case EFFECT_TYPE::INEFFECT_MINI:
 		data = new InEffectMini();
 		break;
+	case EFFECT_TYPE::DOG_EFFECT:
+		data = new DogEffect();
+		break;
 	default:
 		break;
 	}

@@ -6,6 +6,7 @@
 #include "../Collision/Collision.h"
 #include "../Enemy/watchman.h"
 #include "../Sound/SoundManager.h"
+#include "Effect\EffectManager.h"
 
 //**************************************************
 //    StageManager class
@@ -26,6 +27,10 @@ int LANE_WIDTH = 0;
 
 StageManager::StageManager() :floor(0), m_pDogImage(new tdn2DObj("DATA/CHR/dog.png"))
 {
+	//
+	//m_pDogRipImage = new tdn2DAnim("DATA/CHR/dog.png");
+	//m_pDogRipImage->OrderRipple(12, 1.0f, 0.1f);
+
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
 		stage[i] = nullptr;
@@ -108,6 +113,7 @@ StageManager::~StageManager()
 {
 	FOR(StageImage::MAX)delete m_pStageImages[i];
 	delete m_pDogImage;
+	//delete m_pDogRipImage;
 
 	FOR(STAGE_MAX)
 	{
@@ -154,6 +160,9 @@ void StageManager::Update()
 	// マウス座標
 	Vector2 mPos = tdnMouse::GetPos();
 
+	// Rip
+	//m_pDogRipImage->Update();// 
+
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
 		if (stage[i] == nullptr)continue;
@@ -182,7 +191,7 @@ void StageManager::Update()
 				// 犬回収
 				if (it->IsOpening())
 				{
-					se->Play("犬", it->GetPos());
+					se->Play("犬", it->GetPos());				
 					m_CPStock++;	// ストック回復
 				}
 
@@ -193,6 +202,9 @@ void StageManager::Update()
 					if (m_CPStock > 0)
 					{
 						se->Play("犬", it->GetPos());
+						//m_pDogRipImage->Action();// Action!
+						EffectMgr.AddEffect(it->GetPos().x+64, it->GetPos().y+64,EFFECT_TYPE::DOG_EFFECT);
+
 						m_CPStock--;
 					}
 					else return;	// 残ってなかったら出ていけぇ！！
@@ -215,6 +227,7 @@ void StageManager::RenderBack()
 
 void StageManager::Render()
 {
+
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
 		//static const int col[] = { 0x40ff0000, 0x4000ff00, 0x400000ff };
@@ -223,7 +236,19 @@ void StageManager::Render()
 
 		stage[i]->Render();
 
-		for (auto it : m_CPlists[i]) it->Render();
+		for (auto it : m_CPlists[i])
+		{
+			it->Render();
+			if (it->IsOpening())
+			{
+			//	m_pDogRipImage->Render(it->GetPos().x, it->GetPos().y,
+			//		120, 120, 0, 0, 120, 120, RS::ADD);
+			}
+			
+			
+		
+		}
+			
 
 		// 入ったら加算されるスコア
 		tdnText::Draw(1200, STAGE_POS_Y[i] + 120, 0xffffffff, "%d", m_AddScore[i]);

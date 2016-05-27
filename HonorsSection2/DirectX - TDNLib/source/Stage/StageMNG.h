@@ -87,6 +87,7 @@ private:
 	tdn2DObj *m_pStageImages[StageImage::MAX];
 
 	tdn2DObj *m_pDogImage;
+	tdn2DAnim *m_pDogRipImage; // リップる追加！
 	enum ImageSrc { STAGE, SHUTTER };
 
 	int APPEND_STAGE_BORDER[STAGE_MAX]; // stage追加タイミングのスコア
