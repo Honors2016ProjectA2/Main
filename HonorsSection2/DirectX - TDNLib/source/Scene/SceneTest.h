@@ -13,6 +13,11 @@ public:
 	bool Update();
 	void Render();
 
+	void MaskRender();
+	tdn2DObj* maskScreen;
+	int m_blindSplit;
+	float m_blindAngle;
+
 private:
 	// BG
 	tdn2DObj* BG;

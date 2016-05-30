@@ -28,7 +28,7 @@ public:
 	void SetGraph(float graph) {
 		m_percent = graph;
 	}
-
+	void GraphAction();
 private:
 	static UIManager* inst;
 
@@ -42,6 +42,7 @@ private:
 	void PointRender();
 	void GraphUpdate();
 	void GraphRender();
+
 
 	void Debug();
 

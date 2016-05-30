@@ -1085,6 +1085,7 @@ namespace AnimAction
 											  // 基本的にアニメの始動		
 
 		virtual void Action(tdn2DObj* pic,int delay) { m_iDelayFlame = delay; m_bActionFlag = true; /* 実行フラグOn */ };
+		virtual void Stop(tdn2DObj* pic) { m_bActionFlag = false;/* 実行フラグOff */ };
 		
 		/******************************************/
 		// アニメ用描画
@@ -1302,6 +1303,11 @@ public:
 	{ 
 		MyAssert((m_pAction != nullptr), "特殊エフェクトがセットされていない!\n[Order関数を呼びましょう]");
 		m_pAction->Action(m_obj, delayTimer);
+	}
+
+	void Stop()
+	{
+		m_pAction->Stop(m_obj);
 	}
 
 	// アクセサ

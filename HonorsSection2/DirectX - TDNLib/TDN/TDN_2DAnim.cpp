@@ -12,7 +12,7 @@ bool AnimAction::Base::ActionCheck()
 	// アクションフラグがたっていないと返す
 	if (m_bActionFlag == false) return false;
 	
-
+	// ?
 	// ディレイタイマーが0になるまで通さない
 	if (m_iDelayFlame > 0)
 	{
@@ -29,51 +29,60 @@ bool AnimAction::Base::ActionCheck()
 // 2D
 void AnimAction::Base::Render(tdn2DObj* pic, int x, int y, u32 dwFlags)
 {
-	if (ActionCheck() == false)return;
+	if (m_bActionFlag == false)return;
+	if (m_iDelayFlame > 0)return;
+	
 	pic->Render(x, y, dwFlags);
 }
 
 void AnimAction::Base::Render(tdn2DObj* pic, int x, int y, tdnShader * shader, char * name)
 {
-	if (ActionCheck() == false)return;
+	if (m_bActionFlag == false)return;
+	if (m_iDelayFlame > 0)return;
 	pic->Render(x, y, shader, name);
 }
 
 void AnimAction::Base::Render(tdn2DObj* pic, int x, int y, int w, int h, int tx, int ty, int tw, int th, u32 dwFlags)
 {
-	if (ActionCheck() == false)return;
+	if (m_bActionFlag == false)return;
+	if (m_iDelayFlame > 0)return;
 	pic->Render(x, y, w, h, tx, ty, tw, th, dwFlags);
 
 }
 
 void AnimAction::Base::Render(tdn2DObj* pic, int x, int y, int w, int h, int tx, int ty, int tw, int th, tdnShader * shader, char * name)
 {
-	if (ActionCheck() == false)return;
+	if (m_bActionFlag == false)return;
+	if (m_iDelayFlame > 0)return;
 	pic->Render(x, y, w, h, tx, ty, tw, th, shader, name);
 }
 
 // 3D
 void AnimAction::Base::Render3D(tdn2DObj* pic, float x, float y, float z, u32 dwFlags)
 {
-	if (ActionCheck() == false)return;
+	if (m_bActionFlag == false)return;
+	if (m_iDelayFlame > 0)return;
 	pic->Render3D(x, y, z, dwFlags);
 }
 
 void AnimAction::Base::Render3D(tdn2DObj* pic, Vector3 pos, u32 dwFlags)
 {
-	if (ActionCheck() == false)return;
+	if (m_bActionFlag == false)return;
+	if (m_iDelayFlame > 0)return;
 	pic->Render3D(pos, dwFlags);
 }
 
 void AnimAction::Base::Render3D(tdn2DObj* pic, float x, float y, float z, int w, int h, int tx, int ty, int tw, int th, u32 dwFlags)
 {
-	if (ActionCheck() == false)return;
+	if (m_bActionFlag == false)return;
+	if (m_iDelayFlame > 0)return;
 	pic->Render3D(x, y, z, w, h, tx, ty, tw, th, dwFlags);
 }
 
 void AnimAction::Base::Render3D(tdn2DObj* pic, Vector3 pos, int w, int h, int tx, int ty, int tw, int th, u32 dwFlags)
 {
-	if (ActionCheck() == false)return;
+	if (m_bActionFlag == false)return;
+	if (m_iDelayFlame > 0)return;
 	pic->Render3D(pos, w, h, tx, ty, tw, th, dwFlags);
 }
 
@@ -188,14 +197,16 @@ void AnimAction::MoveAppeared::Action(tdn2DObj * pic, int delay)
 {
 	AnimAction::Base::Action(pic, delay);
 
+	// 初期化
 	m_nowFlame = 0;
-
+	m_rate = 0.0f;
 }
 
 // 2D
 void AnimAction::MoveAppeared::Render(tdn2DObj* pic, int x, int y, u32 dwFlags)
 {
-	if (ActionCheck() == false)return;
+	if (m_bActionFlag == false)return;
+	if (m_iDelayFlame > 0)return;
 	pic->Render(
 		(int)(Math::Blend(m_rate,(float)m_startX, (float)x)),
 		(int)(Math::Blend(m_rate, (float)m_startY, (float)y)),
@@ -204,7 +215,8 @@ void AnimAction::MoveAppeared::Render(tdn2DObj* pic, int x, int y, u32 dwFlags)
 
 void AnimAction::MoveAppeared::Render(tdn2DObj* pic, int x, int y, tdnShader * shader, char * name)
 {
-	if (ActionCheck() == false)return;
+	if (m_bActionFlag == false)return;
+	if (m_iDelayFlame > 0)return;
 	pic->Render(
 		(int)(Math::Blend(m_rate, (float)m_startX, (float)x)),
 		(int)(Math::Blend(m_rate, (float)m_startY, (float)y)),
@@ -214,7 +226,8 @@ void AnimAction::MoveAppeared::Render(tdn2DObj* pic, int x, int y, tdnShader * s
 
 void AnimAction::MoveAppeared::Render(tdn2DObj* pic, int x, int y, int w, int h, int tx, int ty, int tw, int th, u32 dwFlags)
 {
-	if (ActionCheck() == false)return;
+	if (m_bActionFlag == false)return;
+	if (m_iDelayFlame > 0)return;
 	pic->Render(
 		(int)(Math::Blend(m_rate, (float)m_startX, (float)x)),
 		(int)(Math::Blend(m_rate, (float)m_startY, (float)y)),
@@ -224,7 +237,8 @@ void AnimAction::MoveAppeared::Render(tdn2DObj* pic, int x, int y, int w, int h,
 
 void AnimAction::MoveAppeared::Render(tdn2DObj* pic, int x, int y, int w, int h, int tx, int ty, int tw, int th, tdnShader * shader, char * name)
 {
-	if (ActionCheck() == false)return;
+	if (m_bActionFlag == false)return;
+	if (m_iDelayFlame > 0)return;
 	pic->Render(
 		(int)(Math::Blend(m_rate, (float)m_startY, (float)y)),
 		(int)(Math::Blend(m_rate, (float)m_startY, (float)y)),
@@ -324,26 +338,22 @@ void AnimAction::Shake::Action(tdn2DObj * pic, int delay)
 // 2D
 void AnimAction::Shake::Render(tdn2DObj* pic, int x, int y, u32 dwFlags)
 {
-	//if (ActionCheck() == false)return;
 	pic->Render(x+(int)(m_shakeX-(m_orgX/2.0f)), y + (int)(m_shakeY - (m_orgY / 2)), dwFlags);
 }
 
 void AnimAction::Shake::Render(tdn2DObj* pic, int x, int y, tdnShader * shader, char * name)
 {
-	//if (ActionCheck() == false)return;
 	pic->Render(x + (int)(m_shakeX - (m_orgX / 2.0f)), y + (int)(m_shakeY - (m_orgY / 2)), shader, name);
 }
 
 void AnimAction::Shake::Render(tdn2DObj* pic, int x, int y, int w, int h, int tx, int ty, int tw, int th, u32 dwFlags)
 {
-	//if (ActionCheck() == false)return;
 	pic->Render(x + (int)(m_shakeX - (m_orgX / 2.0f)), y + (int)(m_shakeY - (m_orgY / 2)), w, h, tx, ty, tw, th, dwFlags);
 
 }
 
 void AnimAction::Shake::Render(tdn2DObj* pic, int x, int y, int w, int h, int tx, int ty, int tw, int th, tdnShader * shader, char * name)
 {
-	//if (ActionCheck() == false)return;
 	pic->Render(x + (int)(m_shakeX - (m_orgX / 2.0f)), y + (int)(m_shakeY - (m_orgY / 2)), w, h, tx, ty, tw, th, shader, name);
 }
 
@@ -437,7 +447,6 @@ void AnimAction::Jump::Action(tdn2DObj * pic, int delay)
 // 2D
 void AnimAction::Jump::Render(tdn2DObj* pic, int x, int y, u32 dwFlags)
 {
-	//if (ActionCheck() == false)return;
 	//pic->SetARGB(255, 255, 255, 255);
 	pic->Render(x, y, dwFlags);
 	
@@ -448,20 +457,17 @@ void AnimAction::Jump::Render(tdn2DObj* pic, int x, int y, u32 dwFlags)
 
 void AnimAction::Jump::Render(tdn2DObj* pic, int x, int y, tdnShader * shader, char * name)
 {
-	//if (ActionCheck() == false)return;
 	pic->Render(x, y, shader, name);
 }
 
 void AnimAction::Jump::Render(tdn2DObj* pic, int x, int y, int w, int h, int tx, int ty, int tw, int th, u32 dwFlags)
 {
-	//if (ActionCheck() == false)return;
 	pic->Render(x, y, w, h, tx, ty, tw, th, dwFlags);
 
 }
 
 void AnimAction::Jump::Render(tdn2DObj* pic, int x, int y, int w, int h, int tx, int ty, int tw, int th, tdnShader * shader, char * name)
 {
-	//if (ActionCheck() == false)return;
 	pic->Render(x, y, w, h, tx, ty, tw, th, shader, name);
 }
 
@@ -568,7 +574,7 @@ void tdn2DAnim::OrderJump(int endFlame, float startScale, float addScale)
 	if (m_pAction != nullptr) delete m_pAction;
 	m_pAction = new AnimAction::Jump(endFlame, startScale, addScale);
 }
-
+// 集まる用に出現
 void tdn2DAnim::OrderShrink(int endFlame, float startScale, float maxScale)
 {
 	if (m_pAction != nullptr) delete m_pAction;

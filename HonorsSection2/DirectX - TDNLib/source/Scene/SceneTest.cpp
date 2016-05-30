@@ -28,6 +28,9 @@ Number* num;
 Number* num2;
 
 Number* num3;
+
+tdn2DObj* blind;
+tdn2DObj* blindScreen;
 //******************************************************************
 //		初期化・解放
 //******************************************************************
@@ -79,6 +82,14 @@ bool sceneTest::Initialize()
 	num3 = new Number("Data/Number/number3.png", 128);
 
 	NumberEffect;
+
+	blind = new tdn2DObj("DATA/UI/blind.png");
+	shader2D->SetValue("BlindTex", blind);
+
+	blindScreen = new tdn2DObj(512, 512, TDN2D::RENDERTARGET);
+	m_blindSplit=4;
+	m_blindAngle=0.0f;
+	maskScreen = new tdn2DObj(512, 512, TDN2D::RENDERTARGET);
 
 	return true;
 }
@@ -254,6 +265,8 @@ void sceneTest::Render()
 	BG->Render(0, 0, RS::COPY_NOZ);
 	//BG->Render(0, 0, RS::ADD);
 
+	// マスクせいせい
+	MaskRender();
 
 	screen->RenderTarget();
 	tdnView::Clear(0xff005522);
@@ -278,7 +291,26 @@ void sceneTest::Render()
 
 
 	tdnSystem::GetDevice()->SetRenderTarget(0, backbuffer);
-	screen->Render(0, 0);
+	//screen->Render(0, 0,shader2D ,"blind");
+	screen->Render(0, 0, shader2D, "blind");
+	
+
+	//blindScreen->Render(900, 100,256,256,0,0,256,256,shader2D, "blind");
+
+	static float BlindRete = 1.0f;
+	if (KeyBoard(KB_Q))
+	{
+		BlindRete -= 0.1f;
+	}
+	if (KeyBoard(KB_E))
+	{
+		BlindRete += 0.1f;
+	}
+	BlindRete = Math::Clamp(BlindRete, 0.0f, 1.0f);
+	shader2D->SetValue("blindRate", BlindRete);
+	tdnText::Draw(900, 100, 0xffffffff, "BlindRete->%.2f", BlindRete);
+
+	maskScreen->Render(0, 0);
 
 	// 数字描画
 	num->Render(500, 100, HOGE_NUM2);
@@ -305,4 +337,45 @@ void sceneTest::Render()
 	if (tdnInput::KeyGet(KEY_RIGHT) == 1) tdnText::Draw(10, 580, 0xffffff00, "Input : RIGHT");
 	if (tdnInput::KeyGet(KEY_UP) == 1) tdnText::Draw(10, 600, 0xffffff00, "Input : UP");
 	if (tdnInput::KeyGet(KEY_DOWN) == 1) tdnText::Draw(10, 600, 0xffffff00, "Input : DOWN");
+}
+
+void sceneTest::MaskRender()
+{
+
+	if (KeyBoard(KB_T)==3)
+	{
+		m_blindSplit++;
+	}
+	if (KeyBoard(KB_R) == 3)
+	{
+		m_blindSplit--;
+	}
+	if (KeyBoard(KB_Y) == 3)
+	{
+		m_blindAngle -= 0.1f;
+	}
+	if (KeyBoard(KB_U) == 3)
+	{
+		m_blindAngle += 0.1f;
+	}
+
+	maskScreen->RenderTarget();
+	tdnView::Clear();
+
+	// 保管しない
+	tdnRenderState::Filter(false);
+
+	// ブラインド
+	blind->SetScale(1.5f);
+	blind->SetAngle(m_blindAngle);
+	blind->Render(0, 0, 512, 512, 0, 0, 256 * m_blindSplit, 256 * m_blindSplit);
+	
+
+	tdnRenderState::Filter(true);
+
+	// ↑で描画した絵をマスク情報に	
+	shader2D->SetValue("BlindTex", maskScreen);
+
+
+
 }

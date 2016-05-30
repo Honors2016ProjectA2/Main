@@ -163,3 +163,21 @@ public:
 
 private:
 };
+
+class BurnEffect :public BaseEffect
+{
+public:
+	BurnEffect()
+	{
+		m_picSize = 256;
+		m_pic = new AnimationPanel("Data/Effect/burn.png", 256, 256, 24, 1, 4, false);
+		//state = RS::COPY;
+	};
+	~BurnEffect() {};
+
+	void Update() { BaseEffect::Update(); };
+	void Render() { BaseEffect::Render(); };
+	void Action(int x = 0, int y = 0) { BaseEffect::Action(x, y); };
+
+private:
+};

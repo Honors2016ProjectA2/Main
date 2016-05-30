@@ -292,6 +292,13 @@ void UIManager::GraphRender()
 
 }
 
+// 
+void UIManager::GraphAction()
+{
+	m_graphRip->Action();
+	m_percent = 0.0f;
+}
+
 
 void UIManager::Debug()
 {

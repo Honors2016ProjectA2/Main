@@ -78,7 +78,7 @@ void BokusouManager::Update()
 	{
 		// 牧草生成した瞬間
 		EffectMgr.AddEffect((int)m_CreatePosList[m_NextPoint].pos.x+64, (int)m_CreatePosList[m_NextPoint].pos.y+64, EFFECT_TYPE::PUT);
-
+		UIMNG.GraphAction();//  アクション
 
 		// 牧草生成！！
 		m_CreateTimer = 0;

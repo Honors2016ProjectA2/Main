@@ -120,6 +120,9 @@ void EffectManager::AddEffect(int x, int y, EFFECT_TYPE type)
 	case EFFECT_TYPE::DOG_EFFECT:
 		data = new DogEffect();
 		break;
+	case EFFECT_TYPE::BURN:
+		data = new BurnEffect();
+		break;
 	default:
 		break;
 	}
