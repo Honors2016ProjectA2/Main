@@ -14,9 +14,9 @@ namespace{
 
 
 		namespace SINN{
-			const int DEFAULT_SIZE = 128;
+			const int DEFAULT_SIZE = 120;
 			const int SIZE_HALF = (int)(DEFAULT_SIZE/2*0.8);
-			const int ANIM_MAX = 7;
+			const int ANIM_MAX = 5;
 		}
 
 		namespace TEXT{
@@ -31,10 +31,10 @@ namespace{
 
 	namespace GO{
 		namespace SINN{
-			const int DEFAULT_SIZE = 128;
+			const int DEFAULT_SIZE = 240;
 			const int SIZE_HALF = (int)(DEFAULT_SIZE/2*0.5);
-			const int ADJUSTMENT = 10;
-			const int ANIM_MAX = 7;
+			const int ADJUSTMENT = 4;
+			const int ANIM_MAX = 4;
 		}
 		namespace TEXT{
 			const int W_HALF = 194/2;
@@ -51,8 +51,8 @@ namespace{
 
 Ready::Ready()
 {
-	sinnRun = new tdn2DObjEx("DATA/CHR/sinnnyou detekuru.png");
-	sinnJump = new tdn2DObjEx("DATA/CHR/sinnnyou_aruki.png");
+	sinnRun = new tdn2DObjEx("DATA/CHR/sheep_animation.png");
+	sinnJump = new tdn2DObjEx("DATA/CHR/fat_sheep.png");
 	ready = new tdn2DObjEx("DATA/Ready/Ready.png");
 	go = new tdn2DObjEx("DATA/Ready/GO.png");
 }

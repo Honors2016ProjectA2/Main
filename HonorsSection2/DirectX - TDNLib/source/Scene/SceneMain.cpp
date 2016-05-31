@@ -238,15 +238,17 @@ void sceneMain::Render()
 
 	stage->Render();
 
-	switch (state){
+
+	// ステージの前描画
+	stage->RenderFront();
+
+	switch (state) {
 	case SCENE::READY:		ReadyRender();		break;
 	case SCENE::MAIN:		MainRender();		break;
 	case SCENE::END:		EndRender();		break;
 	case SCENE::RESULT:		ResultRender();		break;
 	}
 
-	// ステージの前描画
-	stage->RenderFront();
 
 	UIMNG.Render();
 
