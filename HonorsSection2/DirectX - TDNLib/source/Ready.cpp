@@ -24,9 +24,9 @@ namespace{
 			const int H = 128;
 		}
 
-		const int MOVE_SPEED = 10;
+		const int MOVE_SPEED = 15;
 
-		const int END_X = -(SINN::SIZE_HALF*2 + TEXT::W_HALF*2 + SINN::SIZE_HALF*2);
+		const int END_X = -900;
 	}
 
 	namespace GO{
@@ -43,7 +43,7 @@ namespace{
 			const int V = 198;
 		}
 
-		const float SCALE_MAX = 10.0f;
+		const float SCALE_MAX = 4.0f;
 		const int SCALE_TIME = 60;
 		const float SCALE_SPEED = SCALE_MAX/SCALE_TIME;
 	}
@@ -51,10 +51,21 @@ namespace{
 
 Ready::Ready()
 {
-	sinnRun = new tdn2DObjEx("DATA/CHR/sheep_animation.png");
-	sinnJump = new tdn2DObjEx("DATA/CHR/fat_sheep.png");
-	ready = new tdn2DObjEx("DATA/Ready/Ready.png");
-	go = new tdn2DObjEx("DATA/Ready/GO.png");
+	//sinnRun = new tdn2DObjEx("DATA/CHR/sheep_animation.png");
+	//sinnJump = new tdn2DObjEx("DATA/CHR/fat_sheep.png");
+	//ready = new tdn2DObjEx("DATA/Ready/Ready.png");
+	//go = new tdn2DObjEx("DATA/Ready/GO.png");
+
+	sinnRun = new tdn2DObj("DATA/CHR/sheep_animation.png");
+	sinnJump = new tdn2DObj("DATA/CHR/fat_sheep.png");
+	ready = new tdn2DObj("DATA/Ready/Ready.png");
+	go = new tdn2DObj("DATA/Ready/GO.png");
+
+	animFlame = 0;
+	scale = 0.0f;
+
+	sinnJump->SetScale(scale);
+	go->SetScale(scale);
 }
 
 Ready::~Ready()
@@ -76,6 +87,7 @@ void Ready::Init()
 
 bool Ready::Update()
 {
+	// ステートによって関数を分ける
 	switch(state){
 	case STATE::READY_RUN: ReadyRun();	break;
 	case STATE::GO_BIGGER: GoBigger();	break;
@@ -84,6 +96,7 @@ bool Ready::Update()
 	return false;
 }
 
+// Ready
 void Ready::ReadyRun()
 {
 	RunAnimation();
@@ -97,19 +110,31 @@ void Ready::ReadyRun()
 
 void Ready::RunAnimation()
 {
-	animNum++;
-	if (animNum >= READY::SINN::ANIM_MAX)
+	animFlame++;
+	if (animFlame >= 2)
 	{
-		animNum = 0;
-	}
-}
+		animFlame = 0;
 
+		animNum++;
+		if (animNum >= READY::SINN::ANIM_MAX)
+		{
+			animNum = 0;
+		}
+	}
+
+	}
+
+
+// GO!
 void Ready::GoBigger()
 {
 	bgm->Play("GO");
 	GoAnimation();
 
 	scale += GO::SCALE_SPEED;
+	sinnJump->SetScale(scale);
+	go->SetScale(scale);
+
 	if( scale >= GO::SCALE_MAX ){
 		state = STATE::RET_TRUE;
 		bgm->Stop("GO");
@@ -118,12 +143,19 @@ void Ready::GoBigger()
 
 void Ready::GoAnimation()
 {
-	animNum++;
-	if( animNum >= GO::SINN::ANIM_MAX ){
-		animNum = 0;
+	animFlame++;
+	if (animFlame >= 2)
+	{
+		animFlame = 0;
+
+		animNum++;
+		if (animNum >= GO::SINN::ANIM_MAX) {
+			animNum = 0;
+		}
 	}
 }
 
+// 描画
 void Ready::Render()
 {
 	switch(state){
@@ -132,23 +164,40 @@ void Ready::Render()
 	}
 }
 
+
+
 void Ready::ReadyRender()
 {
+	// スケール
+	sinnRun->SetScale(0.8f);
+
 	//前走る人
 	int xPos = x;
-	sinnRun->RenderUC(xPos, READY::Y, READY::SINN::SIZE_HALF*2, READY::SINN::SIZE_HALF*2, animNum%4*READY::SINN::DEFAULT_SIZE, animNum/4*READY::SINN::DEFAULT_SIZE,READY::SINN::DEFAULT_SIZE, READY::SINN::DEFAULT_SIZE, .0f);
+	sinnRun->Render(xPos, READY::Y, 120, 120, (animNum % 4) * 120, (animNum / 4) * 120, 120, 120);
+	sinnRun->Render(xPos + 120, READY::Y + 120 , 120, 120, (animNum % 4) * 120, (animNum / 4) * 120, 120, 120);
+	sinnRun->Render(xPos + 120, READY::Y - 120 , 120, 120, (animNum % 4) * 120, (animNum / 4) * 120, 120, 120);
+
 	//Ready
-	xPos += READY::SINN::SIZE_HALF+READY::TEXT::W_HALF;
-	ready->RenderUC(xPos, READY::Y, READY::TEXT::W_HALF*2, READY::TEXT::H, 0,0,READY::TEXT::W_HALF*2, READY::TEXT::H, .0f);
+	xPos += 150;
+	ready->Render(xPos, READY::Y);
 	//後ろ走る人
-	xPos += READY::SINN::SIZE_HALF+READY::TEXT::W_HALF;
-	sinnRun->RenderUC(xPos, READY::Y, READY::SINN::SIZE_HALF*2, READY::SINN::SIZE_HALF*2, animNum%4*READY::SINN::DEFAULT_SIZE, animNum/4*READY::SINN::DEFAULT_SIZE,READY::SINN::DEFAULT_SIZE, READY::SINN::DEFAULT_SIZE, .0f);
+	xPos += 450;
+	sinnRun->Render(xPos, READY::Y, 120, 120, (animNum % 4) * 120, (animNum / 4) * 120, 120, 120);
+	sinnRun->Render(xPos - 120, READY::Y + 120 , 120, 120, (animNum % 4) * 120, (animNum / 4) * 120, 120, 120);
+	sinnRun->Render(xPos + 60, READY::Y + 120, 120, 120, (animNum % 4) * 120, (animNum / 4) * 120, 120, 120);
+
+
+
 }
 
 void Ready::GoRender()
 {
 	//後ろの人
-	sinnJump->RenderCC(1280/2,720/2+(int)(GO::SINN::ADJUSTMENT*scale), (int)(GO::SINN::SIZE_HALF*2*scale), (int)(GO::SINN::SIZE_HALF*2*scale), animNum%4*GO::SINN::DEFAULT_SIZE, animNum/4*GO::SINN::DEFAULT_SIZE, GO::SINN::DEFAULT_SIZE, GO::SINN::DEFAULT_SIZE, .0f);
+	//sinnJump->Render(1280/2,720/2+(int)(GO::SINN::ADJUSTMENT*scale), (int)(GO::SINN::SIZE_HALF*2*scale), (int)(GO::SINN::SIZE_HALF*2*scale), animNum%4*GO::SINN::DEFAULT_SIZE, animNum/4*GO::SINN::DEFAULT_SIZE, GO::SINN::DEFAULT_SIZE, GO::SINN::DEFAULT_SIZE, .0f);
+	sinnJump->Render(500, 300, 240, 240, (animNum % 4) * 240, 0, 240, 240);
+
 	//手前の文字
-	go->RenderCC(1280/2,720/2, (int)(GO::TEXT::W_HALF*2*scale), (int)(GO::TEXT::H*scale), 0,0, GO::TEXT::U, GO::TEXT::V, .0f);
+	//go->Render(1280/2,720/2, (int)(GO::TEXT::W_HALF*2*scale), (int)(GO::TEXT::H*scale), 0,0, GO::TEXT::U, GO::TEXT::V, .0f);
+	go->Render(400, 400);
+
 }
