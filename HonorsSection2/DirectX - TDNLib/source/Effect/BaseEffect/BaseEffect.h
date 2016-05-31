@@ -181,3 +181,23 @@ public:
 
 private:
 };
+
+class ClearEffect :public BaseEffect
+{
+public:
+	ClearEffect()
+	{
+		m_picSize = 256;
+		m_pic = new AnimationPanel("Data/Effect/clear.png", 256, 256, 15, 2, 4, false);
+		//state = RS::COPY;
+		m_pic->GetPic()->SetScale(3.0f);
+	};
+	~ClearEffect() {};
+
+	void Update() { BaseEffect::Update(); };
+	void Render() { BaseEffect::Render(); };
+	void Action(int x = 0, int y = 0) { BaseEffect::Action(x, y); };
+
+private:
+};
+

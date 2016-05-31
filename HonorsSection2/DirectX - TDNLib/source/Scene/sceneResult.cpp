@@ -1,6 +1,7 @@
 #include "sceneResult.h"
 #include "UI\ResultUIManager.h"
 #include "PostEffect\PostEffect.h"
+#include "Effect\EffectManager.h"
 
 bool sceneResult::Initialize()
 {
@@ -11,6 +12,8 @@ bool sceneResult::Initialize()
 	RESULT_UIMNG;
 
 	PostEffectMgr;
+	EffectMgr;
+
 	return false;
 }
 
@@ -19,6 +22,7 @@ sceneResult::~sceneResult()
 	SAFE_DELETE(back);
 	RESULT_UIMNG.Release();
 	PostEffectMgr.Release();
+	EffectMgr.Release();
 
 }
 
@@ -27,6 +31,7 @@ bool sceneResult::Update()
 	if (KeyBoard(KB_ENTER) == 3)
 	{
 		RESULT_UIMNG.Action();
+		//EffectMgr.AddEffect(500, 500, EFFECT_TYPE::PLUS);
 	}
 	if (KeyBoard(KB_SPACE) == 3)
 	{
@@ -34,6 +39,8 @@ bool sceneResult::Update()
 	}
 
 	RESULT_UIMNG.Update();
+
+	EffectMgr.Update();
 
 	tdnMouse::Update();
 
@@ -52,4 +59,7 @@ void sceneResult::Render()
 	//PostEffectMgr.BloomEnd();
 
 	RESULT_UIMNG.Render();
+
+	EffectMgr.Render();
+
 }

@@ -171,6 +171,7 @@ tdn2DObj::~tdn2DObj(){
 	if (lpTexture){
 		tdnTexture::Release(lpTexture);
 	}
+	
 }
 
 /*******************************/

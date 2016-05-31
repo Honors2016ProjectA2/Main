@@ -27,7 +27,8 @@ public:
 	void Update();
 	void Render();
 	void ResultRender();
-	
+	void CircleRender();
+
 	// ブラインド
 	void MaskRender();
 	tdn2DObj* m_blindPic;
@@ -99,10 +100,10 @@ public:
 	};
 	int m_rankType;
 	tdn2DAnim* m_RankPic;
+	tdn2DAnim* m_RankRipPic;// 波紋エフェクト
+	int m_RankPicX, m_RankPicY;
 
 	void RankUpdate();
-
-
 
 private:
 	static ResultUIManager* inst;
@@ -115,6 +116,7 @@ private: //変数
 
 	// アルファ考慮のレンダーターゲット
 	tdn2DObj* m_resultScreen;
+	tdn2DObj* m_circleScreen;
 	tdn2DObj* m_screen;
 	Surface* pBackBuffer;
 

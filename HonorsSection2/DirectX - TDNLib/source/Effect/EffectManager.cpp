@@ -123,6 +123,9 @@ void EffectManager::AddEffect(int x, int y, EFFECT_TYPE type)
 	case EFFECT_TYPE::BURN:
 		data = new BurnEffect();
 		break;
+		case EFFECT_TYPE::ClEAR:
+		data = new ClearEffect();
+		break;
 	default:
 		break;
 	}

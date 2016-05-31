@@ -1,6 +1,7 @@
 #include "ResultUIManager.h"
 #include "particle_2d\particle_2d.h"
 #include "system\System.h"
+#include "Effect\EffectManager.h"
 
 ResultUIManager* ResultUIManager::inst = nullptr;
 
@@ -27,8 +28,10 @@ void ResultUIManager::Release()
 ResultUIManager::ResultUIManager()
 {
 	// アルファスクリーン
-	m_resultScreen = new tdn2DObj(tdnSystem::GetScreenSize().right, tdnSystem::GetScreenSize().bottom, TDN2D::USEALPHA);
+	m_resultScreen = new tdn2DObj(tdnSystem::GetScreenSize().right, tdnSystem::GetScreenSize().bottom, TDN2D::RENDERTARGET);
 	m_screen = new tdn2DObj(tdnSystem::GetScreenSize().right, tdnSystem::GetScreenSize().bottom, TDN2D::USEALPHA);
+	m_circleScreen = new tdn2DObj(tdnSystem::GetScreenSize().right, 
+		tdnSystem::GetScreenSize().bottom, TDN2D::USEALPHA);
 
 	tdnSystem::GetDevice()->GetRenderTarget(0, &pBackBuffer);
 
@@ -114,6 +117,9 @@ ResultUIManager::ResultUIManager()
 	m_RankPic = new tdn2DAnim("DATA/Result/rank.png");
 	//m_RankPic->OrderMoveAppeared(12, 1500, 400);
 	m_RankPic->OrderShrink(12, 1.0f, 2.5f);
+	m_RankPicX = 850, m_RankPicY = 350;
+	m_RankRipPic = new tdn2DAnim("DATA/Result/rank.png");
+	m_RankRipPic->OrderRipple(12, 1.0f, 0.1f);
 
 	isStopFlag = false;
 
@@ -135,6 +141,9 @@ ResultUIManager::ResultUIManager()
 
 	m_rankingFont = new tdn2DObj("Data/Result/Ranking.png");
 
+	/*****************************************/
+	//
+
 }
 
 
@@ -154,6 +163,7 @@ ResultUIManager::~ResultUIManager()
 	SAFE_DELETE(m_senPic);
 	SAFE_DELETE(m_helpPic);
 	SAFE_DELETE(m_RankPic);
+	SAFE_DELETE(m_RankRipPic);
 
 	SAFE_DELETE(m_blindPic);
 	SAFE_DELETE(m_maskScreen);
@@ -161,6 +171,9 @@ ResultUIManager::~ResultUIManager()
 	SAFE_DELETE(m_rankingBG);
 	SAFE_DELETE(m_rankingScreen);
 	SAFE_DELETE(m_rankingFont);
+	SAFE_DELETE(m_circleScreen);
+
+
 }
 
 /***************************/
@@ -277,7 +290,7 @@ void ResultUIManager::Update()
 				m_step = STEP::RANK;
 				m_RankPic->Action();
 
-				RankUpdate();// ランクの更新
+				RankUpdate();				// ランクの更新
 			}
 
 		}
@@ -290,6 +303,9 @@ void ResultUIManager::Update()
 				m_WaitFlame = 0;
 				m_RankPic->OrderShake(8, 23.0f, 35.0f, 2);
 				m_RankPic->Action();
+				m_RankRipPic->Action();
+				EffectMgr.AddEffect(m_RankPicX + 180, m_RankPicY + 180, EFFECT_TYPE::ClEAR);
+
 				m_step = STEP::RANKING_START;
 			}
 
@@ -342,6 +358,7 @@ void ResultUIManager::Update()
 	}
 
 	m_RankPic->Update();
+	m_RankRipPic->Update();
 
 	StopUpdate();
 }
@@ -473,6 +490,8 @@ void ResultUIManager::RankUpdate()
 
 }
 
+/***********************/
+// 描画
 void ResultUIManager::Render()
 {
 
@@ -484,11 +503,26 @@ void ResultUIManager::Render()
 	RankingRender();
 	// マスク用
 	MaskRender();
+	//サイクル
+	CircleRender();
 
 	m_screen->RenderTarget();
 	tdnView::Clear();
-	m_resultScreen->Render(0, 0);
-	m_rankingScreen->Render(780, 0, shader2D, "blind");
+
+	// 最初はアルファ考慮
+	if (m_step==STEP::START)
+	{
+		m_circleScreen->Render(0, 0);
+	}
+	else
+	{
+		// その次はアルファ考慮なしのレンダーターゲットで
+		//m_circleScreen->Render(0, 0);
+		m_resultScreen->Render(0, 0);
+		m_rankingScreen->Render(780, 0, shader2D, "blind");
+	}
+	//m_resultScreen->Render(0, 0);
+	//m_rankingScreen->Render(780, 0, shader2D, "blind");
 
 	// ↓こっから描画
 	tdnSystem::GetDevice()->SetRenderTarget(0, pBackBuffer);
@@ -534,7 +568,8 @@ void ResultUIManager::ResultRender()
 		m_number[i]->Render(m_numX[i], m_numY[i], m_numNum[i]);
 	}
 
-	m_RankPic->Render(900, 350, 360, 360, 360* m_rankType, 0, 360, 360);
+	m_RankPic->Render(m_RankPicX, m_RankPicY, 360, 360, 360* m_rankType, 0, 360, 360,RS::COPY_NOZ);
+	m_RankRipPic->Render(m_RankPicX, m_RankPicY, 360, 360, 360 * m_rankType, 0, 360, 360,RS::ADD);
 
 	// スイッチ
 	switch (m_step)
@@ -552,6 +587,19 @@ void ResultUIManager::ResultRender()
 
 
 	//tdnText::Draw(500, 200, 0xff555555, "わっしょい");
+
+}
+
+void ResultUIManager::CircleRender()
+{
+	//　レンダー多ゲット切り替え
+	m_circleScreen->RenderTarget();
+	tdnView::Clear();
+
+	// サークルたち
+	m_invCircle.pic->Render(m_invCircle.x, m_invCircle.y);
+	m_circle.pic->Render(m_circle.x, m_circle.y);
+
 
 }
 
@@ -669,6 +717,7 @@ void ResultUIManager::Action()
 
 	m_RankPic->OrderShrink(12, 1.0f, 2.5f);
 	m_RankPic->Stop();
+	m_RankRipPic->Stop();
 
 	m_screenAlpha = 255;
 	m_screen->SetARGB(m_screenAlpha,255,255,255);
