@@ -80,6 +80,8 @@
       <DataExecutionPrevention />
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>./TDN/DirectShow/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/NODEFAULTLIB:LIBCMTD.LIB %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -140,6 +142,9 @@
     <ClCompile Include="source\system\textLoader.cpp" />
     <ClCompile Include="source\UI\ResultUIManager.cpp" />
     <ClCompile Include="source\UI\UIManager.cpp" />
+    <ClCompile Include="TDN\DirectShow\baseclasses\amfilter.cpp" />
+    <ClCompile Include="TDN\DirectShow\baseclasses\ctlutil.cpp" />
+    <ClCompile Include="TDN\DirectShow\baseclasses\renbase.cpp" />
     <ClCompile Include="TDN\IEX_3DObject.cpp" />
     <ClCompile Include="TDN\IEX_Mesh.cpp" />
     <ClCompile Include="TDN\IEX_SkinMesh.cpp" />
@@ -153,6 +158,7 @@
     </ClCompile>
     <ClCompile Include="TDN\TDN_Input.cpp" />
     <ClCompile Include="TDN\TDN_Math.cpp" />
+    <ClCompile Include="TDN\TDN_Movie.cpp" />
     <ClCompile Include="TDN\TDN_Polygon.cpp" />
     <ClCompile Include="TDN\TDN_Random.cpp" />
     <ClCompile Include="TDN\TDN_RenderState.cpp" />
@@ -204,6 +210,43 @@
     <ClInclude Include="source\UI\UIManager_.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\amextra.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\amfilter.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\cache.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\checkbmi.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\combase.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\cprop.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\ctlutil.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\ddmm.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\dllsetup.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\dxmperf.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\fourcc.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\measure.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\msgthrd.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\mtype.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\outputq.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\perflog.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\perfstruct.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\pstream.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\pullpin.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\refclock.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\reftime.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\renbase.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\schedule.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\seekpt.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\source.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\streams.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\strmctl.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\sysclock.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\transfrm.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\transip.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\videoctl.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\vtrans.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\winctrl.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\winutil.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\wxdebug.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\wxlist.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\wxutil.h" />
     <ClInclude Include="TDN\ogg\codec.h" />
     <ClInclude Include="TDN\ogg\ogg.h" />
     <ClInclude Include="TDN\ogg\os_types.h" />
@@ -218,6 +261,8 @@
     <ClInclude Include="source\system\System.h" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="TDN\DirectShow\strmbasd.lib" />
+    <Library Include="TDN\DirectShow\strmbase.lib" />
     <Library Include="TDN\ogg\ogg_static.lib" />
     <Library Include="TDN\ogg\vorbisfile_static.lib" />
     <Library Include="TDN\ogg\vorbis_static.lib" />
