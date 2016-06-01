@@ -295,15 +295,17 @@ void sceneMain::Render()
 		PostEffectMgr.BloomRender();
 	}
 	
+
+
+
+
+	// ステート描画
 	switch (state) {
 	case SCENE::READY:		ReadyRender();		break;
 	case SCENE::MAIN:		MainRender();		break;
 	case SCENE::END:		EndRender();		break;
 	case SCENE::RESULT:		ResultRender();		break;
 	}
-
-	// ステージの前描画
-	stage->RenderFront();
 
 	EffectMgr.Render();
 
@@ -312,7 +314,7 @@ void sceneMain::Render()
 	FadeControl::Render();
 #ifdef _DEBUG
 	DebugText();
-	CollisionMgr->DebugRender(g_pSheepMgr, dataMNG, stage);
+	//CollisionMgr->DebugRender(g_pSheepMgr, dataMNG, stage);
 #endif
 }
 
@@ -327,16 +329,23 @@ void sceneMain::MainRender()
 	g_pSheepMgr->Render();
 	EnemyMgr->Render();
 	NikuMgr->Render();
+
+	// ステージの前描画
+	stage->RenderFront();
 	Particle2dManager::Render();
 }
 
 void sceneMain::EndRender()
 {
+	// ステージの前描画
+	stage->RenderFront();
 	end->Render();
 }
 
 void sceneMain::ResultRender()
 {
+	// ステージの前描画
+	stage->RenderFront();
 	result->Render();
 }
 

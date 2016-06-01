@@ -416,7 +416,9 @@ SheepManager::~SheepManager()
 	delete m_pBoneImage;
 
 	for (auto it : m_List) delete it;
+	for (auto it : m_FatList) delete it;
 	m_List.clear();
+	m_FatList.clear();
 }
 
 //**************************************************
