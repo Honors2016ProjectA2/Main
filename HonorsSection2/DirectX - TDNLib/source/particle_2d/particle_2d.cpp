@@ -18,12 +18,23 @@ void Particle2dManager::Render(){ assert(m_pParticle2d); m_pParticle2d->Render()
 //*****************************************************************************
 //		‚«‚ç‚«‚ç(ˆÚ“®‚È‚µ)
 //*****************************************************************************
-void Particle2dManager::Effect_KiraKira(const Vector2 &pos, const Vector2 &Range, float scale, float ScaleFluctuation, int LoopCount, int EndFrame)
+void Particle2dManager::Effect_KiraKira(const Vector2 &pos, const Vector2 &range, float scale, float ScaleFluctuation, int LoopCount, int EndFrame)
 {
 	FOR(LoopCount)
-		m_pParticle2d->Set(3, 0, 1.0f, EndFrame, .0f, (int)(EndFrame * 0.65f), 0.75f, pos + Vector2((float)tdnRandom::Get((int)-Range.x, (int)Range.x), (float)tdnRandom::Get((int)-Range.y, (int)Range.y)), Vector2(0, 0), Vector2(0, 0), 1.0f, 1.0f, 1.0f, scale + tdnRandom::Get(-ScaleFluctuation, ScaleFluctuation), RS::ADD);
+		m_pParticle2d->Set(3, 0, 1.0f, EndFrame, .0f, (int)(EndFrame * 0.65f), 0.75f, pos + Vector2((float)tdnRandom::Get((int)-range.x, (int)range.x), (float)tdnRandom::Get((int)-range.y, (int)range.y)), Vector2(0, 0), Vector2(0, 0), 1.0f, 1.0f, 1.0f, scale + tdnRandom::Get(-ScaleFluctuation, ScaleFluctuation), RS::ADD);
 }
 
+//*****************************************************************************
+//		»‰Œ
+//*****************************************************************************
+void Particle2dManager::Effect_Smoke(const Vector2 &pos)
+{
+	m_pParticle2d->Set(15, 0, 0x08191919, 90, 0x00000000, 25, 0x0cffffff,
+		pos + Vector2((float)tdnRandom::Get(-12, 12), (float)tdnRandom::Get(-12, 12)),
+		Vector2((rand() % 5 - 2.5f)*0.5f, (rand() % 2 + .0f) * -0.5f),
+		Vector2(0, -.001f),
+		.01f, 1.01f, 32.0f, RS::COPY);
+}
 
 
 //*****************************************************************************

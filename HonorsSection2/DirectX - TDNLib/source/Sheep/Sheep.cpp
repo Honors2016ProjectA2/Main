@@ -8,37 +8,17 @@
 #include "../system/system.h"
 #include "../particle_2d/particle_2d.h"
 
-#include <ppl.h>
-
-void hogehoge()
-{
-	std::vector<float> vector;
-	vector.clear();
-	vector.resize(1000000);
-	Concurrency::parallel_for(0, 1000000, [&](int i)
-	{
-		vector[i] = sqrtf(i);
-	});
-
-	for (int i = 0; i < 1000000; i++)
-	{
-		vector[i] = sqrtf(i);
-	}
-}
-
 Sheep::Base::Base(const SheepData &data, int floor, const SheepTextParam &textparam) :
 animepos(0, 0),
-floor(floor),
+m_floor(floor),
 process(WALK),
 m_AnimePanel(0), m_bErase(false)
 {
-	//hogehoge();
-	Move[0] = &Sheep::Base::Get_out;
-	Move[1] = &Sheep::Base::Walk;
-	Move[2] = &Sheep::Base::Curve;
-	Move[3] = &Sheep::Base::Caught;
-	Move[4] = &Sheep::Base::Crushed;
-	Move[5] = &Sheep::Base::Ran_over;
+	Move[MODE::WALK] = &Sheep::Base::Walk;
+	Move[MODE::CURVE] = &Sheep::Base::Curve;
+	Move[MODE::PUSH] = &Sheep::Base::Push;
+	Move[MODE::CRUSHED] = &Sheep::Base::Crushed;
+	Move[MODE::CAUGHT] = &Sheep::Base::Caught;
 
 	alpha = 255;
 	frame = 0, animeframe = 0;
@@ -77,6 +57,11 @@ void Sheep::Base::Get_out()
 }
 void Sheep::Base::Walk()
 {
+	// 砂煙パーティクル
+	Vector2 pPos = GetCenterPos();
+	pPos.y += 32;
+	Particle2dManager::Effect_Smoke(pPos);
+
 	// あにめ
 	if (++animeframe > m_data.Animkankaku)
 	{
@@ -92,6 +77,11 @@ void Sheep::Base::Walk()
 
 void Sheep::Base::Curve()
 {
+	// 砂煙パーティクル
+	Vector2 pPos = GetCenterPos();
+	pPos.y += 32;
+	Particle2dManager::Effect_Smoke(pPos);
+
 	// あにめ
 	if (++animeframe > m_data.Animkankaku)
 	{
@@ -126,26 +116,25 @@ void Sheep::Base::Curve()
 	{
 		if (pos.y >= STAGE_POS_Y[i])
 		{
-			floor = i;
+			m_floor = i;
 			break;
 		}
 	}
 }
 
-void Sheep::Base::Caught()
+void Sheep::Base::Push()
 {
-	if (animeframe < 7)
+	// あにめ
+	if (++animeframe > m_data.Animkankaku)
 	{
-		if (frame > 1)
-			animeframe++, frame = 0;
-		frame++;
+		animeframe = 0;
+		ase.animex += 128;
+		if (++m_AnimePanel >= m_data.NumPanel)m_AnimePanel = 0;
 	}
-	else
-	{
-		alpha -= 64;
-		if (alpha <= 64)
-			m_bErase = true;
-	}
+
+	// 本来の移動値
+	move = C_MOVE;
+	pos.x += move.x;
 }
 void Sheep::Base::Crushed()
 {
@@ -164,21 +153,31 @@ void Sheep::Base::Crushed()
 			m_bErase = true;
 	}
 }
-void Sheep::Base::Ran_over()
+void Sheep::Base::Caught()
 {
-	if (animeframe < 9)
+	// あにめ
+	if (++animeframe > m_data.Animkankaku / 2)
 	{
-		if (frame > 1)
-			animeframe++, frame = 0;
-
-		if (animeframe > 3)
-		{
-			alpha -= 64;
-		}
-		frame++;
+		animeframe = 0;
+		ase.animex += 128;
+		if (++m_AnimePanel >= m_data.NumPanel)m_AnimePanel = 0;
 	}
-	else
-		m_bErase = true;
+
+	// マウス座標
+	pos = tdnMouse::GetPos() + Vector2(-60, -60);
+
+	// 火の座標
+
+	// マウス離された瞬間
+	if (tdnMouse::GetRight() == 2)
+	{
+		// 歩くモードに戻る
+		process = MODE::WALK;
+
+		// 最短フロアにいる
+		m_floor = FindFloor(pos.y);
+		pos.y = (float)STAGE_POS_Y[m_floor] + (float)(LANE_WIDTH / 8);
+	}
 }
 
 void Sheep::Base::Update()
@@ -218,7 +217,7 @@ void Sheep::Base::Render()
 	{
 		m_data.Image->SetARGB(alpha, (BYTE)255, (BYTE)255, (BYTE)255);
 		m_data.Image->Render((int)pos.x, (int)pos.y, m_data.SIZE, m_data.SIZE,
-			(m_AnimePanel % 4) * m_data.SIZE, (m_AnimePanel / 4) * m_data.SIZE, (move.x >= 0) ? -m_data.SIZE : m_data.SIZE, m_data.SIZE,
+			(m_AnimePanel % 4) * m_data.SIZE, (m_AnimePanel / 4) * m_data.SIZE, -m_data.SIZE, m_data.SIZE,
 			RS::COPY);
 	}
 
@@ -232,41 +231,17 @@ void Sheep::Base::Render()
 	}
 }
 
-void Sheep::Base::Be_caught(int type)
-{
-	if (col_check) return;
-	switch (type)
-	{
-	case 0:
-		process = CAUGHT;
-		//obj = file[CAUGHT];
-		break;
-
-	case 1:
-		Be_crushed();
-		break;
-
-	case 2:
-		Be_ran_over();
-		break;
-
-	default:
-		break;
-	}
-	animeframe = frame = 0;
-}
 void Sheep::Base::Be_crushed()
 {
 	if (col_check) return;
 
-	m_AnimePanel = 0;
-	animeframe = 0;
+	m_AnimePanel = animeframe = 0;
 	process = CRUSHED; 
 	//obj = file[CRUSHED];
 }
-void Sheep::Base::Be_ran_over()
+void Sheep::Base::Be_caught()
 { 
-	process = RAN_OVER; 
+	process = CAUGHT; 
 	//obj = file[RAN_OVER];
 }
 
@@ -281,7 +256,7 @@ Sheep::Gold::Gold(const SheepData &data, int floor, const SheepTextParam &textpa
 }
 Sheep::Gold::~Gold()
 {
-	if(m_seID!=TDNSOUND_PLAY_NONE)se->Stop("きらめく羊さん", m_seID);
+	if(m_seID != TDNSOUND_PLAY_NONE)se->Stop("きらめく羊さん", m_seID);
 }
 void Sheep::Gold::Update()
 {
@@ -299,7 +274,7 @@ void Sheep::Gold::Update()
 //**************************************************
 //	牧草食って太った羊
 //**************************************************
-FatSheep::FatSheep(tdn2DObj *image, const Vector2 &pos) :m_image(image), m_pos(pos), m_angle(0), m_bErase(false), m_moveX(0), m_ReceiveSE(TDNSOUND_PLAY_NONE), m_AnimFrame(0), m_AnimPanel(0)
+FatSheep::FatSheep(tdn2DObj *image, const Vector2 &pos) :m_image(image), m_pos(pos), m_angle(0), m_bErase(false), m_moveX(0), m_ReceiveSE(TDNSOUND_PLAY_NONE), m_AnimFrame(0), m_AnimPanel(0), m_accel(0)
 {
 
 }
@@ -330,10 +305,16 @@ void FatSheep::Update()
 		// SEの座標を設定
 		se->SetPos("太った羊押す", m_ReceiveSE, m_pos);
 	}
+	// 加速度を足していく
+	m_moveX += m_accel;
 	// 移動値を足していく
 	m_pos.x += m_moveX;
 	// 移動値に応じて羊を回転させる
 	m_angle -= m_moveX * 0.01f;
+
+	// 空気抵抗
+	m_accel = max(m_accel - 0.01f, 0);
+	m_moveX = max(m_moveX - 0.01f, 0);
 }
 
 void FatSheep::Render()
@@ -523,6 +504,20 @@ void SheepManager::Update()
 	// 現在時刻設定
 	if (bCreate)m_CurrentTime = clock();
 
+	// 掴む処理
+	if (tdnMouse::GetRight() == 3)
+	{
+		for (auto& it : m_List)
+		{
+			if ((it->GetCenterPos() - tdnMouse::GetPos()).LengthSq() < 60 * 60)
+			{
+				it->Be_caught();
+				break;
+			}
+		}
+	}
+
+
 	// 羊更新
 	for (auto it = m_List.begin(); it != m_List.end();)
 	{
@@ -580,3 +575,7 @@ int SheepManager::MakeNextFloor(int current)
 	} while (r == current);
 	return r;
 }
+
+
+
+SheepManager *g_pSheepMgr = nullptr;

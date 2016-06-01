@@ -7,9 +7,9 @@ class End;
 class MousePointer;
 class StageManager;
 class DataManager;
-class SheepManager;
 class Result;
 class Result2;
+
 
 class sceneMain	: public BaseScene
 {
@@ -29,9 +29,7 @@ private:
 	MousePointer* pointer = nullptr;
 	StageManager* stage = nullptr;
 	DataManager* dataMNG = nullptr;
-	SheepManager* m_pSheepMgr = nullptr;
 	Result2 * result = nullptr;
-
 	tdn2DObj* byunAlpha = nullptr;
 
 	Surface* backUp;

@@ -13,7 +13,6 @@ class tdn2DObj;
 class DataManager;
 class MousePointer;
 class EnemyManager;
-class CurvePoint;
 
 // 犬のラジオボタン
 //struct CurvePointRadio
@@ -44,13 +43,12 @@ private:
 public:
 	enum StageState { NONE, FALL };
 	StageState state;
-	std::vector<CurvePoint*> *m_CPlist;
 
 	//------- method --------
 public:
 	Stage();
 	~Stage();
-	void Init(Vector2 pos, StageState startState, std::vector<CurvePoint*> *CPlist);
+	void Init(Vector2 pos, StageState startState);
 	void Update();
 	void Render();
 	int GetWidth();
@@ -61,7 +59,7 @@ class StageManager
 {
 	//---- field ------
 public:
-	int floor;         // 出現中の階層数-1
+	//int floor;         // 出現中の階層数-1
 private:
 	// ステージの画像系
 	enum StageImage
@@ -82,20 +80,28 @@ private:
 		SAKU,			// 柵
 		KUSA,			// 草
 
+		IKENIE,			// いけにえ棒
+		FIRE,			// 炎
+
 		MAX
 	};
-	tdn2DObj *m_pStageImages[StageImage::MAX];
 
-	tdn2DObj *m_pDogImage;
-	tdn2DAnim *m_pDogRipImage; // リップる追加！
+
+	tdn2DObj *m_pStageImages[StageImage::MAX];
+	int m_FireAnimFrame, m_FireAnimPanel;
+
+	tdn2DObj *m_pDogImage, *m_pFireImage;
+
 	enum ImageSrc { STAGE, SHUTTER };
 
 	int APPEND_STAGE_BORDER[STAGE_MAX]; // stage追加タイミングのスコア
 	int m_AddScore[STAGE_MAX];			// レーンゴールしたときに加算されるスコア
 	Stage* stage[STAGE_MAX];
 
-	std::vector<CurvePoint*> m_CPlists[STAGE_MAX];	// 犬設置リスト(ステージに参照させるのは、テキスト読み込み一括でやりたかったため)
-	int m_CPStock;									// 犬のストック
+	std::vector<CurvePoint::Dog*> m_Doglists[STAGE_MAX];
+	//std::vector<CurvePoint::Fire*> m_Firelists[STAGE_MAX];
+
+	int m_DogStock;		// 犬のストック
 
 	//------ method --------
 public:
@@ -118,13 +124,23 @@ public:
 	///<param name="floorIdx">判定するフロアの添字</param>
 	bool IsOpen(int floorIdx);
 
-	std::vector<CurvePoint*> *GetCurvePointList(int floor){ return &m_CPlists[floor]; }
+	std::vector<CurvePoint::Dog*> *GetDogList(int floor){ return &m_Doglists[floor]; }
+	//std::vector<CurvePoint::Fire*> *GetFireList(int floor){ return &m_Firelists[floor]; }
+	CurvePoint::Dog *GetDog(int floor, UINT id){ for (UINT i = 0; i < m_Doglists[floor].size(); i++){ if (m_Doglists[floor][i]->GetID() == id)return m_Doglists[floor][i]; } return nullptr; }
+	//CurvePoint::Fire *GetFire(int floor, UINT id){ for (UINT i = 0; i < m_Firelists[floor].size(); i++){ if (m_Firelists[floor][i]->GetID() == id)return m_Firelists[floor][i]; } return nullptr; }
 
 	Vector2 GetArrowPos(int floorIdx);
 	Vector2 GetWarningPos(int floorIdx, bool IsRight);
 	Vector2 GetPopupPos(int floorIdx, bool IsRight);
 	Vector2 GetBalloonPos(int floorIdx);
+
+	bool m_FireSelect;	// 炎設置かどうか
+	int m_FireStock;	// 炎のストック
 };
+
+// 最短フロア検索関数
+int FindFloor(float posY);
 
 extern int STAGE_POS_Y[3];
 extern int LANE_WIDTH;
+extern Vector2 YAKINIKU_AREA;

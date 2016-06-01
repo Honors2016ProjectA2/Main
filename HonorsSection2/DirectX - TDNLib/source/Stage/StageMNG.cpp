@@ -6,7 +6,10 @@
 #include "../Collision/Collision.h"
 #include "../Enemy/watchman.h"
 #include "../Sound/SoundManager.h"
+#include "../Niku/Niku.h"
 #include "Effect\EffectManager.h"
+
+//int g_FireModeChangeTime[(int)CurvePoint::FIRE_MODE::MAX];			// モードが変わっていく時間
 
 //**************************************************
 //    StageManager class
@@ -18,19 +21,34 @@ int STAGE_POS_Y[3] =
 {
 	0, 190, 520// ★ここいじったろ
 };
-int LANE_WIDTH = 190;
+int LANE_WIDTH = 0;
+Vector2 YAKINIKU_AREA(0, 0);
 
+int FindFloor(float posY)
+{
+	// 最短フロア検索
+	float dist(640);
+	int floor(0);
+	for (int i = 0; i < STAGE_MAX; i++)
+	{
+		float vy = posY - STAGE_POS_Y[i];
+		vy = (vy < 0) ? vy * -1 : vy;	// 絶対値
+
+		if (vy < dist)
+		{
+			floor = i;
+			dist = vy;
+		}
+	}
+	return floor;
+}
 
 //-------- static field ---------
 
 //------- constructor,destructor ---------
 
-StageManager::StageManager() :floor(0), m_pDogImage(new tdn2DObj("DATA/CHR/dog.png"))
+StageManager::StageManager() :m_pDogImage(new tdn2DObj("DATA/CHR/dog.png")), m_pFireImage(new tdn2DObj("DATA/牧草/炎の種.png")), m_FireSelect(false), m_FireAnimFrame(0), m_FireAnimPanel(0)
 {
-	//
-	//m_pDogRipImage = new tdn2DAnim("DATA/CHR/dog.png");
-	//m_pDogRipImage->OrderRipple(12, 1.0f, 0.1f);
-
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
 		stage[i] = nullptr;
@@ -51,6 +69,11 @@ StageManager::StageManager() :floor(0), m_pDogImage(new tdn2DObj("DATA/CHR/dog.p
 		ifs >> path;
 		m_pStageImages[i] = new tdn2DObj(path);
 	}
+
+	// いけにえ座標読み込み
+	ifs >> skip;
+	ifs >> YAKINIKU_AREA.x;
+	ifs >> YAKINIKU_AREA.y;
 
 	// レーン幅読み込み
 	ifs >> skip;
@@ -74,14 +97,31 @@ StageManager::StageManager() :floor(0), m_pDogImage(new tdn2DObj("DATA/CHR/dog.p
 		ifs >> m_AddScore[i];
 	}
 
+	//// 火の変化時間読み込み
+	//ifs >> skip;
+	//ifs >> g_FireModeChangeTime[(int)CurvePoint::FIRE_MODE::MAKI];
+	//ifs >> g_FireModeChangeTime[(int)CurvePoint::FIRE_MODE::MOEHAJIME];
+	//ifs >> g_FireModeChangeTime[(int)CurvePoint::FIRE_MODE::MOETEKITA];
+	//ifs >> g_FireModeChangeTime[(int)CurvePoint::FIRE_MODE::MOETA];
+	//g_FireModeChangeTime[(int)CurvePoint::FIRE_MODE::ENABLE];				// 完全燃焼モード
+	//ifs >> g_FireModeChangeTime[(int)CurvePoint::FIRE_MODE::HITED];
+
+	m_FireStock = 1;
+
 	// 犬ストック個数読み込み
 	ifs >> skip;
-	ifs >> m_CPStock;
+	ifs >> m_DogStock;
 
 
 	// 犬設置ポイント読み込み
-	FOR(STAGE_MAX) m_CPlists[i].clear();
+	FOR(STAGE_MAX)
+	{
+		m_Doglists[i].clear();
+		//m_Firelists[i].clear();
+	}
 	ifs >> skip;
+
+	int id[STAGE_MAX] = {0};
 	while (!ifs.eof())
 	{
 		int posX, floor;
@@ -97,7 +137,9 @@ StageManager::StageManager() :floor(0), m_pDogImage(new tdn2DObj("DATA/CHR/dog.p
 		else if (strcmp(cDir, "DOWN") == 0) dir = DIR::DOWN;
 		else assert(0);	// 例外処理
 
-		m_CPlists[floor].push_back(new CurvePoint(m_pDogImage, Vector2((float)posX, (float)STAGE_POS_Y[floor] + 20), dir));
+		m_Doglists[floor].push_back(new CurvePoint::Dog(this, m_pDogImage, Vector2((float)posX, (float)STAGE_POS_Y[floor] + 20), dir, id[floor], floor));
+		//if(id[floor] == 1)m_Firelists[floor].push_back(new CurvePoint::Fire(this, m_pFireImage, Vector2((float)posX, (float)STAGE_POS_Y[floor] + 20), dir, id[floor], floor));
+		id[floor]++;
 	}
 
 	// 本来はスコアでレーンを追加していくが、今回は最初から3レーン
@@ -105,7 +147,7 @@ StageManager::StageManager() :floor(0), m_pDogImage(new tdn2DObj("DATA/CHR/dog.p
 	{
 		if (stage[i] == nullptr)
 			stage[i] = new Stage;
-		stage[i]->Init(Vector2((float)0, (float)STAGE_POS_Y[i]), Stage::StageState::FALL, &m_CPlists[i]);
+		stage[i]->Init(Vector2((float)0, (float)STAGE_POS_Y[i]), Stage::StageState::FALL);
 	}
 }
 
@@ -113,14 +155,17 @@ StageManager::~StageManager()
 {
 	FOR(StageImage::MAX)delete m_pStageImages[i];
 	delete m_pDogImage;
-	//delete m_pDogRipImage;
+	delete m_pFireImage;
 
 	FOR(STAGE_MAX)
 	{
 		SAFE_DELETE(stage[i]);
 
 		// 犬リストの開放
-		for (auto it : m_CPlists[i]) delete it;
+		for (auto it : m_Doglists[i]) delete it;
+
+		// 炎リストの開放
+		//for (auto it : m_Firelists[i]) delete it;
 	}
 }
 
@@ -157,11 +202,11 @@ void StageManager::Reset()
 
 void StageManager::Update()
 {
+	// ホイール
+	//if (tdnMouse::GetWheelFlag() != WHEEL_FLAG::NONE) m_FireSelect = !m_FireSelect;	// 反転
+
 	// マウス座標
 	Vector2 mPos = tdnMouse::GetPos();
-
-	// Rip
-	//m_pDogRipImage->Update();// 
 
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
@@ -169,50 +214,103 @@ void StageManager::Update()
 		stage[i]->Update();
 
 		// 犬リスト更新
-		for (auto it : m_CPlists[i])
+		for (auto it : m_Doglists[i])
 		{
 			it->Update();
+			//bool bFireOpen(false);
+			//if (it->GetID() == 1)bFireOpen = m_Firelists[i][0]->IsOpening();
 
-			// マウスの中に入ってるかどうかの判定
-			if (mPos.x >= it->GetPos().x && mPos.x <= it->GetPos().x + it->GetWidth() &&
-				mPos.y >= it->GetPos().y && mPos.y <= it->GetPos().y + it->GetWidth())
+			// 炎選んでなかったら
+			//if (!bFireOpen)
 			{
-				// 初回入ったフレーム
-				if (!it->m_bCursorIn)
+				// マウスの中に入ってるかどうかの判定
+				if (mPos.x >= it->GetPos().x && mPos.x <= it->GetPos().x + it->GetWidth() &&
+					mPos.y >= it->GetPos().y && mPos.y <= it->GetPos().y + it->GetWidth())
 				{
-					it->m_bCursorIn = true;
+					// 初回入ったフレーム
+					if (!it->m_bCursorIn)
+					{
+						it->m_bCursorIn = true;
+					}
 				}
-			}
-			else it->m_bCursorIn = false;
+				else it->m_bCursorIn = false;
 
-			// 左クリック！！
-			if (tdnMouse::GetLeft() == 3 && it->m_bCursorIn)
-			{
-				// 犬回収
-				if (it->IsOpening())
+				// 左クリック！！
+				if (tdnMouse::GetLeft() == 3 && it->m_bCursorIn)
 				{
-					se->Play("犬", it->GetPos());				
-					m_CPStock++;	// ストック回復
-				}
-
-				// 犬設置
-				else
-				{
-					// ストック残ってたら
-					if (m_CPStock > 0)
+					// 犬回収
+					if (it->IsOpening())
 					{
 						se->Play("犬", it->GetPos());
-						//m_pDogRipImage->Action();// Action!
-						EffectMgr.AddEffect(it->GetPos().x+64, it->GetPos().y+64,EFFECT_TYPE::DOG_EFFECT);
-
-						m_CPStock--;
+						m_DogStock++;	// ストック回復
+						it->Change();	// 犬のON_OFF
+						return;
 					}
-					else return;	// 残ってなかったら出ていけぇ！！
-				}
 
-				it->Change();	// 犬のON_OFF
+					// 犬設置
+					else
+					{
+						// ストック残ってたら
+						if (m_DogStock > 0 && !m_FireSelect)
+						{
+							EffectMgr.AddEffect((int)it->GetPos().x+64, (int)it->GetPos().y+64,EFFECT_TYPE::DOG_EFFECT);
+							se->Play("犬", it->GetPos());
+							m_DogStock--;
+							it->Change();	// 犬のON_OFF
+						}
+					}
+
+				}
 			}
-		}
+			//else it->m_bCursorIn = false;
+
+		}	// 犬リスト
+
+		// 火リスト更新
+		//for (auto it : m_Firelists[i])
+		//{
+		//	it->Update();
+		//
+		//	// 炎選んでたら
+		//	if (m_FireSelect && !m_Doglists[i][it->GetID()]->IsOpening())
+		//	{
+		//		// マウスの中に入ってるかどうかの判定
+		//		if (mPos.x >= it->GetPos().x && mPos.x <= it->GetPos().x + it->GetWidth() &&
+		//			mPos.y >= it->GetPos().y && mPos.y <= it->GetPos().y + it->GetWidth())
+		//		{
+		//			// 初回入ったフレーム
+		//			if (!it->m_bCursorIn)
+		//			{
+		//				it->m_bCursorIn = true;
+		//			}
+		//		}
+		//		else it->m_bCursorIn = false;
+		//
+		//		// 左クリック！！
+		//		if (tdnMouse::GetLeft() == 3 && it->m_bCursorIn)
+		//		{
+		//			// 炎設置
+		//			if (!it->IsOpening() && m_FireStock > 0)
+		//			{
+		//		
+		//				se->Play("まき", it->GetPos());		// SEの再生
+		//				m_FireStock--;	// ストック減少
+		//
+		//				it->Change();	// ON
+		//			}
+		//		}
+		//	}
+		//	else it->m_bCursorIn = false;
+		//
+		//}	// 炎リスト
+
+	}	// レーンfor
+
+	// ステージのアニメーション
+	if (++m_FireAnimFrame > 4)
+	{
+		m_FireAnimFrame = 0;
+		if (++m_FireAnimPanel > 2)m_FireAnimPanel = 0;
 	}
 }
 
@@ -223,11 +321,13 @@ void StageManager::RenderBack()
 
 	// 家の後ろ描画
 	m_pStageImages[StageImage::HOUSE_BACK]->Render(0, 0);
+
+	// 柵描画
+	m_pStageImages[StageImage::SAKU]->Render(0, 0);
 }
 
 void StageManager::Render()
 {
-
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
 		//static const int col[] = { 0x40ff0000, 0x4000ff00, 0x400000ff };
@@ -236,19 +336,9 @@ void StageManager::Render()
 
 		stage[i]->Render();
 
-		for (auto it : m_CPlists[i])
-		{
-			it->Render();
-			if (it->IsOpening())
-			{
-			//	m_pDogRipImage->Render(it->GetPos().x, it->GetPos().y,
-			//		120, 120, 0, 0, 120, 120, RS::ADD);
-			}
-			
-			
-		
-		}
-			
+		// 犬と炎の描画
+		for (auto it : m_Doglists[i]) it->Render();
+		//for (auto it : m_Firelists[i]) it->Render();
 
 		// 入ったら加算されるスコア
 		tdnText::Draw(1200, STAGE_POS_Y[i] + 120, 0xffffffff, "%d", m_AddScore[i]);
@@ -262,11 +352,14 @@ void StageManager::RenderFront()
 
 	// 家のドア描画
 
-	// 柵描画
-	m_pStageImages[StageImage::SAKU]->Render(0, 0);
-
 	// 草描画
 	m_pStageImages[StageImage::KUSA]->Render(0, 0);
+
+	// いけにえ棒描画
+	m_pStageImages[StageImage::IKENIE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256);
+
+	// 炎描画
+	m_pStageImages[StageImage::FIRE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256);
 }
 
 void StageManager::Reflection(DataManager* data, MousePointer* mouse)
@@ -281,24 +374,13 @@ void StageManager::Reflection(DataManager* data, MousePointer* mouse)
 	if (data != nullptr)
 	{
 		data->SetpAddScore(&m_AddScore[0], &m_AddScore[1], &m_AddScore[2]);
-		if (floor < STAGE_MAX - 1)
-		{
-			// score check
-			if (data->GetScore() >= APPEND_STAGE_BORDER[floor])
-			{
-				floor++;
-				//if (stage[floor] == nullptr)
-				//	stage[floor] = new Stage;
-				//stage[floor]->Init(stageImage[floor], shutterImage[floor], lockImage, Vector2((float)0, (float)STAGE_POS_Y[floor]), Stage::StageState::FALL);
-			}
-		}
 	}
 }
 
 bool StageManager::IsOpen(int floorIdx)
 {
 	if (stage[floorIdx] == nullptr)return false;
-	return (stage[floorIdx]->state == CurvePoint::CurvePointState::OPEN);
+	return (stage[floorIdx]->state == CurvePoint::Base::CurvePointState::OPEN);
 }
 
 Vector2 StageManager::GetArrowPos(int floorIdx)
@@ -348,7 +430,7 @@ Stage::~Stage()
 
 //---------- public method ------------
 
-void Stage::Init(Vector2 pos, Stage::StageState state, std::vector<CurvePoint*> *CPlist)
+void Stage::Init(Vector2 pos, Stage::StageState state)
 {
 	this->state = state;
 	this->pos = pos;
@@ -361,8 +443,6 @@ void Stage::Init(Vector2 pos, Stage::StageState state, std::vector<CurvePoint*> 
 			offsetY = (int)pos.y - START_Y;
 			break;
 	}
-
-	this->m_CPlist = CPlist;	// ポインタ参照
 }
 
 void Stage::Update()

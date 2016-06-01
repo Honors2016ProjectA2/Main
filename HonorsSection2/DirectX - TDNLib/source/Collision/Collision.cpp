@@ -8,7 +8,8 @@
 #include "../Number/Number.h"
 #include "../Shake/Shake.h"
 #include "Effect\EffectManager.h"
-#include "PostEffect\PostEffect.h"
+#include "../Niku/Niku.h"
+#include "../PostEffect/PostEffect.h"
 
 namespace{
 	int GOAL_X = 0;	// —r‚ÌƒS[ƒ‹À•W(ƒeƒLƒXƒg‚Å“Ç‚Þ)
@@ -34,6 +35,25 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 	for (auto &sinIterator : *sinnMNG->Get_list()){
 
 		Vector2 sPos = sinIterator->GetCenterPos();
+
+		// ƒvƒŒƒCƒ„[‚É’Í‚Ü‚ê‚Ä‚½‚ç
+		if (sinIterator->isCaught())
+		{
+			// “÷‚Ü‚¾ì‚Á‚Ä‚È‚©‚Á‚½‚ç
+			if (!NikuMgr->GetYakiniku() && !NikuMgr->GetNiku())
+			{
+				// —r‚Æ‰Î‚Ì”»’è
+				if ((sPos - (YAKINIKU_AREA + Vector2(128, 128))).LengthSq() < 60 * 60)
+				{
+					// Ä“÷ŠJŽn
+					NikuMgr->StartYakiniku();
+
+					// —rÁ‚·
+					sinIterator->Erase();
+				}
+			}
+			continue;
+		}
 
 		// —r‚Æ–q‘‰Ô‚Ì”»’è
 		for (auto &kusaIterator : *BokusouMgr->GetList())
@@ -79,7 +99,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 		}
 
 		// —r‚ÆŒ¢
-		for (auto& dogIterator : *stageMNG->GetCurvePointList(sinIterator->Get_floor())){
+		for (auto& dogIterator : *stageMNG->GetDogList(sinIterator->Get_floor())){
 			if (ExclamationPointAndCurvePoint(sinIterator, dogIterator)){
 				sinIterator->SetCurve(dogIterator->GetDir());	// —r‚É‹È‚ª‚ê–½—ß‚ðo‚·I
 				//if (manIterator.col_check)continue;
@@ -90,20 +110,74 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 			}
 		}
 
-		//‚µ‚ñ‚É‚å‚¤@‚ÆIiƒ_ƒ[ƒW”»’è
-		for (auto& manIterator : *EnemyMgr->GetList()){
-			if (ShinnnyoAndExclamationPoint(sinIterator, manIterator))
+		/*
+		// —r‚Æ‰Î‚Ìƒ_ƒ[ƒW”»’è
+		for (auto &fireIt : *stageMNG->GetFireList(sinIterator->Get_floor()))
+		{
+			// ‚Ü‚¸‚¨‚¢‚Ä‚È‚©‚Á‚½‚çthrough
+			if (!fireIt->IsOpening()) continue;
+
+			Vector2 fPos;
+			Vector2 sPos2;
+			sinIterator->Get_pos2(sPos2);
+			sPos.x += sinIterator->Get_size();
+			fireIt->Get_pos2(fPos);
+
+
+			// ‰Î‚É‚ ‚½‚Á‚½Œã‚Ìó‘Ô
+			if (fireIt->GetMode() == CurvePoint::FIRE_MODE::HITED)
 			{
-				if (sinIterator->col_check) continue;
-
-				//A—ñŽÔ ˜T‚Æ—r‚ª“–‚½‚Á‚½uŠÔ
-				EffectMgr.AddEffect((int)sinIterator->Get_pos()->x + 96, (int)sinIterator->Get_pos()->y+64, EFFECT_TYPE::HIT);
-
-				sinIterator->col_check = true;
-				dataMNG->SubTime_Kill(sinIterator->Get_floor(), *sinIterator->Get_pos());		//ŽžŠÔ‚ðŒ¸­‚³‚¹‚é
-				se->Play("DAMAGE",sinIterator->GetCenterPos());
+				// —rÀ•W‚ÌX‚ªŒ¢‚ÌÀ•W‚Æ‚»‚Ì‘O•û”ÍˆÍ“à
+				if (sPos.x > fPos.x - DOG_SIZE && sPos.x < fPos.x)
+				{
+					sinIterator->SetCurve(fireIt->GetDir());	// —r‚É‹È‚ª‚ê–½—ß‚ðo‚·I
+				}
+				break;
 			}
 
+			// ”»’è
+			if ((sPos - fireIt->GetCenterPos()).LengthSq() < 64 * 64)
+			{
+				// ‰Î‚ÌÅI’iŠK‚È‚ç
+				if (fireIt->GetMode() == CurvePoint::FIRE_MODE::ENABLE && !sinIterator->col_check)
+				{
+
+					sinIterator->Be_crushed();		// ‚µ‚Ê
+					sinIterator->col_check = true;
+
+					se->Play("Ä‚¯‚½", *sinIterator->Get_pos());
+					se->Play("”ß–Â", sinIterator->GetCenterPos());
+
+					NikuMgr->CreateNiku(sinIterator->GetCenterPos().x, sinIterator->Get_floor());
+
+					// ƒqƒbƒg
+					fireIt->Hit();
+				}
+				// ‚»‚êˆÈŠO
+				//else fireIt->Change();// ‰ŠÁ‚·
+			}
+
+		}
+		*/
+
+		//—rVS˜Tiƒ_ƒ[ƒW”»’è
+		for (auto& manIterator : *EnemyMgr->GetList())
+		{
+			// ”ò‚Î‚·
+			if (manIterator->GetMode() != Enemy::Wolf::MODE::RUN || manIterator->GetFloor() != sinIterator->Get_floor()) continue;
+
+			if (ShinnnyoAndExclamationPoint(sinIterator, manIterator))
+			{
+				if (!sinIterator->col_check)
+				{
+					//A—ñŽÔ ˜T‚Æ—r‚ª“–‚½‚Á‚½uŠÔ
+					EffectMgr.AddEffect((int)sinIterator->Get_pos()->x + 96, (int)sinIterator->Get_pos()->y + 64, EFFECT_TYPE::HIT);
+
+					sinIterator->col_check = true;
+					dataMNG->SubTime_Kill(sinIterator->Get_floor(), *sinIterator->Get_pos());		//ŽžŠÔ‚ðŒ¸­‚³‚¹‚é
+					se->Play("DAMAGE", sinIterator->GetCenterPos());
+				}
+			}
 		}
 
 	}	// —r‚Ìfor•ª
@@ -112,6 +186,25 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 	int FatSheepIndex(0);
 	for (auto &fatIt : *sinnMNG->GetFatList())
 	{
+		////—rVS˜Tiƒ_ƒ[ƒW”»’è
+		//for (auto& manIterator : *EnemyMgr->GetList())
+		//{
+		//	// ”ò‚Î‚·
+		//	if (manIterator->GetMode() != Enemy::Wolf::MODE::RUN || manIterator->GetFloor() != fatIt->GetFloor()) continue;
+
+		//	Vector2 fPos = fatIt->GetCenterPos(), wolfPos = manIterator->GetCenterPos();
+
+		//	Vector2 diff = fPos - wolfPos;
+		//	int size = (120 + 240) / 2;
+		//	if (diff.x*diff.x < size*size){
+		//		//A—ñŽÔ ˜T‚Æ—r‚ª“–‚½‚Á‚½uŠÔ
+		//		EffectMgr.AddEffect((int)fatIt->GetCenterPos().x + 96, (int)fatIt->GetCenterPos().y + 64, EFFECT_TYPE::HIT);
+
+		//		fatIt->Erase();
+		//		se->Play("DAMAGE", manIterator->GetCenterPos());
+		//	}
+		//}
+
 		// ’Eo”»’è
 		if (EscapedFatSheep(fatIt))
 		{
@@ -158,31 +251,55 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 					//sheepIt->SetPos(fPos - Vector2(128, 0));
 					sheepIt->SetPosX(fPos.x - 128);
 				}
+
+				// ‰Ÿ‚µ‚Ä‚éƒ‚[ƒh‚É‚·‚é
+				sheepIt->Be_Push();
 			}
+			else sheepIt->Be_Walk();
 		}
 		// “–‚½‚Á‚½”‚É‰ž‚¶‚Ä‘¾‚Á‚Ä‚é—r‚ÌˆÚ“®—Êì¬
-		fatIt->SetMove(HitCount * sinnMNG->FatSheepAccel());
+		fatIt->SetAccel((HitCount * sinnMNG->FatSheepAccel()));
 
 		FatSheepIndex++;
 	}
 
 	//Œ¢‚Æ˜T
 	for(auto& manIterator : *EnemyMgr->GetList()){
-		for (auto& dogIterator : *stageMNG->GetCurvePointList(manIterator->GetFloor()))
+		Vector2 wPos = manIterator->GetCenterPos();
+		for (auto& dogIterator : *stageMNG->GetDogList(manIterator->GetFloor()))
 		{
 			if (ExclamationDogAndWolf(dogIterator, manIterator)){
 
 			}
 		}
+
+		// “÷
+		Niku *pNiku = NikuMgr->GetNiku();
+		if (pNiku)
+		{
+			// ‚Ü‚¾Ý’u‚µ‚Ä‚È‚©‚Á‚½‚ç‚Å‚Ä‚¢‚¯‚¥II
+			if (!pNiku->isSeted()) continue;
+
+			Vector2 nPos = pNiku->GetCenterPos();
+
+			if ((nPos - wPos).LengthSq() < 128 * 128)
+			{
+				// “÷H‚Á‚Ä‚éƒ‚[ƒh‚É‚·‚é
+				manIterator->ChangeMode(Enemy::Wolf::MODE::NIKU);
+				manIterator->SetCenterPos(pNiku->GetCenterPos());
+
+				// “÷Á‚·
+				pNiku->Erase();
+			}
+		}
 	}
 }
 
-bool CollisionManager::ShinnnyoAndExclamationPoint(Sheep::Base* sinn, Enemy::Base* enemy)
+bool CollisionManager::ShinnnyoAndExclamationPoint(Sheep::Base* sinn, Enemy::Wolf* enemy)
 {
 	Vector2 sinnPos, wolfPos = enemy->GetCenterPos();
 	sinn->Get_pos2(sinnPos);
 	Vector2 diff = sinnPos - wolfPos;
-	if( enemy->GetFloor() != sinn->Get_floor() ) return false;	//ŠK‘w‚ªˆá‚¤
 	int size = (sinn->Get_size() + enemy->GetWidth())/2;
 	if( diff.x*diff.x < size*size ){
 		sinn->Be_crushed();		//‚µ‚ñ‚É‚å‚¤‚É•ß‚Ü‚Á‚½Ž–‚ð‹³‚¦‚é
@@ -204,7 +321,7 @@ bool CollisionManager::EscapedFatSheep(FatSheep *fat)
 	return (fat->GetCenterPos().x >= 1400);
 }
 
-bool CollisionManager::ExclamationPointAndCurvePoint(Sheep::Base* sheep, CurvePoint* cp)
+bool CollisionManager::ExclamationPointAndCurvePoint(Sheep::Base* sheep, CurvePoint::Base* cp)
 {
 	// Œ¢’u‚¢‚Ä‚½‚ç
 	if (cp->IsOpening())
@@ -223,7 +340,7 @@ bool CollisionManager::ExclamationPointAndCurvePoint(Sheep::Base* sheep, CurvePo
 	return false;
 }
 
-bool CollisionManager::ExclamationDogAndWolf(CurvePoint *cp, Enemy::Base* enemy)
+bool CollisionManager::ExclamationDogAndWolf(CurvePoint::Base *cp, Enemy::Wolf* enemy)
 {
 	Vector2 WolfPos;
 	Vector2 DogPos;
@@ -244,7 +361,7 @@ void CollisionManager::DebugRender(SheepManager* sinnMNG, DataManager* dataMNG, 
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
 		// Œ¢‚ ‚½‚è”»’è
-		for (auto it : *stageMNG->GetCurvePointList(i))
+		for (auto it : *stageMNG->GetDogList(i))
 		{
 			if(it->IsOpening())tdnPolygon::Rect((int)it->GetPos().x - DOG_SIZE, (int)it->GetPos().y, DOG_SIZE, (int)it->GetWidth(), RS::COPY, 0x0fff0000);
 		}

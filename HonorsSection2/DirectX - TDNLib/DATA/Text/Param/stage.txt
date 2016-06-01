@@ -10,6 +10,11 @@ DATA/Stage/haikei_doa_5.png
 DATA/Stage/haikei_doa_6.png
 DATA/Stage/haikei_saku.png
 DATA/Stage/haikei_kusa_1.png
+DATA/Stage/haikei_ikenie.png
+DATA/Stage/haikei_fire.png
+
+‚¢‚¯‚É‚¦À•W:
+442 362
 
 ƒŒ[ƒ“•:
 190

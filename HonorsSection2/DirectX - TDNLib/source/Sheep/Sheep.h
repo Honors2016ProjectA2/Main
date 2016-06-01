@@ -47,18 +47,18 @@ namespace Sheep
 		bool m_bErase;		// 消去フラグ
 
 		//const int PNGSIZE;
-		int floor;
+		int m_floor;
 
 		// 羊の情報
 		SheepData m_data;
 
 		enum MODE{
-			GETOUT,		// Initialize的なやつっぽい
 			WALK,		// 普通の歩き
 			CURVE,		// 方向転換
-			CAUGHT,		// 普通の死に
-			CRUSHED,	// ゴリラに殺された
-			RAN_OVER	// 轢き殺された？
+			PUSH,		// デブ押す
+			CRUSHED,	// 食われた
+			CAUGHT,		// 捕まった
+			MAX
 		};
 		int process;
 		BYTE alpha;
@@ -75,10 +75,10 @@ namespace Sheep
 		void Get_out();
 		void Walk();
 		void Curve();
-		void Caught();
+		void Push();
 		void Crushed();
-		void Ran_over();
-		void(Base::*Move[6])();
+		void Caught();
+		void(Base::*Move[MODE::MAX])();
 	public:
 		Base(const SheepData &data, int floor, const SheepTextParam &textparam);
 		virtual ~Base();
@@ -89,7 +89,7 @@ namespace Sheep
 		/* 左上 */
 		Vector2 *Get_pos(){ return &pos; }
 		/* 中央↓ */
-		Vector2 &GetCenterPos(){ return pos + Vector2(60, 60); }
+		Vector2 GetCenterPos(){ return pos + Vector2(60, 60); }
 		void Get_pos2(Vector2 &out)
 		{
 			out = pos;
@@ -100,11 +100,12 @@ namespace Sheep
 		void SetPosX(float x){ pos.x = x; }
 
 		int Get_size(){ return m_data.SIZE; }
-		int Get_floor(){ return floor; }
-		/* やられた */
-		void Be_caught(int type);
+		int Get_floor(){ return m_floor; }
+		void Be_Walk(){ if(process == MODE::PUSH) process = MODE::WALK; }
+		void Be_Push(){ if(process == MODE::WALK) process = MODE::PUSH; }
 		void Be_crushed();
-		void Be_ran_over();
+		void Be_caught();
+		bool isCaught(){ return (process == MODE::CAUGHT); }
 		void SetCurve(DIR dir)
 		{
 			if (process != MODE::WALK) return;
@@ -163,7 +164,7 @@ public:
 	bool EraseOK(){ return m_bErase; }
 
 	// セッター
-	void SetMove(float val){ m_moveX = val; }
+	void SetAccel(float val){ m_accel = val; }
 	void SetFloor(int val){ m_floor = val; }
 	void Erase(){ m_bErase = true; }
 
@@ -176,6 +177,7 @@ private:
 	int m_floor;		// 自分のいるレーン
 	bool m_bErase;		// 消去フラグ
 	int m_ReceiveSE;	// 鳴らしたSEのID
+	float m_accel;
 };
 
 
@@ -236,3 +238,6 @@ private:
 	StageManager *sp;
 	DataManager *dmp;
 };
+
+// 実体
+extern SheepManager* g_pSheepMgr;

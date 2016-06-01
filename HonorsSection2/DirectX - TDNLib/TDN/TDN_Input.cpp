@@ -763,14 +763,12 @@ void tdnMouse::Update()
 	if (val_x < Min) m_Axis.x = 0;
 	if (val_y < Min * 1.5f) m_Axis.y = 0;
 
-	if (KeyBoard(MOUSE_LEFT))
-	{
-		m_FlagLeft = (m_FlagLeft == 0) ? 3 : 1;
-	}
-	else m_FlagLeft = 0;
-	if ((GetKeyState(0x02) & 0x80) != 0)
-	{
-		m_FlagRight = (m_FlagRight == 0) ? 3 : 1;
-	}
-	else m_FlagRight = 0;
+	// 左クリック
+	BOOL work = (KeyBoard(MOUSE_LEFT)) ? 1 : 0;
+	(m_FlagLeft & 0x01) ? (m_FlagLeft = (work) ? 1 : 2) : (m_FlagLeft = (work) ? 3 : 0);
+
+	// 右クリック
+	work = (KeyBoard(MOUSE_RIGHT)) ? 1 : 0;
+	(m_FlagRight & 0x01) ? (m_FlagRight = (work) ? 1 : 2) : (m_FlagRight = (work) ? 3 : 0);
+
 }

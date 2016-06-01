@@ -247,12 +247,8 @@ void BokusouMode::Born::Update()
 //===========================================================
 //		‰Šú‰»E‰ð•ú
 //===========================================================
-Bokusou::Bokusou(const Vector2 &pos) :m_pMode(nullptr), m_bErase(false), m_pos(pos)
+Bokusou::Bokusou(const Vector2 &pos) :m_pMode(nullptr), m_bErase(false), m_pos(pos), m_pBokusouFlower(new tdn2DObj("DATA/–q‘/–q‘‚ÌŽí.png")), m_pBokusouRoll(new tdn2DObj("DATA/–q‘/–q‘.png"))
 {
-	// ‰æ‘œ‰Šú‰»
-	m_pBokusouFlower = new tdn2DObj("DATA/–q‘/–q‘‚ÌŽí.png");
-	m_pBokusouRoll = new tdn2DObj("DATA/–q‘/–q‘.png");
-
 	// ƒ‚[ƒh‰Šú‰»(‘o—tˆÇ‚©‚çŠJŽn)
 	this->ChangeMode(BOKUSOU_MODE::HUTABA);
 }

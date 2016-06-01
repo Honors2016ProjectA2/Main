@@ -23,8 +23,8 @@ const SE_Manager::DATA all_dataS[] =
 	{ "SPEED_UP",		"DATA/Sound/SE/se14.wav", 3, false },
 	{ "DAMAGE",			"DATA/Sound/SE/eat.wav", 20, false },
 	//{ "NOT_USE",		"DATA/Sound/SE/se16.wav", 3, false },
-	{ "RANK_OUT",		"DATA/Sound/SE/se20.wav", 3, false },
-	{ "RANK_IN",		"DATA/Sound/SE/se21.wav", 3, false },
+	{ "RANK_OUT",		"DATA/Sound/SE/se20.wav", 1, false },
+	{ "RANK_IN",		"DATA/Sound/SE/se21.wav", 1, false },
 	{ "—rƒŒ[ƒ“•Ï‚í‚é",	"DATA/Sound/SE/arrert.wav", 3, false },
 	{ "–q‘‰è¶‚¦‚½",	"DATA/Sound/SE/born.wav", 3, false },
 	{ "‘¾‚Á‚½—r‰Ÿ‚·",	"DATA/Sound/SE/debuosu.wav", 3, false },
@@ -33,6 +33,12 @@ const SE_Manager::DATA all_dataS[] =
 	{ "‚«‚ç‚ß‚­—r‚³‚ñ",	"DATA/Sound/SE/kiramekuhitsujisan.wav", 3, false },
 	{ "—r‘–‚é",	"DATA/Sound/SE/sheep_run.wav", 3, false },
 	{ "‘¾‚Á‚½—rIN", "DATA/Sound/SE/fat_in.wav", 3, false },
+	{ "‚Ü‚«", "DATA/Sound/SE/maki.wav", 1, false },
+	{ "“_‰Î", "DATA/Sound/SE/tenka.wav", 1, false },
+	{ "”R‚¦‚Ä‚«‚½", "DATA/Sound/SE/moetekita.wav", 1, false },
+	{ "”R‚¦ÅI", "DATA/Sound/SE/burn.wav", 1, false },
+	{ "Ä‚¯‚½", "DATA/Sound/SE/yaketa.wav", 1, false },
+	{ "”ß–Â", "DATA/Sound/SE/himei.wav", 1, false },
 };
 
 //==============================================================================================
@@ -151,6 +157,8 @@ int SE_Manager::Play_in(int data_num, bool loop)
 {
 	if (data_num != TDNSOUND_PLAY_NONE)
 	{
+		play_manager->SetPan(data_num, DSBPAN_CENTER);
+		play_manager->SetVolume(data_num, DSBVOLUME_MAX);
 		play_manager->Play(data_num, loop);
 	}
 	return TDNSOUND_PLAY_NONE;

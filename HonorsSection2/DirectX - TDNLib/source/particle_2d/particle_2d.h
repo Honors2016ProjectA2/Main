@@ -105,7 +105,8 @@ public:
 	static void Render();
 
 	// パーティクル関数たち
-	static void Effect_KiraKira(const Vector2 &pos, const Vector2 &Range, float scale = 20.0f, float ScaleFluctuation = 5.0f, int LoopCount = 1, int EndFrame = 120);	// きらきらエフェクト
+	static void Effect_KiraKira(const Vector2 &pos, const Vector2 &range, float scale = 20.0f, float ScaleFluctuation = 5.0f, int LoopCount = 1, int EndFrame = 120);	// きらきらエフェクト
+	static void Effect_Smoke(const Vector2 &pos);
 private:
 	static Particle_2d *m_pParticle2d;
 };

@@ -10,7 +10,7 @@ static const float abjustSize = 0.5f;
 /****************************************************/
 
 // ファイルから画像読み込み
-tdn2DObj::tdn2DObj(const char* fileName)
+tdn2DObj::tdn2DObj(const char* fileName):m_bLoadTexture(true)
 {
 	// 初期化
 	m_width = m_height = 0;
@@ -47,7 +47,7 @@ tdn2DObj::tdn2DObj(const char* fileName)
 }
 
 // メモリーから画像読み込み
-tdn2DObj::tdn2DObj(const char* IDName, const char* pArchiveName)
+tdn2DObj::tdn2DObj(const char* IDName, const char* pArchiveName):m_bLoadTexture(true)
 {
 	// 初期化
 	m_width = m_height = 0;
@@ -83,7 +83,7 @@ tdn2DObj::tdn2DObj(const char* IDName, const char* pArchiveName)
 }
 
 // レンダーターゲット(描画先)作成
-tdn2DObj::tdn2DObj(UINT width, UINT height, FMT2D fmtFlag)
+tdn2DObj::tdn2DObj(UINT width, UINT height, FMT2D fmtFlag):m_bLoadTexture(true)
 {
 	//	情報初期化
 	m_width = m_height = 0;
@@ -184,7 +184,7 @@ tdn2DObj::~tdn2DObj(){
 	if (lpSurface){
 		lpSurface->Release();
 	}
-	if (lpTexture){
+	if (lpTexture && m_bLoadTexture){
 		tdnTexture::Release(lpTexture);
 	}
 	

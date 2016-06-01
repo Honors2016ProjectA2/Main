@@ -18,6 +18,7 @@
 #include	"../PostEffect/PostEffect.h"
 #include	"../particle_2d/particle_2d.h"
 #include	"../Effect/EffectManager.h"
+#include	"../Niku/Niku.h"
 #include	"../UI\ResultUIManager.h"
 #include	"result2.h"
 
@@ -54,7 +55,7 @@ bool sceneMain::Initialize()
 	end = new End();
 	pointer = new MousePointer();
 	dataMNG = new DataManager();
-	m_pSheepMgr = new SheepManager();
+	g_pSheepMgr = new SheepManager();
 	result = new Result2();
 	isResultFlag = true;
 
@@ -73,13 +74,16 @@ bool sceneMain::Initialize()
 	// 牧草マネージャー初期化
 	BokusouMgr->Initialize();
 
+	// 肉マネージャー初期化
+	NikuMgr->Initialize();
+
 	bgm->Play("MAIN");
 
 	// ポストエフェクト
 	PostEffectMgr;
 
 	// パーティクル初期化
-	Particle2dManager::Initialize("DATA/Effect/particle.png", 1000, 4, 4);
+	Particle2dManager::Initialize("DATA/Effect/particle.png", 10000, 4, 4);
 
 	return true;
 }
@@ -92,7 +96,7 @@ sceneMain::~sceneMain()
 	SAFE_DELETE(pointer);
 	SAFE_DELETE(stage);
 	SAFE_DELETE(dataMNG);
-	SAFE_DELETE(m_pSheepMgr);
+	SAFE_DELETE(g_pSheepMgr);
 	EnemyMgr->Release();
 	SAFE_DELETE(byunAlpha);
 	SAFE_DELETE(result);
@@ -102,6 +106,7 @@ sceneMain::~sceneMain()
 	Particle2dManager::Release();
 	UIMNG.Release();
 	EffectMgr.Release();
+	NikuMgr->Release();
 }
 
 //******************************************************************
@@ -126,7 +131,7 @@ bool sceneMain::Update()
 	/*　データ受け渡し　*/
 	DataDelivery();
 	/*　当たり判定　*/
-	CollisionMgr->Update(m_pSheepMgr, dataMNG, stage);
+	CollisionMgr->Update(g_pSheepMgr, dataMNG, stage);
 
 	// PosyEffect
 	PostEffectMgr.Update();
@@ -146,7 +151,7 @@ void sceneMain::DataDelivery()
 	stage->Reflection(dataMNG, pointer);
 	pointer->DataReceive(stage);
 	end->DataReceive(stage);
-	m_pSheepMgr->Set_pointers(stage, dataMNG);
+	g_pSheepMgr->Set_pointers(stage, dataMNG);
 	EnemyMgr->Set_Pointers(stage, dataMNG);
 	//result->Set_MousePointer(pointer);
 }
@@ -164,7 +169,7 @@ void sceneMain::Init()
 	FadeControl::Setting(FadeControl::MODE::FADE_IN, 30.0f);
 
 	// ここのかっこを0にするとレディーゴーの処理が出る(デバッグの時短でレディーゴーを無しにしてる)
-	state = (0) ? SCENE::MAIN : SCENE::READY;
+	state = (1) ? SCENE::MAIN : SCENE::READY;
 	DataDelivery();
 }
 
@@ -172,7 +177,7 @@ void sceneMain::ReadyEvent()
 {
 	if( ready->Update() ){
 		state = SCENE::MAIN;
-		m_pSheepMgr->Start();
+		g_pSheepMgr->Start();
 	}
 	stage->Update();
 }
@@ -181,17 +186,16 @@ void sceneMain::MainUpdate()
 {
 	dataMNG->Update();
 	stage->Update();
-	m_pSheepMgr->Update();
+	g_pSheepMgr->Update();
 	EnemyMgr->Update();
 	ShakeMgr->Update();
 	BokusouMgr->Update();
-
 	UIMNG.Update();
+	NikuMgr->Update();
 	if (KeyBoard(KB_N)==3)
 	{
 		EffectMgr.AddEffect( 220, 64, EFFECT_TYPE::BURN);
 	}
-
 	// タイムが0になったらゲームオーバー処理
 	//if( dataMNG->GetTime() <= 0 ){
 	//	state = SCENE::END;
@@ -311,7 +315,7 @@ void sceneMain::Render()
 	FadeControl::Render();
 #ifdef _DEBUG
 	DebugText();
-	CollisionMgr->DebugRender(m_pSheepMgr, dataMNG, stage);
+	CollisionMgr->DebugRender(g_pSheepMgr, dataMNG, stage);
 #endif
 }
 
@@ -323,8 +327,9 @@ void sceneMain::ReadyRender()
 void sceneMain::MainRender()
 {
 	BokusouMgr->Render();
-	m_pSheepMgr->Render();
+	g_pSheepMgr->Render();
 	EnemyMgr->Render();
+	NikuMgr->Render();
 	Particle2dManager::Render();
 }
 

@@ -4,7 +4,8 @@
 #include "watchman.h"
 #include "../Data/DataMNG.h"
 #include "../Effect/EffectManager.h"
-
+#include "../Niku/Niku.h"
+#include "../Sheep/Sheep.h"
 
 //**************************************************
 //    基底
@@ -17,20 +18,46 @@ void Enemy::Base::MoveUpdate()
 //**************************************************
 //    狼
 //**************************************************
-Enemy::Wolf::Wolf(tdn2DObj *image, int floor, float speed) :Base(image, floor, speed)
+Enemy::Wolf::Wolf(tdn2DObj *image, tdn2DObj *pniku, int floor, float speed, int nikustopTime) : Base(image, floor, speed), m_pNikukutteru(pniku), m_EAT_NIKU_TIMER(nikustopTime), m_OrgSpeed(speed)
 {
 	// イニシャライザ書けない
 	W = 120;
 	H = 120;
-	// 移動の向き(左)
-	m_MoveVec = Vector2(-1, 0);
 
 	// 座標初期化
 	m_pos.x = 1280;
 	m_pos.y = (float)STAGE_POS_Y[floor] + LANE_WIDTH / 4;
+
+	// モードポインタ初期亜k
+	ModeFunk[(int)MODE::RUN] = &Wolf::Run;
+	ModeFunk[(int)MODE::NIKU] = &Wolf::Niku;
+	ModeFunk[(int)MODE::KAERU] = &Wolf::Kaeru;
+
+	// 最初はしる
+	ChangeMode(MODE::RUN);
 }
 
 void Enemy::Wolf::Update()
+{
+	// モード関数実行
+	(this->*ModeFunk[(int)m_mode])();
+
+	// 座標更新
+	Enemy::Base::MoveUpdate();
+}
+
+void Enemy::Wolf::Run()
+{
+	// アニメ更新
+	if (++m_AnimeFrame > 5)
+	{
+		m_AnimeFrame = 0;
+		if (++m_AnimePanel > 4) m_AnimePanel = 0;
+	}
+}
+
+
+void Enemy::Wolf::Niku()
 {
 	// アニメ更新
 	if (++m_AnimeFrame > 5)
@@ -39,37 +66,47 @@ void Enemy::Wolf::Update()
 		if (++m_AnimePanel > 4) m_AnimePanel = 0;
 	}
 
-	// 座標更新
-	Enemy::Base::MoveUpdate();
+	// 肉時間
+	if (++m_EatNikuTimer > m_EAT_NIKU_TIMER)
+	{
+		ChangeMode(MODE::KAERU);
+	}
 }
+
+void Enemy::Wolf::Kaeru()
+{
+	// アニメ更新
+	if (++m_AnimeFrame > 5)
+	{
+		m_AnimeFrame = 0;
+		if (++m_AnimePanel > 4) m_AnimePanel = 0;
+	}
+
+	// 端まで帰ったら
+	if (m_pos.x > 1280)
+	{
+		// 死ぬ
+		m_bErase = true;
+	}
+}
+
 
 void Enemy::Wolf::Render()
 {
-	m_pImage->Render((int)m_pos.x, (int)m_pos.y, W, H, (m_AnimePanel % 4) * W, (m_AnimePanel / 4) * H, W, H);
+	tdn2DObj *pImage;
+	switch (m_mode)
+	{
+	case Enemy::Wolf::MODE::RUN:
+	case Enemy::Wolf::MODE::KAERU:
+		pImage = m_pImage;
+		break;
+	case Enemy::Wolf::MODE::NIKU:
+		pImage = m_pNikukutteru;
+		break;
+	}
+	pImage->Render((int)m_pos.x, (int)m_pos.y, W, H, (m_AnimePanel % 4) * W, (m_AnimePanel / 4) * H, W, H);
 }
 
-//**************************************************
-//    メテオ
-//**************************************************
-Enemy::Meteo::Meteo(tdn2DObj *image, int floor, float speed) :Base(image, floor, speed)
-{
-	// イニシャライザ書けない
-	W = 120;
-	H = 120;
-	// 移動の向き(左)
-	m_MoveVec = Vector2(-1, 0);
-}
-
-void Enemy::Meteo::Update()
-{
-	// 座標更新
-	Enemy::Base::MoveUpdate();
-}
-
-void Enemy::Meteo::Render()
-{
-	m_pImage->Render((int)m_pos.x, (int)m_pos.y);
-}
 
 //**************************************************
 
@@ -95,6 +132,10 @@ EnemyManager::EnemyManager() :m_CreateTimer(0)
 	ifs >> skip;
 	ifs >> m_EnemySpeed[(int)ENEMY_TYPE::WOLF];
 
+	// にく
+	ifs >> skip;
+	ifs >> m_NikuTime;
+
 	m_NextFloor = tdnRandom::Get(0, 2);
 }
 
@@ -105,7 +146,7 @@ void EnemyManager::Initialize()
 
 	// 敵画像の読み込み
 	m_pImages[(int)ENEMY_TYPE::WOLF] = new tdn2DObj("DATA/CHR/「！」左移動.png");
-	m_pImages[(int)ENEMY_TYPE::METEO] = new tdn2DObj("DATA/CHR/「！」左移動.png");
+	m_pNikukutteru = new tdn2DObj("DATA/CHR/kuruma back.png");
 }
 
 void EnemyManager::Release()
@@ -115,21 +156,19 @@ void EnemyManager::Release()
 		delete m_pImages[i];
 	}
 	Clear();
+	delete m_pNikukutteru;
 }
 
 //**************************************************
 
 void EnemyManager::Create(int floor, ENEMY_TYPE type)
 {
-	Enemy::Base *set = nullptr;
+	Enemy::Wolf *set = nullptr;
 
 	switch (type)
 	{
 	case ENEMY_TYPE::WOLF:
-		set = new Enemy::Wolf(m_pImages[(int)ENEMY_TYPE::WOLF], floor, m_EnemySpeed[(int)ENEMY_TYPE::WOLF]);
-		break;
-	case ENEMY_TYPE::METEO:
-		set = new Enemy::Meteo(m_pImages[(int)ENEMY_TYPE::METEO], floor, m_EnemySpeed[(int)ENEMY_TYPE::METEO]);
+		set = new Enemy::Wolf(m_pImages[(int)ENEMY_TYPE::WOLF], m_pNikukutteru, floor, m_EnemySpeed[(int)ENEMY_TYPE::WOLF], m_NikuTime);
 		break;
 	default:
 		assert(0);	// 例外処理
@@ -151,7 +190,17 @@ void EnemyManager::Update()
 	}
 	else if (m_CREATETIME - m_CreateTimer == 80)
 	{
-		//A列車
+		// 肉センサー
+		Niku *pNiku = NikuMgr->GetNiku();
+		if (pNiku)m_NextFloor = pNiku->GetFloor();
+		
+		// 肉なかったら次はデブ羊フロア
+		else if (!g_pSheepMgr->GetFatList()->empty())
+		{
+			m_NextFloor = (*g_pSheepMgr->GetFatList()->begin())->GetFloor();
+		}
+
+		// ポップアップ
 		EffectMgr.AddEffect(1100, STAGE_POS_Y[m_NextFloor] + LANE_WIDTH / 2, EFFECT_TYPE::NOTICE);
 	}
 	for (auto it = m_list.begin(); it != m_list.end();)

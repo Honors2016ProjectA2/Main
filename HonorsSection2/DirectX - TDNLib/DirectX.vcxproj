@@ -80,8 +80,8 @@
       <DataExecutionPrevention />
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>./TDN/DirectShow/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/NODEFAULTLIB:LIBCMTD.LIB %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>./TDN/DirectShow/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -124,6 +124,7 @@
     <ClCompile Include="source\Enemy\watchman.cpp" />
     <ClCompile Include="source\IEX_Expansion.cpp" />
     <ClCompile Include="source\MousePointer.cpp" />
+    <ClCompile Include="source\Niku\Niku.cpp" />
     <ClCompile Include="source\Number\Number.cpp" />
     <ClCompile Include="source\particle_2d\particle_2d.cpp" />
     <ClCompile Include="source\pie_graph\pie_graph.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="source\Enemy\watchman.h" />
     <ClInclude Include="source\IEX_Expansion.h" />
     <ClInclude Include="source\MousePointer.h" />
+    <ClInclude Include="source\Niku\Niku.h" />
     <ClInclude Include="source\Number\Number.h" />
     <ClInclude Include="source\particle_2d\particle_2d.h" />
     <ClInclude Include="source\pie_graph\pie_graph.h" />

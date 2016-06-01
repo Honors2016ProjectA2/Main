@@ -158,7 +158,7 @@ typedef struct Vector2 :public float2
 	*@brief		ベクトルの2乗の長さを取得する
 	*@return	ベクトルの2乗の長さ
 	*/
-	inline float LengthSp(){ return (x*x + y*y); }
+	inline float LengthSq(){ return (x*x + y*y); }
 
 	/**
 	*@brief 正規化
