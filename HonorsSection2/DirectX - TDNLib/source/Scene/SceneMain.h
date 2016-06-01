@@ -9,7 +9,7 @@ class StageManager;
 class DataManager;
 class SheepManager;
 class Result;
-
+class Result2;
 
 class sceneMain	: public BaseScene
 {
@@ -30,7 +30,7 @@ private:
 	StageManager* stage = nullptr;
 	DataManager* dataMNG = nullptr;
 	SheepManager* m_pSheepMgr = nullptr;
-	Result * result = nullptr;
+	Result2 * result = nullptr;
 
 	tdn2DObj* byunAlpha = nullptr;
 
@@ -38,6 +38,8 @@ private:
 	tdn2DObj* renderTarget = nullptr;
 
 	int state = 0;
+
+	bool isResultFlag;
 
 	//INIT, TITLE, EXPLAIN, READY, MAIN, END, RESULT
 	void Init();

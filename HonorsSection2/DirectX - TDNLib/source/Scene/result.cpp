@@ -4,6 +4,7 @@
 #include "result.h"
 #include "../Data/file_manager.h"
 #include "../Sound/SoundManager.h"
+#include	"../UI\ResultUIManager.h"
 
 Result::Result() :
 NUMBERSIZE(128)
@@ -31,6 +32,8 @@ NUMBERSIZE(128)
 	process_r = 0;
 	render[RENDER::WIN] = &Result::Win;
 	render[RENDER::LOSS] = &Result::Loss;
+
+	RESULT_UIMNG;
 }
 
 Result::~Result()
@@ -44,6 +47,9 @@ Result::~Result()
 	{
 		SAFE_DELETE(exfiles[i]);
 	}
+
+	RESULT_UIMNG.Release();
+
 }
 
 //**************************************************
@@ -94,6 +100,8 @@ bool Result::Show()
 
 bool Result::Update()
 {
+	RESULT_UIMNG.Update();
+
 	return (this->*update[process])();
 }
 
@@ -206,6 +214,8 @@ void Result::Render()
 	Number(ranking[2], &Vector2(804, 565), 128, 64);
 
 	(this->*render[top3])();
+
+	RESULT_UIMNG.Render();
 
 	Rend_mouse();
 }

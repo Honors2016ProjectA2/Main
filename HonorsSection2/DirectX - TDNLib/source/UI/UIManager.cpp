@@ -45,7 +45,7 @@ UIManager::UIManager()
 	// タイマー
 	m_timerNum = new Number("DATA/Number/Number.png", 64);
 	m_timerPic = new tdn2DObj("DATA/Number/Number.png");
-	m_timer = 1 * 2;
+	m_timer = 60 * 2;
 	//m_timer = 0;
 	m_flame = 0;
 

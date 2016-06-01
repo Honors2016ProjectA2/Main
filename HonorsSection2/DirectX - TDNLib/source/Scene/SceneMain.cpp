@@ -18,6 +18,9 @@
 #include	"../PostEffect/PostEffect.h"
 #include	"../particle_2d/particle_2d.h"
 #include	"../Effect/EffectManager.h"
+#include	"../UI\ResultUIManager.h"
+#include	"result2.h"
+
 
 namespace{
 	namespace SCENE{
@@ -33,6 +36,9 @@ namespace{
 
 bool sceneMain::Initialize()
 {
+
+	UIMNG.SetTimer(12);
+
 	EffectMgr;
 
 	srand(timeGetTime());
@@ -49,7 +55,8 @@ bool sceneMain::Initialize()
 	pointer = new MousePointer();
 	dataMNG = new DataManager();
 	m_pSheepMgr = new SheepManager();
-	result = new Result();
+	result = new Result2();
+	isResultFlag = true;
 
 	// 敵マネージャ初期k
 	EnemyMgr->Initialize();
@@ -141,7 +148,7 @@ void sceneMain::DataDelivery()
 	end->DataReceive(stage);
 	m_pSheepMgr->Set_pointers(stage, dataMNG);
 	EnemyMgr->Set_Pointers(stage, dataMNG);
-	result->Set_MousePointer(pointer);
+	//result->Set_MousePointer(pointer);
 }
 
 
@@ -209,6 +216,15 @@ void sceneMain::MainUpdate()
 void sceneMain::EndEvent()
 {
 	if( end->Update() ){
+
+		
+		if (isResultFlag==true)
+		{
+			isResultFlag = false;
+			RESULT_UIMNG.Action();
+		}
+		
+
 		state = SCENE::RESULT;
 	}
 }
@@ -251,12 +267,6 @@ void sceneMain::Render()
 	// ステージの前描画
 	stage->RenderFront();
 
-	switch (state) {
-	case SCENE::READY:		ReadyRender();		break;
-	case SCENE::MAIN:		MainRender();		break;
-	case SCENE::END:		EndRender();		break;
-	case SCENE::RESULT:		ResultRender();		break;
-	}
 
 
 	UIMNG.Render();
@@ -286,6 +296,14 @@ void sceneMain::Render()
 		PostEffectMgr.BloomRender();
 	}
 	
+	switch (state) {
+	case SCENE::READY:		ReadyRender();		break;
+	case SCENE::MAIN:		MainRender();		break;
+	case SCENE::END:		EndRender();		break;
+	case SCENE::RESULT:		ResultRender();		break;
+	}
+
+
 	EffectMgr.Render();
 
 	//基本的には最後。説明時のみ説明書の後ろにするので別途
