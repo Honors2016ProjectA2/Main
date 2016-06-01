@@ -143,6 +143,10 @@ ResultUIManager::ResultUIManager()
 
 	/*****************************************/
 	//
+	m_rankingNumber = new Number();
+
+	Load();
+	m_RankingPic = new tdn2DObj("Data/ranking.png");
 
 }
 
@@ -150,6 +154,9 @@ ResultUIManager::ResultUIManager()
 
 ResultUIManager::~ResultUIManager()
 {
+	// 最後セーブ
+	Save();
+
 	SAFE_DELETE(m_resultScreen);
 
 	SAFE_DELETE(m_invCircle.pic);
@@ -173,7 +180,8 @@ ResultUIManager::~ResultUIManager()
 	SAFE_DELETE(m_rankingFont);
 	SAFE_DELETE(m_circleScreen);
 
-
+	SAFE_DELETE(m_rankingNumber);
+	SAFE_DELETE(m_RankingPic);
 }
 
 /***************************/
@@ -672,6 +680,54 @@ void ResultUIManager::RankingRender()
 
 	// ランキングフォント
 	m_rankingFont->Render(0, 0);
+
+	//  ランキング表示
+	for (int i = 0; i < RANKING_MAX; i++)
+	{
+		m_RankingPic->Render(10, (128 * i) + 175, 128, 128, 0, i * 128, 128, 128);
+		m_rankingNumber->Render(400, (128 * i) + 200, m_RankingNum[i]);
+
+		//tdnText::Draw(0, 0, 0xffffffff, "あああああああああ");
+	}
+}
+
+// ロード
+void ResultUIManager::Load()
+{
+	std::string fileName = "DATA/Ranking.txt";
+	// Load
+	std::ifstream in(fileName.c_str());
+
+	assert(in);
+	if (in)
+	{
+		// ランキング取得
+		for (int i = 0; i < RANKING_MAX; i++)
+		{
+			in >> m_RankingNum[i];		
+		}	
+
+	}
+
+
+}
+
+// セーブ
+void ResultUIManager::Save()
+{
+	std::string fileName = "DATA/Ranking.txt";
+	// Load
+	std::ofstream out(fileName.c_str());
+
+	assert(out);
+	if (out)
+	{
+		// ランキング取得
+		for (int i = 0; i < RANKING_MAX; i++)
+		{
+			out << m_RankingNum[i] << "\n";
+		}
+	}
 
 }
 

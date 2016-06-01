@@ -128,6 +128,16 @@ private: //•Ï”
 	tdn2DObj* m_rankingFont;
 
 	void RankingRender();
+
+	void Load();
+	void Save();
+
+	static const int RANKING_MAX = 4;
+	int m_RankingNum[RANKING_MAX];
+
+	Number* m_rankingNumber;
+	tdn2DObj* m_RankingPic;
+
 };
 
 

@@ -14,11 +14,11 @@ End* end;
 
 bool Title::Initialize()
 {
-	end = new End();
-	end->Init();
-	end->floorNum = 3;
+	//end = new End();
+	//end->Init();
+	//end->floorNum = 3;
 
-	RESULT_UIMNG;
+	//RESULT_UIMNG;
 
 	// パーティクル初期化
 	Particle2dManager::Initialize("DATA/Effect/particle.png", 1000, 4, 4);
@@ -60,30 +60,30 @@ Title::~Title()
 	SAFE_DELETE(m_koya.pic);
 	SAFE_DELETE(m_koya.picBack);
 	
-	SAFE_DELETE(end);
+	//SAFE_DELETE(end);
 
 	Particle2dManager::Release();
 	EffectMgr.Release();
-	RESULT_UIMNG.Release();
+	//RESULT_UIMNG.Release();
 
 }
 
 bool Title::Update()
 {
-	if (KeyBoard(KB_E) == 3)
-	{
-		end->Init();
-	}
-	static bool flag = 0;
-	if (end->Update())
-	{
-		if (flag == 0)
-		{
-			RESULT_UIMNG.Action();
-		}
-		flag++;
-	}
-	RESULT_UIMNG.Update();
+	//if (KeyBoard(KB_E) == 3)
+	//{
+	//	end->Init();
+	//}
+	//static bool flag = 0;
+	//if (end->Update())
+	//{
+	//	if (flag == 0)
+	//	{
+	//		RESULT_UIMNG.Action();
+	//	}
+	//	flag++;
+	//}
+	//RESULT_UIMNG.Update();
 
 	// パーティクル
 	Particle2dManager::Update();
@@ -246,9 +246,9 @@ void Title::Render()
 	//基本的には最後。説明時のみ説明書の後ろにするので別途
 	m_pointer->Render();
 
-	end->Render();
+	//end->Render();
 
-	RESULT_UIMNG.Render();
+	//RESULT_UIMNG.Render();
 	//Fade
 	FadeControl::Render();
 }
