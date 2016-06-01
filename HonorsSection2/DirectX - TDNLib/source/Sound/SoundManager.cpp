@@ -39,6 +39,7 @@ const SE_Manager::DATA all_dataS[] =
 	{ "”R‚¦ÅI", "DATA/Sound/SE/burn.wav", 1, false },
 	{ "Ä‚¯‚½", "DATA/Sound/SE/yaketa.wav", 1, false },
 	{ "”ß–Â", "DATA/Sound/SE/himei.wav", 1, false },
+	{ "—r’Í‚Ş", "DATA/Sound/SE/sheep_cry.wav", 6, false },
 };
 
 //==============================================================================================

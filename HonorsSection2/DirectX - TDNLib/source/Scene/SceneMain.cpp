@@ -37,8 +37,7 @@ namespace{
 
 bool sceneMain::Initialize()
 {
-
-	UIMNG.SetTimer(12);
+	UIMNG.SetTimer(60);
 
 	EffectMgr;
 
@@ -268,10 +267,6 @@ void sceneMain::Render()
 	stage->Render();
 
 
-	// ステージの前描画
-	stage->RenderFront();
-
-
 
 	UIMNG.Render();
 
@@ -307,6 +302,8 @@ void sceneMain::Render()
 	case SCENE::RESULT:		ResultRender();		break;
 	}
 
+	// ステージの前描画
+	stage->RenderFront();
 
 	EffectMgr.Render();
 

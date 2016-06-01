@@ -511,6 +511,7 @@ void SheepManager::Update()
 		{
 			if ((it->GetCenterPos() - tdnMouse::GetPos()).LengthSq() < 60 * 60)
 			{
+				se->Play("—r’Í‚Þ", *it->Get_pos());
 				it->Be_caught();
 				break;
 			}

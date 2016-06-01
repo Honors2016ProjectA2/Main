@@ -90,6 +90,7 @@ void NikuManager::Update()
 					{
 						// 肉掴みフラグON
 						m_bHoldNiku = true;
+						se->Play("牧草成長", m_pNiku->GetCenterPos());
 					}
 				}
 			}
@@ -267,7 +268,7 @@ YakinikuMode::Kogeta::Kogeta(Yakiniku *me) :Base(me), m_KiraKiraCoolTime(0)
 	m_srcX = 256 * 3;
 
 	// SEの再生
-	se->Play("牧草成長", me->GetPos());
+	//->Play("牧草成長", me->GetPos());
 
 	// エフェクト発動
 	//EffectMgr.AddEffect((int)me->GetPos().x + 64, (int)me->GetPos().y + 64, EFFECT_TYPE::PLUS);
