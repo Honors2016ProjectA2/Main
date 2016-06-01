@@ -47,7 +47,7 @@ int FindFloor(float posY)
 
 //------- constructor,destructor ---------
 
-StageManager::StageManager() :m_pDogImage(new tdn2DObj("DATA/CHR/dog.png")), m_pFireImage(new tdn2DObj("DATA/–q‘/‰Š‚Ìí.png")), m_FireSelect(false), m_FireAnimFrame(0), m_FireAnimPanel(0)
+StageManager::StageManager() :m_pDogImage(new tdn2DObj("DATA/CHR/dog.png")), m_pFireImage(new tdn2DObj("DATA/Šª‚«/‰Š‚Ìí.png")), m_FireSelect(false), m_FireAnimFrame(0), m_FireAnimPanel(0)
 {
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
