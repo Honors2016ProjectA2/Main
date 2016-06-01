@@ -7,9 +7,19 @@
 #include	"../particle_2d/particle_2d.h"
 #include "Effect\EffectManager.h"
 #include	"../system/FadeCtrl.h"
+#include "End.h"
+#include "UI\ResultUIManager.h"
+
+End* end;
 
 bool Title::Initialize()
 {
+	end = new End();
+	end->Init();
+	end->floorNum = 3;
+
+	RESULT_UIMNG;
+
 	// パーティクル初期化
 	Particle2dManager::Initialize("DATA/Effect/particle.png", 1000, 4, 4);
 
@@ -49,12 +59,32 @@ Title::~Title()
 	SAFE_DELETE(m_titleLogo);
 	SAFE_DELETE(m_koya.pic);
 	SAFE_DELETE(m_koya.picBack);
+	
+	SAFE_DELETE(end);
+
 	Particle2dManager::Release();
+	EffectMgr.Release();
+	RESULT_UIMNG.Release();
 
 }
 
 bool Title::Update()
 {
+	if (KeyBoard(KB_E) == 3)
+	{
+		end->Init();
+	}
+	static bool flag = 0;
+	if (end->Update())
+	{
+		if (flag == 0)
+		{
+			RESULT_UIMNG.Action();
+		}
+		flag++;
+	}
+	RESULT_UIMNG.Update();
+
 	// パーティクル
 	Particle2dManager::Update();
 	EffectMgr.Update();
@@ -216,6 +246,9 @@ void Title::Render()
 	//基本的には最後。説明時のみ説明書の後ろにするので別途
 	m_pointer->Render();
 
-	//FAde
+	end->Render();
+
+	RESULT_UIMNG.Render();
+	//Fade
 	FadeControl::Render();
 }

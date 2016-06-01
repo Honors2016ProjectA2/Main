@@ -28,6 +28,11 @@ public:
 	void SetGraph(float graph) {
 		m_percent = graph;
 	}
+
+	// タイマーのゲッター
+	int GetTimer() { return m_timer; }
+	void SetTimer(int timer) { m_timer = timer; }
+
 	void GraphAction();
 private:
 	static UIManager* inst;

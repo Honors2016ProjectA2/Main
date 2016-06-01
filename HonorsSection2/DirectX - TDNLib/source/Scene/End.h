@@ -12,13 +12,13 @@ public:
 	void Render();
 private:
 	tdn2DObjEx* timeUp = nullptr;
-	tdn2DObjEx* exPointR = nullptr;
-	tdn2DObjEx* exPointL = nullptr;
+	tdn2DObj* m_sheepPic = nullptr;
+	tdn2DObj* m_wolfPic = nullptr;
 	int state = 0;
 	float timeUpScale = .0f;
 
 	struct ExPointData{
-		tdn2DObjEx* obj;
+		tdn2DObj* obj;
 		Vector2 pos;
 		int animNum;
 		int animFrame;
@@ -27,18 +27,20 @@ private:
 		enum{
 			RIGHT, LEFT
 		};
-		void Set(const Vector2 pos, const int moveAngle, tdn2DObjEx* obj, const int myFloor);
+		void Set(const Vector2 pos, const int moveAngle, tdn2DObj* obj, const int myFloor);
 		void Update();
 		void Render(const int floor);
 	}* data = nullptr;
 
 	int waitTimer = 0;
 
-	int floorNum;
+
 
 	void TextPop();
 	void ExPointDash();
 
 public:
+	int floorNum;
+
 	void DataReceive(StageManager* stage);
 };

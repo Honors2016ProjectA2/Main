@@ -195,6 +195,15 @@ void sceneMain::MainUpdate()
 	//	bgm->Stop("MAIN");
 	//	se->Play("TIME_UP");
 	//}
+
+	// タイムが0になったらゲームオーバー処理
+	if (UIMNG.GetTimer() <= 0)
+	{
+		state = SCENE::END;
+
+		UIMNG.SetTimer(120);
+	}
+		
 }
 
 void sceneMain::EndEvent()
