@@ -8,6 +8,9 @@
 #include "../system/system.h"
 #include "../particle_2d/particle_2d.h"
 
+// グローバル領域
+int g_CreateSheepFloor;	// 羊を生成するフロア
+
 Sheep::Base::Base(const SheepData &data, int floor, const SheepTextParam &textparam) :
 animepos(0, 0),
 m_floor(floor),
@@ -169,7 +172,11 @@ void Sheep::Base::Caught()
 	// 火の座標
 
 	// マウス離された瞬間
-	if (tdnMouse::GetRight() == 2)
+	bool hanashita;
+	if (m_bLeftCatch) hanashita = (tdnMouse::GetLeft() == 2);
+	else hanashita = (tdnMouse::GetRight() == 2);
+
+	if (hanashita)
 	{
 		// 歩くモードに戻る
 		process = MODE::WALK;
@@ -239,8 +246,9 @@ void Sheep::Base::Be_crushed()
 	process = CRUSHED; 
 	//obj = file[CRUSHED];
 }
-void Sheep::Base::Be_caught()
+void Sheep::Base::Be_caught(bool bLeft)
 { 
+	m_bLeftCatch = bLeft;
 	process = CAUGHT; 
 	//obj = file[RAN_OVER];
 }
@@ -274,7 +282,7 @@ void Sheep::Gold::Update()
 //**************************************************
 //	牧草食って太った羊
 //**************************************************
-FatSheep::FatSheep(tdn2DObj *image, const Vector2 &pos) :m_image(image), m_pos(pos), m_angle(0), m_bErase(false), m_moveX(0), m_ReceiveSE(TDNSOUND_PLAY_NONE), m_AnimFrame(0), m_AnimPanel(0), m_accel(0)
+FatSheep::FatSheep(tdn2DObj *image, const Vector2 &pos) :DebuBase(image,pos)
 {
 
 }
@@ -283,44 +291,6 @@ FatSheep::~FatSheep()
 {
 	// ループしてるSEを止める
 	if (m_ReceiveSE != TDNSOUND_PLAY_NONE) se->Stop("太った羊押す", m_ReceiveSE);
-}
-
-void FatSheep::Update()
-{
-	// アニメ
-	if (++m_AnimFrame > 4)
-	{
-		m_AnimFrame = 0;
-		if (++m_AnimPanel > 3)m_AnimPanel = 0;
-	}
-
-	// SE鳴らしてないときの状態
-	if (m_ReceiveSE == TDNSOUND_PLAY_NONE)
-	{
-		// 動いてたら
-		if (m_moveX != 0) m_ReceiveSE = se->Play("太った羊押す", m_pos, Vector2(0, 0), true);	// SE再生(デストラクタで止める)
-	}
-	else
-	{
-		// SEの座標を設定
-		se->SetPos("太った羊押す", m_ReceiveSE, m_pos);
-	}
-	// 加速度を足していく
-	m_moveX += m_accel;
-	// 移動値を足していく
-	m_pos.x += m_moveX;
-	// 移動値に応じて羊を回転させる
-	m_angle -= m_moveX * 0.01f;
-
-	// 空気抵抗
-	m_accel = max(m_accel - 0.01f, 0);
-	m_moveX = max(m_moveX - 0.01f, 0);
-}
-
-void FatSheep::Render()
-{
-	m_image->SetAngle(m_angle);
-	m_image->Render((int)m_pos.x, (int)m_pos.y, 240, 240, m_AnimPanel * 240, 0, 240, 240);
 }
 
 
@@ -336,9 +306,9 @@ m_ChangeLaneTime(0), sp(0)
 	m_pFatSheepImage = new tdn2DObj("DATA/CHR/fat_sheep.png");
 	m_pBoneImage = new tdn2DObj("DATA/CHR/hone_motion.png");
 
-	m_CreateFloor = 0;	// 初期羊生成フロア
+	g_CreateSheepFloor = 0;	// 初期羊生成フロア
 	// 次のランダムフロア決定
-	m_NextChangeFloor = MakeNextFloor(m_CreateFloor);
+	m_NextChangeFloor = MakeNextFloor(g_CreateSheepFloor);
 
 	// テキストからパラメータ読み込み
 	std::fstream ifs("DATA/Text/Param/sheep.txt");
@@ -461,17 +431,17 @@ void SheepManager::Update()
 		if (KeyBoardTRG(KB_DOT))
 		{
 			m_ChangeLaneTime = 0;
-			m_CreateFloor = 0;
+			g_CreateSheepFloor = 0;
 		}
 		else if (KeyBoardTRG(KB_SLASH))
 		{
 			m_ChangeLaneTime = 0;
-			m_CreateFloor = 1;
+			g_CreateSheepFloor = 1;
 		}
 		else if (KeyBoardTRG(KB_UNDER_BAR))
 		{
 			m_ChangeLaneTime = 0;
-			m_CreateFloor = 2;
+			g_CreateSheepFloor = 2;
 		}
 	}
 
@@ -482,10 +452,10 @@ void SheepManager::Update()
 		m_ChangeLaneTime = 0;
 
 		// レーンを変える
-		m_CreateFloor = m_NextChangeFloor;
+		g_CreateSheepFloor = m_NextChangeFloor;
 
 		// 次のランダムフロア決定
-		m_NextChangeFloor = MakeNextFloor(m_CreateFloor);
+		m_NextChangeFloor = MakeNextFloor(g_CreateSheepFloor);
 	}
 	else if (m_ChangeLaneTime == CHANGE_LANE_TIME / 4)
 	{
@@ -499,22 +469,37 @@ void SheepManager::Update()
 	// 前回からの経過時間と出現間隔に応じて、羊を生成
 	for (int j = delta; j > m_TextParam.AppTime; j -= m_TextParam.AppTime)
 	{
-		create(m_CreateFloor);
+		create(g_CreateSheepFloor);
 		bCreate = true;
 	}
 
 	// 現在時刻設定
 	if (bCreate)m_CurrentTime = clock();
 
+	auto CheckCatch = [](bool *OutbLeft)
+	{
+		if (tdnMouse::GetRight() == 3)
+		{
+			*OutbLeft = false;
+			return true;
+		}
+		else if (!g_bDogSetFrame && tdnMouse::GetLeft() == 3)
+		{
+			*OutbLeft = true;
+			return true;
+		}
+		else return false;
+	};
 	// 掴む処理
-	if (tdnMouse::GetRight() == 3)
+	bool bLeftCatch;
+	if (CheckCatch(&bLeftCatch))
 	{
 		for (auto& it : m_List)
 		{
 			if ((it->GetCenterPos() - tdnMouse::GetPos()).LengthSq() < 60 * 60)
 			{
 				se->Play("羊掴む", *it->Get_pos());
-				it->Be_caught();
+				it->Be_caught(bLeftCatch);
 				break;
 			}
 		}

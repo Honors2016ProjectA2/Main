@@ -145,6 +145,7 @@ public:
 	// “÷İ’uŒn
 	bool isSeted(){ return m_bSet; }
 	void Set(){ m_bSet = true; }
+	void UnSet(){ m_bSet = false; }
 
 private:
 	int m_floor;

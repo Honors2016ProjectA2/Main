@@ -48,6 +48,9 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 					// 焼肉開始
 					NikuMgr->StartYakiniku();
 
+					// 火エフェクト
+					EffectMgr.AddEffect((int)YAKINIKU_AREA.x + 128, (int)YAKINIKU_AREA.y +128, EFFECT_TYPE::BURN);
+
 					// 羊消す
 					sinIterator->Erase();
 				}
@@ -183,7 +186,6 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 	}	// 羊のfor分
 
 	// 太った羊ループ
-	int FatSheepIndex(0);
 	for (auto &fatIt : *sinnMNG->GetFatList())
 	{
 		////羊VS狼（ダメージ判定
@@ -191,15 +193,12 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 		//{
 		//	// 飛ばす
 		//	if (manIterator->GetMode() != Enemy::Wolf::MODE::RUN || manIterator->GetFloor() != fatIt->GetFloor()) continue;
-
 		//	Vector2 fPos = fatIt->GetCenterPos(), wolfPos = manIterator->GetCenterPos();
-
 		//	Vector2 diff = fPos - wolfPos;
 		//	int size = (120 + 240) / 2;
 		//	if (diff.x*diff.x < size*size){
 		//		//A列車 狼と羊が当たった瞬間
 		//		EffectMgr.AddEffect((int)fatIt->GetCenterPos().x + 96, (int)fatIt->GetCenterPos().y + 64, EFFECT_TYPE::HIT);
-
 		//		fatIt->Erase();
 		//		se->Play("DAMAGE", manIterator->GetCenterPos());
 		//	}
@@ -221,6 +220,79 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 
 
 			SetScore(dataMNG, fatIt->GetFloor(), 10000);	// 10000倍
+			se->Play("太った羊IN");
+
+			// ゆらす！！
+			ShakeMgr->Set();
+
+			// 消去
+			fatIt->Erase();
+			continue;
+		}
+
+		int HitCount(0);	// 太った羊にあたってる数
+		for (auto &sheepIt : *sinnMNG->Get_list())
+		{
+			if (fatIt->GetFloor() != sheepIt->Get_floor() || !sheepIt->isPushOK()) continue;	// レーン違う
+
+			Vector2 sPos = sheepIt->GetCenterPos();
+			Vector2 fPos = fatIt->GetCenterPos();
+
+			// 太ってる羊範囲内
+			if (sPos.x < fPos.x && sPos.x > fPos.x - 192)
+			{
+				// 当たった数カウント
+				HitCount++;
+
+				// 太ってない羊をずらす
+				if (fPos.x - sPos.x < 128)
+				{
+					//sheepIt->SetPos(fPos - Vector2(128, 0));
+					sheepIt->SetPosX(fPos.x - 128);
+				}
+
+				// 押してるモードにする
+				sheepIt->Be_Push();
+			}
+			else sheepIt->Be_Walk();
+		}
+		// 当たった数に応じて太ってる羊の移動量作成
+		fatIt->SetAccel((HitCount * sinnMNG->FatSheepAccel()));
+	}
+
+	// 太った狼と羊
+	for (auto &fatIt : *EnemyMgr->GetFatList())
+	{
+		// 脱出判定
+		if (fatIt->GetCenterPos().x >= 1400)
+		{
+			//A列車 太った羊がゴールした瞬間
+			EffectMgr.AddEffect((int)fatIt->GetCenterPos().x - 96, (int)fatIt->GetCenterPos().y, EFFECT_TYPE::PLUS);
+			EffectMgr.AddEffect((int)fatIt->GetCenterPos().x - 256, (int)fatIt->GetCenterPos().y, EFFECT_TYPE::INEFFECT);
+
+			// プロジェクションのポジションを入手
+			Vector2 projPos = Math::GetProjPos(Vector2(
+				(float)fatIt->GetCenterPos().x - 96,
+				(float)fatIt->GetCenterPos().y + 64));
+			// 放射ブラ―発動！
+			PostEffectMgr.SetRadialBlur(projPos, 15);
+
+			// 太ってるタイプに応じて時間を設定
+			int AddTime;
+			switch (fatIt->GetType())
+			{
+			case FAT_WOLF_TYPE::SMALL:
+				AddTime = 5;
+				break;
+			case FAT_WOLF_TYPE::MIDDLE:
+				AddTime = 10;
+				break;
+			case FAT_WOLF_TYPE::LARGE:
+				AddTime = 20;
+				break;
+			}
+			UIMNG.SetTimer(UIMNG.GetTimer()+AddTime);
+
 			se->Play("太った羊IN");
 
 			// ゆらす！！
@@ -259,8 +331,6 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 		}
 		// 当たった数に応じて太ってる羊の移動量作成
 		fatIt->SetAccel((HitCount * sinnMNG->FatSheepAccel()));
-
-		FatSheepIndex++;
 	}
 
 	//犬と狼
@@ -286,6 +356,22 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 			{
 				// 肉食ってるモードにする
 				manIterator->ChangeMode(Enemy::Wolf::MODE::NIKU);
+
+				// 肉の状態に応じて太る狼のタイプ設定
+				switch (pNiku->GetType())
+				{
+				case YAKINIKU_MODE::NAMA:
+				case YAKINIKU_MODE::KOGETA:
+					manIterator->SetFatType(FAT_WOLF_TYPE::SMALL);
+					break;
+				case YAKINIKU_MODE::RARE:
+					manIterator->SetFatType(FAT_WOLF_TYPE::MIDDLE);
+					break;
+				case YAKINIKU_MODE::MEDIAM:
+					manIterator->SetFatType(FAT_WOLF_TYPE::LARGE);
+					break;
+				}
+
 				manIterator->SetCenterPos(pNiku->GetCenterPos());
 
 				// 肉消す

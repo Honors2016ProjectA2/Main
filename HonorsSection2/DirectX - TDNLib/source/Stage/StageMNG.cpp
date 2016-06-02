@@ -8,6 +8,7 @@
 #include "../Sound/SoundManager.h"
 #include "../Niku/Niku.h"
 #include "Effect\EffectManager.h"
+#include "../Sheep/Sheep.h"
 
 //int g_FireModeChangeTime[(int)CurvePoint::FIRE_MODE::MAX];			// モードが変わっていく時間
 
@@ -23,6 +24,7 @@ int STAGE_POS_Y[3] =
 };
 int LANE_WIDTH = 0;
 Vector2 YAKINIKU_AREA(0, 0);
+bool g_bDogSetFrame = false;		// 犬を設置したフレームかどうか
 
 int FindFloor(float posY)
 {
@@ -208,6 +210,17 @@ void StageManager::Update()
 	// マウス座標
 	Vector2 mPos = tdnMouse::GetPos();
 
+	// 犬設置したフレームかどうか
+	g_bDogSetFrame = false;
+
+	enum class DOG
+	{
+		NONE,		// 何もしてない
+		SET,		// 配置
+		RECOVER,	// 回収
+	}DogFlag = DOG::NONE;
+
+
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
 		if (stage[i] == nullptr)continue;
@@ -235,8 +248,8 @@ void StageManager::Update()
 				}
 				else it->m_bCursorIn = false;
 
-				// 左クリック！！
-				if (tdnMouse::GetLeft() == 3 && it->m_bCursorIn)
+				// 左クリック！！かつカーソル範囲内かつ有効状態なら
+				if (tdnMouse::GetLeft() == 3 && it->m_bCursorIn && it->bEnable)
 				{
 					// 犬回収
 					if (it->IsOpening())
@@ -244,7 +257,12 @@ void StageManager::Update()
 						se->Play("犬", it->GetPos());
 						m_DogStock++;	// ストック回復
 						it->Change();	// 犬のON_OFF
-						return;
+						// 犬設置したフレームかどうか
+						g_bDogSetFrame = true;
+
+						// 犬回収フラグ
+						DogFlag = DOG::RECOVER;
+						break;
 					}
 
 					// 犬設置
@@ -257,6 +275,12 @@ void StageManager::Update()
 							se->Play("犬", it->GetPos());
 							m_DogStock--;
 							it->Change();	// 犬のON_OFF
+							// 犬設置したフレームかどうか
+							g_bDogSetFrame = true;
+
+							// 犬設置フラグ
+							DogFlag = DOG::SET;
+							break;
 						}
 					}
 
@@ -265,6 +289,135 @@ void StageManager::Update()
 			//else it->m_bCursorIn = false;
 
 		}	// 犬リスト
+
+		// 犬設置してたら
+		if (DogFlag == DOG::SET)
+		{
+			// 2体とも設置してたら、
+			if (m_DogStock == 0)
+			{
+				// それ以外全部無効化
+				FOR(STAGE_MAX) for (auto it : m_Doglists[i])
+				{
+					// 設置されてない位置を無効化
+					if (!it->IsOpening()) it->bEnable = false;
+				}
+			}
+
+			// 1体だけ設置なら、必要箇所を無効化
+			else
+			{
+				// 上レーン左
+				if (m_Doglists[0][0]->IsOpening())
+				{
+					// 真ん中の右以外無効化
+					m_Doglists[0][1]->bEnable = false;
+					m_Doglists[1][0]->bEnable = false;
+					m_Doglists[2][0]->bEnable = false;
+					m_Doglists[2][1]->bEnable = false;
+				}
+
+				// 上レーン右
+				else if (m_Doglists[0][1]->IsOpening())
+				{
+					// 真ん中の右以外無効化
+					m_Doglists[0][0]->bEnable = false;
+					m_Doglists[1][0]->bEnable = false;
+					m_Doglists[2][0]->bEnable = false;
+					m_Doglists[2][1]->bEnable = false;
+				}
+
+				// 真ん中レーン左
+				else if (m_Doglists[1][0]->IsOpening())
+				{
+					// 上の右以外無効化
+					m_Doglists[0][0]->bEnable = false;
+					m_Doglists[1][1]->bEnable = false;
+					m_Doglists[2][0]->bEnable = false;
+					m_Doglists[2][1]->bEnable = false;
+				}
+
+				// 真ん中レーン右
+				else if (m_Doglists[1][1]->IsOpening())
+				{
+					// それ以外無効化
+					m_Doglists[0][0]->bEnable = false;
+					m_Doglists[0][1]->bEnable = false;
+					m_Doglists[1][0]->bEnable = false;
+					m_Doglists[2][0]->bEnable = false;
+					m_Doglists[2][1]->bEnable = false;
+				}
+
+				// 下レーン左
+				else if (m_Doglists[2][0]->IsOpening())
+				{
+					// 真ん中レーン以外無効化
+					m_Doglists[0][0]->bEnable = false;
+					m_Doglists[0][1]->bEnable = false;
+					m_Doglists[2][1]->bEnable = false;
+				}
+
+				// 下レーン右
+				else if (m_Doglists[2][1]->IsOpening())
+				{
+					// それ以外無効化
+					m_Doglists[0][0]->bEnable = false;
+					m_Doglists[0][1]->bEnable = false;
+					m_Doglists[1][0]->bEnable = false;
+					m_Doglists[1][1]->bEnable = false;
+					m_Doglists[2][0]->bEnable = false;
+				}
+			}
+		}
+
+		// 犬回収してたら
+		else if (DogFlag == DOG::RECOVER)
+		{
+			// まだ1体設置してる状態だったら
+			if (m_DogStock == 1)
+			{
+				// 上レーン左
+				if (m_Doglists[0][0]->IsOpening())
+				{
+					// 真ん中の右を有効化
+					m_Doglists[1][1]->bEnable = true;
+				}
+
+				// 上レーン右
+				else if (m_Doglists[0][1]->IsOpening())
+				{
+					// 真ん中の右を有効化
+					m_Doglists[1][1]->bEnable = true;
+				}
+
+				// 真ん中レーン右
+				else if (m_Doglists[1][1]->IsOpening())
+				{
+					// 上レーンと下の左有効化
+					if (g_CreateSheepFloor == 0)
+					{
+						m_Doglists[0][0]->bEnable = true;
+						m_Doglists[0][1]->bEnable = true;
+					}
+					else if(g_CreateSheepFloor == 2) m_Doglists[2][0]->bEnable = true;
+				}
+
+				// 下レーン左
+				else if (m_Doglists[2][0]->IsOpening())
+				{
+					// 真ん中レーンを有効化
+					m_Doglists[1][0]->bEnable = true;
+					m_Doglists[1][1]->bEnable = true;
+				}
+			}
+
+			// 全員回収してる状態だったら
+			else
+			{
+				// 全員有効化
+				FOR(STAGE_MAX) for (auto it : m_Doglists[i]) it->bEnable = true;
+			}
+		}
 
 		// 火リスト更新
 		//for (auto it : m_Firelists[i])
@@ -339,10 +492,6 @@ void StageManager::Render()
 
 		stage[i]->Render();
 
-		// 犬と炎の描画
-		for (auto it : m_Doglists[i]) it->Render();
-		//for (auto it : m_Firelists[i]) it->Render();
-
 		// 入ったら加算されるスコア
 		tdnText::Draw(1200, STAGE_POS_Y[i] + 120, 0xffffffff, "%d", m_AddScore[i]);
 	}
@@ -350,6 +499,9 @@ void StageManager::Render()
 
 void StageManager::RenderFront()
 {
+	// 犬描画
+	FOR(STAGE_MAX) for (auto it : m_Doglists[i]) it->Render();
+
 	// 家の前描画
 	m_pStageImages[StageImage::HOUSE_FRONT]->Render(0, 0);
 

@@ -234,11 +234,11 @@ void sceneMain::EndEvent()
 
 void sceneMain::ResultUpdate()
 {
-	bgm->Play("RESULT");
+	//bgm->Play("RESULT");
 	if( FadeControl::IsFade() ) return;
 	if( FadeControl::IsEndFade() ){
 		state = SCENE::INIT;
-		bgm->Stop("RESULT");
+		//bgm->Stop("RESULT");
 	}
 
 	if (result->Update()){

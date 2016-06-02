@@ -144,3 +144,4 @@ int FindFloor(float posY);
 extern int STAGE_POS_Y[3];
 extern int LANE_WIDTH;
 extern Vector2 YAKINIKU_AREA;
+extern bool g_bDogSetFrame;

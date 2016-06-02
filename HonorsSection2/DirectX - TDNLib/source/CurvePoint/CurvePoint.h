@@ -37,6 +37,8 @@ namespace CurvePoint
 		const int LOCK_TIME;
 		int lockTimer;
 
+		bool bEnable;	// 有効かどうか
+
 		//------- method ---------
 	public:
 		Base(StageManager *pMgr,tdn2DObj* image, Vector2 pos, DIR dir, int ID, int floor);
@@ -44,7 +46,10 @@ namespace CurvePoint
 		virtual void Update();
 		virtual void Render();
 		void SetPos(int y);
-		virtual void Change(){ state = IsOpening() ? CurvePointState::CLOSE : CurvePointState::OPEN; }		// ON_OFFの切り替え
+		virtual void Change()		// ON_OFFの切り替え
+		{
+			state = IsOpening() ? CurvePointState::CLOSE : CurvePointState::OPEN;
+		}
 		bool IsOpening();
 		int GetWidth();
 		DIR GetDir(){ return m_dir; }		// カーブの方向取得

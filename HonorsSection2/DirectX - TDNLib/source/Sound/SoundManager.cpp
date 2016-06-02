@@ -27,7 +27,7 @@ const SE_Manager::DATA all_dataS[] =
 	{ "RANK_IN",		"DATA/Sound/SE/se21.wav", 1, false },
 	{ "—rƒŒ[ƒ“•Ï‚í‚é",	"DATA/Sound/SE/arrert.wav", 3, false },
 	{ "–q‘‰è¶‚¦‚½",	"DATA/Sound/SE/born.wav", 3, false },
-	{ "‘¾‚Á‚½—r‰Ÿ‚·",	"DATA/Sound/SE/debuosu.wav", 3, false },
+	{ "‘¾‚Á‚½—r‰Ÿ‚·",	"DATA/Sound/SE/debuosu.wav", 6, false },
 	{ "–q‘¬’·",	"DATA/Sound/SE/grew.wav", 3, false },
 	{ "Œ¢",	"DATA/Sound/SE/inu.wav", 6, false },
 	{ "‚«‚ç‚ß‚­—r‚³‚ñ",	"DATA/Sound/SE/kiramekuhitsujisan.wav", 3, false },

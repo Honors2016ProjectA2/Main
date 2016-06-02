@@ -2,6 +2,7 @@
 #include "IEX_Expansion.h"
 class StageManager;
 class DataManager;
+#include "../CharaBase/CharaBase.h"
 
 enum class SHEEP_TYPE
 {
@@ -45,6 +46,7 @@ namespace Sheep
 		bool m_bTurned;		// サインで直角に曲げた後、戻る野に必要
 		float m_sinAngle;	// カーブをサインカーブでするので、それ用の変数
 		bool m_bErase;		// 消去フラグ
+		bool m_bLeftCatch;	// 左クリックでつかんだか
 
 		//const int PNGSIZE;
 		int m_floor;
@@ -104,7 +106,8 @@ namespace Sheep
 		void Be_Walk(){ if(process == MODE::PUSH) process = MODE::WALK; }
 		void Be_Push(){ if(process == MODE::WALK) process = MODE::PUSH; }
 		void Be_crushed();
-		void Be_caught();
+		void Be_caught(bool bLeft);
+		bool isPushOK(){ return (process == MODE::WALK || process == MODE::PUSH); }
 		bool isCaught(){ return (process == MODE::CAUGHT); }
 		void SetCurve(DIR dir)
 		{
@@ -147,41 +150,17 @@ namespace Sheep
 }
 
 // 牧草食って太った羊
-class FatSheep
+class FatSheep : public DebuBase
 {
 public:
 	FatSheep(tdn2DObj *image, const Vector2 &pos);
 	~FatSheep();
-
-	// 更新・描画
-	void Update();
-	void Render();
-
-	// ゲッター
-	Vector2 &GetCenterPos(){ return m_pos + Vector2(96, 96); }
-	int GetWidth(){ return m_image->GetWidth(); }
-	int GetFloor(){ return m_floor; }
-	bool EraseOK(){ return m_bErase; }
-
-	// セッター
-	void SetAccel(float val){ m_accel = val; }
-	void SetFloor(int val){ m_floor = val; }
-	void Erase(){ m_bErase = true; }
-
-private:
-	int m_AnimPanel, m_AnimFrame;	// アニメ
-	Vector2 m_pos;		// 座標
-	float m_moveX;		// 移動値
-	tdn2DObj *m_image;	// 自分の画像
-	float m_angle;		// 転がるので、アングル。
-	int m_floor;		// 自分のいるレーン
-	bool m_bErase;		// 消去フラグ
-	int m_ReceiveSE;	// 鳴らしたSEのID
-	float m_accel;
 };
 
 
 //**************************************************
+// グローバル領域
+extern int g_CreateSheepFloor;		// 羊を生成するフロア
 
 class SheepManager
 {
@@ -206,10 +185,10 @@ public:
 	void CreateFatSheep(Sheep::Base *sheep);
 
 	// ゲッタ
-	int GetOpenFloor(){ return m_CreateFloor; }
+	int GetOpenFloor(){ return g_CreateSheepFloor; }
 
 	//	タイトルで使う用
-	void SetDownLane() { m_CreateFloor = m_NextChangeFloor = 2; }
+	void SetDownLane() { g_CreateSheepFloor = m_NextChangeFloor = 2; }
 	SheepTextParam *GetSheepTextParam() { return &m_TextParam; }
 
 private:
@@ -217,7 +196,6 @@ private:
 	//tdn2DObj *files[(int)SHEEP_TYPE::MAX];
 	tdn2DObj *m_pFatSheepImage;
 	tdn2DObj *m_pBoneImage;
-	int m_CreateFloor;		// 羊を生成するフロア
 	int m_CurveRange;		// 犬に対して、曲がれ命令出す範囲。
 
 	std::list<Sheep::Base*> m_List;		// 普通の羊リスト

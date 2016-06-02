@@ -11,7 +11,7 @@
 //------- constructor,destructor ---------
 
 CurvePoint::Base::Base(StageManager *pMgr, tdn2DObj* image, Vector2 pos, DIR dir, int ID, int floor) :m_ID(ID), m_floor(floor), m_pMgr(pMgr),
-W(120), H(120), SW(120), SH(120),
+W(120), H(120), SW(120), SH(120), bEnable(true),
 LOCK_TIME(600),
 m_pImage(image), m_pos(pos), m_dir(dir), m_bCursorIn(false), m_AnimFrame(0), m_AnimPanel(0)
 {
@@ -39,6 +39,9 @@ void CurvePoint::Base::Update()
 
 void CurvePoint::Base::Render()
 {
+	// 有効状態じゃなかったら出ていけぇ！！
+	if (!bEnable) return;
+
 	if (IsOpening())
 	{
 		m_pImage->SetARGB((BYTE)255, (BYTE)255, (BYTE)255, (BYTE)255);

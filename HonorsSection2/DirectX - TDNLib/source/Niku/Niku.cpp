@@ -51,47 +51,46 @@ void NikuManager::Update()
 {
 	if (m_pNiku)
 	{
-		// まだ肉設置してなかったら
-		if (!m_pNiku->isSeted())
+		// 肉掴んでたら
+		if (m_bHoldNiku)
 		{
-			// 肉掴んでたら
-			if (m_bHoldNiku)
+			Vector2 mPos = tdnMouse::GetPos() + Vector2(-64, -64);
+			// 座標を設定
+			m_pNiku->SetPos(mPos);
+
+			// マウス離したら
+			if (tdnMouse::GetLeft() == 2)
 			{
-				Vector2 mPos = tdnMouse::GetPos() + Vector2(-64, -64);
-				// 座標を設定
-				m_pNiku->SetPos(mPos);
+				// 掴みフラグOFF
+				m_bHoldNiku = false;
 
-				// マウス離したら
-				if (tdnMouse::GetLeft() == 2)
-				{
-					// 掴みフラグOFF
-					m_bHoldNiku = false;
+				// 最短フロア計算
+				int floor = FindFloor(mPos.y);
+				m_pNiku->SetFloor(floor);
 
-					// 最短フロア計算
-					int floor = FindFloor(mPos.y);
-					m_pNiku->SetFloor(floor);
+				// Y座標補正
+				m_pNiku->SetPosY((float)STAGE_POS_Y[floor] + (float)(LANE_WIDTH / 8));
 
-					// Y座標補正
-					m_pNiku->SetPosY((float)STAGE_POS_Y[floor] + (float)(LANE_WIDTH / 8));
-
-					// 肉設置！！
-					m_pNiku->Set();
-				}
+				// 肉設置！！
+				m_pNiku->Set();
 			}
+		}
 
-			// 肉掴んでない状態
-			else
+		// 肉掴んでない状態
+		else
+		{
+			// マウス押したら
+			if (tdnMouse::GetLeft() == 3)
 			{
-				// マウス押したら
-				if (tdnMouse::GetLeft() == 3)
+				// 肉置場との距離範囲内
+				if ((tdnMouse::GetPos() - m_pNiku->GetCenterPos()).LengthSq() < 64 * 64)
 				{
-					// 肉置場との距離範囲内
-					if ((tdnMouse::GetPos() - m_pNiku->GetCenterPos()).LengthSq() < 64 * 64)
-					{
-						// 肉掴みフラグON
-						m_bHoldNiku = true;
-						se->Play("牧草成長", m_pNiku->GetCenterPos());
-					}
+					// 肉掴みフラグON
+					m_bHoldNiku = true;
+					se->Play("牧草成長", m_pNiku->GetCenterPos());
+
+					// 設置しない
+					m_pNiku->UnSet();
 				}
 			}
 		}

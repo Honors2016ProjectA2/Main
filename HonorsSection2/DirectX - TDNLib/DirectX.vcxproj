@@ -111,6 +111,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\Bokusou\Bokusou.cpp" />
+    <ClCompile Include="source\CharaBase\CharaBase.cpp" />
     <ClCompile Include="source\Collision\Collision.cpp" />
     <ClCompile Include="source\CurvePoint\CurvePoint.cpp" />
     <ClCompile Include="source\Data\DataMNG.cpp" />
@@ -177,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Bokusou\Bokusou.h" />
+    <ClInclude Include="source\CharaBase\CharaBase.h" />
     <ClInclude Include="source\Collision\Collision.h" />
     <ClInclude Include="source\CurvePoint\CurvePoint.h" />
     <ClInclude Include="source\Data\DataMNG.h" />
