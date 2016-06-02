@@ -282,7 +282,7 @@ void Sheep::Gold::Update()
 //**************************************************
 //	–q‘H‚Á‚Ä‘¾‚Á‚½—r
 //**************************************************
-FatSheep::FatSheep(tdn2DObj *image, const Vector2 &pos) :DebuBase(image,pos)
+FatSheep::FatSheep(tdn2DObj *image, const Vector2 &pos) :DebuBase(image, pos, 120)
 {
 
 }

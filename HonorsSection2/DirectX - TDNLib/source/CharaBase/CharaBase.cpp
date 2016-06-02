@@ -5,7 +5,7 @@
 //**************************************************
 //	ñqëêêHÇ¡ÇƒëæÇ¡ÇΩór
 //**************************************************
-DebuBase::DebuBase(tdn2DObj *image, const Vector2 &pos) :m_image(image), m_pos(pos), m_angle(0), m_bErase(false), m_moveX(0), m_ReceiveSE(TDNSOUND_PLAY_NONE), m_AnimFrame(0), m_AnimPanel(0), m_accel(0)
+DebuBase::DebuBase(tdn2DObj *image, const Vector2 &pos, float radius) :m_radius(radius), m_image(image), m_pos(pos), m_angle(0), m_bErase(false), m_moveX(0), m_ReceiveSE(TDNSOUND_PLAY_NONE), m_AnimFrame(0), m_AnimPanel(0), m_accel(0)
 {
 
 }

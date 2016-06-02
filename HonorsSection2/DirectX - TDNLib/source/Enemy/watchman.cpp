@@ -114,7 +114,19 @@ void Enemy::Wolf::Render()
 //**************************************************
 FatWolf::FatWolf(tdn2DObj *image, const Vector2 &pos, FAT_WOLF_TYPE type):DebuBase(image, pos), m_type(type)
 {
+	switch (type)
+	{
+	case FAT_WOLF_TYPE::SMALL:
+		m_radius = 90;
+		break;
+	case FAT_WOLF_TYPE::MIDDLE:
+		m_radius = 90;
+		break;
 
+	case FAT_WOLF_TYPE::LARGE:
+		m_radius = 120;
+		break;
+	}
 }
 
 FatWolf::~FatWolf()

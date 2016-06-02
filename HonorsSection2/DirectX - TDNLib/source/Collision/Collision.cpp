@@ -312,16 +312,18 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 			Vector2 fPos = fatIt->GetCenterPos();
 
 			// 太ってる羊範囲内
-			if (sPos.x < fPos.x && sPos.x > fPos.x - 192)
+			if (sPos.x < fPos.x && sPos.x > fPos.x - (fatIt->GetRadius() + 64))
 			{
 				// 当たった数カウント
 				HitCount++;
 
+				float vx = fPos.x - sPos.x;
+
 				// 太ってない羊をずらす
-				if (fPos.x - sPos.x < 128)
+				if (vx < fatIt->GetRadius())
 				{
 					//sheepIt->SetPos(fPos - Vector2(128, 0));
-					sheepIt->SetPosX(fPos.x - 128);
+					sheepIt->SetPosX(fPos.x - fatIt->GetRadius());
 				}
 
 				// 押してるモードにする

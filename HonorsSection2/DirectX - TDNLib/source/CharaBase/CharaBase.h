@@ -3,7 +3,7 @@
 class DebuBase
 {
 public:
-	DebuBase(tdn2DObj *image, const Vector2 &pos);
+	DebuBase(tdn2DObj *image, const Vector2 &pos, float radius = 120);
 	virtual ~DebuBase();
 
 	// 更新・描画
@@ -15,6 +15,8 @@ public:
 	int GetWidth(){ return m_image->GetWidth(); }
 	int GetFloor(){ return m_floor; }
 	bool EraseOK(){ return m_bErase; }
+	float GetRadius(){ return m_radius; }
+
 
 	// セッター
 	void SetAccel(float val){ m_accel = val; }
@@ -31,4 +33,5 @@ protected:
 	bool m_bErase;		// 消去フラグ
 	int m_ReceiveSE;	// 鳴らしたSEのID
 	float m_accel;
+	float m_radius;		// 半径
 };
