@@ -36,6 +36,14 @@ public:
 	int GetTimer() { return m_timer; }
 	void SetTimer(int timer) { m_timer = timer; }
 
+	int GetWorfHappyCount() { return m_worfHappyCount; }
+	void AddWorfHappyCount(int add = 1) { m_worfHappyCount += add; }
+
+
+	int GetSheepKillCount() { return m_sheepKillCount; }
+	void AddSheepKillCount(int add = 1) { m_sheepKillCount = add; }
+
+
 	void GraphAction();
 private:
 	static UIManager* inst;
@@ -53,6 +61,7 @@ private:
 
 
 	void Debug();
+
 
 	// ••ˆó
 	UIManager();
@@ -91,6 +100,9 @@ private: //•Ï”
 	tdn2DAnim* m_graphRip;
 	float m_percent;
 
+	// 
+	int m_worfHappyCount;
+	int m_sheepKillCount;
 
 };
 

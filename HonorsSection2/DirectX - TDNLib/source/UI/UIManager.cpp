@@ -62,6 +62,10 @@ UIManager::UIManager()
 	//particle = new Particle_2d();
 	//particle->Initialize("DATA/Effect/star.png", 256, 1, 1);
 
+	// ‰Šú‰»
+	m_worfHappyCount = 0;
+	m_sheepKillCount = 0;
+
 	NumberEffect;
 }
 

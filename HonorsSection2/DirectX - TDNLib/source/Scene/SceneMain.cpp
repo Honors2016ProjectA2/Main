@@ -282,6 +282,8 @@ void sceneMain::Render()
 
 	stage->Render();
 
+	UIMNG.Render();
+
 
 
 	/******************************/
@@ -320,8 +322,6 @@ void sceneMain::Render()
 	case SCENE::END:		EndRender();		break;
 	case SCENE::RESULT:		ResultRender();		break;
 	}
-
-	UIMNG.Render();
 
 	EffectMgr.Render();
 
