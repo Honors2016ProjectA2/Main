@@ -12,6 +12,7 @@ DATA/Stage/haikei_saku.png
 DATA/Stage/haikei_kusa_1.png
 DATA/Stage/haikei_ikenie.png
 DATA/Stage/haikei_fire.png
+DATA/Stage/haikei_fire2.png
 
 いけにえ座標:
 442 362
@@ -22,8 +23,14 @@ DATA/Stage/haikei_fire.png
 羊レーンが増えるボーダーライン:
 5000 10000 -1
 
+小屋のリキャスト
+600
+
 レーンスコア:
-100 100 100
+10 50 100
+
+レーンスコアが変わる時間(フレーム):
+6000
 
 犬ストック個数:
 2

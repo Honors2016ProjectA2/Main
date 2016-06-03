@@ -13,6 +13,8 @@ enum class FAT_WOLF_TYPE
 	SMALL, MIDDLE, LARGE
 };
 
+enum class SHEEP_TYPE;
+
 namespace Enemy
 {
 	class Base
@@ -82,6 +84,7 @@ namespace Enemy
 		MODE GetMode(){ return m_mode; }
 
 		void SetFatType(FAT_WOLF_TYPE type){ m_type = type; }
+		void SetSheepType(SHEEP_TYPE type){ m_SheepType = type; }
 
 	private:
 		tdn2DObj *m_pNikukutteru;
@@ -89,6 +92,7 @@ namespace Enemy
 		int m_EatNikuTimer;
 		float m_OrgSpeed;
 		FAT_WOLF_TYPE m_type;	// 肉食い終わった後になるタイプ
+		SHEEP_TYPE m_SheepType;
 
 		void Run();
 		void Niku();
@@ -100,15 +104,18 @@ namespace Enemy
 class FatWolf : public DebuBase
 {
 public:
-	FatWolf(tdn2DObj *image, const Vector2 &pos, FAT_WOLF_TYPE type);
+	FatWolf(tdn2DObj *image, const Vector2 &pos, FAT_WOLF_TYPE type, SHEEP_TYPE SheepType);
 	~FatWolf();
+	void Update();
 	void Render();
 
 	// ゲッター
 	FAT_WOLF_TYPE GetType(){ return m_type; }
+	SHEEP_TYPE GetSheepType(){ return m_SheepType; }
 
 private:
 	FAT_WOLF_TYPE m_type;
+	SHEEP_TYPE m_SheepType;
 };
 
 class EnemyManager
@@ -130,7 +137,7 @@ public:
 	void Set_Pointers(StageManager *sm, DataManager *dm){ sp = sm, dmp = dm; }
 
 	// 肉食い終わったら呼び出す
-	void CreateFatWolf(Enemy::Wolf *wolf, FAT_WOLF_TYPE type);
+	void CreateFatWolf(Enemy::Wolf *wolf, FAT_WOLF_TYPE type, SHEEP_TYPE SheepType);
 
 private:
 
@@ -143,7 +150,7 @@ private:
 	tdn2DObj *m_pImages[(int)ENEMY_TYPE::MAX];
 
 	// 肉食ってるオオカミの画像
-	tdn2DObj *m_pNikukutteru, *m_pFatWolfImage;
+	tdn2DObj *m_pNikukutteru, *m_pFatWolfImages[(int)SHEEP_TYPE::MAX];
 
 	// 敵の移動速度
 	float m_EnemySpeed[(int)ENEMY_TYPE::MAX];

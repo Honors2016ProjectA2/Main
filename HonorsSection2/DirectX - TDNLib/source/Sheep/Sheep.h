@@ -120,6 +120,9 @@ namespace Sheep
 		void Erase(){ m_bErase = true; }
 		bool EraseOK(){ return m_bErase; }
 
+		// タイプ取得
+		virtual SHEEP_TYPE GetType() = 0;
+
 		bool col_check;
 	};
 
@@ -128,6 +131,7 @@ namespace Sheep
 	private:
 	public:
 		Normal(const SheepData &data, int floor, const SheepTextParam &textparam) :Base(data, floor, textparam){}
+		SHEEP_TYPE GetType(){ return SHEEP_TYPE::NOMAL; }
 	};
 
 	class Gold:public Base
@@ -138,14 +142,15 @@ namespace Sheep
 		Gold(const SheepData &data, int floor, const SheepTextParam &textparam);
 		~Gold();
 		void Update();
+		SHEEP_TYPE GetType(){ return SHEEP_TYPE::GOLD; }
 	};
 
 	class Real:public Base
 	{
 	private:
 	public:
-
 		Real(const SheepData &data, int floor, const SheepTextParam &textparam) :Base(data, floor, textparam){}
+		SHEEP_TYPE GetType(){ return SHEEP_TYPE::REAL; }
 	};
 }
 
@@ -153,8 +158,13 @@ namespace Sheep
 class FatSheep : public DebuBase
 {
 public:
-	FatSheep(tdn2DObj *image, const Vector2 &pos);
+	FatSheep(tdn2DObj *image, const Vector2 &pos, SHEEP_TYPE type);
 	~FatSheep();
+
+	SHEEP_TYPE GetType(){ return m_type; }
+
+private:
+	SHEEP_TYPE m_type;
 };
 
 
@@ -193,8 +203,7 @@ public:
 
 private:
 	//tdn2DObj *Getfile(int num){ return files[num]; }
-	//tdn2DObj *files[(int)SHEEP_TYPE::MAX];
-	tdn2DObj *m_pFatSheepImage;
+	tdn2DObj *m_pFatSheepImages[(int)SHEEP_TYPE::MAX];
 	tdn2DObj *m_pBoneImage;
 	int m_CurveRange;		// 犬に対して、曲がれ命令出す範囲。
 
@@ -204,8 +213,6 @@ private:
 
 	int m_NextChangeFloor;				// 変わった先のレーン
 	int MakeNextFloor(int current);		// 前回レーンではないレーンをランダムに作成する関数
-	int CHANGE_LANE_TIME;				// レーンが変わる時間の固定値
-	int m_ChangeLaneTime;				// レーンが変わる時間
 
 	// 今経過してる時間(ミリ秒)
 	UINT m_CurrentTime;
@@ -219,3 +226,4 @@ private:
 
 // 実体
 extern SheepManager* g_pSheepMgr;
+extern int g_CreateSheepFloor;

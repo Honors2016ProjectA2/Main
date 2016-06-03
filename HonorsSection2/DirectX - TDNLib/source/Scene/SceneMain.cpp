@@ -326,6 +326,7 @@ void sceneMain::Render()
 
 void sceneMain::ReadyRender()
 {
+	stage->RenderFront();
 	ready->Render();
 }
 

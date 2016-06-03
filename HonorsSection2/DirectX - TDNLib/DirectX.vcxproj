@@ -161,7 +161,9 @@
     </ClCompile>
     <ClCompile Include="TDN\TDN_Input.cpp" />
     <ClCompile Include="TDN\TDN_Math.cpp" />
-    <ClCompile Include="TDN\TDN_Movie.cpp" />
+    <ClCompile Include="TDN\TDN_Movie.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="TDN\TDN_Polygon.cpp" />
     <ClCompile Include="TDN\TDN_Random.cpp" />
     <ClCompile Include="TDN\TDN_RenderState.cpp" />

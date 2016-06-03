@@ -9,13 +9,13 @@ enum class YAKINIKU_MODE
 	NAMA,		// 生
 	RARE,		// レア
 	MEDIAM,		// ミディアム
-	WELDAN,		// ウェルダン
 	KOGETA,		// 焦げた
 	MAX
 };
 
 // 前方宣言
 class Yakiniku;
+enum class SHEEP_TYPE;
 
 // 牧草委譲モード
 namespace YakinikuMode
@@ -64,14 +64,14 @@ namespace YakinikuMode
 		YAKINIKU_MODE GetMode(){ return YAKINIKU_MODE::MEDIAM; }
 	};
 
-	class Weldan :public Base
-	{
-	public:
-		Weldan(Yakiniku *me);
-		//void Update(Niku *pNiku);
-		//void Render(Niku *pNiku);
-		YAKINIKU_MODE GetMode(){ return YAKINIKU_MODE::WELDAN; }
-	};
+	//class Weldan :public Base
+	//{
+	//public:
+	//	Weldan(Yakiniku *me);
+	//	//void Update(Niku *pNiku);
+	//	//void Render(Niku *pNiku);
+	//	YAKINIKU_MODE GetMode(){ return YAKINIKU_MODE::WELDAN; }
+	//};
 
 	class Kogeta :public Base
 	{
@@ -90,7 +90,7 @@ namespace YakinikuMode
 class Yakiniku
 {
 public:
-	Yakiniku(tdn2DObj *image);
+	Yakiniku(tdn2DObj *image, SHEEP_TYPE SheepType);
 	~Yakiniku();
 	void Update();
 	void Render();
@@ -109,6 +109,8 @@ public:
 	void Erase(){ m_bErase = true; }
 	bool EraseOK(){ return m_bErase; }
 
+	SHEEP_TYPE GetSheepType(){ return m_SheepType; }
+
 	// 牧草の画像(委譲ポインタからアクセス)
 	tdn2DObj *pImage;
 
@@ -120,6 +122,8 @@ private:
 
 	Vector2 m_pos;	// 座標
 	bool m_bErase;
+
+	SHEEP_TYPE m_SheepType;	// 焼いてる羊のタイプ
 };
 
 
@@ -127,7 +131,7 @@ private:
 class Niku
 {
 public:
-	Niku(const Vector2 &pos, YAKINIKU_MODE type, tdn2DObj *image);
+	Niku(const Vector2 &pos, YAKINIKU_MODE type, tdn2DObj *image, SHEEP_TYPE SheepType);
 	void Update();
 	void Render();
 
@@ -147,6 +151,8 @@ public:
 	void Set(){ m_bSet = true; }
 	void UnSet(){ m_bSet = false; }
 
+	SHEEP_TYPE GetSheepType(){ return m_SheepType; }
+
 private:
 	int m_floor;
 	YAKINIKU_MODE m_type;
@@ -158,6 +164,8 @@ private:
 	float m_orgY;
 	float m_gravity;
 	bool m_bSet;		// 配置したかどうか
+
+	SHEEP_TYPE m_SheepType;	// 焼いてる羊のタイプ
 };
 
 
@@ -179,7 +187,7 @@ public:
 	void Render();
 
 	// 肉作る
-	void StartYakiniku();
+	void StartYakiniku(SHEEP_TYPE type);
 	void CreateNiku();
 
 	// ゲッタ
@@ -194,7 +202,7 @@ private:
 	static NikuManager *pInstance;
 
 	// 画像
-	tdn2DObj *m_pIkenieImage, *m_pNikuImage;
+	tdn2DObj **m_pIkenieImages, **m_pNikuImages;
 
 	// 焼肉状態
 	Yakiniku* m_pYakiniku;

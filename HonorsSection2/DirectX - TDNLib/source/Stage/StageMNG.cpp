@@ -49,7 +49,8 @@ int FindFloor(float posY)
 
 //------- constructor,destructor ---------
 
-StageManager::StageManager() :m_pDogImage(new tdn2DObj("DATA/CHR/dog.png")), m_pFireImage(new tdn2DObj("DATA/巻き/炎の種.png")), m_FireSelect(false), m_FireAnimFrame(0), m_FireAnimPanel(0)
+StageManager::StageManager() :m_pDogImage(new tdn2DObj("DATA/CHR/dog.png")), m_pFireImage(new tdn2DObj("DATA/巻き/炎の種.png")),
+m_FireSelect(false), m_FireAnimFrame(0), m_FireAnimPanel(0), m_ChangeScoreTime(0)
 {
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
@@ -91,13 +92,20 @@ StageManager::StageManager() :m_pDogImage(new tdn2DObj("DATA/CHR/dog.png")), m_p
 		ifs >> APPEND_STAGE_BORDER[i];
 	}
 
+	// 小屋のリキャスト
 	ifs >> skip;
+	ifs >> m_RECAST_TIME;
 
+	// レーンスコア数
+	ifs >> skip;
 	FOR(3)
 	{
-		// レーンスコア数
 		ifs >> m_AddScore[i];
 	}
+
+	// レーンスコア変える時間
+	ifs >> skip;
+	ifs >> m_CHANGE_SCORE_TIME;
 
 	//// 火の変化時間読み込み
 	//ifs >> skip;
@@ -210,6 +218,37 @@ void StageManager::Update()
 	// マウス座標
 	Vector2 mPos = tdnMouse::GetPos();
 
+	// マウス左クリックしたかどうか
+	bool bLeftClick = (tdnMouse::GetLeft() == 3);
+
+	// 羊生成の小屋を変える処理
+	if (bLeftClick)
+	{
+		// マウスが左端
+		if (mPos.x < 150)
+		{
+			const int floor = FindFloor(mPos.y);
+
+			// リキャストOK
+			if (stage[floor]->GetRecastTime() <= 0)
+			{
+				// 羊生成フロア変える
+				g_CreateSheepFloor = floor;
+
+				// リキャスト設定
+				stage[floor]->SetRecastTime(m_RECAST_TIME);
+			}
+		}
+	}
+
+	// 時間経過でスコアを変える処理
+	if (++m_ChangeScoreTime > m_CHANGE_SCORE_TIME)
+	{
+		// レーン変える処理
+		m_ChangeScoreTime = 0;
+		ChangeScoreLane();
+	}
+
 	// 犬設置したフレームかどうか
 	g_bDogSetFrame = false;
 
@@ -249,7 +288,7 @@ void StageManager::Update()
 				else it->m_bCursorIn = false;
 
 				// 左クリック！！かつカーソル範囲内かつ有効状態なら
-				if (tdnMouse::GetLeft() == 3 && it->m_bCursorIn && it->bEnable)
+				if (bLeftClick && it->m_bCursorIn && it->bEnable)
 				{
 					// 犬回収
 					if (it->IsOpening())
@@ -467,6 +506,21 @@ void StageManager::Update()
 	}
 }
 
+void StageManager::ChangeScoreLane()
+{
+	// 交換
+	auto Swap = [](int *a, int *b)
+	{
+		int t = *a;
+		*a = *b;
+		*b = t;
+	};
+
+	// ランダムにレーンを入れ替える
+	Swap(&m_AddScore[0], &m_AddScore[1]);
+	Swap(&m_AddScore[2], (tdnRandom::Get(0, 1)) ? &m_AddScore[0] : &m_AddScore[1]);
+}
+
 void StageManager::RenderBack()
 {
 	// 背景描画
@@ -493,7 +547,12 @@ void StageManager::Render()
 		stage[i]->Render();
 
 		// 入ったら加算されるスコア
-		tdnText::Draw(1200, STAGE_POS_Y[i] + 120, 0xffffffff, "%d", m_AddScore[i]);
+		tdnText::Draw(1200, STAGE_POS_Y[i] + 60, 0xffffffff, "%d", m_AddScore[i]);
+
+		//tdnPolygon::Rect(0, STAGE_POS_Y[i], 150, LANE_WIDTH, RS::COPY, 0x80ffffff);
+
+		// リキャスト
+		tdnText::Draw(64, STAGE_POS_Y[i] + 120, 0xffffffff, "%d", stage[i]->GetRecastTime());
 	}
 }
 
@@ -511,7 +570,7 @@ void StageManager::RenderFront()
 	m_pStageImages[StageImage::KUSA]->Render(0, 0);
 
 	// 炎描画
-	m_pStageImages[StageImage::FIRE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256);
+	m_pStageImages[(NikuMgr->GetNiku()) ? StageImage::KIETA_FIRE : StageImage::FIRE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256);
 }
 
 void StageManager::Reflection(DataManager* data, MousePointer* mouse)
@@ -565,7 +624,7 @@ Vector2 StageManager::GetBalloonPos(int floorIdx)
 
 Stage::Stage() :
 W(1280), H(240),
-START_Y(-240), SPEED_Y(32), SHUTTER_X(541), SHUTTER_Y(18)
+START_Y(-240), SPEED_Y(32), SHUTTER_X(541), SHUTTER_Y(18), m_RecastTime(0)
 {
 	image = nullptr;
 	pos = Vector2(0, 0);
@@ -599,6 +658,9 @@ void Stage::Init(Vector2 pos, Stage::StageState state)
 
 void Stage::Update()
 {
+	// リキャスト減らす処理
+	if (m_RecastTime > 0) m_RecastTime--;
+
 	switch (state)
 	{
 		case StageState::NONE:
@@ -616,11 +678,6 @@ void Stage::Update()
 
 void Stage::Render()
 {
-	if (image != nullptr)
-	{
-		image->Render((int)pos.x, (int)pos.y - offsetY);
-	}
-
 	//for(auto it : *m_CPlist)it->Render();
 }
 

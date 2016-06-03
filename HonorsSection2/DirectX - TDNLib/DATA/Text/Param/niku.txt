@@ -1,3 +1,16 @@
+ノーマル羊焼き:
+DATA/CHR/kuruma2.png
+DATA/CHR/!-kai2.png
+
+金羊焼き:
+DATA/CHR/!-kai.png
+DATA/CHR/kuruma.png
+
+リアル羊焼き
+DATA/CHR/「！」奥移動.png
+DATA/CHR/sinnnyou_aruki.png
+
+
 肉が焼けていく時間:
 生→ミディアム: 180
 ミディアム→最高: 150

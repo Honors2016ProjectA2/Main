@@ -40,6 +40,7 @@ private:
 	const int SHUTTER_X;
 	const int SHUTTER_Y;
 	int offsetY;
+	int m_RecastTime;	// こやのリキャスト
 public:
 	enum StageState { NONE, FALL };
 	StageState state;
@@ -52,6 +53,8 @@ public:
 	void Update();
 	void Render();
 	int GetWidth();
+	int GetRecastTime(){ return m_RecastTime; }
+	void SetRecastTime(int val){ m_RecastTime = val; }
 };
 
 //-------- StageManager class ---------
@@ -82,6 +85,7 @@ private:
 
 		IKENIE,			// いけにえ棒
 		FIRE,			// 炎
+		KIETA_FIRE,		// 消えた炎
 
 		MAX
 	};
@@ -94,6 +98,12 @@ private:
 
 	enum ImageSrc { STAGE, SHUTTER };
 
+	// スコアレーン変更
+	int m_CHANGE_SCORE_TIME;				// レーンが変わる時間の固定値
+	int m_ChangeScoreTime;				// レーンが変わる時間
+	void ChangeScoreLane();
+
+	int m_RECAST_TIME;	// 小屋のリキャストタイム
 	int APPEND_STAGE_BORDER[STAGE_MAX]; // stage追加タイミングのスコア
 	int m_AddScore[STAGE_MAX];			// レーンゴールしたときに加算されるスコア
 	Stage* stage[STAGE_MAX];

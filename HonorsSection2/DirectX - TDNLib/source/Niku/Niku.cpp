@@ -1,4 +1,5 @@
 #include "TDNLIB.h"
+#include "../Sheep/Sheep.h"
 #include "Niku.h"
 #include "../Stage/StageMNG.h"
 #include "../Sound/SoundManager.h"
@@ -13,15 +14,34 @@ int g_YakiNikuModeChangeTime[(int)YAKINIKU_MODE::MAX];			// モードが変わっていく
 //**************************************************
 //    牧草管理クラス
 //**************************************************
-NikuManager::NikuManager() :m_pNiku(nullptr), m_pYakiniku(nullptr), m_pNikuImage(new tdn2DObj("DATA/CHR/!-kai2.png")), m_pIkenieImage(new tdn2DObj("DATA/CHR/kuruma2.png"))
+NikuManager::NikuManager() :m_pNiku(nullptr), m_pYakiniku(nullptr)
 {
+	m_pIkenieImages = new tdn2DObj*[(int)SHEEP_TYPE::MAX];
+	m_pNikuImages = new tdn2DObj*[(int)SHEEP_TYPE::MAX];
+
 	// テキストからデータ読み込み
 	std::ifstream ifs("DATA/Text/Param/niku.txt");
 	assert(ifs);
 
 	char skip[64];	// 読み飛ばし用
-	ifs >> skip;
+
+	// 画像パス読み込み
+	FOR((int)SHEEP_TYPE::MAX)
+	{
+		char path[MAX_PATH];
+
+		// いけにえ画像
+		ifs >> skip;
+		ifs >> path;
+		m_pIkenieImages[i] = new tdn2DObj(path);
+
+		// 肉画像
+		ifs >> path;
+		m_pNikuImages[i] = new tdn2DObj(path);
+	}
 	
+	// 肉焼け時間
+	ifs >> skip;
 	FOR((int)YAKINIKU_MODE::KOGETA)
 	{
 		ifs >> skip;
@@ -37,9 +57,14 @@ void NikuManager::Initialize()
 NikuManager::~NikuManager()
 {
 	SAFE_DELETE(m_pNiku);
-	SAFE_DELETE(m_pNikuImage);
 	SAFE_DELETE(m_pYakiniku);
-	SAFE_DELETE(m_pIkenieImage);
+	FOR((int)SHEEP_TYPE::MAX)
+	{
+		SAFE_DELETE(m_pNikuImages[i]);
+		SAFE_DELETE(m_pIkenieImages[i]);
+	}
+	delete[] m_pNikuImages;
+	delete[] m_pIkenieImages;
 }
 
 void NikuManager::Release()
@@ -134,9 +159,9 @@ void NikuManager::Render()
 }
 
 
-void NikuManager::StartYakiniku()
+void NikuManager::StartYakiniku(SHEEP_TYPE type)
 {
-	m_pYakiniku = new Yakiniku(m_pIkenieImage);
+	m_pYakiniku = new Yakiniku(m_pIkenieImages[(int)type], type);
 
 	// SEの再生
 	se->Play("焼けた", YAKINIKU_AREA);
@@ -148,7 +173,7 @@ void NikuManager::CreateNiku()
 	if (m_pYakiniku)
 	{
 		// 焼肉消して肉作る
-		m_pNiku = new Niku(YAKINIKU_AREA + Vector2(128, 90), m_pYakiniku->GetMode(), m_pNikuImage);
+		m_pNiku = new Niku(YAKINIKU_AREA + Vector2(128, 90), m_pYakiniku->GetMode(), m_pNikuImages[(int)m_pYakiniku->GetSheepType()], m_pYakiniku->GetSheepType());
 		m_pYakiniku->Erase();
 	}
 }
@@ -241,18 +266,18 @@ YakinikuMode::Mediam::Mediam(Yakiniku *me) :Base(me)
 //===========================================================
 //		ウェルダン
 //===========================================================
-YakinikuMode::Weldan::Weldan(Yakiniku *me) :Base(me)
-{
-	// そして牧場が誕生した
-	m_NextMode = YAKINIKU_MODE::KOGETA;
-
-	// 画像座標
-	m_srcX = 256 * 3;
-
-	// SEの再生
-	//se->Play("牧草成長", me->GetPos());
-
-}
+//YakinikuMode::Weldan::Weldan(Yakiniku *me) :Base(me)
+//{
+//	// そして牧場が誕生した
+//	m_NextMode = YAKINIKU_MODE::KOGETA;
+//
+//	// 画像座標
+//	m_srcX = 256 * 3;
+//
+//	// SEの再生
+//	//se->Play("牧草成長", me->GetPos());
+//
+//}
 //void YakinikuMode::Weldan::Update(Yakiniku *pYakiniku)
 //{
 //	NextMode(pYakiniku);
@@ -289,7 +314,7 @@ void YakinikuMode::Kogeta::Update()
 //===========================================================
 //		初期化・解放
 //===========================================================
-Yakiniku::Yakiniku(tdn2DObj *image) :m_pMode(nullptr), m_bErase(false), m_pos(YAKINIKU_AREA), pImage(image)
+Yakiniku::Yakiniku(tdn2DObj *image, SHEEP_TYPE SheepType) :m_SheepType(SheepType), m_pMode(nullptr), m_bErase(false), m_pos(YAKINIKU_AREA), pImage(image)
 {
 	// モード初期化(双葉杏から開始)
 	this->ChangeMode(YAKINIKU_MODE::NAMA);
@@ -337,9 +362,9 @@ void Yakiniku::ChangeMode(YAKINIKU_MODE m)
 		m_pMode = new YakinikuMode::Mediam(this);
 		break;
 
-	case YAKINIKU_MODE::WELDAN:
-		m_pMode = new YakinikuMode::Weldan(this);
-		break;
+	//case YAKINIKU_MODE::WELDAN:
+	//	m_pMode = new YakinikuMode::Weldan(this);
+	//	break;
 
 	case YAKINIKU_MODE::KOGETA:
 		m_pMode = new YakinikuMode::Kogeta(this);
@@ -358,7 +383,7 @@ void Yakiniku::ChangeMode(YAKINIKU_MODE m)
 //===========================================================
 //		初期化・解放
 //===========================================================
-Niku::Niku(const Vector2 &pos, YAKINIKU_MODE type, tdn2DObj *image) :m_pos(pos), m_bErase(false), m_orgY(pos.y),
+Niku::Niku(const Vector2 &pos, YAKINIKU_MODE type, tdn2DObj *image, SHEEP_TYPE SheepType) :m_SheepType(SheepType), m_pos(pos), m_bErase(false), m_orgY(pos.y),
 m_BoundPow(Vector2(6, -8)), m_gravity(1.0f), m_pImage(image), m_type(type), m_floor(FindFloor(pos.y)), m_bSet(false)
 {
 	m_move = m_BoundPow;
@@ -394,5 +419,5 @@ void Niku::Update()
 //===========================================================
 void Niku::Render()
 {
-	m_pImage->Render((int)m_pos.x, (int)m_pos.y);
+	m_pImage->Render((int)m_pos.x, (int)m_pos.y, 120, 120, (int)m_type * 120, 0, 120, 120);
 }

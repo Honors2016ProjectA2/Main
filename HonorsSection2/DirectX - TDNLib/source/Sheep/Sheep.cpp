@@ -282,7 +282,7 @@ void Sheep::Gold::Update()
 //**************************************************
 //	牧草食って太った羊
 //**************************************************
-FatSheep::FatSheep(tdn2DObj *image, const Vector2 &pos) :DebuBase(image, pos, 120)
+FatSheep::FatSheep(tdn2DObj *image, const Vector2 &pos, SHEEP_TYPE type) :DebuBase(image, pos, 120), m_type(type)
 {
 
 }
@@ -300,10 +300,8 @@ FatSheep::~FatSheep()
 
 //**************************************************
 
-SheepManager::SheepManager() :
-m_ChangeLaneTime(0), sp(0)
+SheepManager::SheepManager() :sp(0)
 {
-	m_pFatSheepImage = new tdn2DObj("DATA/CHR/fat_sheep.png");
 	m_pBoneImage = new tdn2DObj("DATA/CHR/hone_motion.png");
 
 	g_CreateSheepFloor = 0;	// 初期羊生成フロア
@@ -314,10 +312,6 @@ m_ChangeLaneTime(0), sp(0)
 	std::fstream ifs("DATA/Text/Param/sheep.txt");
 
 	char skip[64];	// 読み飛ばし用変数
-
-	// 羊レーンが変わる時間読み込み
-	ifs >> skip;
-	ifs >> CHANGE_LANE_TIME;
 
 	// 出現座標読み込み
 	ifs >> skip;
@@ -351,6 +345,11 @@ m_ChangeLaneTime(0), sp(0)
 		m_TextParam.data[i].Image = new tdn2DObj(path);
 		m_TextParam.data[i].BoneImage = m_pBoneImage;
 
+		// でぶがぞう
+		ifs >> skip;
+		ifs >> path;
+		m_pFatSheepImages[i] = new tdn2DObj(path);
+
 		// 得点倍率読み込み
 		ifs >> skip;
 		ifs >> m_TextParam.data[i].magnification;
@@ -381,8 +380,8 @@ SheepManager::~SheepManager()
 	for (int i = 0; i < (int)SHEEP_TYPE::MAX; i++)
 	{
 		SAFE_DELETE(m_TextParam.data[i].Image);
+		delete m_pFatSheepImages[i];
 	}
-	delete m_pFatSheepImage;
 	delete m_pBoneImage;
 
 	for (auto it : m_List) delete it;
@@ -430,37 +429,37 @@ void SheepManager::Update()
 	{
 		if (KeyBoardTRG(KB_DOT))
 		{
-			m_ChangeLaneTime = 0;
+			//m_ChangeLaneTime = 0;
 			g_CreateSheepFloor = 0;
 		}
 		else if (KeyBoardTRG(KB_SLASH))
 		{
-			m_ChangeLaneTime = 0;
+			//m_ChangeLaneTime = 0;
 			g_CreateSheepFloor = 1;
 		}
 		else if (KeyBoardTRG(KB_UNDER_BAR))
 		{
-			m_ChangeLaneTime = 0;
+			//m_ChangeLaneTime = 0;
 			g_CreateSheepFloor = 2;
 		}
 	}
 
 	// レーン変更時間
-	if (++m_ChangeLaneTime > CHANGE_LANE_TIME)
-	{
-		// 時間リセット
-		m_ChangeLaneTime = 0;
-
-		// レーンを変える
-		g_CreateSheepFloor = m_NextChangeFloor;
-
-		// 次のランダムフロア決定
-		m_NextChangeFloor = MakeNextFloor(g_CreateSheepFloor);
-	}
-	else if (m_ChangeLaneTime == CHANGE_LANE_TIME / 4)
-	{
-		// ★UIマネージャにポップアップをお願いする
-	}
+	//if (++m_ChangeLaneTime > CHANGE_LANE_TIME)
+	//{
+	//	// 時間リセット
+	//	m_ChangeLaneTime = 0;
+	//
+	//	// レーンを変える
+	//	g_CreateSheepFloor = m_NextChangeFloor;
+	//
+	//	// 次のランダムフロア決定
+	//	m_NextChangeFloor = MakeNextFloor(g_CreateSheepFloor);
+	//}
+	//else if (m_ChangeLaneTime == CHANGE_LANE_TIME / 4)
+	//{
+	//	// ★UIマネージャにポップアップをお願いする
+	//}
 
 	// 前回の時間と今の時間の差分
 	UINT delta = clock() - m_CurrentTime;
@@ -548,7 +547,7 @@ void SheepManager::Render()
 void SheepManager::CreateFatSheep(Sheep::Base *sheep)
 {
 	sheep->Erase();	// 元の羊を消去
-	FatSheep *set = new FatSheep(m_pFatSheepImage, Vector2(sheep->Get_pos()->x, (float)STAGE_POS_Y[sheep->Get_floor()] - 30));// 太った羊生成
+	FatSheep *set = new FatSheep(m_pFatSheepImages[(int)sheep->GetType()], Vector2(sheep->Get_pos()->x, (float)STAGE_POS_Y[sheep->Get_floor()] - 30), sheep->GetType());// 太った羊生成
 	set->SetFloor(sheep->Get_floor());	// フロア設定
 	m_FatList.push_back(set);			// リストに突っ込む
 }

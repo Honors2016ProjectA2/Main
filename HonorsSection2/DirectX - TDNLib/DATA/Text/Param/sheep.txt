@@ -1,4 +1,3 @@
-羊レーンが変わる時間(フレーム): 6000
 出現座標X: 30
 出現間隔(ミリ秒): 200
 出現の上下幅: 16
@@ -7,6 +6,7 @@
 
 羊1:
 画像パス: DATA/CHR/sheep_animation.png
+デブ画像: DATA/CHR/fat_sheep.png
 得点倍率: 1.0
 コマサイズ: 120
 アニメの枚数: 4
@@ -15,6 +15,7 @@
 
 羊2:
 画像パス: DATA/CHR/sheep_gold_animation.png
+デブ画像: DATA/CHR/fat_sheepG.png
 得点倍率: 100.0
 コマサイズ: 120
 アニメの枚数: 4
@@ -23,6 +24,7 @@
 
 羊3:
 画像パス: DATA/CHR/「！」右移動.png
+デブ画像: DATA/CHR/fat_sheep.png
 得点倍率: 1000.0
 コマサイズ: 175
 アニメの枚数: 4

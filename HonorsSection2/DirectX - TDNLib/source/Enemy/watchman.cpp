@@ -1,12 +1,13 @@
 #include "IEX_Expansion.h"
 #include "../CharaBase/CharaBase.h"
 #include "../Stage/StageMNG.h"
+#include "../Sheep/Sheep.h"
 #include "watchman.h"
 #include "../Data/DataMNG.h"
 #include "../Effect/EffectManager.h"
 #include "../Niku/Niku.h"
-#include "../Sheep/Sheep.h"
 #include "../Sound/SoundManager.h"
+#include "../particle_2d/particle_2d.h"
 
 //**************************************************
 //    基底
@@ -70,8 +71,11 @@ void Enemy::Wolf::Niku()
 	// 肉時間
 	if (++m_EatNikuTimer > m_EAT_NIKU_TIMER)
 	{
-		//ChangeMode(MODE::KAERU);
-		EnemyMgr->CreateFatWolf(this, m_type);	// ふとる
+		// おしこめ！！
+		EffectMgr.AddEffect((int)m_pos.x - 100, (int)m_pos.y + 60, EFFECT_TYPE::PUSH);
+
+		// 太る
+		EnemyMgr->CreateFatWolf(this, m_type, m_SheepType);
 	}
 }
 
@@ -112,7 +116,7 @@ void Enemy::Wolf::Render()
 //**************************************************
 //    肉食って太った狼
 //**************************************************
-FatWolf::FatWolf(tdn2DObj *image, const Vector2 &pos, FAT_WOLF_TYPE type):DebuBase(image, pos), m_type(type)
+FatWolf::FatWolf(tdn2DObj *image, const Vector2 &pos, FAT_WOLF_TYPE type, SHEEP_TYPE SheepType) :DebuBase(image, pos), m_type(type), m_SheepType(SheepType)
 {
 	switch (type)
 	{
@@ -135,10 +139,27 @@ FatWolf::~FatWolf()
 	if (m_ReceiveSE != TDNSOUND_PLAY_NONE) se->Stop("太った羊押す", m_ReceiveSE);
 }
 
+void FatWolf::Update()
+{
+	// 基底クラスの更新
+	DebuBase::Update();
+
+	if (m_SheepType == SHEEP_TYPE::GOLD)
+	{
+		static int KiraKiraCoolTime = 0;
+		// きらきらパーティクル
+		if (++KiraKiraCoolTime > 4)
+		{
+			KiraKiraCoolTime = 0;
+			Particle2dManager::Effect_KiraKira(GetCenterPos(), Vector2(m_radius, m_radius), 25.0f, 10.0f);
+		}
+	}
+}
+
 void FatWolf::Render()
 {
 	m_image->SetAngle(m_angle);
-	m_image->Render((int)m_pos.x, (int)m_pos.y, 240, 240, m_AnimPanel * 240, (int)m_type * 240, 240, 240);
+	m_image->Render((int)m_pos.x, (int)m_pos.y, 240, 240, 0, (int)m_type * 240, 240, 240);
 }
 
 
@@ -183,7 +204,9 @@ void EnemyManager::Initialize()
 	// 敵画像の読み込み
 	m_pImages[(int)ENEMY_TYPE::WOLF] = new tdn2DObj("DATA/CHR/「！」左移動.png");
 	m_pNikukutteru = new tdn2DObj("DATA/CHR/kuruma back.png");
-	m_pFatWolfImage = new tdn2DObj("DATA/CHR/kuruma.png");
+	m_pFatWolfImages[(int)SHEEP_TYPE::NOMAL] = new tdn2DObj("DATA/CHR/sinnnyou tubureru.png");
+	m_pFatWolfImages[(int)SHEEP_TYPE::GOLD] = new tdn2DObj("DATA/CHR/sinnnyou hajike.png");
+	m_pFatWolfImages[(int)SHEEP_TYPE::REAL] = new tdn2DObj("DATA/CHR/sinnnyou detekuru.png");
 }
 
 void EnemyManager::Release()
@@ -194,7 +217,7 @@ void EnemyManager::Release()
 	}
 	Clear();
 	delete m_pNikukutteru;
-	delete m_pFatWolfImage;
+	FOR((int)SHEEP_TYPE::MAX) delete m_pFatWolfImages[i];
 }
 
 //**************************************************
@@ -290,10 +313,10 @@ void EnemyManager::Clear()
 	m_FatList.clear();
 }
 
-void EnemyManager::CreateFatWolf(Enemy::Wolf *wolf, FAT_WOLF_TYPE type)
+void EnemyManager::CreateFatWolf(Enemy::Wolf *wolf, FAT_WOLF_TYPE type, SHEEP_TYPE SheepType)
 {
 	wolf->Erase();	// 元の羊を消去
-	FatWolf *set = new FatWolf(m_pFatWolfImage, Vector2(wolf->GetPos().x, (float)STAGE_POS_Y[wolf->GetFloor()] - 30), type);// 太った狼生成
+	FatWolf *set = new FatWolf(m_pFatWolfImages[(int)SheepType], Vector2(wolf->GetPos().x, (float)STAGE_POS_Y[wolf->GetFloor()] - 30), type, SheepType);// 太った狼生成
 	set->SetFloor(wolf->GetFloor());	// フロア設定
 	m_FatList.push_back(set);			// リストに突っ込む
 }

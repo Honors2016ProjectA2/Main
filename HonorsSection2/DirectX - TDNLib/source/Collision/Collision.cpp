@@ -46,7 +46,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				if ((sPos - (YAKINIKU_AREA + Vector2(128, 128))).LengthSq() < 60 * 60)
 				{
 					// 焼肉開始
-					NikuMgr->StartYakiniku();
+					NikuMgr->StartYakiniku(sinIterator->GetType());
 
 					// 火エフェクト
 					EffectMgr.AddEffect((int)YAKINIKU_AREA.x + 128, (int)YAKINIKU_AREA.y +128, EFFECT_TYPE::BURN);
@@ -69,8 +69,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 			if (sPos.x < kPos.x && sPos.x > kPos.x - 128)
 			{
 				// 当たったやつで太った羊作成
-				if (kusaIterator->GetMode() == BOKUSOU_MODE::BORN)
-				{
+				if (kusaIterator->GetMode() == BOKUSOU_MODE::BORN){
 					sinnMNG->CreateFatSheep(sinIterator);
 					EffectMgr.AddEffect((int)sPos.x - 100, (int)sPos.y, EFFECT_TYPE::PUSH);
 				}
@@ -185,6 +184,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 			}
 		}
 
+
 	}	// 羊のfor分
 
 	// 太った羊ループ
@@ -222,7 +222,21 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 			PostEffectMgr.SetRadialBlur(projPos, 18);
 
 
-			SetScore(dataMNG, fatIt->GetFloor(), 10000);	// 10000倍
+			// 羊のタイプに応じて分岐
+			float Bairitsu;
+			switch (fatIt->GetType())
+			{
+			case SHEEP_TYPE::NOMAL:
+				Bairitsu = 1000.0f;
+				break;
+			case SHEEP_TYPE::GOLD:
+				Bairitsu = 5000.0f;
+				break;
+			case SHEEP_TYPE::REAL:
+				Bairitsu = 10000.0f;
+				break;
+			}
+			SetScore(dataMNG, fatIt->GetFloor(), Bairitsu);	// 10000倍
 			se->Play("太った羊IN");
 
 			// ゆらす！！
@@ -282,19 +296,55 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 
 			// 太ってるタイプに応じて時間を設定
 			int AddTime;
-			switch (fatIt->GetType())
+
+			switch (fatIt->GetSheepType())
 			{
-			case FAT_WOLF_TYPE::SMALL:
-				AddTime = 5;
+			case SHEEP_TYPE::NOMAL:
+				switch (fatIt->GetType())
+				{
+				case FAT_WOLF_TYPE::SMALL:
+					AddTime = 5;
+					break;
+				case FAT_WOLF_TYPE::MIDDLE:
+					AddTime = 10;
+					break;
+				case FAT_WOLF_TYPE::LARGE:
+					AddTime = 20;
+					break;
+				}
 				break;
-			case FAT_WOLF_TYPE::MIDDLE:
-				AddTime = 10;
+			case SHEEP_TYPE::GOLD:
+				switch (fatIt->GetType())
+				{
+				case FAT_WOLF_TYPE::SMALL:
+					AddTime = 5;
+					break;
+				case FAT_WOLF_TYPE::MIDDLE:
+					AddTime = 10;
+					break;
+				case FAT_WOLF_TYPE::LARGE:
+					AddTime = 20;
+					break;
+				}
 				break;
-			case FAT_WOLF_TYPE::LARGE:
-				AddTime = 20;
+			case SHEEP_TYPE::REAL:
+				switch (fatIt->GetType())
+				{
+				case FAT_WOLF_TYPE::SMALL:
+					AddTime = 5;
+					break;
+				case FAT_WOLF_TYPE::MIDDLE:
+					AddTime = 10;
+					break;
+				case FAT_WOLF_TYPE::LARGE:
+					AddTime = 20;
+					break;
+				}
 				break;
 			}
-			UIMNG.SetTimer(UIMNG.GetTimer()+AddTime);
+
+			// UIに時間を足す
+			UIMNG.AddTimer(AddTime);
 
 			se->Play("太った羊IN");
 
@@ -309,7 +359,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 		int HitCount(0);	// 太った羊にあたってる数
 		for (auto &sheepIt : *sinnMNG->Get_list())
 		{
-			if (fatIt->GetFloor() != sheepIt->Get_floor()) continue;	// レーン違う
+			if (fatIt->GetFloor() != sheepIt->Get_floor() || !sheepIt->isPushOK()) continue;	// レーン違う
 
 			Vector2 sPos = sheepIt->GetCenterPos();
 			Vector2 fPos = fatIt->GetCenterPos();
@@ -376,6 +426,10 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 					manIterator->SetFatType(FAT_WOLF_TYPE::LARGE);
 					break;
 				}
+
+				// 何の羊の肉かで分岐
+				manIterator->SetSheepType(pNiku->GetSheepType());
+
 
 				manIterator->SetCenterPos(pNiku->GetCenterPos());
 
