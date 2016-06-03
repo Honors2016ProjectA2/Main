@@ -132,6 +132,9 @@ void EffectManager::AddEffect(int x, int y, EFFECT_TYPE type)
 	case EFFECT_TYPE::PUSH:
 		data = new PushEffect();
 		break;
+	case EFFECT_TYPE::DELICIOUS:
+		data = new DeliciousEffect();
+		break;
 	default:
 		break;
 	}
