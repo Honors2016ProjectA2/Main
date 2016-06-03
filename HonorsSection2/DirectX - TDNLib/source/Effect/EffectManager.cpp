@@ -123,8 +123,14 @@ void EffectManager::AddEffect(int x, int y, EFFECT_TYPE type)
 	case EFFECT_TYPE::BURN:
 		data = new BurnEffect();
 		break;
-		case EFFECT_TYPE::ClEAR:
+	case EFFECT_TYPE::ClEAR:
 		data = new ClearEffect();
+		break;
+	case EFFECT_TYPE::DON:
+		data = new DonEffect();
+		break;
+	case EFFECT_TYPE::PUSH:
+		data = new PushEffect();
 		break;
 	default:
 		break;

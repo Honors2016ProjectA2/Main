@@ -70,7 +70,10 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 			{
 				// 当たったやつで太った羊作成
 				if (kusaIterator->GetMode() == BOKUSOU_MODE::BORN)
+				{
 					sinnMNG->CreateFatSheep(sinIterator);
+					EffectMgr.AddEffect((int)sPos.x - 100, (int)sPos.y, EFFECT_TYPE::PUSH);
+				}
 
 				// 草消す
 				kusaIterator->Erase();
@@ -87,8 +90,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				sinIterator->Get_pos()->x > 640 ? true : false));		//加点、Time上昇
 
 			//A列車 羊がゴールした瞬間
-			EffectMgr.AddEffect((int)sinIterator->Get_pos()->x+220, (int)sinIterator->Get_pos()->y+64, EFFECT_TYPE::INEFFECT_MINI);
-			
+			EffectMgr.AddEffect((int)sinIterator->Get_pos()->x, (int)sinIterator->Get_pos()->y+64, EFFECT_TYPE::INEFFECT_MINI);
 			//// プロジェクションのポジションを入手
 			//Vector2 projPos = Math::GetProjPos(Vector2((float)sinIterator->Get_pos()->x + 220,
 			//	(float)sinIterator->Get_pos()->y + 64));
@@ -210,13 +212,14 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 			//A列車 太った羊がゴールした瞬間
 			EffectMgr.AddEffect((int)fatIt->GetCenterPos().x-96, (int)fatIt->GetCenterPos().y , EFFECT_TYPE::PLUS);
 			EffectMgr.AddEffect((int)fatIt->GetCenterPos().x-256, (int)fatIt->GetCenterPos().y , EFFECT_TYPE::INEFFECT);
+			EffectMgr.AddEffect((int)fatIt->GetCenterPos().x - 306, (int)fatIt->GetCenterPos().y+40, EFFECT_TYPE::DON);
 
 			// プロジェクションのポジションを入手
 			Vector2 projPos = Math::GetProjPos(Vector2(
 				(float)fatIt->GetCenterPos().x - 96,
 				(float)fatIt->GetCenterPos().y + 64));
 			// 放射ブラ―発動！
-			PostEffectMgr.SetRadialBlur(projPos, 15);
+			PostEffectMgr.SetRadialBlur(projPos, 18);
 
 
 			SetScore(dataMNG, fatIt->GetFloor(), 10000);	// 10000倍

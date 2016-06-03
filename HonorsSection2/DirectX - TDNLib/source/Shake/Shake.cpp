@@ -2,7 +2,7 @@
 #include "Shake.h"
 
 namespace SHAKE{
-	const float WIDTH = 0.05f;
+	const float WIDTH = 0.1f;
 	const int MAX_TIME = 60;
 	const int WAIT_1 = 20;
 	const int WAIT_2 = 10;

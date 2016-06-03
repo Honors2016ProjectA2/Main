@@ -24,7 +24,8 @@
 
 
 namespace{
-	namespace SCENE{
+	namespace SCENE
+	{
 		enum{
 			INIT, READY, MAIN, END, RESULT,
 		};

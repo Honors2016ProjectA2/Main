@@ -201,3 +201,41 @@ public:
 private:
 };
 
+// 
+class DonEffect :public BaseEffect
+{
+public:
+	DonEffect()
+	{
+		m_picSize = 256;
+		m_pic = new AnimationPanel("Data/Effect/don.png", 256, 256, 15, 1, 4, false);
+		m_pic->GetPic()->SetScale(3.0f);
+		//state = RS::COPY;
+	};
+	~DonEffect() {};
+
+	void Update() { BaseEffect::Update(); };
+	void Render() { BaseEffect::Render(); };
+	void Action(int x = 0, int y = 0) { BaseEffect::Action(x, y); };
+
+private:
+};
+
+class PushEffect :public BaseEffect
+{
+public:
+	PushEffect()
+	{
+		m_picSize = 256;
+		m_pic = new AnimationPanel("Data/Effect/push.png", 256, 256, 14, 1, 4, true, 120);
+		//m_pic->GetPic()->SetScale(3.0f);
+		state = RS::COPY;
+	};
+	~PushEffect() {};
+
+	void Update() { BaseEffect::Update(); };
+	void Render() { BaseEffect::Render(); };
+	void Action(int x = 0, int y = 0) { BaseEffect::Action(x, y); };
+
+private:
+};
