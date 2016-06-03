@@ -231,6 +231,7 @@ void UIManager::ConboCount()
 // éûä‘è„è∏ÅI
 void UIManager::AddTimer(int timer)
 {
+	m_timer += timer;
 	NumberEffect.AddNumber(780, 40, timer, Number_Effect::COLOR_TYPE::YELLOW_GREEN);
 }
 

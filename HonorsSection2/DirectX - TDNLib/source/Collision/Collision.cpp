@@ -71,8 +71,10 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				// ìñÇΩÇ¡ÇΩÇ‚Ç¬Ç≈ëæÇ¡ÇΩórçÏê¨
 				if (kusaIterator->GetMode() == BOKUSOU_MODE::BORN){
 					sinnMNG->CreateFatSheep(sinIterator);
+					EffectMgr.AddEffect((int)sPos.x + 50, (int)sPos.y - 50, EFFECT_TYPE::ClEAR);
 					EffectMgr.AddEffect((int)sPos.x - 100, (int)sPos.y, EFFECT_TYPE::PUSH);
 					EffectMgr.AddEffect((int)sPos.x + 50 ,(int)sPos.y-50, EFFECT_TYPE::EAT);
+				
 				}
 
 				// ëêè¡Ç∑
