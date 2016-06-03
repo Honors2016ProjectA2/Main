@@ -169,7 +169,7 @@ void sceneMain::Init()
 	FadeControl::Setting(FadeControl::MODE::FADE_IN, 30.0f);
 
 	// ここのかっこを0にするとレディーゴーの処理が出る(デバッグの時短でレディーゴーを無しにしてる)
-	state = (1) ? SCENE::MAIN : SCENE::READY;
+	state = (0) ? SCENE::MAIN : SCENE::READY;
 	DataDelivery();
 }
 
@@ -213,6 +213,11 @@ void sceneMain::MainUpdate()
 		state = SCENE::END;
 
 		UIMNG.SetTimer(120);
+	}
+
+	if (KeyBoard(KB_SPACE) == 3)
+	{
+		UIMNG.AddTimer(10);
 	}
 		
 }

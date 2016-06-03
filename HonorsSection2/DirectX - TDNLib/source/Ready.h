@@ -1,5 +1,6 @@
 #pragma once
 #include	"IEX_Expansion.h"
+#include	"TDNLIB.h"
 
 class Ready
 {
@@ -24,6 +25,7 @@ private:
 	tdn2DObj* sinnJump = nullptr;
 	tdn2DObj* ready = nullptr;
 	tdn2DObj* go = nullptr;
+	tdn2DAnim* m_animeGO;
 
 	//èàóù
 	void ReadyRun();

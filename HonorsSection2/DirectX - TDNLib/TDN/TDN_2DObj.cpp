@@ -1153,6 +1153,13 @@ void tdn2DObj::SetARGB(DWORD ARGB)
 
 }
 
+// 
+void tdn2DObj::SetAlpha(int A)
+{
+	DWORD orgColor = (color & 0x00ffffff);	
+	color = (A << 24) | orgColor;
+}
+
 void tdn2DObj::SetTurnOver(bool turnFlag)
 {
 

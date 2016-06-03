@@ -228,6 +228,12 @@ void UIManager::ConboCount()
 	m_combo++;
 }
 
+// 時間上昇！
+void UIManager::AddTimer(int timer)
+{
+	NumberEffect.AddNumber(780, 40, timer, Number_Effect::COLOR_TYPE::YELLOW_GREEN);
+}
+
 /***********************/
 //	タイマー系
 /***********************/

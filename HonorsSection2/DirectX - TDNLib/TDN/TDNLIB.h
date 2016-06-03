@@ -1030,6 +1030,8 @@ public:
 	void SetARGB(BYTE A, BYTE R, BYTE G, BYTE B);
 	void SetARGB(int A, int R, int G, int B);
 	void SetARGB(DWORD ARGB);
+	void SetAlpha(int A);
+
 	void SetTurnOver(bool turnFlag);
 	void SetShiftCenter(bool ShiftFlag);
 	void SetCenter(float x, float y);
@@ -1319,7 +1321,9 @@ public:
 	void SetAngle(float angle) { m_obj->SetAngle(angle); };
 	void SetARGB(BYTE A, BYTE R, BYTE G, BYTE B) { m_obj->SetARGB(A, R, G, B); };
 	void SetARGB(int A, int R, int G, int B) { m_obj->SetARGB(A, R, G, B); };
-	void SetARGB(DWORD ARGB) { m_obj->SetARGB(ARGB); };
+	void SetARGB(DWORD ARGB) { m_obj->SetARGB(ARGB); }; 
+	void SetAlpha(int A){ m_obj->SetAlpha(A);	}
+
 	void SetTurnOver(bool turnFlag) { m_obj->SetTurnOver(turnFlag); };
 	void SetShiftCenter(bool ShiftFlag) { m_obj->SetShiftCenter(ShiftFlag); };
 	void SetCenter(float x, float y) { m_obj->SetCenter(x, y); };

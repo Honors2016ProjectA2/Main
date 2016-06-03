@@ -106,8 +106,13 @@ public:
 	void Update();
 	void Render();
 
+	enum class COLOR_TYPE
+	{
+		WHITE, BLUE, RED, GREEN, LIGHT_BLUE, YELLOW_GREEN
+	};
+
 	// êîéöí«â¡
-	void AddNumber(int x,int y,int score);
+	void AddNumber(int x,int y,int score, COLOR_TYPE type = COLOR_TYPE::WHITE);
 
 	//// NumberData
 	//NumberData  

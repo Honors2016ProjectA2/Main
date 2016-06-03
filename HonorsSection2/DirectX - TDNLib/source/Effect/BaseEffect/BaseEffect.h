@@ -227,7 +227,7 @@ public:
 	PushEffect()
 	{
 		m_picSize = 256;
-		m_pic = new AnimationPanel("Data/Effect/push.png", 256, 256, 14, 1, 4, true, 120);
+		m_pic = new AnimationPanel("Data/Effect/push.png", 256, 256, 14, 1, 4, true, 180);
 		//m_pic->GetPic()->SetScale(3.0f);
 		state = RS::COPY;
 	};

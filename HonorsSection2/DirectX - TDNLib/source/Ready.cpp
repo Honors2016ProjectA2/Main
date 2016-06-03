@@ -55,6 +55,9 @@ Ready::Ready()
 	//sinnJump = new tdn2DObjEx("DATA/CHR/fat_sheep.png");
 	//ready = new tdn2DObjEx("DATA/Ready/Ready.png");
 	//go = new tdn2DObjEx("DATA/Ready/GO.png");
+	
+	m_animeGO = new tdn2DAnim("DATA/Ready/GO.png");
+	m_animeGO->OrderRipple(12, 2.0f, 0.1f);
 
 	sinnRun = new tdn2DObj("DATA/CHR/sheep_animation.png");
 	sinnJump = new tdn2DObj("DATA/CHR/fat_sheep.png");
@@ -74,6 +77,7 @@ Ready::~Ready()
 	SAFE_DELETE(sinnJump);
 	SAFE_DELETE(ready);
 	SAFE_DELETE(go);
+	SAFE_DELETE(m_animeGO);
 }
 
 void Ready::Init()
@@ -105,6 +109,7 @@ void Ready::ReadyRun()
 	if( x <= READY::END_X ){
 		state = STATE::GO_BIGGER;
 		bgm->Stop("READY");
+		m_animeGO->Action();
 	}
 }
 
@@ -134,6 +139,8 @@ void Ready::GoBigger()
 	scale += GO::SCALE_SPEED;
 	sinnJump->SetScale(scale);
 	go->SetScale(scale);
+
+	m_animeGO->Update();
 
 	if( scale >= GO::SCALE_MAX ){
 		state = STATE::RET_TRUE;
@@ -194,10 +201,14 @@ void Ready::GoRender()
 {
 	//Œã‚ë‚Ìl
 	//sinnJump->Render(1280/2,720/2+(int)(GO::SINN::ADJUSTMENT*scale), (int)(GO::SINN::SIZE_HALF*2*scale), (int)(GO::SINN::SIZE_HALF*2*scale), animNum%4*GO::SINN::DEFAULT_SIZE, animNum/4*GO::SINN::DEFAULT_SIZE, GO::SINN::DEFAULT_SIZE, GO::SINN::DEFAULT_SIZE, .0f);
-	sinnJump->Render(500, 300, 240, 240, (animNum % 4) * 240, 0, 240, 240);
+	//sinnJump->Render(500, 300, 240, 240, (animNum % 4) * 240, 0, 240, 240);
 
 	//Žè‘O‚Ì•¶Žš
 	//go->Render(1280/2,720/2, (int)(GO::TEXT::W_HALF*2*scale), (int)(GO::TEXT::H*scale), 0,0, GO::TEXT::U, GO::TEXT::V, .0f);
+	//go->Render(400, 400);
+
+	go->SetScale(2.0f);
 	go->Render(400, 400);
+	m_animeGO->Render(400, 400,RS::COPY);
 
 }

@@ -24,6 +24,9 @@ public:
 	void AddScore(int score);
 	void ConboCount();
 
+	// ŠÔã¸
+	void AddTimer(int timer);
+
 	// ƒOƒ‰ƒt‚Ìİ’è
 	void SetGraph(float graph) {
 		m_percent = graph;

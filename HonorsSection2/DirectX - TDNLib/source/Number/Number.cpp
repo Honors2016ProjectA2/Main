@@ -291,7 +291,8 @@ void Number_Effect::Update()
 		}	
 
 		// アルファ更新
-		(*it)->number->GetAnim()->SetARGB((*it)->alpha, 255, 255, 255);
+		//(*it)->number->GetAnim()->SetARGB((*it)->alpha, 255, 255, 255);
+		(*it)->number->GetAnim()->SetAlpha((*it)->alpha);
 
 		// ナンバー更新
 		(*it)->number->Update();
@@ -328,7 +329,7 @@ void Number_Effect::Render()
 /************************************************/
 //	数字追加
 /************************************************/
-void Number_Effect::AddNumber(int x, int y, int score)
+void Number_Effect::AddNumber(int x, int y, int score, COLOR_TYPE type)
 {
 	NumberData* data;
 	
@@ -345,6 +346,38 @@ void Number_Effect::AddNumber(int x, int y, int score)
 	data->state = NumberData::STATE::START;
 	
 	data->isEnd = false;
+
+	// 色
+	switch (type)
+	{
+	case Number_Effect::COLOR_TYPE::WHITE:
+		data->number->GetAnim()->SetARGB(0xffffffff);// 色
+
+		break;
+	case Number_Effect::COLOR_TYPE::BLUE:
+		data->number->GetAnim()->SetARGB(0xff00ff00);// 色
+
+		break;
+	case Number_Effect::COLOR_TYPE::RED:
+		data->number->GetAnim()->SetARGB(0xffff0000);// 色
+		
+		break;
+	case Number_Effect::COLOR_TYPE::GREEN:
+		data->number->GetAnim()->SetARGB(0xff00ff00);// 色
+		
+		break;
+	case Number_Effect::COLOR_TYPE::LIGHT_BLUE:
+		data->number->GetAnim()->SetARGB(0xff00ffff);// 色
+		
+		break;
+	case Number_Effect::COLOR_TYPE::YELLOW_GREEN:
+		data->number->GetAnim()->SetARGB(0xff99ff44);// 色
+		
+		break;
+	default:
+		break;
+	}
+	
 
 	// 要素追加
 	m_NumberData.push_back(data);
