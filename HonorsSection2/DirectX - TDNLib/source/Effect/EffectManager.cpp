@@ -135,6 +135,9 @@ void EffectManager::AddEffect(int x, int y, EFFECT_TYPE type)
 	case EFFECT_TYPE::DELICIOUS:
 		data = new DeliciousEffect();
 		break;
+	case EFFECT_TYPE::EAT:
+		data = new EatEffect();
+		break;
 	default:
 		break;
 	}

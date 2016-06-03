@@ -196,6 +196,13 @@ void sceneMain::MainUpdate()
 	{
 		EffectMgr.AddEffect( 220, 64, EFFECT_TYPE::BURN);
 	}
+
+	// G
+	if (KeyBoard(KB_G) == 3)
+	{
+		EffectMgr.AddEffect(220, 64, EFFECT_TYPE::EAT);
+	}
+
 	// タイムが0になったらゲームオーバー処理
 	//if( dataMNG->GetTime() <= 0 ){
 	//	state = SCENE::END;

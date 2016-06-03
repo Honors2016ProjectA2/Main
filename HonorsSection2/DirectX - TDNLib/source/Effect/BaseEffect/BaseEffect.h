@@ -259,3 +259,22 @@ public:
 private:
 };
 
+// 
+class EatEffect :public BaseEffect
+{
+public:
+	EatEffect()
+	{
+		m_picSize = 256;
+		m_pic = new AnimationPanel("Data/Effect/Eat.png", 256, 256, 28, 1, 6, false);
+		//m_pic->GetPic()->SetScale(3.0f);
+		state = RS::COPY;
+	};
+	~EatEffect() {};
+
+	void Update() { BaseEffect::Update(); };
+	void Render() { BaseEffect::Render(); };
+	void Action(int x = 0, int y = 0) { BaseEffect::Action(x, y); };
+
+private:
+};
