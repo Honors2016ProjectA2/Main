@@ -20,7 +20,7 @@ void Enemy::Base::MoveUpdate()
 //**************************************************
 //    狼
 //**************************************************
-Enemy::Wolf::Wolf(tdn2DObj *image, tdn2DObj *pniku, int floor, float speed, int nikustopTime) : Base(image, floor, speed), m_pNikukutteru(pniku), m_EAT_NIKU_TIMER(nikustopTime), m_OrgSpeed(speed)
+Enemy::Wolf::Wolf(tdn2DObj *image, tdn2DObj *pniku, tdn2DObj *pHone, int floor, float speed, int nikustopTime) : Base(image, floor, speed), m_pNikukutteru(pniku), m_EAT_NIKU_TIMER(nikustopTime), m_OrgSpeed(speed), m_pHoneImage(pHone)
 {
 	// イニシャライザ書けない
 	W = 120;
@@ -33,7 +33,7 @@ Enemy::Wolf::Wolf(tdn2DObj *image, tdn2DObj *pniku, int floor, float speed, int 
 	// モードポインタ初期亜k
 	ModeFunk[(int)MODE::RUN] = &Wolf::Run;
 	ModeFunk[(int)MODE::NIKU] = &Wolf::Niku;
-	ModeFunk[(int)MODE::KAERU] = &Wolf::Kaeru;
+	ModeFunk[(int)MODE::DEAD] = &Wolf::Dead;
 
 	// 最初はしる
 	ChangeMode(MODE::RUN);
@@ -71,28 +71,33 @@ void Enemy::Wolf::Niku()
 	// 肉時間
 	if (++m_EatNikuTimer > m_EAT_NIKU_TIMER)
 	{
-		// おしこめ！！
-		EffectMgr.AddEffect((int)m_pos.x - 100, (int)m_pos.y + 60, EFFECT_TYPE::PUSH);
+		EffectMgr.AddEffect((int)m_pos.x + 50, (int)m_pos.y + 30, EFFECT_TYPE::ClEAR);
+		EffectMgr.AddEffect((int)m_pos.x - 80, (int)m_pos.y + 60, EFFECT_TYPE::PUSH);
+
+		// 煙
+		Particle2dManager::Effect_FatSmoke(GetCenterPos());
 
 		// 太る
 		EnemyMgr->CreateFatWolf(this, m_type, m_SheepType);
 	}
 }
 
-void Enemy::Wolf::Kaeru()
+void Enemy::Wolf::Dead()
 {
-	// アニメ更新
-	if (++m_AnimeFrame > 5)
+	if (m_AnimePanel < 5)
 	{
-		m_AnimeFrame = 0;
-		if (++m_AnimePanel > 4) m_AnimePanel = 0;
+		if (++m_AnimeFrame > 4)
+		{
+			m_AnimeFrame = 0;
+			m_AnimePanel++;
+		}
 	}
-
-	// 端まで帰ったら
-	if (m_pos.x > 1280)
+	else
 	{
-		// 死ぬ
-		m_bErase = true;
+		// α下げていく
+		m_alpha -= 2;
+		if (m_alpha < 2)
+			m_bErase = true;	// 死ぬ
 	}
 }
 
@@ -103,13 +108,16 @@ void Enemy::Wolf::Render()
 	switch (m_mode)
 	{
 	case Enemy::Wolf::MODE::RUN:
-	case Enemy::Wolf::MODE::KAERU:
 		pImage = m_pImage;
+		break;
+	case Enemy::Wolf::MODE::DEAD:
+		pImage = m_pHoneImage;
 		break;
 	case Enemy::Wolf::MODE::NIKU:
 		pImage = m_pNikukutteru;
 		break;
 	}
+	pImage->SetARGB(m_alpha, (BYTE)255, (BYTE)255, (BYTE)255);
 	pImage->Render((int)m_pos.x, (int)m_pos.y, W, H, (m_AnimePanel % 4) * W, (m_AnimePanel / 4) * H, W, H);
 }
 
@@ -204,6 +212,7 @@ void EnemyManager::Initialize()
 	// 敵画像の読み込み
 	m_pImages[(int)ENEMY_TYPE::WOLF] = new tdn2DObj("DATA/CHR/「！」左移動.png");
 	m_pNikukutteru = new tdn2DObj("DATA/CHR/kuruma back.png");
+	m_pHoneImage = new tdn2DObj("DATA/CHR/hone_motion.png");
 	m_pFatWolfImages[(int)SHEEP_TYPE::NOMAL] = new tdn2DObj("DATA/CHR/sinnnyou tubureru.png");
 	m_pFatWolfImages[(int)SHEEP_TYPE::GOLD] = new tdn2DObj("DATA/CHR/sinnnyou hajike.png");
 	m_pFatWolfImages[(int)SHEEP_TYPE::REAL] = new tdn2DObj("DATA/CHR/sinnnyou detekuru.png");
@@ -217,6 +226,7 @@ void EnemyManager::Release()
 	}
 	Clear();
 	delete m_pNikukutteru;
+	delete m_pHoneImage;
 	FOR((int)SHEEP_TYPE::MAX) delete m_pFatWolfImages[i];
 }
 
@@ -229,7 +239,7 @@ void EnemyManager::Create(int floor, ENEMY_TYPE type)
 	switch (type)
 	{
 	case ENEMY_TYPE::WOLF:
-		set = new Enemy::Wolf(m_pImages[(int)ENEMY_TYPE::WOLF], m_pNikukutteru, floor, m_EnemySpeed[(int)ENEMY_TYPE::WOLF], m_NikuTime);
+		set = new Enemy::Wolf(m_pImages[(int)ENEMY_TYPE::WOLF], m_pNikukutteru, m_pHoneImage, floor, m_EnemySpeed[(int)ENEMY_TYPE::WOLF], m_NikuTime);
 		break;
 	default:
 		assert(0);	// 例外処理
@@ -316,7 +326,7 @@ void EnemyManager::Clear()
 void EnemyManager::CreateFatWolf(Enemy::Wolf *wolf, FAT_WOLF_TYPE type, SHEEP_TYPE SheepType)
 {
 	wolf->Erase();	// 元の羊を消去
-	FatWolf *set = new FatWolf(m_pFatWolfImages[(int)SheepType], Vector2(wolf->GetPos().x, (float)STAGE_POS_Y[wolf->GetFloor()] - 30), type, SheepType);// 太った狼生成
+	FatWolf *set = new FatWolf(m_pFatWolfImages[(int)SheepType], Vector2(wolf->GetPos().x - 60, (float)STAGE_POS_Y[wolf->GetFloor()] - 30), type, SheepType);// 太った狼生成
 	set->SetFloor(wolf->GetFloor());	// フロア設定
 	m_FatList.push_back(set);			// リストに突っ込む
 }

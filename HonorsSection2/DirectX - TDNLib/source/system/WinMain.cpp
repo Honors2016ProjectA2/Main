@@ -35,7 +35,7 @@ BOOL InitApp(HINSTANCE hInstance, int nCmdShow)									// ƒQ[ƒ€‹N“®‚ÌÅ‰‚Ì
 	tdnText::Init();
 	tdnInput::Initialize();
 	SoundManager::Initialize();
-	tdnMovieManager::Initialize();
+	//tdnMovieManager::Initialize();
 
 	//IEX‚ÌƒVƒXƒeƒ€ŠÖ”‚ğˆê“IÌ—pA˜b‚µ‡‚¢‚ÅSystem.h‚ğ–•Á‚·‚é‚©Œˆ‚ß‚é
 	SYSTEM_Initialize();
@@ -58,7 +58,7 @@ BOOL EndApp()																	// ‚±‚Ì’†‚ÅƒVƒXƒeƒ€‚àŠÜ‚ß‚½‘S‚Ä‚ÌŒãˆ—‚ğ‚·‚é‚Ì‚Åƒ
 	tdnText::CleanUpModule();
 	tdnInput::Release();
 	SoundManager::Release();
-	tdnMovieManager::Release();
+	//tdnMovieManager::Release();
 
 	return TRUE;
 }

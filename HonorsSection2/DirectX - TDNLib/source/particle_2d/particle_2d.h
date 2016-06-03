@@ -106,7 +106,10 @@ public:
 
 	// パーティクル関数たち
 	static void Effect_KiraKira(const Vector2 &pos, const Vector2 &range, float scale = 20.0f, float ScaleFluctuation = 5.0f, int LoopCount = 1, int EndFrame = 120);	// きらきらエフェクト
-	static void Effect_Smoke(const Vector2 &pos);
+	static void Effect_SandCloud(const Vector2 &pos);		// 砂煙
+	static void Effect_RealSheep(const Vector2 &pos);		// リアル羊のオーラ
+	static void Effect_Hinoko(const Vector2 &pos);			// 火の粉
+	static void Effect_FatSmoke(const Vector2 &pos, float scale = 96, int LoopCount = 2);		// デブ煙
 private:
 	static Particle_2d *m_pParticle2d;
 };

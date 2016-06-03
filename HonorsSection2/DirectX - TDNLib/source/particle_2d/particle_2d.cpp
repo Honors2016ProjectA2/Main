@@ -27,14 +27,55 @@ void Particle2dManager::Effect_KiraKira(const Vector2 &pos, const Vector2 &range
 //*****************************************************************************
 //		砂煙
 //*****************************************************************************
-void Particle2dManager::Effect_Smoke(const Vector2 &pos)
+void Particle2dManager::Effect_SandCloud(const Vector2 &pos)
 {
 	m_pParticle2d->Set(15, 0, 0x08191919, 90, 0x00000000, 25, 0x0cffffff,
-		pos + Vector2((float)tdnRandom::Get(-12, 12), (float)tdnRandom::Get(-12, 12)),
+		pos + Vector2((rand() % 25) - 12.0f, (rand() % 25) - 12.0f),
 		Vector2((rand() % 5 - 2.5f)*0.5f, (rand() % 2 + .0f) * -0.5f),
 		Vector2(0, -.001f),
 		.01f, 1.01f, 32.0f, RS::COPY);
 }
+
+//*****************************************************************************
+//		リアル羊のオーラ
+//*****************************************************************************
+void Particle2dManager::Effect_RealSheep(const Vector2 &pos)
+{
+	m_pParticle2d->Set(15, 0, 0x80550055, 45, 0x00000000, 25, 0x0c110011,
+		pos + Vector2((rand() % 25) - 12.0f, (rand() % 25) - 12.0f),
+		Vector2((rand() % 5 - 2.5f)*0.5f, (rand() % 3 + .0f) * -0.5f),
+		Vector2(0, -.001f),
+		.05f, 1.05f, 64.0f, RS::COPY);
+}
+
+//*****************************************************************************
+//		火の粉的な
+//*****************************************************************************
+void Particle2dManager::Effect_Hinoko(const Vector2 &pos)
+{
+	const Vector2 move = Vector2((rand() % 20 - 10.0f)*0.5f, (rand() % 5 + 1.0f) * -0.5f);
+	m_pParticle2d->Set(9, 0, 0xffffffff, 90, 0x00000000, 45, 0x0cffffff,
+		pos + Vector2((float)tdnRandom::Get(-15, 15), (float)tdnRandom::Get(-15, 15)),
+		move,
+		Vector2(-move.x * 0.01f, -move.y * 0.00001f),
+		(rand() % 10) * .01f, 1.0f, 12.0f - (rand() % 12), RS::COPY);
+}
+
+//*****************************************************************************
+//		デブ煙
+//*****************************************************************************
+void Particle2dManager::Effect_FatSmoke(const Vector2 &pos, float scale, int LoopCount)
+{
+	FOR(LoopCount)
+	{
+		m_pParticle2d->Set(15, 0, 0x88ffffff, 75, 0x01ffffff, 25, 0x0cffffff,
+			pos + Vector2((rand() % 129) - 64.0f, (rand() % 129) - 64.0f),
+			Vector2((rand() % 5 - 2.5f)*0.5f, (rand() % 5 + .0f) * -0.5f),
+			Vector2(0, -.001f),
+			.01f, 1.01f, scale, RS::COPY);
+	}
+}
+
 
 
 //*****************************************************************************
@@ -116,6 +157,14 @@ inline bool Particle_2d_data::SetVertex(TLVERTEX* v, int uindex, int vindex)
 		v[i].rhw = 1.0f;
 	}
 
+
+	// 原点から拡大
+	float scale_2 = pdata.scale * 0.5f;
+	v[0].sx = v[2].sx = (float)-scale_2;
+	v[1].sx = v[3].sx = (float)scale_2;
+	v[0].sy = v[1].sy = (float)-scale_2;
+	v[2].sy = v[3].sy = (float)scale_2;
+
 	//v[0].sx = -32;
 	//v[0].sy = -32;
 
@@ -128,21 +177,34 @@ inline bool Particle_2d_data::SetVertex(TLVERTEX* v, int uindex, int vindex)
 	//v[3].sx = 32;
 	//v[3].sy = 32;
 
+	// 原点から回転
+	for (DWORD i = 0; i < 4; i++){
+		const float xrot = v[i].sx;
+		const float yrot = v[i].sy;
+		v[i].sx = xrot * cos(pdata.angle) + yrot * sin(pdata.angle);
+		v[i].sy = -xrot * sin(pdata.angle) + yrot * cos(pdata.angle);
+	}
 	
-	
-	float scale_2 = pdata.scale * 0.5f;
-
-	v[0].sx = pdata.pos.x - scale_2;
-	v[0].sy = pdata.pos.y - scale_2;
-
-	v[1].sx = pdata.pos.x + scale_2;
-	v[1].sy = pdata.pos.y - scale_2;
-
-	v[2].sx = pdata.pos.x - scale_2;
-	v[2].sy = pdata.pos.y + scale_2;
-
-	v[3].sx = pdata.pos.x + scale_2;
-	v[3].sy = pdata.pos.y + scale_2;
+	// 移動
+	v[0].sx += pdata.pos.x;
+	v[2].sx += pdata.pos.x;
+	v[1].sx += pdata.pos.x;
+	v[3].sx += pdata.pos.x;	
+	v[0].sy += pdata.pos.y;
+	v[1].sy += pdata.pos.y;
+	v[2].sy += pdata.pos.y;
+	v[3].sy += pdata.pos.y;
+	//v[0].sx = pdata.pos.x - scale_2;
+	//v[0].sy = pdata.pos.y - scale_2;
+	//
+	//v[1].sx = pdata.pos.x + scale_2;
+	//v[1].sy = pdata.pos.y - scale_2;
+	//
+	//v[2].sx = pdata.pos.x - scale_2;
+	//v[2].sy = pdata.pos.y + scale_2;
+	//
+	//v[3].sx = pdata.pos.x + scale_2;
+	//v[3].sy = pdata.pos.y + scale_2;
 
 	
 

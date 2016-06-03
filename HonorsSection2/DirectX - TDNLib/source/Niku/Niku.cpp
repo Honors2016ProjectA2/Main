@@ -131,6 +131,14 @@ void NikuManager::Update()
 
 	else if (m_pYakiniku)
 	{
+		static int HinokoFrame = 0;
+		// 火の粉パーティクル
+		if (++HinokoFrame > 1)
+		{
+			HinokoFrame = 0;
+			Particle2dManager::Effect_Hinoko(YAKINIKU_AREA + Vector2(128, 128));
+		}
+
 		m_pYakiniku->Update();
 
 		// マウス左クリックで肉作成

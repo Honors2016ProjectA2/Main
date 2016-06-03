@@ -175,14 +175,34 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 
 			if (ShinnnyoAndExclamationPoint(sinIterator, manIterator))
 			{
-				if (!sinIterator->col_check)
+				// ƒŠƒAƒ‹—r‚¶‚á‚È‚©‚Á‚½‚ç
+				if (sinIterator->GetType() != SHEEP_TYPE::REAL)
 				{
-					//A—ñŽÔ ˜T‚Æ—r‚ª“–‚½‚Á‚½uŠÔ
-					EffectMgr.AddEffect((int)sinIterator->Get_pos()->x + 96, (int)sinIterator->Get_pos()->y + 64, EFFECT_TYPE::HIT);
+					if (!sinIterator->col_check)
+					{
+						sinIterator->Be_crushed();		//‚µ‚ñ‚É‚å‚¤‚É•ß‚Ü‚Á‚½Ž–‚ð‹³‚¦‚é
 
-					sinIterator->col_check = true;
-					dataMNG->SubTime_Kill(sinIterator->Get_floor(), *sinIterator->Get_pos());		//ŽžŠÔ‚ðŒ¸­‚³‚¹‚é
-					se->Play("DAMAGE", sinIterator->GetCenterPos());
+						//A—ñŽÔ ˜T‚Æ—r‚ª“–‚½‚Á‚½uŠÔ
+						EffectMgr.AddEffect((int)sinIterator->Get_pos()->x + 96, (int)sinIterator->Get_pos()->y + 64, EFFECT_TYPE::HIT);
+
+						sinIterator->col_check = true;
+						dataMNG->SubTime_Kill(sinIterator->Get_floor(), *sinIterator->Get_pos());		//ŽžŠÔ‚ðŒ¸­‚³‚¹‚é
+						se->Play("DAMAGE", sinIterator->GetCenterPos());
+					}
+				}
+				else
+				{
+					if (!manIterator->col_check)
+					{
+						// ˜T‚ªŽ€‚Ê
+						manIterator->Kill();
+
+						//A—ñŽÔ ˜T‚Æ—r‚ª“–‚½‚Á‚½uŠÔ
+						EffectMgr.AddEffect((int)sinIterator->Get_pos()->x + 96, (int)sinIterator->Get_pos()->y + 64, EFFECT_TYPE::HIT);
+
+						manIterator->col_check = true;
+						se->Play("DAMAGE", sinIterator->GetCenterPos());
+					}
 				}
 			}
 		}
@@ -433,6 +453,9 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				// ‰½‚Ì—r‚Ì“÷‚©‚Å•ªŠò
 				manIterator->SetSheepType(pNiku->GetSheepType());
 
+				// DeliciousIII
+				EffectMgr.AddEffect((int)pNiku->GetCenterPos().x + 8, (int)pNiku->GetCenterPos().y + 32, EFFECT_TYPE::DELICIOUS);
+				EffectMgr.AddEffect((int)pNiku->GetCenterPos().x, (int)pNiku->GetCenterPos().y - 64, EFFECT_TYPE::EAT);
 
 				manIterator->SetCenterPos(pNiku->GetCenterPos());
 
@@ -450,7 +473,6 @@ bool CollisionManager::ShinnnyoAndExclamationPoint(Sheep::Base* sinn, Enemy::Wol
 	Vector2 diff = sinnPos - wolfPos;
 	int size = (sinn->Get_size() + enemy->GetWidth())/2;
 	if( diff.x*diff.x < size*size ){
-		sinn->Be_crushed();		//‚µ‚ñ‚É‚å‚¤‚É•ß‚Ü‚Á‚½Ž–‚ð‹³‚¦‚é
 		return true;
 	}
 	return false;

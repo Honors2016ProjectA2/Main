@@ -32,7 +32,7 @@ namespace Enemy
 		// 移動量の類の更新
 		void MoveUpdate();
 	public:
-		Base(tdn2DObj *image, int floor, float speed) :m_bErase(false), m_floor(floor), m_pImage(image), m_AnimeFrame(0), m_AnimePanel(0), m_MoveVec(Vector2(-1, 0)), m_speed(speed){}
+		Base(tdn2DObj *image, int floor, float speed) :col_check(false), m_bErase(false), m_floor(floor), m_pImage(image), m_AnimeFrame(0), m_AnimePanel(0), m_MoveVec(Vector2(-1, 0)), m_speed(speed){}
 		virtual void Update() = 0;
 		virtual void Render(){}
 
@@ -48,16 +48,18 @@ namespace Enemy
 		// 消去関係
 		bool EraseOK(){ return m_bErase; }
 		void Erase(){ m_bErase = true; }
+
+		bool col_check;
 	};
 
 	class Wolf : public Base
 	{
 	public:
-		Wolf(tdn2DObj *image, tdn2DObj *pniku, int floor, float speed, int nikustopTime);
+		Wolf(tdn2DObj *image, tdn2DObj *pniku, tdn2DObj *pHone, int floor, float speed, int nikustopTime);
 		void Update();
 		void Render();
 
-		enum class MODE{ RUN, NIKU, KAERU, MAX }m_mode;
+		enum class MODE{ RUN, NIKU, DEAD, MAX }m_mode;
 		void ChangeMode(MODE m)
 		{
 			m_AnimeFrame = m_AnimePanel = 0;
@@ -73,9 +75,9 @@ namespace Enemy
 				m_speed = 0;
 				m_EatNikuTimer = 0;
 				break;
-			case MODE::KAERU:
+			case MODE::DEAD:
 				m_MoveVec = Vector2(1, 0);
-				m_speed = m_OrgSpeed;
+				m_speed = 0;
 				break;
 			default:
 				break;
@@ -83,20 +85,23 @@ namespace Enemy
 		}
 		MODE GetMode(){ return m_mode; }
 
+		void Kill(){ ChangeMode(MODE::DEAD); }
+
 		void SetFatType(FAT_WOLF_TYPE type){ m_type = type; }
 		void SetSheepType(SHEEP_TYPE type){ m_SheepType = type; }
 
 	private:
-		tdn2DObj *m_pNikukutteru;
+		tdn2DObj *m_pNikukutteru, *m_pHoneImage;
 		int m_EAT_NIKU_TIMER;	// 固定値
 		int m_EatNikuTimer;
 		float m_OrgSpeed;
 		FAT_WOLF_TYPE m_type;	// 肉食い終わった後になるタイプ
 		SHEEP_TYPE m_SheepType;
+		BYTE m_alpha;
 
 		void Run();
 		void Niku();
-		void Kaeru();
+		void Dead();
 		void(Wolf::*ModeFunk[(int)MODE::MAX])();
 	};
 }
@@ -150,7 +155,7 @@ private:
 	tdn2DObj *m_pImages[(int)ENEMY_TYPE::MAX];
 
 	// 肉食ってるオオカミの画像
-	tdn2DObj *m_pNikukutteru, *m_pFatWolfImages[(int)SHEEP_TYPE::MAX];
+	tdn2DObj *m_pNikukutteru, *m_pFatWolfImages[(int)SHEEP_TYPE::MAX], *m_pHoneImage;
 
 	// 敵の移動速度
 	float m_EnemySpeed[(int)ENEMY_TYPE::MAX];

@@ -63,7 +63,7 @@ void Sheep::Base::Walk()
 	// 砂煙パーティクル
 	Vector2 pPos = GetCenterPos();
 	pPos.y += 32;
-	Particle2dManager::Effect_Smoke(pPos);
+	Particle2dManager::Effect_SandCloud(pPos);
 
 	// あにめ
 	if (++animeframe > m_data.Animkankaku)
@@ -83,7 +83,7 @@ void Sheep::Base::Curve()
 	// 砂煙パーティクル
 	Vector2 pPos = GetCenterPos();
 	pPos.y += 32;
-	Particle2dManager::Effect_Smoke(pPos);
+	Particle2dManager::Effect_SandCloud(pPos);
 
 	// あにめ
 	if (++animeframe > m_data.Animkankaku)
@@ -276,6 +276,19 @@ void Sheep::Gold::Update()
 
 	// きらきらエフェクト
 	if (process != CRUSHED)Particle2dManager::Effect_KiraKira(GetCenterPos(), Vector2(32, 32), 10.0f, 5.0f, 1, 90);
+}
+
+
+//**************************************************
+//	リアル羊
+//**************************************************
+void Sheep::Real::Update()
+{
+	// 基底クラスのアップデート
+	Sheep::Base::Update();
+
+	// エフェクト
+	if (process != PUSH)Particle2dManager::Effect_RealSheep(GetCenterPos() + Vector2(160, 0));
 }
 
 
@@ -550,6 +563,9 @@ void SheepManager::CreateFatSheep(Sheep::Base *sheep)
 	FatSheep *set = new FatSheep(m_pFatSheepImages[(int)sheep->GetType()], Vector2(sheep->Get_pos()->x, (float)STAGE_POS_Y[sheep->Get_floor()] - 30), sheep->GetType());// 太った羊生成
 	set->SetFloor(sheep->Get_floor());	// フロア設定
 	m_FatList.push_back(set);			// リストに突っ込む
+
+	// 煙パーティクル
+	Particle2dManager::Effect_FatSmoke(sheep->GetCenterPos());
 }
 
 int SheepManager::MakeNextFloor(int current)

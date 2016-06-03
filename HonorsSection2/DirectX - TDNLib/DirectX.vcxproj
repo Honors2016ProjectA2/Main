@@ -26,7 +26,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -96,7 +96,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>
       </SDLCheck>
-      <AdditionalIncludeDirectories>./FST/;./SOURCE/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./TDN/;./SOURCE/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -107,6 +107,8 @@
       <AdditionalDependencies>Strmiids.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <AdditionalOptions>/NODEFAULTLIB:LIBCMTD.LIB %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>./TDN/DirectShow/</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -145,9 +147,15 @@
     <ClCompile Include="source\system\textLoader.cpp" />
     <ClCompile Include="source\UI\ResultUIManager.cpp" />
     <ClCompile Include="source\UI\UIManager.cpp" />
-    <ClCompile Include="TDN\DirectShow\baseclasses\amfilter.cpp" />
-    <ClCompile Include="TDN\DirectShow\baseclasses\ctlutil.cpp" />
-    <ClCompile Include="TDN\DirectShow\baseclasses\renbase.cpp" />
+    <ClCompile Include="TDN\DirectShow\baseclasses\amfilter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="TDN\DirectShow\baseclasses\ctlutil.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="TDN\DirectShow\baseclasses\renbase.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="TDN\IEX_3DObject.cpp" />
     <ClCompile Include="TDN\IEX_Mesh.cpp" />
     <ClCompile Include="TDN\IEX_SkinMesh.cpp" />
@@ -158,11 +166,14 @@
     <ClCompile Include="TDN\TDN_Collision.cpp" />
     <ClCompile Include="TDN\TDN_File.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="TDN\TDN_Input.cpp" />
     <ClCompile Include="TDN\TDN_Math.cpp" />
     <ClCompile Include="TDN\TDN_Movie.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="TDN\TDN_Polygon.cpp" />
     <ClCompile Include="TDN\TDN_Random.cpp" />
@@ -218,43 +229,117 @@
     <ClInclude Include="source\UI\UIManager_.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="TDN\DirectShow\baseclasses\amextra.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\amfilter.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\cache.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\checkbmi.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\combase.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\cprop.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\ctlutil.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\ddmm.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\dllsetup.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\dxmperf.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\fourcc.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\measure.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\msgthrd.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\mtype.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\outputq.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\perflog.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\perfstruct.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\pstream.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\pullpin.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\refclock.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\reftime.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\renbase.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\schedule.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\seekpt.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\source.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\streams.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\strmctl.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\sysclock.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\transfrm.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\transip.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\videoctl.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\vtrans.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\winctrl.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\winutil.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\wxdebug.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\wxlist.h" />
-    <ClInclude Include="TDN\DirectShow\baseclasses\wxutil.h" />
+    <ClInclude Include="TDN\DirectShow\baseclasses\amextra.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\amfilter.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\cache.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\checkbmi.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\combase.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\cprop.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\ctlutil.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\ddmm.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\dllsetup.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\dxmperf.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\fourcc.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\measure.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\msgthrd.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\mtype.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\outputq.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\perflog.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\perfstruct.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\pstream.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\pullpin.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\refclock.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\reftime.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\renbase.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\schedule.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\seekpt.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\source.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\streams.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\strmctl.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\sysclock.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\transfrm.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\transip.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\videoctl.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\vtrans.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\winctrl.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\winutil.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\wxdebug.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\wxlist.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TDN\DirectShow\baseclasses\wxutil.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="TDN\ogg\codec.h" />
     <ClInclude Include="TDN\ogg\ogg.h" />
     <ClInclude Include="TDN\ogg\os_types.h" />
@@ -269,8 +354,12 @@
     <ClInclude Include="source\system\System.h" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="TDN\DirectShow\strmbasd.lib" />
-    <Library Include="TDN\DirectShow\strmbase.lib" />
+    <Library Include="TDN\DirectShow\strmbasd.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="TDN\DirectShow\strmbase.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </Library>
     <Library Include="TDN\ogg\ogg_static.lib" />
     <Library Include="TDN\ogg\vorbisfile_static.lib" />
     <Library Include="TDN\ogg\vorbis_static.lib" />

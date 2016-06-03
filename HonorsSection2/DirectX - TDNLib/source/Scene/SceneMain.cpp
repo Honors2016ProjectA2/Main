@@ -217,6 +217,9 @@ void sceneMain::MainUpdate()
 	// タイムが0になったらゲームオーバー処理
 	if (UIMNG.GetTimer() <= 0)
 	{
+		// SE全ストップ
+		se->Stop_all();
+
 		state = SCENE::END;
 
 		UIMNG.SetTimer(120);
@@ -281,8 +284,6 @@ void sceneMain::Render()
 
 
 
-	UIMNG.Render();
-
 	/******************************/
 	// ポストエフェクト効果始まり	
 	PostEffectMgr.BloomBigin();
@@ -319,6 +320,8 @@ void sceneMain::Render()
 	case SCENE::END:		EndRender();		break;
 	case SCENE::RESULT:		ResultRender();		break;
 	}
+
+	UIMNG.Render();
 
 	EffectMgr.Render();
 

@@ -150,6 +150,7 @@ namespace Sheep
 	private:
 	public:
 		Real(const SheepData &data, int floor, const SheepTextParam &textparam) :Base(data, floor, textparam){}
+		void Update();
 		SHEEP_TYPE GetType(){ return SHEEP_TYPE::REAL; }
 	};
 }

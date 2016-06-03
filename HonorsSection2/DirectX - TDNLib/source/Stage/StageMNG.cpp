@@ -546,9 +546,6 @@ void StageManager::Render()
 
 		stage[i]->Render();
 
-		// 入ったら加算されるスコア
-		tdnText::Draw(1200, STAGE_POS_Y[i] + 60, 0xffffffff, "%d", m_AddScore[i]);
-
 		//tdnPolygon::Rect(0, STAGE_POS_Y[i], 150, LANE_WIDTH, RS::COPY, 0x80ffffff);
 
 		// リキャスト
@@ -571,6 +568,12 @@ void StageManager::RenderFront()
 
 	// 炎描画
 	m_pStageImages[(NikuMgr->GetNiku()) ? StageImage::KIETA_FIRE : StageImage::FIRE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256);
+
+	// 数字描画
+	// 入ったら加算されるスコア
+	tdnText::Draw(1200, STAGE_POS_Y[0] + 0, 0xffffffff, "%d", m_AddScore[0]);
+	tdnText::Draw(1200, STAGE_POS_Y[1] + 0, 0xffffffff, "%d", m_AddScore[1]);
+	tdnText::Draw(1200, STAGE_POS_Y[2] + 270, 0xffffffff, "%d", m_AddScore[2]);
 }
 
 void StageManager::Reflection(DataManager* data, MousePointer* mouse)
