@@ -725,8 +725,8 @@ void ResultUIManager::RankingRender()
 	//  ƒ‰ƒ“ƒLƒ“ƒO•\Ž¦
 	for (int i = 0; i < RANKING_MAX; i++)
 	{
-		m_RankingPic->Render(10, (128 * i) + 175, 128, 128, 0, i * 128, 128, 128);
-		m_rankingNumber[i]->Render(400, (128 * i) + 200, m_RankingNum[i]);
+		m_RankingPic->Render(10, (112 * i) + 205, 128, 128, 0, i * 128, 128, 128);
+		m_rankingNumber[i]->Render(400, (112 * i) + 230, m_RankingNum[i]);
 
 		//tdnText::Draw(0, 0, 0xffffffff, "‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ");
 	}

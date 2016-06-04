@@ -456,7 +456,8 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 
 				// DeliciousIII
 				EffectMgr.AddEffect((int)pNiku->GetCenterPos().x + 8, (int)pNiku->GetCenterPos().y + 32, EFFECT_TYPE::DELICIOUS);
-				//EffectMgr.AddEffect((int)pNiku->GetCenterPos().x, (int)pNiku->GetCenterPos().y - 64, EFFECT_TYPE::EAT);
+				EffectMgr.AddEffect((int)pNiku->GetCenterPos().x, (int)pNiku->GetCenterPos().y , EFFECT_TYPE::HAPPY);
+				EffectMgr.AddEffect((int)pNiku->GetCenterPos().x, (int)pNiku->GetCenterPos().y, EFFECT_TYPE::HAPPY);
 
 				manIterator->SetCenterPos(pNiku->GetCenterPos());
 

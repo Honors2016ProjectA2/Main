@@ -147,6 +147,9 @@ void EffectManager::AddEffect(int x, int y, EFFECT_TYPE type)
 	case EFFECT_TYPE::BAD:
 		data = new BadEffect();
 		break;
+	case EFFECT_TYPE::HAPPY:
+		data = new HappyEffect();
+		break;
 	default:
 		break;
 	}

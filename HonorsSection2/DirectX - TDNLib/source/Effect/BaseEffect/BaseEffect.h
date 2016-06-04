@@ -341,3 +341,24 @@ public:
 
 private:
 };
+
+// 
+class HappyEffect :public BaseEffect
+{
+public:
+	HappyEffect()
+	{
+		m_picSize = 256;
+		//m_pic = new AnimationPanel("Data/Effect/Great.png", 128, 128, 59, 1, 8, false);
+		m_pic = new AnimationPanel("Data/Effect/happy.png", 256, 256, 25, 1, 6, false);
+		m_pic->GetPic()->SetScale(2.0f);
+		//state = RS::COPY;
+	};
+	~HappyEffect() {};
+
+	void Update() { BaseEffect::Update(); };
+	void Render() { BaseEffect::Render(); };
+	void Action(int x = 0, int y = 0) { BaseEffect::Action(x, y); };
+
+private:
+};
