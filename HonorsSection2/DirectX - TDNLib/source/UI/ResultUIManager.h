@@ -23,8 +23,10 @@ public:
 	static void Release();
 	virtual ~ResultUIManager();
 
+	void Init();
+
 	// XVE•`‰æ
-	void Update();
+	bool Update();
 	void Render();
 	void ResultRender();
 	void CircleRender();
@@ -131,11 +133,13 @@ private: //•Ï”
 
 	void Load();
 	void Save();
+	void Sort();
+
 
 	static const int RANKING_MAX = 4;
 	int m_RankingNum[RANKING_MAX];
 
-	Number* m_rankingNumber;
+	Number* m_rankingNumber[RANKING_MAX];
 	tdn2DObj* m_RankingPic;
 
 };

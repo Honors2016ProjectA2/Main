@@ -88,6 +88,26 @@ UIManager::~UIManager()
 
 }
 
+// 初期化
+void UIManager::Init()
+{
+	// スコア
+	m_score = 0;
+	m_scorePoint = 0;
+	// コンボ
+	m_combo = 0;
+	m_energyRate = 1.0f;
+
+	m_timer = 60 * 2;
+	//m_timer = 0;
+	m_flame = 0;
+
+	// 初期化
+	m_worfHappyCount = 0;
+	m_sheepKillCount = 0;
+
+}
+
 /***************************/
 //	更新・描画
 /***************************/

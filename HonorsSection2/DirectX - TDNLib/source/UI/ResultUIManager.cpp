@@ -2,6 +2,7 @@
 #include "particle_2d\particle_2d.h"
 #include "system\System.h"
 #include "Effect\EffectManager.h"
+#include "UIManager.h"
 
 ResultUIManager* ResultUIManager::inst = nullptr;
 
@@ -143,7 +144,12 @@ ResultUIManager::ResultUIManager()
 
 	/*****************************************/
 	//
-	m_rankingNumber = new Number();
+	for (int i = 0; i < RANKING_MAX; i++)
+	{
+	m_rankingNumber[i] = new Number();
+	m_rankingNumber[i]->GetAnim()->OrderShake(60 * 120 , 0, 16, 12);
+	}
+
 
 	Load();
 	m_RankingPic = new tdn2DObj("Data/ranking.png");
@@ -180,25 +186,35 @@ ResultUIManager::~ResultUIManager()
 	SAFE_DELETE(m_rankingFont);
 	SAFE_DELETE(m_circleScreen);
 
-	SAFE_DELETE(m_rankingNumber);
+	for (int i = 0; i < RANKING_MAX; i++)
+	{
+		SAFE_DELETE(m_rankingNumber[i]);
+	}
+
 	SAFE_DELETE(m_RankingPic);
+}
+
+void ResultUIManager::Init()
+{
 }
 
 /***************************/
 //	更新・描画
 /***************************/
-void ResultUIManager::Update()
+bool ResultUIManager::Update()
 {
-	if (isResultScreen == false)return;// 実行されていなかったらリターン
+	if (isResultScreen == false)return false;// 実行されていなかったらリターン
 
 
 	// 数値を更新
-	m_numNum[FONT::SCORE] = 114514810;
-	m_numNum[FONT::COMBO] = 114;
-	m_numNum[FONT::WORF] = 1;
-	m_numNum[FONT::FIRE] = 19;
+	m_numNum[FONT::SCORE] = UIMNG.GetScore();
+	m_numNum[FONT::COMBO] = UIMNG.GetCombo();
+	m_numNum[FONT::WORF] = UIMNG.GetWorfHappyCount();
+	m_numNum[FONT::FIRE] = UIMNG.GetSheepKillCount();
 
-	m_MaxSumNum = 11451081;
+	//↑での合計ポイント
+	m_MaxSumNum =
+		m_numNum[FONT::SCORE] + (m_numNum[FONT::COMBO] * 1000);
 
 	Debug();
 
@@ -322,6 +338,11 @@ void ResultUIManager::Update()
 		if (tdnMouse::GetLeft() == 3)
 		{
 			m_step = STEP::RANKING;
+
+			// kokokでソートする
+			Sort();
+
+			
 		}
 
 		m_WaitFlame++;
@@ -338,12 +359,24 @@ void ResultUIManager::Update()
 			if (m_blindRete >= 1.0f)m_blindRete = 1.0f;
 			shader2D->SetValue("blindRate", m_blindRete);
 
-		break;
-	case ResultUIManager::STEP::END:
-		
-		
+			if (m_blindRete == 1.0f)
+			{
+				m_step = STEP::END;
+			}
 
 		break;
+	case ResultUIManager::STEP::END:
+	{
+		int a = 0;
+		a++;
+
+		// 終り。ちゃんちゃん　ふぁあああああああああああああああ！！！！！
+		if (tdnMouse::GetLeft() == 3)
+		{
+			return true;
+		}
+
+	}		break;
 	default:
 		break;
 
@@ -368,7 +401,15 @@ void ResultUIManager::Update()
 	m_RankPic->Update();
 	m_RankRipPic->Update();
 
+	//  ランキング表示
+	for (int i = 0; i < RANKING_MAX; i++)
+	{
+		m_rankingNumber[i]->Update();
+	}
+
 	StopUpdate();
+
+	return false;
 }
 
 // 円の処理
@@ -511,7 +552,7 @@ void ResultUIManager::Render()
 	RankingRender();
 	// マスク用
 	MaskRender();
-	//サイクル
+	// サイクル
 	CircleRender();
 
 	m_screen->RenderTarget();
@@ -685,7 +726,7 @@ void ResultUIManager::RankingRender()
 	for (int i = 0; i < RANKING_MAX; i++)
 	{
 		m_RankingPic->Render(10, (128 * i) + 175, 128, 128, 0, i * 128, 128, 128);
-		m_rankingNumber->Render(400, (128 * i) + 200, m_RankingNum[i]);
+		m_rankingNumber[i]->Render(400, (128 * i) + 200, m_RankingNum[i]);
 
 		//tdnText::Draw(0, 0, 0xffffffff, "あああああああああ");
 	}
@@ -727,6 +768,32 @@ void ResultUIManager::Save()
 		{
 			out << m_RankingNum[i] << "\n";
 		}
+	}
+
+}
+
+void ResultUIManager::Sort()
+{
+	m_MaxSumNum;
+	for (int i = 0; i < RANKING_MAX; i++)
+	{
+		if (m_RankingNum[i] <= m_MaxSumNum) //今でた結果の方が高かったら
+		{
+			int mae = m_RankingNum[i];
+
+			// 繰り下げ処理
+			for (int i2 = i+1; i2 < RANKING_MAX; i2++)
+			{
+				int 前１ = m_RankingNum[i2];
+				m_RankingNum[i2] = mae;
+
+				mae = 前１;
+			}
+			m_RankingNum[i] = m_MaxSumNum;
+			m_rankingNumber[i]->Action();
+			break;
+		}	
+
 	}
 
 }

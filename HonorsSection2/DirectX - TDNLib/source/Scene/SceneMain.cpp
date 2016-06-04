@@ -23,6 +23,9 @@
 #include	"result2.h"
 
 
+#include "../system/Framework.h"
+#include "Scene\Title.h"
+
 namespace{
 	namespace SCENE
 	{
@@ -38,7 +41,9 @@ namespace{
 
 bool sceneMain::Initialize()
 {
+	UIMNG.Init();
 	UIMNG.SetTimer(120);
+	
 
 	EffectMgr;
 
@@ -56,7 +61,9 @@ bool sceneMain::Initialize()
 	pointer = new MousePointer();
 	dataMNG = new DataManager();
 	g_pSheepMgr = new SheepManager();
-	result = new Result2();
+	//result = new Result2();
+	RESULT_UIMNG.Init();
+
 	isResultFlag = true;
 
 	// 敵マネージャ初期k
@@ -99,7 +106,8 @@ sceneMain::~sceneMain()
 	SAFE_DELETE(g_pSheepMgr);
 	EnemyMgr->Release();
 	SAFE_DELETE(byunAlpha);
-	SAFE_DELETE(result);
+	//SAFE_DELETE(result);
+	RESULT_UIMNG.Release();
 	SAFE_DELETE(renderTarget);
 	BokusouMgr->Release();
 	PostEffectMgr.Release();
@@ -120,13 +128,6 @@ bool sceneMain::Update()
 	FadeControl::Update();
 	Particle2dManager::Update();
 
-	switch(state){
-	case SCENE::INIT:		Init();				break;
-	case SCENE::READY:		ReadyEvent();		break;
-	case SCENE::MAIN:		MainUpdate();		break;
-	case SCENE::END:		EndEvent();			break;
-	case SCENE::RESULT:		ResultUpdate();		break;
-	}
 
 	/*　データ受け渡し　*/
 	DataDelivery();
@@ -141,6 +142,14 @@ bool sceneMain::Update()
 	if (KeyBoard(KB_F) == 3)
 	{
 		EffectMgr.AddEffect(300, 300, EFFECT_TYPE::NOTICE);
+	}
+
+	switch (state) {
+	case SCENE::INIT:		Init();				break;
+	case SCENE::READY:		ReadyEvent();		break;
+	case SCENE::MAIN:		MainUpdate();		break;
+	case SCENE::END:		EndEvent();			break;
+	case SCENE::RESULT:		ResultUpdate();		break;
 	}
 
 	return true;
@@ -253,11 +262,14 @@ void sceneMain::ResultUpdate()
 	//bgm->Play("RESULT");
 	if( FadeControl::IsFade() ) return;
 	if( FadeControl::IsEndFade() ){
-		state = SCENE::INIT;
+		//state = SCENE::INIT;
 		//bgm->Stop("RESULT");
+		state = SCENE::INIT;
+		MainFrame->ChangeScene(new Title());
+		return;
 	}
 
-	if (result->Update()){
+	if (RESULT_UIMNG.Update()){
 		FadeControl::Setting(FadeControl::MODE::FADE_OUT, 30.0f);
 	}
 }
@@ -363,7 +375,8 @@ void sceneMain::ResultRender()
 {
 	// ステージの前描画
 	stage->RenderFront();
-	result->Render();
+	//result->Render();
+	RESULT_UIMNG.Render();
 }
 
 

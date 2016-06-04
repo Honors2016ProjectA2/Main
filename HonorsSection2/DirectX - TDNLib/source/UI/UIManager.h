@@ -16,6 +16,8 @@ public:
 	static void Release();
 	virtual ~UIManager();
 
+	void Init();
+
 	// çXêVÅEï`âÊ7
 	void Update();
 	void Render();
@@ -36,13 +38,16 @@ public:
 	int GetTimer() { return m_timer; }
 	void SetTimer(int timer) { m_timer = timer; }
 
+
+	// 
 	int GetWorfHappyCount() { return m_worfHappyCount; }
 	void AddWorfHappyCount(int add = 1) { m_worfHappyCount += add; }
-
 
 	int GetSheepKillCount() { return m_sheepKillCount; }
 	void AddSheepKillCount(int add = 1) { m_sheepKillCount = add; }
 
+	int GetScore() { return m_score; }
+	int GetCombo() { return m_combo; }
 
 	void GraphAction();
 private:

@@ -29,7 +29,7 @@ private:
 	MousePointer* pointer = nullptr;
 	StageManager* stage = nullptr;
 	DataManager* dataMNG = nullptr;
-	Result2 * result = nullptr;
+	//Result2 * result = nullptr;
 	tdn2DObj* byunAlpha = nullptr;
 
 	Surface* backUp;
