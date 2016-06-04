@@ -50,7 +50,7 @@ UIManager::UIManager()
 	m_flame = 0;
 
 	// 草ゲージ
-	m_graphX = 10, m_graphY = 0;
+	m_graphX = 10, m_graphY = -10;
 	m_graphBack = new tdn2DObj("DATA/UI/Circle/SpiritCircle_UNDER.png");
 	m_graphFlont= new tdn2DObj("DATA/UI/Circle/SpiritCircle_ON.png");
 	m_graph = new Pie_graph("DATA/UI/Circle/SpiritCircle_gage.png");
@@ -214,8 +214,8 @@ void UIManager::ScoreUpdate()
 
 void UIManager::ScoreRender()
 {
-	m_scoreNum->Render(300, 10, m_scorePoint);
-	m_scorePic->Render(350, 20);
+	m_scoreNum->Render(350, 20, m_scorePoint);
+	m_scorePic->Render(400, 30);
 }
 
 void UIManager::AddScore(int score)
@@ -236,12 +236,12 @@ void UIManager::ConboUpdate()
 
 void UIManager::ConboRender()
 {
-	m_conboBG->Render(1000, 0);
-	m_conboGage->Render(1000, 90);	// ゲージ	  
+	m_conboBG->Render(1000, -10);
+	m_conboGage->Render(1000, 70);	// ゲージ	  
 									//m_conboGageEnergy->SetTurnOver(true);
 									//m_conboGageEnergy->SetAngle(1.57);
-	m_conboGageEnergy->Render((1000+128)-(int)(128 * m_energyRate), 90, (int)(128 * m_energyRate) , 128, 0, 0, 128, 128);  // ゲージエネルギー
-	m_comboNum->Render(1080, 30, m_combo);// 数値
+	m_conboGageEnergy->Render((1000+128)-(int)(128 * m_energyRate), 70, (int)(128 * m_energyRate) , 128, 0, 0, 128, 128);  // ゲージエネルギー
+	m_comboNum->Render(1080, 20, m_combo);// 数値
 
 }
 
