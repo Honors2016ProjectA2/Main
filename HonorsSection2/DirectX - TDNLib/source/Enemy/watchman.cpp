@@ -73,6 +73,7 @@ void Enemy::Wolf::Niku()
 	{
 		EffectMgr.AddEffect((int)m_pos.x + 50, (int)m_pos.y + 30, EFFECT_TYPE::ClEAR);
 		EffectMgr.AddEffect((int)m_pos.x - 80, (int)m_pos.y + 60, EFFECT_TYPE::PUSH);
+		EffectMgr.AddEffect((int)m_pos.x + 50, (int)m_pos.y - 24, EFFECT_TYPE::EAT);
 
 		// ‰Œ
 		Particle2dManager::Effect_FatSmoke(GetCenterPos());

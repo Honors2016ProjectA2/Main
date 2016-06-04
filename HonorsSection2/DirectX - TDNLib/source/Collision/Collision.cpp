@@ -326,13 +326,13 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				switch (fatIt->GetType())
 				{
 				case FAT_WOLF_TYPE::SMALL:
-					AddTime = 5;
+					AddTime = 1;
 					break;
 				case FAT_WOLF_TYPE::MIDDLE:
-					AddTime = 10;
+					AddTime = 5;
 					break;
 				case FAT_WOLF_TYPE::LARGE:
-					AddTime = 20;
+					AddTime = 10;
 					break;
 				}
 				break;
@@ -340,13 +340,13 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				switch (fatIt->GetType())
 				{
 				case FAT_WOLF_TYPE::SMALL:
-					AddTime = 5;
+					AddTime = 3;
 					break;
 				case FAT_WOLF_TYPE::MIDDLE:
-					AddTime = 10;
+					AddTime = 8;
 					break;
 				case FAT_WOLF_TYPE::LARGE:
-					AddTime = 20;
+					AddTime = 15;
 					break;
 				}
 				break;
@@ -455,7 +455,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 
 				// DeliciousIII
 				EffectMgr.AddEffect((int)pNiku->GetCenterPos().x + 8, (int)pNiku->GetCenterPos().y + 32, EFFECT_TYPE::DELICIOUS);
-				EffectMgr.AddEffect((int)pNiku->GetCenterPos().x, (int)pNiku->GetCenterPos().y - 64, EFFECT_TYPE::EAT);
+				//EffectMgr.AddEffect((int)pNiku->GetCenterPos().x, (int)pNiku->GetCenterPos().y - 64, EFFECT_TYPE::EAT);
 
 				manIterator->SetCenterPos(pNiku->GetCenterPos());
 
