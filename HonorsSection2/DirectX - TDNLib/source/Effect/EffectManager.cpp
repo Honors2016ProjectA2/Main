@@ -138,6 +138,15 @@ void EffectManager::AddEffect(int x, int y, EFFECT_TYPE type)
 	case EFFECT_TYPE::EAT:
 		data = new EatEffect();
 		break;
+	case EFFECT_TYPE::PERFECT:
+		data = new PerfectEffect();
+		break;
+	case EFFECT_TYPE::GREAT:
+		data = new GreatEffect();
+		break;
+	case EFFECT_TYPE::BAD:
+		data = new BadEffect();
+		break;
 	default:
 		break;
 	}

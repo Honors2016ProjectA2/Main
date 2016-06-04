@@ -176,12 +176,38 @@ void NikuManager::StartYakiniku(SHEEP_TYPE type)
 	se->Play("悲鳴", YAKINIKU_AREA);
 }
 
+// ここが肉を生成する瞬間
 void NikuManager::CreateNiku()
 {
 	if (m_pYakiniku)
 	{
 		// 焼肉消して肉作る
 		m_pNiku = new Niku(YAKINIKU_AREA + Vector2(128, 90), m_pYakiniku->GetMode(), m_pNikuImages[(int)m_pYakiniku->GetSheepType()], m_pYakiniku->GetSheepType());
+		
+
+		// タイプに応じてエフェクト発動！
+		switch (m_pYakiniku->GetMode())
+		{
+		case YAKINIKU_MODE::NAMA:
+			EffectMgr.AddEffect(YAKINIKU_AREA.x + 128, YAKINIKU_AREA.y + 64, EFFECT_TYPE::BAD);
+			break;
+		case YAKINIKU_MODE::RARE:
+			EffectMgr.AddEffect(YAKINIKU_AREA.x + 64, YAKINIKU_AREA.y + 24, EFFECT_TYPE::GREAT);
+			break;
+		case YAKINIKU_MODE::MEDIAM:
+			EffectMgr.AddEffect(YAKINIKU_AREA.x + 64, YAKINIKU_AREA.y + 32, EFFECT_TYPE::PERFECT);
+			break;
+		case YAKINIKU_MODE::KOGETA:
+			EffectMgr.AddEffect(YAKINIKU_AREA.x + 128, YAKINIKU_AREA.y + 64, EFFECT_TYPE::BAD);
+			break;
+		case YAKINIKU_MODE::MAX:
+			break;
+		default:
+			break;
+		}
+		
+
+
 		m_pYakiniku->Erase();
 	}
 }
@@ -224,6 +250,9 @@ YakinikuMode::Nama::Nama(Yakiniku *me) :Base(me)
 	// 画像座標
 	m_srcX = 0;
 
+	// エフェクト発動
+	//EffectMgr.AddEffect((int)me->GetPos().x + 64, (int)me->GetPos().y + 64, EFFECT_TYPE::BAD);
+
 	// SEの再生
 	//se->Play("牧草芽生えた", me->GetPos());
 }
@@ -233,7 +262,7 @@ YakinikuMode::Nama::Nama(Yakiniku *me) :Base(me)
 //}
 
 //===========================================================
-//		レア
+//		レア ←　いい感じの肉
 //===========================================================
 YakinikuMode::Rare::Rare(Yakiniku *me) :Base(me)
 {
@@ -242,6 +271,9 @@ YakinikuMode::Rare::Rare(Yakiniku *me) :Base(me)
 
 	// 画像座標
 	m_srcX = 256;
+
+	// エフェクト発動
+	//EffectMgr.AddEffect((int)me->GetPos().x + 64, (int)me->GetPos().y + 64, EFFECT_TYPE::GREAT);
 
 	// SEの再生
 	//se->Play("牧草成長", me->GetPos());
@@ -252,7 +284,7 @@ YakinikuMode::Rare::Rare(Yakiniku *me) :Base(me)
 //}
 
 //===========================================================
-//		ミディアム
+//		ミディアム ←（超高校級の肉）
 //===========================================================
 YakinikuMode::Mediam::Mediam(Yakiniku *me) :Base(me)
 {
@@ -261,6 +293,9 @@ YakinikuMode::Mediam::Mediam(Yakiniku *me) :Base(me)
 
 	// 画像座標
 	m_srcX = 256 * 2;
+
+	// エフェクト発動
+	//EffectMgr.AddEffect((int)me->GetPos().x + 64, (int)me->GetPos().y + 64, EFFECT_TYPE::PERFECT);
 
 	// SEの再生
 	//se->Play("牧草成長", me->GetPos());
@@ -303,7 +338,7 @@ YakinikuMode::Kogeta::Kogeta(Yakiniku *me) :Base(me), m_KiraKiraCoolTime(0)
 	//->Play("牧草成長", me->GetPos());
 
 	// エフェクト発動
-	//EffectMgr.AddEffect((int)me->GetPos().x + 64, (int)me->GetPos().y + 64, EFFECT_TYPE::PLUS);
+	//EffectMgr.AddEffect((int)me->GetPos().x + 64, (int)me->GetPos().y + 64, EFFECT_TYPE::BAD);
 }
 void YakinikuMode::Kogeta::Update()
 {

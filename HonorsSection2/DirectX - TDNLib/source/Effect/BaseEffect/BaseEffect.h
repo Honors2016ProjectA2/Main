@@ -278,3 +278,66 @@ public:
 
 private:
 };
+
+// 
+class PerfectEffect :public BaseEffect
+{
+public:
+	PerfectEffect()
+	{
+		m_picSize = 128;
+		//m_pic = new AnimationPanel("Data/Effect/Perfect.png", 128, 128, 59, 1, 8, false);
+		m_pic = new AnimationPanel("Data/Effect/Perfect.png", 256, 256, 59, 1, 8, false);
+		//m_pic->GetPic()->SetScale(2.0f);
+		state = RS::COPY;
+	};
+	~PerfectEffect() {};
+
+	void Update() { BaseEffect::Update(); };
+	void Render() { BaseEffect::Render(); };
+	void Action(int x = 0, int y = 0) { BaseEffect::Action(x, y); };
+
+private:
+};
+
+
+// 
+class GreatEffect :public BaseEffect
+{
+public:
+	GreatEffect()
+	{
+		m_picSize = 128;
+		//m_pic = new AnimationPanel("Data/Effect/Great.png", 128, 128, 59, 1, 8, false);
+		m_pic = new AnimationPanel("Data/Effect/Great.png", 256, 256, 59, 1, 8, false);
+		//m_pic->GetPic()->SetScale(2.0f);
+		state = RS::COPY;
+	};
+	~GreatEffect() {};
+
+	void Update() { BaseEffect::Update(); };
+	void Render() { BaseEffect::Render(); };
+	void Action(int x = 0, int y = 0) { BaseEffect::Action(x, y); };
+
+private:
+};
+
+// 
+class BadEffect :public BaseEffect
+{
+public:
+	BadEffect()
+	{
+		m_picSize = 256;
+		m_pic = new AnimationPanel("Data/Effect/bad.png", 256, 256, 28, 2, 6, false);
+		//m_pic->GetPic()->SetScale(3.0f);
+		state = RS::COPY;
+	};
+	~BadEffect() {};
+
+	void Update() { BaseEffect::Update(); };
+	void Render() { BaseEffect::Render(); };
+	void Action(int x = 0, int y = 0) { BaseEffect::Action(x, y); };
+
+private:
+};

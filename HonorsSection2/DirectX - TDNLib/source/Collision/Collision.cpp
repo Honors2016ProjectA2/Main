@@ -441,6 +441,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				case YAKINIKU_MODE::NAMA:
 				case YAKINIKU_MODE::KOGETA:
 					manIterator->SetFatType(FAT_WOLF_TYPE::SMALL);
+
 					break;
 				case YAKINIKU_MODE::RARE:
 					manIterator->SetFatType(FAT_WOLF_TYPE::MIDDLE);
