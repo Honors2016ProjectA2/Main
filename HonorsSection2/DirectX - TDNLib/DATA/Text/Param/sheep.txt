@@ -24,7 +24,7 @@
 
 羊3:
 画像パス: DATA/CHR/「！」右移動.png
-デブ画像: DATA/CHR/fat_sheep.png
+デブ画像: DATA/CHR/fat_sheep_SATUI.png
 得点倍率: 1000.0
 コマサイズ: 175
 アニメの枚数: 4
