@@ -62,10 +62,10 @@ void Enemy::Wolf::Run()
 void Enemy::Wolf::Niku()
 {
 	// アニメ更新
-	if (++m_AnimeFrame > 5)
+	if (++m_AnimeFrame > 10)
 	{
 		m_AnimeFrame = 0;
-		if (++m_AnimePanel > 4) m_AnimePanel = 0;
+		if (++m_AnimePanel > 2) m_AnimePanel = 0;
 	}
 
 	// 肉時間
