@@ -60,29 +60,7 @@ namespace Enemy
 		void Render();
 
 		enum class MODE{ RUN, NIKU, DEAD, MAX }m_mode;
-		void ChangeMode(MODE m)
-		{
-			m_AnimeFrame = m_AnimePanel = 0;
-			m_mode = m;
-			switch (m)
-			{
-			case MODE::RUN:
-				m_MoveVec = Vector2(-1, 0);
-				m_speed = m_OrgSpeed;
-				break;
-			case MODE::NIKU:
-				m_MoveVec = Vector2(-1, 0);
-				m_speed = 0;
-				m_EatNikuTimer = 0;
-				break;
-			case MODE::DEAD:
-				m_MoveVec = Vector2(1, 0);
-				m_speed = 0;
-				break;
-			default:
-				break;
-			}
-		}
+		void ChangeMode(MODE m);
 		MODE GetMode(){ return m_mode; }
 
 		void Kill(){ ChangeMode(MODE::DEAD); }
@@ -98,6 +76,7 @@ namespace Enemy
 		FAT_WOLF_TYPE m_type;	// 肉食い終わった後になるタイプ
 		SHEEP_TYPE m_SheepType;
 		BYTE m_alpha;
+		int m_seID;		// 肉食う用
 
 		void Run();
 		void Niku();

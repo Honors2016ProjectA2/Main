@@ -168,7 +168,7 @@ BokusouMode::Honba::Honba(Bokusou *me, tdn2DObj *image) :Base(me, image)
 	m_srcX = 128;
 
 	// SE‚ÌÄ¶
-	se->Play("–q‘¬’·", me->GetPos());
+	//se->Play("–q‘‰è¶‚¦‚½", me->GetPos());
 }
 //void BokusouMode::Honba::Update(Bokusou *pBokusou)
 //{
@@ -187,7 +187,7 @@ BokusouMode::Tsubomi::Tsubomi(Bokusou *me, tdn2DObj *image) :Base(me, image)
 	m_srcX = 256;
 
 	// SE‚ÌÄ¶
-	se->Play("–q‘¬’·", me->GetPos());
+	//se->Play("–q‘‰è¶‚¦‚½", me->GetPos());
 }
 //void BokusouMode::Tsubomi::Update(Bokusou *pBokusou)
 //{
@@ -207,7 +207,7 @@ BokusouMode::Saita::Saita(Bokusou *me, tdn2DObj *image) :Base(me, image)
 	m_srcX = 128 * 3;
 
 	// SE‚ÌÄ¶
-	se->Play("–q‘¬’·", me->GetPos());
+	//se->Play("–q‘‰è¶‚¦‚½", me->GetPos());
 
 }
 //void BokusouMode::Saita::Update(Bokusou *pBokusou)
@@ -224,7 +224,7 @@ BokusouMode::Born::Born(Bokusou *me, tdn2DObj *image) :Base(me, image), m_KiraKi
 	m_srcX = 0;
 
 	// SE‚ÌÄ¶
-	se->Play("–q‘¬’·", me->GetPos());
+	se->Play("–q‘‰è¶‚¦‚½", me->GetPos());
 
 	// ƒGƒtƒFƒNƒg”­“®
 	EffectMgr.AddEffect((int)me->GetPos().x + 64, (int)me->GetPos().y + 64, EFFECT_TYPE::PLUS);

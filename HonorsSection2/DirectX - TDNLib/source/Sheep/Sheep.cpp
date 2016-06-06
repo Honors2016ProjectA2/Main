@@ -7,6 +7,7 @@
 #include "../Data/DataMNG.h"
 #include "../system/system.h"
 #include "../particle_2d/particle_2d.h"
+#include "../Niku/Niku.h"
 
 // グローバル領域
 int g_CreateSheepFloor;	// 羊を生成するフロア
@@ -288,7 +289,7 @@ void Sheep::Real::Update()
 	Sheep::Base::Update();
 
 	// エフェクト
-	if (process != PUSH)Particle2dManager::Effect_RealSheep(GetCenterPos() + Vector2(160, 0));
+	if (process != PUSH)Particle2dManager::Effect_RealSheep(GetCenterPos() + Vector2(130, -5));
 }
 
 
@@ -488,14 +489,14 @@ void SheepManager::Update()
 	// 現在時刻設定
 	if (bCreate)m_CurrentTime = clock();
 
-	auto CheckCatch = [](bool *OutbLeft)
+	auto CheckCatch = [](bool *OutbLeft, bool bNikuHold)
 	{
 		if (tdnMouse::GetRight() == 3)
 		{
 			*OutbLeft = false;
 			return true;
 		}
-		else if (!g_bDogSetFrame && tdnMouse::GetLeft() == 3)
+		else if (!g_bDogSetFrame && tdnMouse::GetLeft() == 3 && !bNikuHold)
 		{
 			*OutbLeft = true;
 			return true;
@@ -504,7 +505,7 @@ void SheepManager::Update()
 	};
 	// 掴む処理
 	bool bLeftCatch;
-	if (CheckCatch(&bLeftCatch))
+	if (CheckCatch(&bLeftCatch, NikuMgr->isNikuHold()))
 	{
 		for (auto& it : m_List)
 		{

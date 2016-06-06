@@ -80,6 +80,10 @@ void NikuManager::Update()
 		if (m_bHoldNiku)
 		{
 			Vector2 mPos = tdnMouse::GetPos() + Vector2(-64, -64);
+
+			// 肉が端に行きすぎないように補正
+			mPos.x = Math::Clamp(mPos.x, 120, 1000);
+
 			// 座標を設定
 			m_pNiku->SetPos(mPos);
 
@@ -110,6 +114,9 @@ void NikuManager::Update()
 				// 肉置場との距離範囲内
 				if ((tdnMouse::GetPos() - m_pNiku->GetCenterPos()).LengthSq() < 64 * 64)
 				{
+					// 肉の移動量消す
+					m_pNiku->MoveOff();
+
 					// 肉掴みフラグON
 					m_bHoldNiku = true;
 					se->Play("牧草成長", m_pNiku->GetCenterPos());
@@ -189,20 +196,23 @@ void NikuManager::CreateNiku()
 		switch (m_pYakiniku->GetMode())
 		{
 		case YAKINIKU_MODE::NAMA:
-			EffectMgr.AddEffect(YAKINIKU_AREA.x + 128, YAKINIKU_AREA.y + 64, EFFECT_TYPE::BAD);
+		case YAKINIKU_MODE::KOGETA:
+			// BADエフェクト
+			EffectMgr.AddEffect((int)YAKINIKU_AREA.x + 128, (int)YAKINIKU_AREA.y + 64, EFFECT_TYPE::BAD);
+			// SEの再生
+			se->Play("BAD", YAKINIKU_AREA);
 			break;
 		case YAKINIKU_MODE::RARE:
-			EffectMgr.AddEffect(YAKINIKU_AREA.x + 64, YAKINIKU_AREA.y + 24, EFFECT_TYPE::GREAT);
+			// GREATエフェクト
+			EffectMgr.AddEffect((int)YAKINIKU_AREA.x + 64, (int)YAKINIKU_AREA.y + 24, EFFECT_TYPE::GREAT);
+			// SEの再生
+			se->Play("GREAT", YAKINIKU_AREA);
 			break;
 		case YAKINIKU_MODE::MEDIAM:
-			EffectMgr.AddEffect(YAKINIKU_AREA.x + 64, YAKINIKU_AREA.y + 32, EFFECT_TYPE::PERFECT);
-			break;
-		case YAKINIKU_MODE::KOGETA:
-			EffectMgr.AddEffect(YAKINIKU_AREA.x + 128, YAKINIKU_AREA.y + 64, EFFECT_TYPE::BAD);
-			break;
-		case YAKINIKU_MODE::MAX:
-			break;
-		default:
+			// PERFECTエフェクト
+			EffectMgr.AddEffect((int)YAKINIKU_AREA.x + 64, (int)YAKINIKU_AREA.y + 32, EFFECT_TYPE::PERFECT);
+			// SEの再生
+			se->Play("PERFECT", YAKINIKU_AREA);
 			break;
 		}
 		
@@ -217,7 +227,7 @@ void NikuManager::CreateNiku()
 //    焼き肉クラス
 //**************************************************
 //**************************************************
-//    牧草委譲クラス
+//    焼肉委譲クラス
 //**************************************************
 void YakinikuMode::Base::Update()
 {
@@ -244,7 +254,7 @@ void YakinikuMode::Base::NextMode()
 //===========================================================
 YakinikuMode::Nama::Nama(Yakiniku *me) :Base(me)
 {
-	// 本葉に行く
+	// レアに行く
 	m_NextMode = YAKINIKU_MODE::RARE;
 
 	// 画像座標
@@ -266,7 +276,7 @@ YakinikuMode::Nama::Nama(Yakiniku *me) :Base(me)
 //===========================================================
 YakinikuMode::Rare::Rare(Yakiniku *me) :Base(me)
 {
-	// つぼみに行く
+	// ミディアムに行く
 	m_NextMode = YAKINIKU_MODE::MEDIAM;
 
 	// 画像座標
@@ -288,7 +298,7 @@ YakinikuMode::Rare::Rare(Yakiniku *me) :Base(me)
 //===========================================================
 YakinikuMode::Mediam::Mediam(Yakiniku *me) :Base(me)
 {
-	// 咲いたに行く
+	// こげたに行く
 	m_NextMode = YAKINIKU_MODE::KOGETA;
 
 	// 画像座標
@@ -298,7 +308,7 @@ YakinikuMode::Mediam::Mediam(Yakiniku *me) :Base(me)
 	//EffectMgr.AddEffect((int)me->GetPos().x + 64, (int)me->GetPos().y + 64, EFFECT_TYPE::PERFECT);
 
 	// SEの再生
-	//se->Play("牧草成長", me->GetPos());
+	se->Play("今です", me->GetPos());
 }
 //void YakinikuMode::Mediam::Update(Yakiniku *pYakiniku)
 //{
@@ -351,7 +361,7 @@ void YakinikuMode::Kogeta::Update()
 }
 
 //**************************************************
-//    牧草クラス
+//    焼肉クラス
 //**************************************************
 
 //===========================================================

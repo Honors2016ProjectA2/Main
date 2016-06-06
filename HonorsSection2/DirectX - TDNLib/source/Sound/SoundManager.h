@@ -123,6 +123,7 @@ public:
 	void SetSpeed(LPSTR _ID, float speed);
 
 	void SetListener(const Vector2 &pos, const Vector2 &move);											// ƒŠƒXƒi[î•ñ
+	tdnStreamSound *PlayStream(LPSTR filename){ return play_manager->PlayStream(filename); }
 };
 
 //===============================================

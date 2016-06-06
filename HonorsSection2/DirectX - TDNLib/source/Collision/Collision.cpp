@@ -73,8 +73,9 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 					sinnMNG->CreateFatSheep(sinIterator);
 					EffectMgr.AddEffect((int)sPos.x + 50, (int)sPos.y - 50, EFFECT_TYPE::ClEAR);
 					EffectMgr.AddEffect((int)sPos.x - 100, (int)sPos.y, EFFECT_TYPE::PUSH);
-					EffectMgr.AddEffect((int)sPos.x + 50 ,(int)sPos.y-50, EFFECT_TYPE::EAT);
-				
+					EffectMgr.AddEffect((int)sPos.x + 50, (int)sPos.y - 50, EFFECT_TYPE::EAT);
+					// SE‚ÌÄ¶
+					se->Play("‚Ó‚Æ‚é", kusaIterator->GetCenterPos());
 				}
 
 				// ‘Á‚·
@@ -186,7 +187,11 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 						EffectMgr.AddEffect((int)sinIterator->Get_pos()->x + 96, (int)sinIterator->Get_pos()->y + 64, EFFECT_TYPE::HIT);
 
 						sinIterator->col_check = true;
-						dataMNG->SubTime_Kill(sinIterator->Get_floor(), *sinIterator->Get_pos());		//ŽžŠÔ‚ðŒ¸­‚³‚¹‚é
+
+						// UI‚É—r‚ªŽ€‚ñ‚¾”
+						UIMNG.AddSheepKillCount();
+
+						// SE‚ÌÄ¶
 						se->Play("DAMAGE", sinIterator->GetCenterPos());
 					}
 				}
@@ -200,8 +205,13 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 						//A—ñŽÔ ˜T‚Æ—r‚ª“–‚½‚Á‚½uŠÔ
 						EffectMgr.AddEffect((int)sinIterator->Get_pos()->x + 96, (int)sinIterator->Get_pos()->y + 64, EFFECT_TYPE::HIT);
 
+						// 241(‚Â‚æ‚¢)“_
+						UIMNG.AddScore(241);
+						// ƒiƒ“ƒo[ƒGƒtƒFƒNƒg”­“®
+						NumberEffect.AddNumber((int)manIterator->GetCenterPos().x, STAGE_POS_Y[manIterator->GetFloor()] + 32, 241, Number_Effect::COLOR_TYPE::WHITE);
+
 						manIterator->col_check = true;
-						se->Play("DAMAGE", sinIterator->GetCenterPos());
+						se->Play("ƒŠƒAƒ‹HIT", sinIterator->GetCenterPos());
 					}
 				}
 			}
@@ -368,6 +378,8 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 
 			// UI‚ÉŽžŠÔ‚ð‘«‚·
 			UIMNG.AddTimer(AddTime);
+			// UI‚É˜T‚â‚Á‚Â‚¯‚½
+			UIMNG.AddWorfHappyCount();
 
 			se->Play("‘¾‚Á‚½—rIN");
 
@@ -441,7 +453,6 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				case YAKINIKU_MODE::NAMA:
 				case YAKINIKU_MODE::KOGETA:
 					manIterator->SetFatType(FAT_WOLF_TYPE::SMALL);
-
 					break;
 				case YAKINIKU_MODE::RARE:
 					manIterator->SetFatType(FAT_WOLF_TYPE::MIDDLE);
@@ -458,6 +469,9 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				EffectMgr.AddEffect((int)pNiku->GetCenterPos().x + 8, (int)pNiku->GetCenterPos().y + 32, EFFECT_TYPE::DELICIOUS);
 				EffectMgr.AddEffect((int)pNiku->GetCenterPos().x, (int)pNiku->GetCenterPos().y , EFFECT_TYPE::HAPPY);
 				EffectMgr.AddEffect((int)pNiku->GetCenterPos().x, (int)pNiku->GetCenterPos().y, EFFECT_TYPE::HAPPY);
+
+				// SE‚ÌÄ¶
+				se->Play("ƒpƒNƒ‚ƒO", manIterator->GetCenterPos());
 
 				manIterator->SetCenterPos(pNiku->GetCenterPos());
 

@@ -46,4 +46,7 @@ private:
 		Vector2 pos;
 	}m_koya;
 	bool m_bKoyaFlag;
+
+	// ストリームプレイヤー
+	tdnStreamSound *m_pStreamSound;
 };

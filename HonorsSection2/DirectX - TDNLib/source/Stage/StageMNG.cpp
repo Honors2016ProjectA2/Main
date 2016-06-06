@@ -237,6 +237,9 @@ void StageManager::Update()
 
 				// リキャスト設定
 				stage[floor]->SetRecastTime(m_RECAST_TIME);
+
+				// SEの再生
+				se->Play("ドア", Vector2(128, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2));
 			}
 		}
 	}
@@ -287,8 +290,8 @@ void StageManager::Update()
 				}
 				else it->m_bCursorIn = false;
 
-				// 左クリック！！かつカーソル範囲内かつ有効状態なら
-				if (bLeftClick && it->m_bCursorIn && it->bEnable)
+				// 左クリック！！かつカーソル範囲内かつ有効状態かつ肉持ってなかったらなら
+				if (bLeftClick && it->m_bCursorIn && it->bEnable && !NikuMgr->isNikuHold())
 				{
 					// 犬回収
 					if (it->IsOpening())
@@ -529,6 +532,11 @@ void StageManager::RenderBack()
 	// 家の後ろ描画
 	m_pStageImages[StageImage::HOUSE_BACK]->Render(0, 0);
 
+	// 家のドア描画
+	m_pStageImages[(g_CreateSheepFloor == 0) ? StageImage::DOOR1_OPEN : StageImage::DOOR1_CLOSE]->Render(0, 0);
+	m_pStageImages[(g_CreateSheepFloor == 1) ? StageImage::DOOR2_OPEN : StageImage::DOOR2_CLOSE]->Render(0, 0);
+	m_pStageImages[(g_CreateSheepFloor == 2) ? StageImage::DOOR3_OPEN : StageImage::DOOR3_CLOSE]->Render(0, 0);
+
 	// 柵描画
 	m_pStageImages[StageImage::SAKU]->Render(0, 0);
 
@@ -560,8 +568,6 @@ void StageManager::RenderFront()
 
 	// 家の前描画
 	m_pStageImages[StageImage::HOUSE_FRONT]->Render(0, 0);
-
-	// 家のドア描画
 
 	// 草描画
 	m_pStageImages[StageImage::KUSA]->Render(0, 0);

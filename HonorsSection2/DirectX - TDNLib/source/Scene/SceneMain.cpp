@@ -90,7 +90,7 @@ bool sceneMain::Initialize()
 	PostEffectMgr;
 
 	// パーティクル初期化
-	Particle2dManager::Initialize("DATA/Effect/particle.png", 10000, 4, 4);
+	Particle2dManager::Initialize("DATA/Effect/particle.png", 5000, 4, 4);
 
 	return true;
 }
@@ -175,7 +175,7 @@ void sceneMain::Init()
 //	watchman->Init();
 //	m_pSheepMgr->Init();
 
-	FadeControl::Setting(FadeControl::MODE::FADE_IN, 30.0f);
+	FadeControl::Setting(FadeControl::MODE::WHITE_IN, 30.0f);
 
 	// ここのかっこを0にするとレディーゴーの処理が出る(デバッグの時短でレディーゴーを無しにしてる)
 	state = (0) ? SCENE::MAIN : SCENE::READY;
@@ -194,13 +194,13 @@ void sceneMain::ReadyEvent()
 void sceneMain::MainUpdate()
 {
 	dataMNG->Update();
+	NikuMgr->Update();
 	stage->Update();
 	g_pSheepMgr->Update();
 	EnemyMgr->Update();
 	ShakeMgr->Update();
 	BokusouMgr->Update();
 	UIMNG.Update();
-	NikuMgr->Update();
 	if (KeyBoard(KB_N)==3)
 	{
 		EffectMgr.AddEffect( 220, 64, EFFECT_TYPE::BURN);
@@ -293,6 +293,7 @@ void sceneMain::Render()
 	stage->RenderBack();
 
 	stage->Render();
+
 	UIMNG.Render();
 
 

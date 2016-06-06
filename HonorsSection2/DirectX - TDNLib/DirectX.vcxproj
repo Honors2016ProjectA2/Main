@@ -89,7 +89,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>Full</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>
       </FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
@@ -224,7 +224,6 @@
     <ClInclude Include="source\Stage\StageMNG.h" />
     <ClInclude Include="source\system\FadeCtrl.h" />
     <ClInclude Include="source\system\textLoader.h" />
-    <ClInclude Include="source\UI\SendPower\SendPower.h" />
     <ClInclude Include="source\UI\ResultUIManager.h" />
     <ClInclude Include="source\UI\UIManager.h" />
     <ClInclude Include="source\UI\UIManager_.h">

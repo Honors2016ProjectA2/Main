@@ -43,9 +43,9 @@ void Particle2dManager::Effect_RealSheep(const Vector2 &pos)
 {
 	m_pParticle2d->Set(15, 0, 0x80550055, 45, 0x00000000, 25, 0x0c110011,
 		pos + Vector2((rand() % 25) - 12.0f, (rand() % 25) - 12.0f),
-		Vector2((rand() % 5 - 2.5f)*0.5f, (rand() % 3 + .0f) * -0.5f),
-		Vector2(0, -.001f),
-		.05f, 1.05f, 64.0f, RS::COPY);
+		Vector2((rand() % 4 - 1.5f)*0.5f, (rand() % 3 + .0f) * -0.5f),
+		Vector2(-.1f, -.001f),
+		-.05f, 1.05f, 64.0f, RS::COPY);
 }
 
 //*****************************************************************************

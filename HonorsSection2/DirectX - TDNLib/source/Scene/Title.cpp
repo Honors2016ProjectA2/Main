@@ -9,18 +9,13 @@
 #include	"../system/FadeCtrl.h"
 #include "End.h"
 #include "UI\ResultUIManager.h"
-
-#include "UI\SendPower\SendPower.h"
+#include "../Sound/SoundManager.h"
 
 End* end;
 
-SendPower* m_send;
-
 bool Title::Initialize()
 {
-	m_send = new SendPower();
-
-//end = new End();
+	//end = new End();
 	//end->Init();
 	//end->floorNum = 3;
 
@@ -53,11 +48,17 @@ bool Title::Initialize()
 	// ”wŒi
 	m_BG = new tdn2DObj("Data/GameHaikei.png");
 	m_titleLogo= new tdn2DObj("Data/title/titleLogo.png");
+
+	// BGM
+	m_pStreamSound = bgm->PlayStream("DATA/Sound/BGM/ŠÃ–¡–qê.ogg");
+
 	return true;
 }
 
 Title::~Title()
 {
+	m_pStreamSound->Stop();
+
 	delete m_pSheepMgr;
 	SAFE_DELETE(m_pointer);
 	SAFE_DELETE(m_dog.pic);
@@ -134,8 +135,6 @@ bool Title::Update()
 		}
 	
 	}
-
-	m_send->Update();
 
 	return true;
 }
@@ -230,7 +229,7 @@ void Title::Render()
 	tdnView::Clear();
 	
 	m_BG->Render(0, 0);
-	m_titleLogo->Render(0, -100);
+	m_titleLogo->Render(0, 0);
 
 
 	// ¬‰®Œã‚ë
@@ -255,8 +254,6 @@ void Title::Render()
 	m_pointer->Render();
 
 	//end->Render();
-
-	m_send->Render();
 
 	//RESULT_UIMNG.Render();
 	//Fade

@@ -141,6 +141,7 @@ public:
 	int GetFloor(){ return m_floor; }
 	void SetFloor(int in){ m_floor = in; }
 	YAKINIKU_MODE GetType(){ return m_type; }
+	void MoveOff(){ m_BoundPow = m_move = Vector2(0, 0); }
 
 	// 消去関連
 	void Erase(){ m_bErase = true; }
@@ -197,6 +198,7 @@ public:
 	// ★UIマネージャーで呼び出す
 	float GetGaugePercentage(){ return (float)m_CreateTimer / m_CREATETIME; }	// 牧草ゲージのpercent
 
+	bool isNikuHold(){ return m_bHoldNiku; }
 private:
 	// 1つしかない実体
 	static NikuManager *pInstance;

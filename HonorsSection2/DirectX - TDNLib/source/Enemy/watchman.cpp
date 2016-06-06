@@ -20,7 +20,7 @@ void Enemy::Base::MoveUpdate()
 //**************************************************
 //    狼
 //**************************************************
-Enemy::Wolf::Wolf(tdn2DObj *image, tdn2DObj *pniku, tdn2DObj *pHone, int floor, float speed, int nikustopTime) : Base(image, floor, speed), m_pNikukutteru(pniku), m_EAT_NIKU_TIMER(nikustopTime), m_OrgSpeed(speed), m_pHoneImage(pHone)
+Enemy::Wolf::Wolf(tdn2DObj *image, tdn2DObj *pniku, tdn2DObj *pHone, int floor, float speed, int nikustopTime) : Base(image, floor, speed), m_pNikukutteru(pniku), m_EAT_NIKU_TIMER(nikustopTime), m_OrgSpeed(speed), m_pHoneImage(pHone), m_seID(TDNSOUND_PLAY_NONE)
 {
 	// イニシャライザ書けない
 	W = 120;
@@ -80,6 +80,10 @@ void Enemy::Wolf::Niku()
 
 		// 太る
 		EnemyMgr->CreateFatWolf(this, m_type, m_SheepType);
+
+		// SEの再生
+		se->Play("ふとる", GetCenterPos());
+		if (m_seID != TDNSOUND_PLAY_NONE) se->Stop("パクモグ", m_seID);
 	}
 }
 
@@ -120,6 +124,31 @@ void Enemy::Wolf::Render()
 	}
 	pImage->SetARGB(m_alpha, (BYTE)255, (BYTE)255, (BYTE)255);
 	pImage->Render((int)m_pos.x, (int)m_pos.y, W, H, (m_AnimePanel % 4) * W, (m_AnimePanel / 4) * H, W, H);
+}
+
+void Enemy::Wolf::ChangeMode(MODE m)
+{
+	m_AnimeFrame = m_AnimePanel = 0;
+	m_mode = m;
+	switch (m)
+	{
+	case MODE::RUN:
+		m_MoveVec = Vector2(-1, 0);
+		m_speed = m_OrgSpeed;
+		break;
+	case MODE::NIKU:
+		m_MoveVec = Vector2(-1, 0);
+		m_speed = 0;
+		m_EatNikuTimer = 0;
+		m_seID = se->Play("パクモグ", m_pos, Vector2(0, 0), true);
+		break;
+	case MODE::DEAD:
+		m_MoveVec = Vector2(1, 0);
+		m_speed = 0;
+		break;
+	default:
+		break;
+	}
 }
 
 //**************************************************
@@ -277,6 +306,9 @@ void EnemyManager::Update()
 
 		// ポップアップ
 		EffectMgr.AddEffect(1100, STAGE_POS_Y[m_NextFloor] + LANE_WIDTH / 2, EFFECT_TYPE::NOTICE);
+
+		// SEの再生
+		se->Play("!", Vector2(1100, (float)STAGE_POS_Y[m_NextFloor] + LANE_WIDTH / 2));
 	}
 	for (auto it = m_list.begin(); it != m_list.end();)
 	{
