@@ -10,12 +10,18 @@
 #include "End.h"
 #include "UI\ResultUIManager.h"
 #include "../Sound/SoundManager.h"
+#include "UI\SendPower\SendPower.h"
 
 End* end;
 
+SendPower* m_send;
+
 bool Title::Initialize()
 {
-	//end = new End();
+	m_send = new SendPower("Data/power.png",
+		Vector3(1280, 300, 0),Vector3(400, 500, 0), Vector3(100, 200, 0), Vector3(680, 0, 0), 48);
+
+//end = new End();
 	//end->Init();
 	//end->floorNum = 3;
 
@@ -73,10 +79,17 @@ Title::~Title()
 	EffectMgr.Release();
 	//RESULT_UIMNG.Release();
 
+
+	SAFE_DELETE(m_send);
 }
 
 bool Title::Update()
 {
+	if (KeyBoard(KB_E) == 3)
+	{
+		m_send->Action();
+	}
+
 	//if (KeyBoard(KB_E) == 3)
 	//{
 	//	end->Init();
@@ -135,6 +148,8 @@ bool Title::Update()
 		}
 	
 	}
+
+	m_send->Update();
 
 	return true;
 }
@@ -229,7 +244,7 @@ void Title::Render()
 	tdnView::Clear();
 	
 	m_BG->Render(0, 0);
-	m_titleLogo->Render(0, 0);
+	m_titleLogo->Render(0, -100);
 
 
 	// ¬‰®Œã‚ë
@@ -254,6 +269,8 @@ void Title::Render()
 	m_pointer->Render();
 
 	//end->Render();
+
+	m_send->Render();
 
 	//RESULT_UIMNG.Render();
 	//Fade

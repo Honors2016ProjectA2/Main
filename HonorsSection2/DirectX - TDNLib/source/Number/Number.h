@@ -5,6 +5,11 @@
 //	数字を描画する
 /***********************************/
 
+struct RGB
+{
+	BYTE r, g, b;
+};
+
 class Number
 {
 private:
@@ -38,6 +43,9 @@ public:
 	// イラストのアクセサー
 	tdn2DAnim* GetAnim() { return m_pic; }
 
+	RGB GetCol() { return m_col; }
+	void SetCol(RGB col) { m_col = col; }
+
 private:
 	// 実体
 	//static Number* m_pInstance;
@@ -54,6 +62,9 @@ private:
 	//Number& operator=(const Number&);
 
 
+
+	// カラー
+	RGB m_col;
 
 
 };
@@ -92,7 +103,7 @@ struct NumberData
 class Number_Effect
 {
 private:
-
+	
 
 public:
 

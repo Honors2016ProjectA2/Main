@@ -47,6 +47,5 @@ private:
 	}m_koya;
 	bool m_bKoyaFlag;
 
-	// ストリームプレイヤー
 	tdnStreamSound *m_pStreamSound;
 };

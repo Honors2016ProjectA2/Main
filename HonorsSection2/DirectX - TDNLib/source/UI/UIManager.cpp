@@ -45,6 +45,9 @@ UIManager::UIManager()
 	// タイマー
 	m_timerNum = new Number("DATA/Number/Number.png", 64);
 	m_timerPic = new tdn2DObj("DATA/Number/Number.png");
+	m_timeColR = 155; m_timeColG = 255; m_timeColB = 255;
+
+	//m_timerPic->SetRGB(55, 255, 255);
 	m_timer = 60 * 2;
 	//m_timer = 0;
 	m_flame = 0;
@@ -69,6 +72,7 @@ UIManager::UIManager()
 	NumberEffect;
 }
 
+
 UIManager::~UIManager()
 {
 	SAFE_DELETE(m_scoreNum);
@@ -86,6 +90,13 @@ UIManager::~UIManager()
 
 	NumberEffect.Release();
 
+	// 全部消して
+	for (auto it : m_SendPowerData)
+	{
+		SAFE_DELETE(it);
+	}
+	//　データを空に
+	m_SendPowerData.clear();
 }
 
 // 初期化
@@ -117,6 +128,8 @@ void UIManager::Update()
 	//m_conboBG->Update();
 	m_comboNum->Update();
 
+	m_timerNum->Update();
+
 	// 色々な処理
 	ScoreUpdate();
 	ConboUpdate();
@@ -124,6 +137,7 @@ void UIManager::Update()
 	PointUpdate();
 	GraphUpdate();
 	NumberEffect.Update();
+	SendPowerUpdate();
 
 	//仮
 	Debug();
@@ -164,6 +178,10 @@ void UIManager::Render()
 	/****************************************/
 	// グラフゲージ
 	GraphRender();
+
+	/****************************************/
+	// ベジェ
+	SendPowerRender();
 
 	//particle->Render();
 
@@ -265,7 +283,13 @@ void UIManager::AddTimer(int timer)
 /***********************/
 void UIManager::TimerUpdate()
 {
-	
+
+
+	// 色変えるぞー
+	m_timerPic->SetRGB(m_timeColR, m_timeColG, m_timeColB);
+
+
+
 	// カウントダウン
 	m_flame++;
 	if (m_flame >= 60)
@@ -362,3 +386,53 @@ void UIManager::Debug()
 
 
 
+void UIManager::SendPowerUpdate()
+{
+
+	// List
+	for (auto it = m_SendPowerData.begin(); it != m_SendPowerData.end();)
+	{
+
+		(*it)->Update();
+
+		if ((*it)->IsEnd() == true)
+		{
+			// ★★★　ここでタイマー加算
+			AddTimer((*it)->GetPower());
+			
+			// 先に消す
+			SAFE_DELETE((*it));
+			// 勝手に更新される
+			it = m_SendPowerData.erase(it);
+		}
+		else
+		{
+			// 自分で更新
+			it++;
+		}
+	}
+
+}
+
+void UIManager::SendPowerRender()
+{
+	// List
+	for (auto it : m_SendPowerData)
+	{
+		it->Render();
+	}
+}
+
+// ベジェ
+void UIManager::AddSendPower(char* filename, Vector3 startPos, Vector3 centerPos,
+	Vector3 center2Pos, Vector3 endPos, int endFlame, int power)
+{
+
+	SendPower* data;
+	data = new SendPower(filename, startPos, centerPos, center2Pos, endPos, endFlame, power);
+
+	data->Action();
+
+	// 要素追加
+	m_SendPowerData.push_back(data);
+}

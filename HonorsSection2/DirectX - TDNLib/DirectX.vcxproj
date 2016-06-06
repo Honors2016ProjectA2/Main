@@ -146,6 +146,7 @@
     <ClCompile Include="source\system\FadeCtrl.cpp" />
     <ClCompile Include="source\system\textLoader.cpp" />
     <ClCompile Include="source\UI\ResultUIManager.cpp" />
+    <ClCompile Include="source\UI\SendPower\SendPower.cpp" />
     <ClCompile Include="source\UI\UIManager.cpp" />
     <ClCompile Include="TDN\DirectShow\baseclasses\amfilter.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -225,6 +226,7 @@
     <ClInclude Include="source\system\FadeCtrl.h" />
     <ClInclude Include="source\system\textLoader.h" />
     <ClInclude Include="source\UI\ResultUIManager.h" />
+    <ClInclude Include="source\UI\SendPower\SendPower.h" />
     <ClInclude Include="source\UI\UIManager.h" />
     <ClInclude Include="source\UI\UIManager_.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

@@ -1153,12 +1153,38 @@ void tdn2DObj::SetARGB(DWORD ARGB)
 
 }
 
-// 
-void tdn2DObj::SetAlpha(int A)
-{
+void tdn2DObj::SetAlpha(BYTE A)
+{	
 	DWORD orgColor = (color & 0x00ffffff);	
 	color = (A << 24) | orgColor;
 }
+
+// 
+void tdn2DObj::SetAlpha(int A)
+{	
+	BYTE a = Math::Clamp((int)A, (int)0, (int)255);
+
+	DWORD orgColor = (color & 0x00ffffff);	
+	color = (a << 24) | orgColor;
+}
+
+void tdn2DObj::SetRGB(BYTE R, BYTE G, BYTE B)
+{
+	DWORD orgColor = (color & 0xff000000);
+	color = (R << 16) | (G << 8) | (B) | orgColor;
+
+}
+
+void tdn2DObj::SetRGB(int R, int G, int B)
+{
+	BYTE r = Math::Clamp((int)R, (int)0, (int)255);
+	BYTE g = Math::Clamp((int)G, (int)0, (int)255);
+	BYTE b = Math::Clamp((int)B, (int)0, (int)255);
+
+	DWORD orgColor = (color & 0xff000000);
+	color = (r << 16) | (g << 8) | (b) | orgColor;
+}
+
 
 void tdn2DObj::SetTurnOver(bool turnFlag)
 {

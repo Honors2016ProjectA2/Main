@@ -377,7 +377,15 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 			}
 
 			// UI‚ÉŽžŠÔ‚ð‘«‚·
-			UIMNG.AddTimer(AddTime);
+			//UIMNG.AddTimer(AddTime);
+			Vector3 startPos =
+				Vector3(fatIt->GetCenterPos().x-128, fatIt->GetCenterPos().y, 0.0f);
+			Vector3 centerPos = Vector3(400, 600, 0);
+			Vector3 center2Pos = Vector3(100, 300, 0);
+			Vector3 endPos =	Vector3(720, 40, 0);
+
+			UIMNG.AddSendPower("Data/power.png", startPos, centerPos, center2Pos, endPos, 48, AddTime);
+
 			// UI‚É˜T‚â‚Á‚Â‚¯‚½
 			UIMNG.AddWorfHappyCount();
 

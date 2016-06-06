@@ -39,6 +39,11 @@ Number::Number()
 
 	m_picSize = 64;
 	m_picScale = 1;
+
+	m_col.r = 255;
+	m_col.g = 255;
+	m_col.b = 255;
+
 }
 
 Number::Number(char * name, int picSize)
@@ -89,6 +94,10 @@ Number::~Number()
 void Number::Update()
 {
 	m_pic->Update();
+
+	// F•Ï‚¦‚½‚ë
+	m_pic->SetRGB(m_col.r, m_col.g,m_col.b);
+
 }
 
 

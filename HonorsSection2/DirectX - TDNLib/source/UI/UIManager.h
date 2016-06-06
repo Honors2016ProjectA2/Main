@@ -4,6 +4,8 @@
 #include "pie_graph\pie_graph.h"
 
 #include "Effect\BaseEffect\BaseEffect.h"
+#include "UI\SendPower\SendPower.h"
+
 
 // UI
 
@@ -28,6 +30,10 @@ public:
 
 	// 時間上昇
 	void AddTimer(int timer);
+
+	// 動く光
+	void AddSendPower(char* filename, Vector3 startPos, Vector3 centerPos,
+		Vector3 center2Pos, Vector3 endPos, int endFlame, int power);
 
 	// グラフの設定
 	void SetGraph(float graph) {
@@ -95,6 +101,7 @@ private: //変数
 	int m_flame;
 	Number* m_timerNum;
 	tdn2DObj* m_timerPic;
+	int m_timeColR, m_timeColG, m_timeColB;
 	//float timer;
 
 	// 草ゲージ
@@ -113,8 +120,13 @@ private: //変数
 	/****************/
 	// ベジェの光
 	/****************/
+	//SendPower;
+	// 数字のデータ
+	std::list<SendPower*> m_SendPowerData;
+	std::list<SendPower*>::iterator m_SendPowerIt;
 
-
+	void SendPowerUpdate();
+	void SendPowerRender();
 
 };
 
