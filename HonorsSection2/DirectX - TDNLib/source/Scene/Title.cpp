@@ -222,7 +222,7 @@ void Title::Render()
 	tdnView::Clear();
 	
 	m_BG->Render(0, 0);
-	m_titleLogo->Render(0, 0);
+	m_titleLogo->Render(0, -100);
 
 
 	// ¬‰®Œã‚ë

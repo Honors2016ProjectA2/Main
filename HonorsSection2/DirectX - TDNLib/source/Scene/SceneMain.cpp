@@ -293,7 +293,6 @@ void sceneMain::Render()
 	stage->RenderBack();
 
 	stage->Render();
-
 	UIMNG.Render();
 
 

@@ -154,6 +154,9 @@ ResultUIManager::ResultUIManager()
 	Load();
 	m_RankingPic = new tdn2DObj("Data/ranking.png");
 
+
+	m_RankINPic = new tdn2DAnim("Data/Result/rankin.png");
+	m_RankINPic->OrderMoveAppeared(24, 600, 100);
 }
 
 
@@ -192,6 +195,9 @@ ResultUIManager::~ResultUIManager()
 	}
 
 	SAFE_DELETE(m_RankingPic);
+
+	SAFE_DELETE(m_RankINPic);
+
 }
 
 void ResultUIManager::Init()
@@ -408,6 +414,8 @@ bool ResultUIManager::Update()
 	}
 
 	StopUpdate();
+
+	m_RankINPic->Update();
 
 	return false;
 }
@@ -730,6 +738,10 @@ void ResultUIManager::RankingRender()
 
 		//tdnText::Draw(0, 0, 0xffffffff, "あああああああああ");
 	}
+
+	// ランクイン
+	m_RankINPic->Render(200, 120);
+
 }
 
 // ロード
@@ -791,6 +803,8 @@ void ResultUIManager::Sort()
 			}
 			m_RankingNum[i] = m_MaxSumNum;
 			m_rankingNumber[i]->Action();
+
+			m_RankINPic->Action();// ランクインのアニメお
 			break;
 		}	
 

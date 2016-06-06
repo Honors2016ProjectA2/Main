@@ -105,6 +105,8 @@ public:
 	tdn2DAnim* m_RankRipPic;// 波紋エフェクト
 	int m_RankPicX, m_RankPicY;
 
+	tdn2DAnim* m_RankINPic;
+
 	void RankUpdate();
 
 private:

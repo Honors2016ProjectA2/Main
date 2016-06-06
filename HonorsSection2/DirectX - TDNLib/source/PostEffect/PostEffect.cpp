@@ -37,7 +37,7 @@ PostEffect::PostEffect()
 	// BackBuffer
 	tdnSystem::GetDevice()->GetRenderTarget(0, &m_backbuffer);
 
-	m_blurValue = 1.0f;
+	m_blurValue = 2.0f;
 
 	m_bluePower = 0.0f;
 }
