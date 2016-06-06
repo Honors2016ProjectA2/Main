@@ -464,6 +464,9 @@
     <ClInclude Include="source\CharaBase\CharaBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="source\UI\SendPower\SendPower.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="TDN\ogg\ogg_static.lib" />

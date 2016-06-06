@@ -1,6 +1,6 @@
 #include "UIManager.h"
 #include "particle_2d\particle_2d.h"
-
+#include "Effect\EffectManager.h"
 //Particle_2d* particle;
 
 UIManager* UIManager::inst = nullptr;
@@ -257,6 +257,7 @@ void UIManager::AddTimer(int timer)
 {
 	m_timer += timer;
 	NumberEffect.AddNumber(780, 60, timer, Number_Effect::COLOR_TYPE::YELLOW_GREEN);
+	EffectMgr.AddEffect(720, 60, EFFECT_TYPE::PLUS);
 }
 
 /***********************/

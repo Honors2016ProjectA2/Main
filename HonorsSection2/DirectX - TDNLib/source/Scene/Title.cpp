@@ -10,11 +10,17 @@
 #include "End.h"
 #include "UI\ResultUIManager.h"
 
+#include "UI\SendPower\SendPower.h"
+
 End* end;
+
+SendPower* m_send;
 
 bool Title::Initialize()
 {
-	//end = new End();
+	m_send = new SendPower();
+
+//end = new End();
 	//end->Init();
 	//end->floorNum = 3;
 
@@ -128,6 +134,8 @@ bool Title::Update()
 		}
 	
 	}
+
+	m_send->Update();
 
 	return true;
 }
@@ -247,6 +255,8 @@ void Title::Render()
 	m_pointer->Render();
 
 	//end->Render();
+
+	m_send->Render();
 
 	//RESULT_UIMNG.Render();
 	//Fade

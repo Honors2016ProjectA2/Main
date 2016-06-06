@@ -109,6 +109,13 @@ private: //•Ï”
 	int m_worfHappyCount;
 	int m_sheepKillCount;
 
+
+	/****************/
+	// ƒxƒWƒF‚ÌŒõ
+	/****************/
+
+
+
 };
 
 
