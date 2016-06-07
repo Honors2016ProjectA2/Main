@@ -3,6 +3,7 @@
 #include "system\System.h"
 #include "Effect\EffectManager.h"
 #include "UIManager.h"
+#include "../Sound/SoundManager.h"
 
 ResultUIManager* ResultUIManager::inst = nullptr;
 
@@ -78,6 +79,7 @@ ResultUIManager::ResultUIManager()
 		m_font[i].pic->OrderMoveAppeared(14, -360, i * 96);
 		m_font[i].x = 40;
 		m_font[i].y = (i * 92)+6;
+		m_font[i].isSE = false;
 	}
 
 	// 文字の効果書き換え
@@ -210,7 +212,7 @@ void ResultUIManager::Init()
 bool ResultUIManager::Update()
 {
 	if (isResultScreen == false)return false;// 実行されていなかったらリターン
-
+	//se->Play("リザルトダン");
 
 	// 数値を更新
 	m_numNum[FONT::SCORE] = UIMNG.GetScore();
@@ -416,6 +418,24 @@ bool ResultUIManager::Update()
 	StopUpdate();
 
 	m_RankINPic->Update();
+
+
+	/***************************/
+	//	音ならすポン
+	/**************************/
+	for (int i = 0; i < FONT::END; i++)
+	{
+		if (m_font[i].pic->GetAction()->IsEnd() == true)
+		{
+			// 分岐
+			if (m_font[i].isSE == false)
+			{
+				se->Play("リザルトダン");
+				m_font[i].isSE = true;
+			}
+		}	
+	}
+	
 
 	return false;
 }

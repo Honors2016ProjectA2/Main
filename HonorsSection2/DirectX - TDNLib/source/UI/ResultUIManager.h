@@ -79,6 +79,7 @@ public:
 	{
 		tdn2DAnim* pic;
 		int x, y;
+		bool isSE;
 
 	};
 	Font m_font[END];

@@ -114,7 +114,7 @@ void Explain::Text2()
 	if( game.Close() ){
 		//FadeControl::Setting(FadeControl::MODE::FADE_IN, 30.0f, .0f, FADE_ALPHA);
 		state = STATE::FADE_END;
-		bgm->Fade_out("TITLE", .025f);
+		//bgm->Fade_out("TITLE", .025f);
 	}
 }
 
