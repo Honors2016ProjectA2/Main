@@ -1,4 +1,5 @@
 #pragma once
+#include "TDNLIB.h"
 #include	"IEX_Expansion.h"
 class StageManager;
 
@@ -26,6 +27,7 @@ public:
 
 private:
 	tdn2DObj* pointerObj = nullptr;
+	tdn2DAnim* m_Effect;
 	int posX, posY;
 	int nowFloor = 0;
 	int appearedFloor = 0;
