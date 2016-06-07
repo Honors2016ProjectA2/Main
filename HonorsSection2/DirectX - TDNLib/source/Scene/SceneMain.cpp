@@ -21,6 +21,7 @@
 #include	"../Niku/Niku.h"
 #include	"../UI\ResultUIManager.h"
 #include	"result2.h"
+#include   "Explain.h"
 
 
 #include "../system/Framework.h"
@@ -30,7 +31,7 @@ namespace{
 	namespace SCENE
 	{
 		enum{
-			INIT, READY, MAIN, END, RESULT,
+			INIT,EXPLAIN, READY, MAIN, END, RESULT,
 		};
 	}
 }
@@ -56,6 +57,7 @@ bool sceneMain::Initialize()
 	stage = new StageManager();
 
 	back = new tdn2DObj("DATA/GameHaikei.png");
+	explain = new Explain();
 	ready = new Ready();
 	end = new End();
 	pointer = new MousePointer();
@@ -115,6 +117,7 @@ sceneMain::~sceneMain()
 	UIMNG.Release();
 	EffectMgr.Release();
 	NikuMgr->Release();
+	SAFE_DELETE(explain);
 }
 
 //******************************************************************
@@ -146,6 +149,7 @@ bool sceneMain::Update()
 
 	switch (state) {
 	case SCENE::INIT:		Init();				break;
+	case SCENE::EXPLAIN:	ExplainUpdate();	break;
 	case SCENE::READY:		ReadyEvent();		break;
 	case SCENE::MAIN:		MainUpdate();		break;
 	case SCENE::END:		EndEvent();			break;
@@ -172,14 +176,24 @@ void sceneMain::Init()
 	dataMNG->Init();
 	ready->Init();
 	end->Init();
+	explain->Initialize();
+
 //	watchman->Init();
 //	m_pSheepMgr->Init();
 
 	FadeControl::Setting(FadeControl::MODE::WHITE_IN, 30.0f);
 
 	// ここのかっこを0にするとレディーゴーの処理が出る(デバッグの時短でレディーゴーを無しにしてる)
-	state = (0) ? SCENE::MAIN : SCENE::READY;
+	state = (0) ? SCENE::MAIN : SCENE::EXPLAIN;
 	DataDelivery();
+}
+
+void sceneMain::ExplainUpdate()
+{
+	if( explain->Update() ){
+		state = SCENE::READY;
+	}
+	stage->Update();
 }
 
 void sceneMain::ReadyEvent()
@@ -329,6 +343,7 @@ void sceneMain::Render()
 
 	// ステート描画
 	switch (state) {
+	case SCENE::EXPLAIN:	ExplainRender();	break;
 	case SCENE::READY:		ReadyRender();		break;
 	case SCENE::MAIN:		MainRender();		break;
 	case SCENE::END:		EndRender();		break;
@@ -344,6 +359,13 @@ void sceneMain::Render()
 	DebugText();
 	//CollisionMgr->DebugRender(g_pSheepMgr, dataMNG, stage);
 #endif
+}
+
+void sceneMain::ExplainRender()
+{
+	stage->RenderFront();
+	explain->Render();
+
 }
 
 void sceneMain::ReadyRender()

@@ -9,7 +9,7 @@ class StageManager;
 class DataManager;
 class Result;
 class Result2;
-
+class Explain;
 
 class sceneMain	: public BaseScene
 {
@@ -24,6 +24,7 @@ public:
 	void Render();
 private:
 	tdn2DObj* back = nullptr;
+	Explain* explain = nullptr;
 	Ready* ready = nullptr;
 	End* end = nullptr;
 	MousePointer* pointer = nullptr;
@@ -42,6 +43,7 @@ private:
 	//INIT, TITLE, EXPLAIN, READY, MAIN, END, RESULT
 	void Init();
 	//XVˆ—
+	void ExplainUpdate();
 	void ReadyEvent();
 	void MainUpdate();
 	void EndEvent();
@@ -50,6 +52,7 @@ private:
 	void DataDelivery();	//î•ñó‚¯“n‚µ
 
 	//•`‰æˆ—
+	void ExplainRender();
 	void ReadyRender();
 	void MainRender();
 	void EndRender();
