@@ -20,7 +20,7 @@ void Enemy::Base::MoveUpdate()
 //**************************************************
 //    狼
 //**************************************************
-Enemy::Wolf::Wolf(tdn2DObj *image, tdn2DObj *pniku, tdn2DObj *pHone, int floor, float speed, int nikustopTime) : Base(image, floor, speed), m_pNikukutteru(pniku), m_EAT_NIKU_TIMER(nikustopTime), m_OrgSpeed(speed), m_pHoneImage(pHone), m_seID(TDNSOUND_PLAY_NONE)
+Enemy::Wolf::Wolf(tdn2DObj *image, tdn2DObj *pniku, tdn2DObj *pHone, int floor, float speed, int nikustopTime) : Base(image, floor, speed), m_pNikukutteru(pniku), m_EAT_NIKU_TIMER(nikustopTime), m_OrgSpeed(speed), m_pHoneImage(pHone), m_seID(TDNSOUND_PLAY_NONE), m_alpha(255)
 {
 	// イニシャライザ書けない
 	W = 120;

@@ -55,7 +55,7 @@ BGM_Manager::DATA all_dataB[] =
 	//{ "TITLE",	"DATA/Sound/BGM/甘味牧場.wav", false },
 	{ "GO",		"DATA/Sound/BGM/se10.wav", false },
 	{ "MAIN",	"DATA/Sound/BGM/main.wav", false },
-	{ "RESULT", "DATA/Sound/BGM/ResultBGM.wav", false },
+	//{ "RESULT", "DATA/Sound/BGM/ResultBGM.wav", false },
 	{ "ホイッスル", "DATA/Sound/SE/whistle.wav", false },
 };
 

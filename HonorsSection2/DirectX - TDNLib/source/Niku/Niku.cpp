@@ -151,8 +151,9 @@ void NikuManager::Update()
 		// マウス左クリックで肉作成
 		if (tdnMouse::GetLeft() == 3)
 		{
+			Vector2 mPos = tdnMouse::GetPos();
 			// 焼肉エリア内なら
-			if ((tdnMouse::GetPos() - (YAKINIKU_AREA + Vector2(128, 128))).LengthSq() < 128 * 128)
+			if (mPos.x > YAKINIKU_AREA.x + 30 && mPos.x < YAKINIKU_AREA.x + 30 + 190 && mPos.y > YAKINIKU_AREA.y + 96 && mPos.y < YAKINIKU_AREA.y + 96 + 100)
 			{
 				// 肉作る
 				CreateNiku();
