@@ -1084,13 +1084,17 @@ namespace AnimAction
 	class Base
 	{
 	public:
-		Base() :m_bActionFlag(false), m_iDelayFlame(0){};
+		Base() :m_bActionFlag(false), m_bEndFlag(false), m_iDelayFlame(0){};
 		~Base() {};
 
 		virtual void Update(tdn2DObj* pic) {};// tdn2DObjの実態を中へ	
 											  // 基本的にアニメの始動		
 
-		virtual void Action(tdn2DObj* pic,int delay) { m_iDelayFlame = delay; m_bActionFlag = true; /* 実行フラグOn */ };
+		virtual void Action(tdn2DObj* pic,int delay) {
+			m_iDelayFlame = delay;
+			m_bActionFlag = true; /* 実行フラグOn */
+			m_bEndFlag = false;	// エンドフラグ
+		};
 		virtual void Stop(tdn2DObj* pic) { m_bActionFlag = false;/* 実行フラグOff */ };
 		
 		/******************************************/
@@ -1112,10 +1116,12 @@ namespace AnimAction
 
 		// Get
 		bool IsAction() { return m_bActionFlag; }
-
+		bool IsEnd() { return m_bEndFlag; }
 	protected:
 		// アクションフラグ	 
 		bool m_bActionFlag;
+		// 終了フラグ	 
+		bool m_bEndFlag;
 		// ディレイ
 		int m_iDelayFlame;
 	};
@@ -1318,6 +1324,7 @@ public:
 
 	// アクセサ
 	tdn2DObj* GetObj() { return m_obj; }
+	AnimAction::Base* GetAction() { return m_pAction; }
 
 	//	情報更新
 	void SetScale(float scale) { m_obj->SetScale(scale); };
