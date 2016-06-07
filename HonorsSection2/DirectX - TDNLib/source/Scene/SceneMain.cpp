@@ -200,7 +200,7 @@ void sceneMain::ReadyEvent()
 {
 	if( ready->Update() ){
 		state = SCENE::MAIN;
-		g_pSheepMgr->Start();
+		//g_pSheepMgr->Start();
 	}
 	stage->Update();
 }
@@ -387,6 +387,10 @@ void sceneMain::MainRender()
 	// ステージの前描画
 	stage->RenderFront();
 	Particle2dManager::Render();
+
+	// デブたち描画
+	g_pSheepMgr->RenderFat();
+	EnemyMgr->RenderFat();
 }
 
 void sceneMain::EndRender()

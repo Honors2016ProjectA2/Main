@@ -550,6 +550,9 @@ void StageManager::RenderBack()
 
 	// ‚¢‚¯‚É‚¦–_•`‰æ
 	m_pStageImages[StageImage::IKENIE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256);
+
+	// Á‚¦‚½•`‰æ
+	if (NikuMgr->GetNiku())m_pStageImages[StageImage::KIETA_FIRE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, 0, 0, 256, 256);
 }
 
 void StageManager::Render()
@@ -581,7 +584,7 @@ void StageManager::RenderFront()
 	m_pStageImages[StageImage::KUSA]->Render(0, 0);
 
 	// ‰Š•`‰æ
-	m_pStageImages[(NikuMgr->GetNiku()) ? StageImage::KIETA_FIRE : StageImage::FIRE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256);
+	if (!NikuMgr->GetNiku()) m_pStageImages[StageImage::FIRE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256);
 
 	// ”š•`‰æ
 	// “ü‚Á‚½‚ç‰ÁZ‚³‚ê‚éƒXƒRƒA

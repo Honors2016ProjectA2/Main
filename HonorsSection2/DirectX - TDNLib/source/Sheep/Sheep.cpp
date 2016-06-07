@@ -314,7 +314,7 @@ FatSheep::~FatSheep()
 
 //**************************************************
 
-SheepManager::SheepManager() :sp(0)
+SheepManager::SheepManager() :sp(0), m_CreateFrame(0)
 {
 	m_pBoneImage = new tdn2DObj("DATA/CHR/hone_motion.png");
 
@@ -385,8 +385,6 @@ SheepManager::SheepManager() :sp(0)
 		ifs >> m_TextParam.data[i].percentage;
 	}
 	m_List.clear();
-	// タイマー設定
-	m_CurrentTime = clock();
 }
 
 SheepManager::~SheepManager()
@@ -476,6 +474,7 @@ void SheepManager::Update()
 	//}
 
 	// 前回の時間と今の時間の差分
+	/*
 	UINT delta = clock() - m_CurrentTime;
 	bool bCreate(false);
 
@@ -488,6 +487,13 @@ void SheepManager::Update()
 
 	// 現在時刻設定
 	if (bCreate)m_CurrentTime = clock();
+	*/
+
+	if (++m_CreateFrame > m_TextParam.AppTime)
+	{
+		m_CreateFrame = 0;
+		create(g_CreateSheepFloor);
+	}
 
 	auto CheckCatch = [](bool *OutbLeft, bool bNikuHold)
 	{
@@ -556,7 +562,10 @@ void SheepManager::Render()
 	{
 		it->Render();
 	}
+}
 
+void SheepManager::RenderFat()
+{
 	// 草食って太った羊
 	for (auto it : m_FatList) it->Render();
 }

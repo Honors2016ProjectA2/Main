@@ -112,6 +112,7 @@ public:
 	void Release();
 	void Update();
 	void Render();
+	void RenderFat();
 
 	/* データリセット */
 	void Clear();

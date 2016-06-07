@@ -343,6 +343,11 @@ void EnemyManager::Render()
 {
 	for (auto it: m_list)
 		it->Render();
+}
+
+void EnemyManager::RenderFat()
+{
+	// ‚Å‚Ô˜T‚½‚¿•`‰æ
 	for (auto it : m_FatList)
 		it->Render();
 }
