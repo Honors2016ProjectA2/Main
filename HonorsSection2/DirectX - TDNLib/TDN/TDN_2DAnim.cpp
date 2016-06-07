@@ -118,6 +118,7 @@ void AnimAction::Ripple::Update(tdn2DObj * pic)
 	if (m_nowFlame >= m_endFlame)
 	{
 		m_bActionFlag = false;
+		m_bEndFlag = true; // 終りフラグON
 		// 拡大率更新
 		//pic->SetScale(m_startscale);
 	}
@@ -177,6 +178,8 @@ void AnimAction::MoveAppeared::Update(tdn2DObj * pic)
 	{
 		//m_bActionFlag = false;
 		m_nowFlame = m_endFlame;
+
+		m_bEndFlag = true; // 終りフラグON
 	}
 	//else
 	//{
@@ -282,6 +285,7 @@ void AnimAction::Shake::Update(tdn2DObj * pic)
 	if (m_nowFlame >= m_endFlame)
 	{
 		m_bActionFlag = false;
+		m_bEndFlag = true; // 終りフラグON
 		m_shakeX = (m_orgX / 2.0f);
 		m_shakeY = (m_orgY / 2.0f);
 		return;
@@ -410,8 +414,9 @@ void AnimAction::Jump::Update(tdn2DObj * pic)
 		// スタート時よりも小さくなったら終了
 		if (pic->GetScale() <= m_startscale)
 		{
-			// 小さく
+			// もどす
 			pic->SetScale(m_startscale);
+			m_bEndFlag = true; // 終りフラグON
 			//m_bActionFlag = false;
 			//m_alpha = (float)m_nowFlame / (float)m_endFlame;
 			//m_alpha=
@@ -507,6 +512,7 @@ void AnimAction::Shrink::Update(tdn2DObj * pic)
 	// エンドフレームまで来たら終わる
 	if (m_nowFlame >= m_endFlame)
 	{
+		m_bEndFlag = true; // 終りフラグON
 		//m_bActionFlag = false;
 		// 拡大率更新
 		//pic->SetScale(m_startscale);
