@@ -11,7 +11,7 @@ class SendPower
 {
 public:
 	SendPower(char* filename, Vector3 startPos, Vector3 centerPos,
-		Vector3 center2Pos, Vector3 endPos, int endFlame, int power = 10);
+		Vector3 center2Pos, Vector3 endPos, int endFlame, int power = 10, int bBokusou = false);
 
 	~SendPower();
 
@@ -30,6 +30,8 @@ public:
 
 	int GetPower() { return m_power; };
 
+	bool IsBokusou() { return m_bBokusou; }
+
 private:
 	tdn2DObj* m_pic;
 
@@ -41,7 +43,6 @@ private:
 	{
 		START, CENTER, CENTER2, END, MAX
 	};
-	Vector3 m_movePos[(int)MOVE_POS::MAX];
 
 	int m_flame;
 	int m_endFlame;		//　終りのフレーム
@@ -53,4 +54,11 @@ private:
 	bool m_bEnd;
 
 	int m_power;
+
+	bool m_bBokusou;
+public:
+	Vector3 m_movePos[(int)MOVE_POS::MAX];
+
+
+
 };

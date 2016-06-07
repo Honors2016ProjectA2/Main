@@ -15,7 +15,7 @@ BokusouManager *BokusouManager::pInstance = nullptr;	// 1つしかない実体
 //**************************************************
 //    牧草管理クラス
 //**************************************************
-BokusouManager::BokusouManager()
+BokusouManager::BokusouManager():m_PrevPoint(0)
 {
 	// テキストからデータ読み込み
 	std::ifstream ifs("DATA/Text/Param/bokusou.txt");
@@ -77,18 +77,28 @@ void BokusouManager::Update()
 	if (++m_CreateTimer > m_CREATETIME)
 	{
 		// 牧草生成した瞬間
-		EffectMgr.AddEffect((int)m_CreatePosList[m_NextPoint].pos.x+64, (int)m_CreatePosList[m_NextPoint].pos.y+64, EFFECT_TYPE::PUT);
+		//EffectMgr.AddEffect((int)m_CreatePosList[m_NextPoint].pos.x+64, (int)m_CreatePosList[m_NextPoint].pos.y+64, EFFECT_TYPE::PUT);
 		UIMNG.GraphAction();//  アクション
 
 		// 牧草生成！！
 		m_CreateTimer = 0;
 
+		/*
 		Bokusou *set = new Bokusou(m_CreatePosList[m_NextPoint].pos);	// 座標リストからランダムに
 		set->SetFloor(m_CreatePosList[m_NextPoint].floor);
 		m_list.push_back(set);
+		*/
+
+		m_PrevPoint = m_NextPoint;
+
+		//m_CreatePosList[m_NextPoint].pos
+		UIMNG.AddSendPower("Data/Power.png", Vector3(40, 40, 0), Vector3(0, 400, 0), Vector3(100, 600, 0),
+			Vector3(m_CreatePosList[m_NextPoint].pos.x + 64, m_CreatePosList[m_NextPoint].pos.y + 64, 0), 48, 114514, true);
 
 		// 次の生成座標
 		m_NextPoint = tdnRandom::Get(0, m_CreatePosList.size() - 1);
+
+
 	}
 
 	for (auto it = m_list.begin(); it != m_list.end();)
@@ -111,6 +121,16 @@ void BokusouManager::Render()
 	for (auto it : m_list) it->Render();
 }
 
+void BokusouManager::CreateByBazier()
+{
+	// エフェクト
+	EffectMgr.AddEffect((int)m_CreatePosList[m_PrevPoint].pos.x + 64, (int)m_CreatePosList[m_PrevPoint].pos.y + 64, EFFECT_TYPE::PUT);
+
+	// 生成
+	Bokusou *set = new Bokusou(m_CreatePosList[m_PrevPoint].pos);
+	set->SetFloor(m_PrevPoint);
+	m_list.push_back(set);
+}
 
 
 

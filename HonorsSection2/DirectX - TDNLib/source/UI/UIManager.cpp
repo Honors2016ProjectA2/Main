@@ -1,6 +1,8 @@
 #include "UIManager.h"
 #include "particle_2d\particle_2d.h"
 #include "Effect\EffectManager.h"
+#include "Bokusou\Bokusou.h"
+
 //Particle_2d* particle;
 
 UIManager* UIManager::inst = nullptr;
@@ -432,8 +434,16 @@ void UIManager::SendPowerUpdate()
 
 		if ((*it)->IsEnd() == true)
 		{
-			// ★★★　ここでタイマー加算
-			AddTimer((*it)->GetPower());
+			if ((*it)->IsBokusou() == true)
+			{
+				BokusouMgr->CreateByBazier();
+			}
+			else
+			{
+				// ★★★　ここでタイマー加算
+				AddTimer((*it)->GetPower());
+			}
+
 			
 			// 先に消す
 			SAFE_DELETE((*it));
@@ -460,11 +470,11 @@ void UIManager::SendPowerRender()
 
 // ベジェ
 void UIManager::AddSendPower(char* filename, Vector3 startPos, Vector3 centerPos,
-	Vector3 center2Pos, Vector3 endPos, int endFlame, int power)
+	Vector3 center2Pos, Vector3 endPos, int endFlame, int power, bool bokusouFlag)
 {
 
 	SendPower* data;
-	data = new SendPower(filename, startPos, centerPos, center2Pos, endPos, endFlame, power);
+	data = new SendPower(filename, startPos, centerPos, center2Pos, endPos, endFlame, power, bokusouFlag);
 
 	data->Action();
 

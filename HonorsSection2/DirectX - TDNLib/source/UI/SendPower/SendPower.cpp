@@ -3,7 +3,7 @@
 
 
 SendPower::SendPower(char* filename, Vector3 startPos, Vector3 centerPos,
-	Vector3 center2Pos, Vector3 endPos, int endFlame, int power)
+	Vector3 center2Pos, Vector3 endPos, int endFlame, int power, int bBokusou)
 {
 	// ‚¢‚ç‚·’n
 	m_pic = new tdn2DObj(filename);
@@ -39,6 +39,7 @@ SendPower::SendPower(char* filename, Vector3 startPos, Vector3 centerPos,
 	// ‘—‚é’l
 	m_power = power;
 
+	m_bBokusou = bBokusou;
 }
 
 SendPower::~SendPower()
