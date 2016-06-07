@@ -170,7 +170,7 @@ bool Title::Update()
 	m_gameStart->Update();
 
 
-	ex->Update();
+	//ex->Update();
 
 	return true;
 }
@@ -300,7 +300,7 @@ void Title::Render()
 
 	m_gameStart->Render(840, 400);
 	
-	ex->Render();
+	//ex->Render();
 
 
 	//RESULT_UIMNG.Render();

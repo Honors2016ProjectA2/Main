@@ -67,7 +67,7 @@ bool Explain::Update()
 	}
 
 	//MainFrame->ChangeScene(new sceneMain);
-	return true;
+	return false;
 }
 
 void Explain::FadeStart()
@@ -118,11 +118,13 @@ void Explain::Text2()
 	}
 }
 
+// ‚©‚«‚©‚¦‚½‚Á‚½
 void Explain::FadeEnd()
 {
-	if( FadeControl::IsEndFade() ){
+	//if( FadeControl::IsEndFade() )
+	{
 		state = STATE::RET_TRUE;
-		MainFrame->ChangeScene(new sceneMain);
+		//MainFrame->ChangeScene(new sceneMain);
 	}
 }
 
