@@ -511,7 +511,10 @@ void SheepManager::Update()
 		{
 			if ((it->GetCenterPos() - tdnMouse::GetPos()).LengthSq() < 60 * 60)
 			{
-				se->Play("—r’Í‚Þ", *it->Get_pos());
+				// —r•ß‚Ü‚¦‚éSE
+				se->Play((it->GetType() == SHEEP_TYPE::REAL) ? "ƒŠƒAƒ‹’Í‚Þ" : "—r’Í‚Þ", *it->Get_pos());
+
+				// •ß‚Ü‚ê‚Ä‚éƒ‚[ƒh‚É•ÏX
 				it->Be_caught(bLeftCatch);
 				break;
 			}

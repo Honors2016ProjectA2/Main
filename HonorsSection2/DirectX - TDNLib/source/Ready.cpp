@@ -86,7 +86,7 @@ void Ready::Init()
 	scale = .0f;
 	state = STATE::READY_RUN;
 
-	//bgm->Play("READY");
+	se->Play("ƒhƒ“", true);
 }
 
 bool Ready::Update()
@@ -108,7 +108,7 @@ void Ready::ReadyRun()
 	x -= READY::MOVE_SPEED;
 	if( x <= READY::END_X ){
 		state = STATE::GO_BIGGER;
-		bgm->Stop("READY");
+		se->Stop("ƒhƒ“", 0);
 		m_animeGO->Action();
 	}
 }
@@ -133,7 +133,7 @@ void Ready::RunAnimation()
 // GO!
 void Ready::GoBigger()
 {
-	bgm->Play("GO");
+	se->Play("GO");
 	GoAnimation();
 
 	scale += GO::SCALE_SPEED;
@@ -144,7 +144,7 @@ void Ready::GoBigger()
 
 	if( scale >= GO::SCALE_MAX ){
 		state = STATE::RET_TRUE;
-		bgm->Stop("GO");
+		//bgm->Stop("GO");
 	}
 }
 

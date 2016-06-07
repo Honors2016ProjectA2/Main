@@ -21,12 +21,12 @@ const SE_Manager::DATA all_dataS[] =
 	{ "パクモグ",		"DATA/Sound/SE/pakumogu.wav",	2, false },
 	{ "リアルHIT",		"DATA/Sound/SE/hit.wav",		2, false },
 	{ "リザルトスコア",	"DATA/Sound/SE/score.wav",		1, false },
-	{ "リザルトダン",	"DATA/Sound/SE/score.wav",		1, false },
+	{ "リザルトダン",	"DATA/Sound/SE/dan.wav",		3, false },
 	{ "DAMAGE",			"DATA/Sound/SE/eat.wav",		20, false },
-	{ "RANK_S",			"DATA/Sound/SE/se20.wav",		1, false },
+	{ "RANK_S",			"DATA/Sound/SE/se14.wav",		1, false },
 	{ "RANK_A",			"DATA/Sound/SE/se21.wav",		1, false },
 	{ "RANK_B",			"DATA/Sound/SE/se20.wav",		1, false },
-	{ "RANK_C",			"DATA/Sound/SE/se21.wav",		1, false },
+	{ "RANK_C",			"DATA/Sound/SE/se20.wav",		1, false },
 	{ "羊レーン変わる",	"DATA/Sound/SE/arrert.wav",		3, false },
 	{ "牧草芽生えた",	"DATA/Sound/SE/born.wav",		3, false },
 	{ "太った羊押す",	"DATA/Sound/SE/debuosu.wav",	6, false },
@@ -43,8 +43,11 @@ const SE_Manager::DATA all_dataS[] =
 	{ "今です",			"DATA/Sound/SE/imadesu.wav",	1, false },
 	{ "悲鳴",			"DATA/Sound/SE/himei.wav",		1, false },
 	{ "羊掴む",			"DATA/Sound/SE/sheep_cry.wav",	6, false },
+	{ "リアル掴む",		"DATA/Sound/SE/maki.wav",		3, false },
 	{ "ドン",			"DATA/Sound/SE/se9.wav",		1, false },
 	{ "ドドン",			"DATA/Sound/SE/se22.wav",		1, false },
+	{ "GO",				"DATA/Sound/BGM/se10.wav",		1, false },
+	{ "終了ホイッスル", "DATA/Sound/SE/whistle.wav",	1, false }
 };
 
 //==============================================================================================
@@ -53,10 +56,8 @@ const SE_Manager::DATA all_dataS[] =
 BGM_Manager::DATA all_dataB[] =
 {
 	//{ "TITLE",	"DATA/Sound/BGM/甘味牧場.wav", false },
-	{ "GO",		"DATA/Sound/BGM/se10.wav", false },
 	{ "MAIN",	"DATA/Sound/BGM/main.wav", false },
 	//{ "RESULT", "DATA/Sound/BGM/ResultBGM.wav", false },
-	{ "ホイッスル", "DATA/Sound/SE/whistle.wav", false },
 };
 
 

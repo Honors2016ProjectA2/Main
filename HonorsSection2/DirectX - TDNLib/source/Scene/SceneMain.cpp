@@ -243,6 +243,9 @@ void sceneMain::MainUpdate()
 		// SE全ストップ
 		se->Stop_all();
 
+		// ピピー
+		se->Play("終了ホイッスル");
+
 		state = SCENE::END;
 
 		UIMNG.SetTimer(120);

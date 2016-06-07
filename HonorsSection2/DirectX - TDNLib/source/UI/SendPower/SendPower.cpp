@@ -84,7 +84,7 @@ void SendPower::Move()
 	m_percent = Math::Clamp(m_percent, 0.0f, 1.0f);
 
 	
-	Particle2dManager::Effect_RealSheep(Vector2(m_pos.x, m_pos.y));// ‚Ï[‚Ä‚¡‚­‚é
+	Particle2dManager::Effect_KiraKira(Vector2(m_pos.x, m_pos.y), Vector2(16, 16), 20, 5, 1, 80);// ‚Ï[‚Ä‚¡‚­‚é
 
 }
 

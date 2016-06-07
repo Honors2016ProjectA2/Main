@@ -20,7 +20,7 @@
 // グローバル領域
 int STAGE_POS_Y[3] =
 {
-	0, 190, 520// ★ここいじったろ
+	165, 520, 520// ★ここいじったろ
 };
 int LANE_WIDTH = 0;
 Vector2 YAKINIKU_AREA(0, 0);
@@ -240,6 +240,14 @@ void StageManager::Update()
 
 				// SEの再生
 				se->Play("ドア", Vector2(128, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2));
+
+				// 犬配置リセット
+				m_DogStock = 2;
+				FOR(STAGE_MAX)for (auto &it : m_Doglists[i])
+				{
+					it->bEnable = true;
+					if (it->IsOpening())it->Change();
+				}
 			}
 		}
 	}
