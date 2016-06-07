@@ -212,7 +212,6 @@ void ResultUIManager::Init()
 bool ResultUIManager::Update()
 {
 	if (isResultScreen == false)return false;// 実行されていなかったらリターン
-	//se->Play("リザルトダン");
 
 	// 数値を更新
 	m_numNum[FONT::SCORE] = UIMNG.GetScore();
@@ -229,6 +228,7 @@ bool ResultUIManager::Update()
 	switch (m_step)
 	{
 	case ResultUIManager::STEP::START:
+		// 円の処理が終了してたら
 		if (CircleUpdate())
 		{
 			// 文字たちの動きの更新
@@ -256,6 +256,7 @@ bool ResultUIManager::Update()
 		
 		break;
 	case ResultUIManager::STEP::EXE:
+		// このモードの間にディレイを掛けられた項目が出てくる
 
 		m_WaitFlame++;
 		if (m_WaitFlame >= 200)
@@ -265,6 +266,9 @@ bool ResultUIManager::Update()
 			m_step = STEP::SUM_CALC;
 			m_number[FONT::SUM]->GetAnim()->Action();
 			m_numNum[FONT::SUM] = 0;
+
+			// テレレレSE再生
+			se->Play("リザルトスコア", true);
 		}
 
 		break;
@@ -322,6 +326,9 @@ bool ResultUIManager::Update()
 				m_step = STEP::RANK;
 				m_RankPic->Action();
 
+				// テレレレSE停止
+				se->Stop("リザルトスコア", 0);
+
 				RankUpdate();				// ランクの更新
 			}
 
@@ -337,6 +344,16 @@ bool ResultUIManager::Update()
 				m_RankPic->Action();
 				m_RankRipPic->Action();
 				EffectMgr.AddEffect(m_RankPicX + 180, m_RankPicY + 180, EFFECT_TYPE::ClEAR);
+
+				/*
+				// ランク表示SE再生
+				static const char *RANK_SE_ID[] = { "RANK_S", "RANK_A", "RANK_B", "RANK_C" };
+				assert(_countof(RANK_SE_ID) >= m_rankType);	// 配列参照外
+				se->Play((char*)RANK_SE_ID[m_rankType]);
+				*/
+
+				// ドドン！
+				se->Play("ドドン");
 
 				m_step = STEP::RANKING_START;
 			}

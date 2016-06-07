@@ -280,7 +280,7 @@ void sceneMain::ResultUpdate()
 	if( FadeControl::IsFade() ) return;
 	if( FadeControl::IsEndFade() ){
 		//state = SCENE::INIT;
-		//bgm->Stop("RESULT");
+		bgm->Stop("MAIN");
 		state = SCENE::INIT;
 		MainFrame->ChangeScene(new Title());
 		return;
