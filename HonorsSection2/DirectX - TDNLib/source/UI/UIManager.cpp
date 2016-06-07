@@ -44,13 +44,17 @@ UIManager::UIManager()
 
 	// タイマー
 	m_timerNum = new Number("DATA/Number/Number.png", 64);
+	m_flameNum = new Number("DATA/Number/Number.png", 64);
 	m_timerPic = new tdn2DObj("DATA/Number/Number.png");
-	m_timeColR = 155; m_timeColG = 255; m_timeColB = 255;
+	m_flamePic = new tdn2DObj("DATA/Number/Number.png");
+	m_flamePic->SetScale(0.8f);
+
+	m_timeColR = 255; m_timeColG = 255; m_timeColB = 255;
 
 	//m_timerPic->SetRGB(55, 255, 255);
 	m_timer = 60 * 2;
 	//m_timer = 0;
-	m_flame = 0;
+	m_flame = 60;
 
 	// 草ゲージ
 	m_graphX = 10, m_graphY = -10;
@@ -82,6 +86,8 @@ UIManager::~UIManager()
 	SAFE_DELETE(m_conboGage);
 	SAFE_DELETE(m_conboGageEnergy);
 	SAFE_DELETE(m_timerNum);
+	SAFE_DELETE(m_flameNum);
+	SAFE_DELETE(m_flamePic);
 	SAFE_DELETE(m_timerPic);
 	SAFE_DELETE(m_graph);
 	SAFE_DELETE(m_graphBack);
@@ -111,7 +117,7 @@ void UIManager::Init()
 
 	m_timer = 60 * 2;
 	//m_timer = 0;
-	m_flame = 0;
+	m_flame = 60;
 
 	// 初期化
 	m_worfHappyCount = 0;
@@ -278,23 +284,45 @@ void UIManager::AddTimer(int timer)
 	EffectMgr.AddEffect(720, 60, EFFECT_TYPE::PLUS);
 }
 
+// 時間上昇！
+void UIManager::AddFlame(int flame)
+{
+	m_flame += flame;
+	//NumberEffect.AddNumber(780, 60, timer, Number_Effect::COLOR_TYPE::YELLOW_GREEN);
+	//EffectMgr.AddEffect(720, 60, EFFECT_TYPE::PLUS);
+}
+
 /***********************/
 //	タイマー系
 /***********************/
 void UIManager::TimerUpdate()
 {
 
+	float rate = (float)m_timer / 20.0f;
+
+	rate = Math::Clamp(rate, 0.0f, 1.0f);
+	
+	m_timeColG = 255 *rate;
+	m_timeColB = 255 *rate;
+
+	m_timeColG = Math::Clamp(m_timeColG, 0, 255);
+	m_timeColB = Math::Clamp(m_timeColB, 0, 255);
 
 	// 色変えるぞー
-	m_timerPic->SetRGB(m_timeColR, m_timeColG, m_timeColB);
+	m_timerPic->SetRGB((int)m_timeColR, (int)m_timeColG, (int)m_timeColB);
+	m_flamePic->SetRGB((int)m_timeColR, (int)m_timeColG, (int)m_timeColB);
+	
+	//if (m_timer)
+	//{
 
+	//}
 
 
 	// カウントダウン
-	m_flame++;
-	if (m_flame >= 60)
+	m_flame--;
+	if (m_flame <= 0)
 	{
-		m_flame = 0;
+		m_flame = 60;
 		m_timer--;	
 	}
 
@@ -309,8 +337,15 @@ void UIManager::TimerRender()
 	m_timerPic->Render(TimerX + 36, 16, 64, 64, 13 * 64, 0, 64, 64);			// :
 	m_timerPic->Render(TimerX + 72, 16, 64, 64, second / 10 * 64, 0, 64, 64);	// 秒(10の位)
 	m_timerPic->Render(TimerX + 108, 16, 64, 64, second % 10 * 64, 0, 64, 64);	// 秒(1の位)
-																				//m_timerNum->Render(600, 10, m_timer);
+				
+																//m_timerNum->Render(600, 10, m_timer);
 
+	const int secondflame= m_flame % 60;
+	//const int minitflame = m_flame % 10;
+	//m_flamePic->Render(TimerX+200, 16, 64, 64, secondflame * 64, 0, 64, 64);
+	m_flamePic->Render(TimerX + 136, 24, 64, 64, 13 * 64, 0, 64, 64);			// :
+	m_flamePic->Render(TimerX + 162, 24, 64, 64, secondflame / 10 * 64, 0, 64, 64);
+	m_flamePic->Render(TimerX + 190, 24, 64, 64, secondflame % 10 * 64, 0, 64, 64);
 }
 
 /***********************/

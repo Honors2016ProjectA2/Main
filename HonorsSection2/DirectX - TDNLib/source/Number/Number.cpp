@@ -96,7 +96,7 @@ void Number::Update()
 	m_pic->Update();
 
 	// F•Ï‚¦‚½‚ë
-	m_pic->SetRGB(m_col.r, m_col.g,m_col.b);
+	//m_pic->SetRGB(m_col.r, m_col.g,m_col.b);
 
 }
 

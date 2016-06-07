@@ -191,6 +191,8 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 						// UI‚É—r‚ªŽ€‚ñ‚¾”
 						UIMNG.AddSheepKillCount();
 
+						UIMNG.AddFlame(-20);// Œ¸“_‚É‚µ‚Ä’¸“_
+
 						// SE‚ÌÄ¶
 						se->Play("DAMAGE", sinIterator->GetCenterPos());
 					}

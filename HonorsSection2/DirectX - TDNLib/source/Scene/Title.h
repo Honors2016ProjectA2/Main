@@ -34,6 +34,7 @@ private:
 
 	// ”wŒi
 	tdn2DObj* m_BG;
+	tdn2DObj* m_BG_flont;
 
 	// ƒ^ƒCƒgƒ‹
 	tdn2DObj* m_titleLogo;
@@ -48,4 +49,6 @@ private:
 	bool m_bKoyaFlag;
 
 	tdnStreamSound *m_pStreamSound;
+
+	tdn2DAnim* m_gameStart;
 };
