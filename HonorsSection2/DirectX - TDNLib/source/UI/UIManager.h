@@ -30,6 +30,7 @@ public:
 
 	// ŠÔã¸
 	void AddTimer(int timer);
+	void AddFlame(int flame);
 
 	// “®‚­Œõ
 	void AddSendPower(char* filename, Vector3 startPos, Vector3 centerPos,
@@ -50,7 +51,7 @@ public:
 	void AddWorfHappyCount(int add = 1) { m_worfHappyCount += add; }
 
 	int GetSheepKillCount() { return m_sheepKillCount; }
-	void AddSheepKillCount(int add = 1) { m_sheepKillCount = add; }
+	void AddSheepKillCount(int add = 1) { m_sheepKillCount += add; }
 
 	int GetScore() { return m_score; }
 	int GetCombo() { return m_combo; }
@@ -100,8 +101,10 @@ private: //•Ï”
 	int m_timer;
 	int m_flame;
 	Number* m_timerNum;
+	Number* m_flameNum;
+	tdn2DObj* m_flamePic;
 	tdn2DObj* m_timerPic;
-	int m_timeColR, m_timeColG, m_timeColB;
+	float m_timeColR, m_timeColG, m_timeColB;
 	//float timer;
 
 	// ‘ƒQ[ƒW

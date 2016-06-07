@@ -12,6 +12,10 @@
 #include "../Sound/SoundManager.h"
 #include "UI\SendPower\SendPower.h"
 
+#include "Scene\Explain.h"
+
+Explain* ex;
+
 End* end;
 
 SendPower* m_send;
@@ -39,8 +43,8 @@ bool Title::Initialize()
 	// イヌ
 	m_bDogFlag = false;
 	m_dog.pic = new tdn2DObj("DATA/CHR/dog.png");
-	m_dog.pos.x = 600.0f;
-	m_dog.pos.y = 550.0f;
+	m_dog.pos.x = 900.0f;
+	m_dog.pos.y = 540.0f;
 	m_dog.anim = 0;
 	m_dog.animFlame = 0;
 
@@ -52,11 +56,21 @@ bool Title::Initialize()
 	m_koya.pos.y = 200.0f;
 
 	// 背景
-	m_BG = new tdn2DObj("Data/GameHaikei.png");
+	m_BG = new tdn2DObj("Data/Title/taitoru.png");
+	m_BG_flont = new tdn2DObj("Data/Title/taitoru2.png");
+
 	m_titleLogo= new tdn2DObj("Data/title/titleLogo.png");
 
 	// BGM
 	m_pStreamSound = bgm->PlayStream("DATA/Sound/BGM/甘味牧場.ogg");
+
+	m_gameStart = new tdn2DAnim("Data/Title/GameStart.png");
+	m_gameStart->OrderShake((60*60)*60, 0, 10, 12);
+
+	m_gameStart->Action();
+
+	ex = new Explain();
+	ex->Initialize();
 
 	return true;
 }
@@ -78,9 +92,11 @@ Title::~Title()
 	Particle2dManager::Release();
 	EffectMgr.Release();
 	//RESULT_UIMNG.Release();
-
+	
+	SAFE_DELETE(m_BG_flont);
 
 	SAFE_DELETE(m_send);
+	SAFE_DELETE(m_gameStart);
 }
 
 bool Title::Update()
@@ -151,6 +167,11 @@ bool Title::Update()
 
 	m_send->Update();
 
+	m_gameStart->Update();
+
+
+	ex->Update();
+
 	return true;
 }
 
@@ -167,10 +188,12 @@ void Title::DogUpdate()
 			m_dog.anim = m_dog.anim % 2;
 		}
 
+		m_dog.pic->SetAlpha(255); // 実体か
 		DogVsSheep();
 	}
 	else
 	{
+		m_dog.pic->SetAlpha(127); //半透明
 		DogVsMouse();
 	}
 }
@@ -244,7 +267,6 @@ void Title::Render()
 	tdnView::Clear();
 	
 	m_BG->Render(0, 0);
-	m_titleLogo->Render(0, -100);
 
 
 	// 小屋後ろ
@@ -257,6 +279,10 @@ void Title::Render()
 	// イヌ
 	m_dog.pic->Render((int)m_dog.pos.x, (int)m_dog.pos.y, 120, 120, m_dog.anim * 120, 0, 120, 120);
 	
+	m_BG_flont->Render(0, 0);
+
+	// タイトル
+	m_titleLogo->Render(0, -150);
 
 
 	// エフェクトマネージャー
@@ -270,7 +296,12 @@ void Title::Render()
 
 	//end->Render();
 
-	m_send->Render();
+	m_send->Render();	
+
+	m_gameStart->Render(840, 400);
+	
+	ex->Render();
+
 
 	//RESULT_UIMNG.Render();
 	//Fade
