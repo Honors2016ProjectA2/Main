@@ -192,6 +192,7 @@ void sceneMain::ExplainUpdate()
 {
 	if( explain->Update() ){
 		state = SCENE::READY;
+		se->Play("ドン", true);
 	}
 	stage->Update();
 }
@@ -367,6 +368,8 @@ void sceneMain::Render()
 void sceneMain::ExplainRender()
 {
 	stage->RenderFront();
+
+	NumberEffect.Render();
 	explain->Render();
 
 }
@@ -374,29 +377,34 @@ void sceneMain::ExplainRender()
 void sceneMain::ReadyRender()
 {
 	stage->RenderFront();
+	NumberEffect.Render();
 	ready->Render();
 }
 
 void sceneMain::MainRender()
 {
-	BokusouMgr->Render();
 	g_pSheepMgr->Render();
 	EnemyMgr->Render();
+	BokusouMgr->Render();
 	NikuMgr->Render();
 
 	// ステージの前描画
 	stage->RenderFront();
+
 	Particle2dManager::Render();
 
 	// デブたち描画
 	g_pSheepMgr->RenderFat();
 	EnemyMgr->RenderFat();
+
+	NumberEffect.Render();
 }
 
 void sceneMain::EndRender()
 {
 	// ステージの前描画
 	stage->RenderFront();
+	NumberEffect.Render();
 	end->Render();
 }
 
@@ -404,6 +412,7 @@ void sceneMain::ResultRender()
 {
 	// ステージの前描画
 	stage->RenderFront();
+	NumberEffect.Render();
 	//result->Render();
 	RESULT_UIMNG.Render();
 }

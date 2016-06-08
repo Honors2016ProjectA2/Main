@@ -113,7 +113,8 @@ void PostEffect::BloomRender()
 {
 	
 	m_bloomScreen->Render(0, 0, shader2D, "post");
-	tdnText::Draw(1000, 600, 0xff00ffff, "パワー%.2f", m_blurValue);
+
+	//tdnText::Draw(1000, 600, 0xff00ffff, "パワー%.2f", m_blurValue);
 
 }
 

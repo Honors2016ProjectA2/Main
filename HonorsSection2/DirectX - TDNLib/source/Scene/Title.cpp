@@ -69,8 +69,8 @@ bool Title::Initialize()
 
 	m_gameStart->Action();
 
-	ex = new Explain();
-	ex->Initialize();
+	//ex = new Explain();
+	//ex->Initialize();
 
 	return true;
 }

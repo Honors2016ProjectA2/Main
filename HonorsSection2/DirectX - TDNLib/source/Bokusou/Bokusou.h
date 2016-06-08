@@ -91,7 +91,7 @@ namespace BokusouMode
 class Bokusou
 {
 public:
-	Bokusou(const Vector2 &pos);
+	Bokusou(const Vector2 &pos, int point);
 	~Bokusou();
 	void Update();
 	void Render();
@@ -109,6 +109,7 @@ public:
 	Vector2 &GetPos(){ return m_pos; }
 	Vector2 &GetCenterPos(){ return m_pos + Vector2(64, 64); }
 	int GetFloor(){ return m_floor; }
+	int GetPoint(){ return m_point; }
 
 	// 消去
 	void Erase(){ m_bErase = true; }
@@ -125,8 +126,26 @@ private:
 	Vector2 m_pos;	// 座標
 	int m_floor;
 	bool m_bErase;
+	int m_point;
 };
 
+
+class BokusouTarget
+{
+public:
+	BokusouTarget();
+	~BokusouTarget();
+	void Update();
+	void Render();
+
+	void ChangePos(const Vector2 &pos);
+private:
+	tdn2DObj *m_pImage, *m_pKusa;
+	Vector2 m_pos;
+	float m_angle;
+	float m_scale;
+	BYTE m_alpha;
+};
 
 
 // 牧草を管理するクラス
@@ -161,6 +180,8 @@ private:
 
 	// リスト
 	std::list<Bokusou*> m_list;
+
+	BokusouTarget *m_pBokusouTarget;
 
 	struct CreatePos
 	{

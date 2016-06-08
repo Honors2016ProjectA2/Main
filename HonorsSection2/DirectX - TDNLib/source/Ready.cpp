@@ -85,8 +85,6 @@ void Ready::Init()
 	x = READY::START_X + READY::SINN::SIZE_HALF;
 	scale = .0f;
 	state = STATE::READY_RUN;
-
-	se->Play("ƒhƒ“", true);
 }
 
 bool Ready::Update()

@@ -9,11 +9,15 @@ namespace{
 MousePointer::MousePointer()
 {
 	pointerObj = new tdn2DObj("DATA/icon.png");
+	m_Effect = new tdn2DAnim("DATA/ring.png");
+	m_Effect->OrderRipple(8, 1.0f, 0.1f);
+
 	ShowCursor(false);
 }
 
 MousePointer::~MousePointer()
 {
+	SAFE_DELETE(m_Effect);
 	SAFE_DELETE(pointerObj);
 }
 
@@ -24,6 +28,14 @@ void MousePointer::Update()
 	posY = (int)rcv.y;
 
 	CheckFloor();
+	
+	if (tdnMouse::GetLeft()==3)
+	{
+		m_Effect->Action();
+	}
+
+	m_Effect->Update();
+
 }
 
 void MousePointer::CheckFloor()
@@ -68,8 +80,15 @@ MousePointer::CLICK MousePointer::GetClickState()
 
 void MousePointer::Render()
 {
+
+	// エフェクト
+	m_Effect->Render(posX - 32, posY - 32);
+
 	//もしポインタの画像を差し替える事があれば、ここに
 	pointerObj->Render(posX, posY, 47, 64, 0,0,47,64);
+
+	
+
 }
 
 void MousePointer::DataReceive(StageManager* stage)
