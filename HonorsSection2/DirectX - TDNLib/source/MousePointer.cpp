@@ -10,11 +10,7 @@ MousePointer::MousePointer()
 {
 	pointerObj = new tdn2DObj("DATA/icon.png");
 	m_Effect = new tdn2DAnim("DATA/ring.png");
-<<<<<<< HEAD
-	m_Effect->OrderRipple(6, 1.0f, 0.1f);
-=======
 	m_Effect->OrderRipple(8, 1.0f, 0.1f);
->>>>>>> a5a03c6019c48ead43ca78677e138484b661766d
 
 	ShowCursor(false);
 }
