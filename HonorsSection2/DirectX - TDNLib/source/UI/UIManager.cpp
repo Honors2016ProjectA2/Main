@@ -50,7 +50,7 @@ UIManager::UIManager()
 	m_timerPic = new tdn2DObj("DATA/Number/Number.png");
 	m_flamePic = new tdn2DObj("DATA/Number/Number.png");
 	m_flamePic->SetScale(0.8f);
-
+	m_tttPic = new tdn2DObj("DATA/UI/Time.png");
 	m_timeColR = 255; m_timeColG = 255; m_timeColB = 255;
 
 	//m_timerPic->SetRGB(55, 255, 255);
@@ -95,6 +95,8 @@ UIManager::~UIManager()
 	SAFE_DELETE(m_graphBack);
 	SAFE_DELETE(m_graphFlont);
 	SAFE_DELETE(m_graphRip);
+
+	SAFE_DELETE(m_tttPic);
 
 	NumberEffect.Release();
 
@@ -256,8 +258,15 @@ void UIManager::AddScore(int score)
 void UIManager::ConboUpdate()
 {
 	// エネルギー
-	m_energyRate -= 0.03f;
+	//m_energyRate -= 0.03f;
+	m_energyRate -= 0.01f;
 
+	// 真面目にコンボの計算
+	if (m_energyRate <= 0.0f)
+	{
+		m_energyRate = 0.0f;
+		m_combo = 0;
+	}
 }
 
 void UIManager::ConboRender()
@@ -332,6 +341,10 @@ void UIManager::TimerUpdate()
 
 void UIManager::TimerRender()
 {
+
+	// タイマー
+	
+
 	const int second = m_timer % 60,
 		minutes = m_timer / 60;
 	const int TimerX = 600;
@@ -348,6 +361,10 @@ void UIManager::TimerRender()
 	m_flamePic->Render(TimerX + 136, 24, 64, 64, 13 * 64, 0, 64, 64);			// :
 	m_flamePic->Render(TimerX + 162, 24, 64, 64, secondflame / 10 * 64, 0, 64, 64);
 	m_flamePic->Render(TimerX + 190, 24, 64, 64, secondflame % 10 * 64, 0, 64, 64);
+
+	//m_tttPic->Render(TimerX - 128, 0);
+
+
 }
 
 /***********************/
@@ -360,7 +377,7 @@ void UIManager::PointUpdate()
 
 void UIManager::PointRender()
 {
-	NumberEffect.Render();
+
 }
 
 

@@ -98,7 +98,7 @@ void Framework::Render()
 	
 #ifdef _DEBUG
 	//	ƒtƒŒ[ƒ€•\¦
-	tdnText::Draw(0, 0, 0xff00ffff, "FPS %d/%d", dwFPS, dwRenderFPS);
+	//tdnText::Draw(0, 0, 0xff00ffff, "FPS %d/%d", dwFPS, dwRenderFPS);
 #endif
 
 

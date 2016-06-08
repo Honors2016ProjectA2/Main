@@ -57,12 +57,16 @@ void BokusouManager::Initialize()
 {
 	m_CreateTimer = 0;
 	m_list.clear();
+
+	m_pBokusouTarget = new BokusouTarget;
+	m_pBokusouTarget->ChangePos(m_CreatePosList[m_NextPoint].pos);
 }
 
 BokusouManager::~BokusouManager()
 {
 	for (auto it : m_list) delete it;
 	m_list.clear();
+	delete m_pBokusouTarget;
 }
 
 void BokusouManager::Release()
@@ -96,10 +100,29 @@ void BokusouManager::Update()
 			Vector3(m_CreatePosList[m_NextPoint].pos.x + 64, m_CreatePosList[m_NextPoint].pos.y + 64, 0), 48, 114514, true);
 
 		// ŽŸ‚Ì¶¬À•W
-		m_NextPoint = tdnRandom::Get(0, m_CreatePosList.size() - 1);
+		while (true)
+		{
+			m_NextPoint = tdnRandom::Get(0, m_CreatePosList.size() - 1);
+			if (m_NextPoint == m_PrevPoint) continue;
 
+			// ‚©‚Ô‚Á‚Ä‚È‚¢ƒtƒƒAŒŸõ
+			bool find(true);
+			for (auto &it : m_list)
+			{
+				if (it->GetPoint() == m_NextPoint)
+				{
+					find = false;
+					break;
+				}
+			}
 
+			if (find) break;
+		}
+
+		m_pBokusouTarget->ChangePos(m_CreatePosList[m_NextPoint].pos);
 	}
+
+	m_pBokusouTarget->Update();
 
 	for (auto it = m_list.begin(); it != m_list.end();)
 	{
@@ -119,6 +142,8 @@ void BokusouManager::Update()
 void BokusouManager::Render()
 {
 	for (auto it : m_list) it->Render();
+
+	m_pBokusouTarget->Render();
 }
 
 void BokusouManager::CreateByBazier()
@@ -127,8 +152,8 @@ void BokusouManager::CreateByBazier()
 	EffectMgr.AddEffect((int)m_CreatePosList[m_PrevPoint].pos.x + 64, (int)m_CreatePosList[m_PrevPoint].pos.y + 64, EFFECT_TYPE::PUT);
 
 	// ¶¬
-	Bokusou *set = new Bokusou(m_CreatePosList[m_PrevPoint].pos);
-	set->SetFloor(m_PrevPoint);
+	Bokusou *set = new Bokusou(m_CreatePosList[m_PrevPoint].pos, m_PrevPoint);
+	set->SetFloor(m_CreatePosList[m_PrevPoint].floor);
 	m_list.push_back(set);
 }
 
@@ -267,7 +292,7 @@ void BokusouMode::Born::Update()
 //===========================================================
 //		‰Šú‰»E‰ð•ú
 //===========================================================
-Bokusou::Bokusou(const Vector2 &pos) :m_pMode(nullptr), m_bErase(false), m_pos(pos), m_pBokusouFlower(new tdn2DObj("DATA/–q‘/–q‘‚ÌŽí.png")), m_pBokusouRoll(new tdn2DObj("DATA/–q‘/–q‘.png"))
+Bokusou::Bokusou(const Vector2 &pos, int point) :m_point(point), m_pMode(nullptr), m_bErase(false), m_pos(pos), m_pBokusouFlower(new tdn2DObj("DATA/–q‘/–q‘‚ÌŽí.png")), m_pBokusouRoll(new tdn2DObj("DATA/–q‘/–q‘.png"))
 {
 	// ƒ‚[ƒh‰Šú‰»(‘o—tˆÇ‚©‚çŠJŽn)
 	this->ChangeMode(BOKUSOU_MODE::HUTABA);
@@ -328,4 +353,36 @@ void Bokusou::ChangeMode(BOKUSOU_MODE m)
 
 	// ƒ‚[ƒh‚ª•Ï‚í‚éŽžŠÔÝ’è
 	m_pMode->SetChangeModeTime(g_ModeChangeTime[(int)m]);
+}
+
+BokusouTarget::BokusouTarget() :m_pImage(new tdn2DObj("DATA/traget.png")), m_pKusa(nullptr), m_pos(Vector2(0, 0)), m_angle(0), m_alpha(0)
+{
+
+}
+
+BokusouTarget::~BokusouTarget()
+{
+	delete m_pImage;
+}
+
+void BokusouTarget::Update()
+{
+	// ƒ¿‰ÁŽZˆ—
+	m_alpha = min(m_alpha + 8, 156);
+	m_pImage->SetARGB(m_alpha, (BYTE)255, (BYTE)255, (BYTE)255);
+
+	// ‰ñ“]ˆ—
+	m_pImage->SetAngle((m_angle -= .05f));
+}
+
+void BokusouTarget::Render()
+{
+	m_pImage->Render((int)m_pos.x, (int)m_pos.y);
+}
+
+void BokusouTarget::ChangePos(const Vector2 &pos)
+{
+	m_pos = pos;
+	m_alpha = 0;
+	m_angle = 0;
 }

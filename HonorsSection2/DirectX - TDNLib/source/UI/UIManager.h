@@ -104,6 +104,7 @@ private: //•Ï”
 	Number* m_flameNum;
 	tdn2DObj* m_flamePic;
 	tdn2DObj* m_timerPic;
+	tdn2DObj* m_tttPic;
 	float m_timeColR, m_timeColG, m_timeColB;
 	//float timer;
 

@@ -184,11 +184,11 @@ public:
 
 	void Update();
 	void Render();
+	void RenderFat();
 
 	void Set_pointers(StageManager *sp, DataManager *dmp){ this->sp = sp, this->dmp = dmp; };
 
 	void Reset(){ for (auto it : m_List){ delete it; }m_List.clear(); }
-	void Start(){ m_CurrentTime = clock(); }
 
 	float FatSheepAccel(){ return m_TextParam.FatSheepAccel; }// 太ってる羊の加速度
 
@@ -215,8 +215,8 @@ private:
 	int m_NextChangeFloor;				// 変わった先のレーン
 	int MakeNextFloor(int current);		// 前回レーンではないレーンをランダムに作成する関数
 
-	// 今経過してる時間(ミリ秒)
-	UINT m_CurrentTime;
+	// 今経過してる時間(フレーム)
+	int m_CreateFrame;
 
 	// テキストからの情報
 	SheepTextParam m_TextParam;
