@@ -88,7 +88,7 @@ void Explain::Text1()
 {
 	ScaleMove();
 	howTo.Open();
-	if( tdnMouse::GetLeft() == 3 ){
+	if( tdnMouse::GetLeft() == 3 || KeyBoardTRG(KB_ENTER)){
 		howTo.openFlg = false;
 		howTo.closeFlg = true;
 		se->Play("CLICK");
@@ -105,7 +105,7 @@ void Explain::Text2()
 {
 	ScaleMove();
 	game.Open();
-	if( tdnMouse::GetLeft() == 3 ){
+	if (tdnMouse::GetLeft() == 3 || KeyBoardTRG(KB_ENTER)){
 		game.openFlg = false;
 		game.closeFlg = true;
 		se->Play("CLICK");

@@ -111,6 +111,9 @@ private:
 	std::vector<CurvePoint::Dog*> m_Doglists[STAGE_MAX];
 	//std::vector<CurvePoint::Fire*> m_Firelists[STAGE_MAX];
 
+	// 犬レーン
+	void SetDogFloor(int floor);
+
 	int m_DogStock;		// 犬のストック
 
 	//------ method --------
@@ -143,9 +146,6 @@ public:
 	Vector2 GetWarningPos(int floorIdx, bool IsRight);
 	Vector2 GetPopupPos(int floorIdx, bool IsRight);
 	Vector2 GetBalloonPos(int floorIdx);
-
-	bool m_FireSelect;	// 炎設置かどうか
-	int m_FireStock;	// 炎のストック
 };
 
 // 最短フロア検索関数

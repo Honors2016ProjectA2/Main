@@ -194,7 +194,7 @@ void sceneMain::ExplainUpdate()
 		state = SCENE::READY;
 		se->Play("ƒhƒ“", true);
 	}
-	stage->Update();
+	//stage->Update();
 }
 
 void sceneMain::ReadyEvent()
@@ -202,8 +202,9 @@ void sceneMain::ReadyEvent()
 	if( ready->Update() ){
 		state = SCENE::MAIN;
 		//g_pSheepMgr->Start();
+		stage->Reset();
 	}
-	stage->Update();
+	//stage->Update();
 }
 
 void sceneMain::MainUpdate()

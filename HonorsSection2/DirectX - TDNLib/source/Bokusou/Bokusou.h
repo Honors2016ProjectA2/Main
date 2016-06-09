@@ -140,7 +140,10 @@ public:
 
 	void ChangePos(const Vector2 &pos);
 private:
-	tdn2DObj *m_pImage, *m_pKusa;
+	tdn2DAnim *m_pTargetAnim;
+	int m_AnimFrame;
+	const int ANIM_FRAME;
+	tdn2DObj *m_pKusa;
 	Vector2 m_pos;
 	float m_angle;
 	float m_scale;

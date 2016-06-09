@@ -318,7 +318,7 @@ SheepManager::SheepManager() :sp(0), m_CreateFrame(0)
 {
 	m_pBoneImage = new tdn2DObj("DATA/CHR/hone_motion.png");
 
-	g_CreateSheepFloor = 0;	// 初期羊生成フロア
+	g_CreateSheepFloor = 2;	// 初期羊生成フロア
 	// 次のランダムフロア決定
 	m_NextChangeFloor = MakeNextFloor(g_CreateSheepFloor);
 

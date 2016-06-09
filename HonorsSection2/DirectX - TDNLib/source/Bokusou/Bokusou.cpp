@@ -355,29 +355,42 @@ void Bokusou::ChangeMode(BOKUSOU_MODE m)
 	m_pMode->SetChangeModeTime(g_ModeChangeTime[(int)m]);
 }
 
-BokusouTarget::BokusouTarget() :m_pImage(new tdn2DObj("DATA/traget.png")), m_pKusa(nullptr), m_pos(Vector2(0, 0)), m_angle(0), m_alpha(0)
+BokusouTarget::BokusouTarget() :m_pKusa(new tdn2DObj("DATA/–q‘/–q‘‚ÌŽí.png")), m_pos(Vector2(0, 0)), m_angle(0), m_alpha(0), m_AnimFrame(0),
+ANIM_FRAME(30)
 {
-
+	m_pTargetAnim = new tdn2DAnim("DATA/traget.png");
+	m_pTargetAnim->OrderJump(ANIM_FRAME, .65f, .2f);
+	m_pTargetAnim->Action();
 }
 
 BokusouTarget::~BokusouTarget()
 {
-	delete m_pImage;
+	delete m_pKusa;
+	delete m_pTargetAnim;
 }
 
 void BokusouTarget::Update()
 {
-	// ƒ¿‰ÁŽZˆ—
-	m_alpha = min(m_alpha + 8, 156);
-	m_pImage->SetARGB(m_alpha, (BYTE)255, (BYTE)255, (BYTE)255);
+	// ‚­‚³ƒ¿‰ÁŽZˆ—
+	m_alpha = min(m_alpha + 8, 128);
+	m_pKusa->SetARGB(m_alpha, (BYTE)255, (BYTE)255, (BYTE)255);
 
-	// ‰ñ“]ˆ—
-	m_pImage->SetAngle((m_angle -= .05f));
+	// ƒ^[ƒQƒbƒg‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
+	m_pTargetAnim->Update();
+	if (++m_AnimFrame >= ANIM_FRAME * 2)
+	{
+		m_AnimFrame = 0;
+		m_pTargetAnim->Action();
+	}
 }
 
 void BokusouTarget::Render()
 {
-	m_pImage->Render((int)m_pos.x, (int)m_pos.y);
+	// ‘
+	m_pKusa->Render((int)m_pos.x, (int)m_pos.y, 128, 128, 0, 0, 128, 128);
+	
+	// ƒ^[ƒQƒbƒg
+	m_pTargetAnim->Render((int)m_pos.x - 6, (int)m_pos.y);
 }
 
 void BokusouTarget::ChangePos(const Vector2 &pos)

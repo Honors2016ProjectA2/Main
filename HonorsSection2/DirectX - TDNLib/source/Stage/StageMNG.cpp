@@ -50,7 +50,7 @@ int FindFloor(float posY)
 //------- constructor,destructor ---------
 
 StageManager::StageManager() :m_pDogImage(new tdn2DObj("DATA/CHR/dog.png")), m_pFireImage(new tdn2DObj("DATA/巻き/炎の種.png")),
-m_FireSelect(false), m_FireAnimFrame(0), m_FireAnimPanel(0), m_ChangeScoreTime(0)
+m_FireAnimFrame(0), m_FireAnimPanel(0), m_ChangeScoreTime(0)
 {
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
@@ -115,8 +115,6 @@ m_FireSelect(false), m_FireAnimFrame(0), m_FireAnimPanel(0), m_ChangeScoreTime(0
 	//ifs >> g_FireModeChangeTime[(int)CurvePoint::FIRE_MODE::MOETA];
 	//g_FireModeChangeTime[(int)CurvePoint::FIRE_MODE::ENABLE];				// 完全燃焼モード
 	//ifs >> g_FireModeChangeTime[(int)CurvePoint::FIRE_MODE::HITED];
-
-	m_FireStock = 1;
 
 	// 犬ストック個数読み込み
 	ifs >> skip;
@@ -193,21 +191,13 @@ void StageManager::Init()
 	//stageImage[0]   = new tdn2DObj("DATA/Stage/Game Stage01.png");
 	//stageImage[1]   = new tdn2DObj("DATA/Stage/Game Stage02.png");
 	//stageImage[2]   = new tdn2DObj("DATA/Stage/Game Stage03.png");
-	Reset();
+	//Reset();
 }
 
 void StageManager::Reset()
 {
-	// stage all clear
-	//for (int i = 0; i < STAGE_MAX; i++)
-	//{
-	//	SAFE_DELETE(stage[i]);
-	//}
-
-	// stage set
-	//floor = 0;
-	//stage[floor] = new Stage;
-	//stage[floor]->Init(stageImage[floor], Vector2((float)0, (float)STAGE_POS_Y[floor]), Stage::StageState::NONE);
+	// 下のレーンの犬有効
+	SetDogFloor(2);
 }
 
 void StageManager::Update()
@@ -243,11 +233,9 @@ void StageManager::Update()
 
 				// 犬配置リセット
 				m_DogStock = 2;
-				FOR(STAGE_MAX)for (auto &it : m_Doglists[i])
-				{
-					it->bEnable = true;
-					if (it->IsOpening())it->Change();
-				}
+
+				// 犬レーン変更
+				SetDogFloor(floor);
 			}
 		}
 	}
@@ -319,7 +307,7 @@ void StageManager::Update()
 					else
 					{
 						// ストック残ってたら
-						if (m_DogStock > 0 && !m_FireSelect)
+						if (m_DogStock > 0)
 						{
 							EffectMgr.AddEffect((int)it->GetPos().x+64, (int)it->GetPos().y+64,EFFECT_TYPE::DOG_EFFECT);
 							se->Play("犬", it->GetPos());
@@ -363,6 +351,7 @@ void StageManager::Update()
 					// 真ん中の右以外無効化
 					m_Doglists[0][1]->bEnable = false;
 					m_Doglists[1][0]->bEnable = false;
+					m_Doglists[1][1]->bEnable = true;
 					m_Doglists[2][0]->bEnable = false;
 					m_Doglists[2][1]->bEnable = false;
 				}
@@ -373,6 +362,7 @@ void StageManager::Update()
 					// 真ん中の右以外無効化
 					m_Doglists[0][0]->bEnable = false;
 					m_Doglists[1][0]->bEnable = false;
+					m_Doglists[1][1]->bEnable = true;
 					m_Doglists[2][0]->bEnable = false;
 					m_Doglists[2][1]->bEnable = false;
 				}
@@ -382,6 +372,7 @@ void StageManager::Update()
 				{
 					// 上の右以外無効化
 					m_Doglists[0][0]->bEnable = false;
+					m_Doglists[0][1]->bEnable = true;
 					m_Doglists[1][1]->bEnable = false;
 					m_Doglists[2][0]->bEnable = false;
 					m_Doglists[2][1]->bEnable = false;
@@ -404,6 +395,8 @@ void StageManager::Update()
 					// 真ん中レーン以外無効化
 					m_Doglists[0][0]->bEnable = false;
 					m_Doglists[0][1]->bEnable = false;
+					m_Doglists[1][0]->bEnable = true;
+					m_Doglists[1][1]->bEnable = true;
 					m_Doglists[2][1]->bEnable = false;
 				}
 
@@ -464,8 +457,7 @@ void StageManager::Update()
 			// 全員回収してる状態だったら
 			else
 			{
-				// 全員有効化
-				FOR(STAGE_MAX) for (auto it : m_Doglists[i]) it->bEnable = true;
+				SetDogFloor(g_pSheepMgr->GetOpenFloor());
 			}
 		}
 
@@ -530,6 +522,42 @@ void StageManager::ChangeScoreLane()
 	// ランダムにレーンを入れ替える
 	Swap(&m_AddScore[0], &m_AddScore[1]);
 	Swap(&m_AddScore[2], (tdnRandom::Get(0, 1)) ? &m_AddScore[0] : &m_AddScore[1]);
+}
+
+void StageManager::SetDogFloor(int floor)
+{
+	FOR(STAGE_MAX)for (auto &it : m_Doglists[i])
+	{
+		if (it->IsOpening())it->Change();
+	}
+
+	if (floor == 0)
+	{
+		m_Doglists[0][0]->bEnable = true;
+		m_Doglists[0][1]->bEnable = true;
+		m_Doglists[1][0]->bEnable = false;
+		m_Doglists[1][1]->bEnable = false;
+		m_Doglists[2][0]->bEnable = false;
+		m_Doglists[2][1]->bEnable = false;
+	}
+	else if (floor == 1)
+	{
+		m_Doglists[0][0]->bEnable = false;
+		m_Doglists[0][1]->bEnable = false;
+		m_Doglists[1][0]->bEnable = true;
+		m_Doglists[1][1]->bEnable = true;
+		m_Doglists[2][0]->bEnable = false;
+		m_Doglists[2][1]->bEnable = false;
+	}
+	else if (floor == 2)
+	{
+		m_Doglists[0][0]->bEnable = false;
+		m_Doglists[0][1]->bEnable = false;
+		m_Doglists[1][0]->bEnable = false;
+		m_Doglists[1][1]->bEnable = false;
+		m_Doglists[2][0]->bEnable = true;
+		m_Doglists[2][1]->bEnable = true;
+	}
 }
 
 void StageManager::RenderBack()
