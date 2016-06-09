@@ -6,10 +6,10 @@
 /********************/
 //	エフェクトマネージャー
 /********************/
-	enum class EFFECT_TYPE 
-	{
-		PLUS, HIT, PUT, NOTICE, INEFFECT, INEFFECT_MINI, DOG_EFFECT,
-		BURN, ClEAR, DON, PUSH, DELICIOUS, EAT, PERFECT, GREAT, BAD,HAPPY
+enum class EFFECT_TYPE
+{
+	PLUS, HIT, PUT, NOTICE, INEFFECT, INEFFECT_MINI, DOG_EFFECT,
+	BURN, ClEAR, DON, PUSH, DELICIOUS, EAT, PERFECT, GREAT, BAD, HAPPY, DARK_NOTICE
 	};
 class EffectManager
 {

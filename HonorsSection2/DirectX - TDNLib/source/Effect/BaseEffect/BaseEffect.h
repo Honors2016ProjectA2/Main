@@ -362,3 +362,22 @@ public:
 
 private:
 };
+
+
+class DarkNoticeEffect :public BaseEffect
+{
+public:
+	DarkNoticeEffect()
+	{
+		m_picSize = 256;
+		m_pic = new AnimationPanel("Data/Effect/Darkbikkuri.png", 256, 256, 15, 2, 4, true, 60);
+		state = RS::COPY;
+	};
+	~DarkNoticeEffect() {};
+
+	void Update() { BaseEffect::Update(); };
+	void Render() { BaseEffect::Render(); };
+	void Action(int x = 0, int y = 0) { BaseEffect::Action(x, y); };
+
+private:
+};

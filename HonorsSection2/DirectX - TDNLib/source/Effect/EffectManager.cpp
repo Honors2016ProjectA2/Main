@@ -150,6 +150,9 @@ void EffectManager::AddEffect(int x, int y, EFFECT_TYPE type)
 	case EFFECT_TYPE::HAPPY:
 		data = new HappyEffect();
 		break;
+	case EFFECT_TYPE::DARK_NOTICE:
+		data = new DarkNoticeEffect();
+		break;
 	default:
 		break;
 	}

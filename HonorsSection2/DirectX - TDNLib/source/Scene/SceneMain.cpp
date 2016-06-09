@@ -43,7 +43,7 @@ namespace{
 bool sceneMain::Initialize()
 {
 	UIMNG.Init();
-	UIMNG.SetTimer(120);
+	UIMNG.SetTimer(2);
 	
 
 	EffectMgr;
@@ -184,7 +184,7 @@ void sceneMain::Init()
 	FadeControl::Setting(FadeControl::MODE::WHITE_IN, 30.0f);
 
 	// ここのかっこを0にするとレディーゴーの処理が出る(デバッグの時短でレディーゴーを無しにしてる)
-	state = (0) ? SCENE::MAIN : SCENE::EXPLAIN;
+	state = (1) ? SCENE::MAIN : SCENE::EXPLAIN;
 	DataDelivery();
 }
 
@@ -250,7 +250,7 @@ void sceneMain::MainUpdate()
 
 		state = SCENE::END;
 
-		UIMNG.SetTimer(120);
+		//UIMNG.SetTimer(120);
 	}
 
 	if (KeyBoard(KB_SPACE) == 3)
