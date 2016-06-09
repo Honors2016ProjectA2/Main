@@ -196,8 +196,8 @@ void StageManager::Init()
 
 void StageManager::Reset()
 {
-	// 下のレーンの犬有効
-	SetDogFloor(2);
+	// 羊生成するフロア
+	SetDogFloor(g_CreateSheepFloor);
 }
 
 void StageManager::Update()
@@ -217,25 +217,37 @@ void StageManager::Update()
 		// マウスが左端
 		if (mPos.x < 150)
 		{
-			const int floor = FindFloor(mPos.y);
-
-			// リキャストOK
-			if (stage[floor]->GetRecastTime() <= 0)
+			int floor = -1;
+			for (int i = 0; i < STAGE_MAX; i++)
 			{
-				// 羊生成フロア変える
-				g_CreateSheepFloor = floor;
+				int y = (int)mPos.y;
+				if (y > STAGE_POS_Y[i] && y < STAGE_POS_Y[i] + LANE_WIDTH)
+				{
+					floor = i;
+					break;
+				}
+			}
 
-				// リキャスト設定
-				stage[floor]->SetRecastTime(m_RECAST_TIME);
+			if (floor != -1)
+			{
+				// リキャストOK
+				if (stage[floor]->GetRecastTime() <= 0)
+				{
+					// 羊生成フロア変える
+					g_CreateSheepFloor = floor;
 
-				// SEの再生
-				se->Play("ドア", Vector2(128, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2));
+					// リキャスト設定
+					stage[floor]->SetRecastTime(m_RECAST_TIME);
 
-				// 犬配置リセット
-				m_DogStock = 2;
+					// SEの再生
+					se->Play("ドア", Vector2(128, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2));
 
-				// 犬レーン変更
-				SetDogFloor(floor);
+					// 犬配置リセット
+					m_DogStock = 2;
+
+					// 犬レーン変更
+					SetDogFloor(floor);
+				}
 			}
 		}
 	}
@@ -616,9 +628,9 @@ void StageManager::RenderFront()
 
 	// 数字描画
 	// 入ったら加算されるスコア
-	tdnText::Draw(1200, STAGE_POS_Y[0] + 0, 0xffffffff, "%d", m_AddScore[0]);
-	tdnText::Draw(1200, STAGE_POS_Y[1] + 0, 0xffffffff, "%d", m_AddScore[1]);
-	tdnText::Draw(1200, STAGE_POS_Y[2] + 270, 0xffffffff, "%d", m_AddScore[2]);
+	//tdnText::Draw(1200, STAGE_POS_Y[0] + 0, 0xffffffff, "%d", m_AddScore[0]);
+	//tdnText::Draw(1200, STAGE_POS_Y[1] + 0, 0xffffffff, "%d", m_AddScore[1]);
+	//tdnText::Draw(1200, STAGE_POS_Y[2] + 270, 0xffffffff, "%d", m_AddScore[2]);
 }
 
 void StageManager::Reflection(DataManager* data, MousePointer* mouse)

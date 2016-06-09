@@ -118,8 +118,6 @@ void BokusouManager::Update()
 
 			if (find) break;
 		}
-
-		m_pBokusouTarget->ChangePos(m_CreatePosList[m_NextPoint].pos);
 	}
 
 	m_pBokusouTarget->Update();
@@ -155,6 +153,9 @@ void BokusouManager::CreateByBazier()
 	Bokusou *set = new Bokusou(m_CreatePosList[m_PrevPoint].pos, m_PrevPoint);
 	set->SetFloor(m_CreatePosList[m_PrevPoint].floor);
 	m_list.push_back(set);
+
+	// ターゲットの位置変更
+	m_pBokusouTarget->ChangePos(m_CreatePosList[m_NextPoint].pos);
 }
 
 

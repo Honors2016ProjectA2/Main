@@ -43,7 +43,7 @@ namespace{
 bool sceneMain::Initialize()
 {
 	UIMNG.Init();
-	UIMNG.SetTimer(2);
+	UIMNG.SetTimer(120);
 	
 
 	EffectMgr;
@@ -93,6 +93,9 @@ bool sceneMain::Initialize()
 
 	// パーティクル初期化
 	Particle2dManager::Initialize("DATA/Effect/particle.png", 5000, 4, 4);
+
+	// 全部のドア閉まってる！！
+	g_CreateSheepFloor = -1;
 
 	return true;
 }
@@ -184,7 +187,7 @@ void sceneMain::Init()
 	FadeControl::Setting(FadeControl::MODE::WHITE_IN, 30.0f);
 
 	// ここのかっこを0にするとレディーゴーの処理が出る(デバッグの時短でレディーゴーを無しにしてる)
-	state = (1) ? SCENE::MAIN : SCENE::EXPLAIN;
+	state = (0) ? SCENE::MAIN : SCENE::EXPLAIN;
 	DataDelivery();
 }
 
@@ -250,7 +253,7 @@ void sceneMain::MainUpdate()
 
 		state = SCENE::END;
 
-		//UIMNG.SetTimer(120);
+		UIMNG.SetTimer(120);
 	}
 
 	if (KeyBoard(KB_SPACE) == 3)

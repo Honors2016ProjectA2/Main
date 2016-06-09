@@ -8,6 +8,7 @@
 #include "../Niku/Niku.h"
 #include "../Sound/SoundManager.h"
 #include "../particle_2d/particle_2d.h"
+#include "../UI/UIManager.h"
 
 //**************************************************
 //    基底
@@ -20,8 +21,16 @@ void Enemy::Base::MoveUpdate()
 //**************************************************
 //    狼
 //**************************************************
-Enemy::Wolf::Wolf(tdn2DObj *image, tdn2DObj *pniku, tdn2DObj *pHone, int floor, float speed, int nikustopTime) : Base(image, floor, speed), m_pNikukutteru(pniku), m_EAT_NIKU_TIMER(nikustopTime), m_OrgSpeed(speed), m_pHoneImage(pHone), m_seID(TDNSOUND_PLAY_NONE), m_alpha(255)
+Enemy::Wolf::Wolf(tdn2DObj *image, tdn2DObj *pniku, tdn2DObj *pHone, int floor, float speed, int nikustopTime, bool unlimited) :
+Base(image, floor, speed), m_pNikukutteru(pniku), m_EAT_NIKU_TIMER(nikustopTime), m_OrgSpeed(speed), m_pHoneImage(pHone), m_seID(TDNSOUND_PLAY_NONE), m_alpha(255),
+m_bUNLIMITED(unlimited), m_ZanzouFrame(0)
 {
+	// アンリミ
+	if (unlimited)
+	{
+		m_OrgSpeed *= 2;	// 速度2倍
+	}
+
 	// イニシャライザ書けない
 	W = 120;
 	H = 120;
@@ -39,6 +48,11 @@ Enemy::Wolf::Wolf(tdn2DObj *image, tdn2DObj *pniku, tdn2DObj *pHone, int floor, 
 	ChangeMode(MODE::RUN);
 }
 
+Enemy::Wolf::~Wolf()
+{
+	for (auto it : m_ZanzouList) delete it;
+}
+
 void Enemy::Wolf::Update()
 {
 	// モード関数実行
@@ -46,6 +60,31 @@ void Enemy::Wolf::Update()
 
 	// 座標更新
 	Enemy::Base::MoveUpdate();
+
+	// アンリミ
+	if (m_bUNLIMITED)
+	{
+		// 残像
+		if (++m_ZanzouFrame > 2)
+		{
+			m_ZanzouFrame = 0;
+			m_ZanzouList.push_back(new Zanzou(m_pos, Vector2((float)((m_AnimePanel % 4) * W), (float)((m_AnimePanel / 4) * H))));
+		}
+
+		// パーティクル
+		Particle2dManager::Effect_Unlimited(m_pos);
+
+		// 残像更新
+		for (auto it = m_ZanzouList.begin(); it != m_ZanzouList.end();)
+		{
+			if ((*it)->Update())
+			{
+				delete (*it);
+				it = m_ZanzouList.erase(it);
+			}
+			else it++;
+		}
+	}
 }
 
 void Enemy::Wolf::Run()
@@ -122,6 +161,10 @@ void Enemy::Wolf::Render()
 		pImage = m_pNikukutteru;
 		break;
 	}
+
+	// アンリミ残像の描画
+	if(m_bUNLIMITED) for (auto& it : m_ZanzouList) it->Render(pImage);
+
 	pImage->SetARGB(m_alpha, (BYTE)255, (BYTE)255, (BYTE)255);
 	pImage->Render((int)m_pos.x, (int)m_pos.y, W, H, (m_AnimePanel % 4) * W, (m_AnimePanel / 4) * H, W, H);
 }
@@ -231,6 +274,17 @@ EnemyManager::EnemyManager() :m_CreateTimer(0)
 	ifs >> skip;
 	ifs >> m_NikuTime;
 
+	// 時短
+	ifs >> skip;
+	while (!ifs.eof())
+	{
+		ChangeSpeedLine *set = new ChangeSpeedLine;
+		ifs >> set->line;
+		ifs >> set->speed;
+		ifs >> set->U_percent;
+		m_ChangeSpeedLineList.push_back(set);
+	}
+
 	m_NextFloor = tdnRandom::Get(0, 2);
 }
 
@@ -239,8 +293,17 @@ void EnemyManager::Initialize()
 	// 生成時間初期化
 	m_CreateTimer = 0;
 
+	// 生成間隔(1.0倍)
+	m_CreateSpeed = m_ChangeSpeedLineList[m_ChangeSpeedLineList.size() - 1]->speed;
+	// アンリミパーセント
+	m_UnlimitedPercent = m_ChangeSpeedLineList[m_ChangeSpeedLineList.size() - 1]->U_percent;
+	// アンリミ率でアンリミフラグけってい
+	m_bUnlimitedCreate = (tdnRandom::Get(0, 99) < m_UnlimitedPercent);
+
+
 	// 敵画像の読み込み
 	m_pImages[(int)ENEMY_TYPE::WOLF] = new tdn2DObj("DATA/CHR/「！」左移動.png");
+	m_pImages[(int)ENEMY_TYPE::UNLIMITED_WOLF] = new tdn2DObj("DATA/CHR/unlimited.png");
 	m_pNikukutteru = new tdn2DObj("DATA/CHR/kuruma back.png");
 	m_pHoneImage = new tdn2DObj("DATA/CHR/hone_motion.png");
 	m_pFatWolfImages[(int)SHEEP_TYPE::NOMAL] = new tdn2DObj("DATA/CHR/sinnnyou tubureru.png");
@@ -258,6 +321,7 @@ void EnemyManager::Release()
 	delete m_pNikukutteru;
 	delete m_pHoneImage;
 	FOR((int)SHEEP_TYPE::MAX) delete m_pFatWolfImages[i];
+	for (auto it : m_ChangeSpeedLineList)delete it;
 }
 
 //**************************************************
@@ -269,7 +333,7 @@ void EnemyManager::Create(int floor, ENEMY_TYPE type)
 	switch (type)
 	{
 	case ENEMY_TYPE::WOLF:
-		set = new Enemy::Wolf(m_pImages[(int)ENEMY_TYPE::WOLF], m_pNikukutteru, m_pHoneImage, floor, m_EnemySpeed[(int)ENEMY_TYPE::WOLF], m_NikuTime);
+		set = new Enemy::Wolf(m_pImages[(m_bUnlimitedCreate) ? (int)ENEMY_TYPE::UNLIMITED_WOLF : (int)ENEMY_TYPE::WOLF], m_pNikukutteru, m_pHoneImage, floor, m_EnemySpeed[(int)ENEMY_TYPE::WOLF], m_NikuTime, m_bUnlimitedCreate);
 		break;
 	default:
 		assert(0);	// 例外処理
@@ -281,7 +345,7 @@ void EnemyManager::Create(int floor, ENEMY_TYPE type)
 void EnemyManager::Update()
 {
 	// 敵生成タイマー
-	if (++m_CreateTimer > m_CREATETIME)
+	if (++m_CreateTimer > (int)(m_CREATETIME * m_CreateSpeed))
 	{
 		m_CreateTimer = 0;
 		Create(m_NextFloor, ENEMY_TYPE::WOLF);
@@ -289,15 +353,18 @@ void EnemyManager::Update()
 		// 次のフロア作成
 		m_NextFloor = tdnRandom::Get(0, 2);
 	}
-	else if (m_CREATETIME - m_CreateTimer == 80)
+	else if ((int)(m_CREATETIME * m_CreateSpeed) - m_CreateTimer == 80)
 	{
+		// アンリミ率でアンリミフラグけってい
+		m_bUnlimitedCreate = (tdnRandom::Get(0, 99) < m_UnlimitedPercent);
+
 		// 肉センサー
 		Niku *pNiku = NikuMgr->GetNiku();
 		if (pNiku)
 		{
-			if(pNiku->isSeted())m_NextFloor = pNiku->GetFloor();
+			if (pNiku->isSeted())m_NextFloor = pNiku->GetFloor();
 		}
-		
+
 		// 肉なかったら次はデブ羊フロア
 		else if (!g_pSheepMgr->GetFatList()->empty())
 		{
@@ -305,7 +372,7 @@ void EnemyManager::Update()
 		}
 
 		// ポップアップ
-		EffectMgr.AddEffect(1100, STAGE_POS_Y[m_NextFloor] + LANE_WIDTH / 2, EFFECT_TYPE::NOTICE);
+		EffectMgr.AddEffect(1100, STAGE_POS_Y[m_NextFloor] + LANE_WIDTH / 2, (m_bUnlimitedCreate) ? EFFECT_TYPE::DARK_NOTICE : EFFECT_TYPE::NOTICE);
 
 		// SEの再生
 		se->Play("!", Vector2(1100, (float)STAGE_POS_Y[m_NextFloor] + LANE_WIDTH / 2));
@@ -319,7 +386,7 @@ void EnemyManager::Update()
 		if ((*it)->EraseOK())
 		{
 			delete (*it);
-			it = m_list.erase(it); 
+			it = m_list.erase(it);
 		}
 		else it++;
 	}
@@ -367,4 +434,26 @@ void EnemyManager::CreateFatWolf(Enemy::Wolf *wolf, FAT_WOLF_TYPE type, SHEEP_TY
 	FatWolf *set = new FatWolf(m_pFatWolfImages[(int)SheepType], Vector2(wolf->GetPos().x - 60, (float)STAGE_POS_Y[wolf->GetFloor()] - 30), type, SheepType);// 太った狼生成
 	set->SetFloor(wolf->GetFloor());	// フロア設定
 	m_FatList.push_back(set);			// リストに突っ込む
+}
+
+void EnemyManager::CheckChangeSpeed(int WolfKillCount)
+{
+	// 敵生成スピード上げ
+	for (auto& it : m_ChangeSpeedLineList)
+	{
+		// ライン超えてたら
+		if (it->line < WolfKillCount)
+		{
+			// 生成間隔
+			m_CreateSpeed = it->speed;
+
+			// アンリミパーセント
+			m_UnlimitedPercent = it->U_percent;
+			break;
+
+			//// リストから消去
+			//delete (*it);
+			//m_ChangeSpeedLineList.erase(it);
+		}
+	}
 }

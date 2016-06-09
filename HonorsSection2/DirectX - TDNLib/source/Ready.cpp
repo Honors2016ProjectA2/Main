@@ -1,5 +1,6 @@
 #include	"Ready.h"
 #include	"Sound/SoundManager.h"
+#include	"Sheep/Sheep.h"
 
 namespace{
 	namespace STATE{
@@ -108,6 +109,9 @@ void Ready::ReadyRun()
 		state = STATE::GO_BIGGER;
 		se->Stop("ドン", 0);
 		m_animeGO->Action();
+
+		// ピー
+		se->Play("GO");
 	}
 }
 
@@ -131,7 +135,6 @@ void Ready::RunAnimation()
 // GO!
 void Ready::GoBigger()
 {
-	se->Play("GO");
 	GoAnimation();
 
 	scale += GO::SCALE_SPEED;
@@ -143,6 +146,19 @@ void Ready::GoBigger()
 	if( scale >= GO::SCALE_MAX ){
 		state = STATE::RET_TRUE;
 		//bgm->Stop("GO");
+	}
+
+	// ドア全部閉まってたら
+	if (g_CreateSheepFloor == -1)
+	{
+		if (scale >= GO::SCALE_MAX / 2.0f) // スケール3/4ぐらい
+		{
+			// ランダムにドア開ける！！
+			g_CreateSheepFloor = tdnRandom::Get(0, 3);
+
+			// SE
+			se->Play("ドア", Vector2(0, 150 + (g_CreateSheepFloor * 170.0f)));
+		}
 	}
 }
 

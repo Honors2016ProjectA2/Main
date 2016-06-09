@@ -110,6 +110,7 @@ public:
 	static void Effect_RealSheep(const Vector2 &pos);		// リアル羊のオーラ
 	static void Effect_Hinoko(const Vector2 &pos);			// 火の粉
 	static void Effect_FatSmoke(const Vector2 &pos, float scale = 96, int LoopCount = 2);		// デブ煙
+	static void Effect_Unlimited(const Vector2 &pos);		// リアル羊のオーラ
 private:
 	static Particle_2d *m_pParticle2d;
 };

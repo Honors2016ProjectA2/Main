@@ -4,6 +4,7 @@
 enum class ENEMY_TYPE
 {
 	WOLF,	// 狼
+	UNLIMITED_WOLF,
 	MAX
 };
 
@@ -55,7 +56,8 @@ namespace Enemy
 	class Wolf : public Base
 	{
 	public:
-		Wolf(tdn2DObj *image, tdn2DObj *pniku, tdn2DObj *pHone, int floor, float speed, int nikustopTime);
+		Wolf(tdn2DObj *image, tdn2DObj *pniku, tdn2DObj *pHone, int floor, float speed, int nikustopTime, bool unlimited);
+		~Wolf();
 		void Update();
 		void Render();
 
@@ -77,6 +79,22 @@ namespace Enemy
 		SHEEP_TYPE m_SheepType;
 		BYTE m_alpha;
 		int m_seID;		// 肉食う用
+
+		bool m_bUNLIMITED;		// アンリmi狼
+		struct Zanzou
+		{
+			Vector2 pos;	// 座標
+			Vector2 src;	// 画像取ってくる
+			BYTE alpha;
+			Zanzou(const Vector2 &pos, const Vector2 &src) :pos(pos), src(src), alpha(255){}
+			bool Update()
+			{
+				return ((alpha = max(alpha - 16, 0)) == 0); 
+			}
+			void Render(tdn2DObj *pImage){ pImage->SetARGB(alpha, (BYTE)255, (BYTE)255, (BYTE)255); pImage->Render((int)pos.x, (int)pos.y, 120, 120, (int)src.x, (int)src.y, 120, 120, RS::COPY); }
+		};
+		std::list<Zanzou*> m_ZanzouList;
+		int m_ZanzouFrame;
 
 		void Run();
 		void Niku();
@@ -124,6 +142,9 @@ public:
 	// 肉食い終わったら呼び出す
 	void CreateFatWolf(Enemy::Wolf *wolf, FAT_WOLF_TYPE type, SHEEP_TYPE SheepType);
 
+	// 狼倒したら予備だす
+	void CheckChangeSpeed(int WolfKillCount);
+
 private:
 
 	// シングルトンの作法
@@ -148,6 +169,17 @@ private:
 	int m_CreateTimer;					// 敵生成タイマー
 	int m_CREATETIME;					// 生成される時間
 	int m_NextFloor;
+	float m_CreateSpeed;	// 0～1の値。出現間隔
+
+	struct ChangeSpeedLine
+	{
+		int line;
+		float speed;
+		int U_percent;	// アンリミパーセント
+	};
+	int m_UnlimitedPercent;	// アンリミパーセント
+	bool m_bUnlimitedCreate;
+	std::vector<ChangeSpeedLine*> m_ChangeSpeedLineList;	// 時間リスト
 
 	// 肉食って太った狼リスト
 	std::list<FatWolf*> m_FatList;
