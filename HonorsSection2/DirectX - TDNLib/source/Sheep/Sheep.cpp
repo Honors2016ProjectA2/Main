@@ -223,10 +223,21 @@ void Sheep::Base::Render()
 	// 生きてる
 	if (process != CRUSHED)
 	{
-		m_data.Image->SetARGB(alpha, (BYTE)255, (BYTE)255, (BYTE)255);
-		m_data.Image->Render((int)pos.x, (int)pos.y, m_data.SIZE, m_data.SIZE,
-			(m_AnimePanel % 4) * m_data.SIZE, (m_AnimePanel / 4) * m_data.SIZE, -m_data.SIZE, m_data.SIZE,
-			RS::COPY);
+		//　掴まれてる
+		if (process == CAUGHT)
+		{
+			m_data.CatchImage->SetARGB((BYTE)255, (BYTE)255, (BYTE)255, (BYTE)255);
+			m_data.CatchImage->Render((int)pos.x, (int)pos.y, m_data.SIZE, m_data.SIZE,
+				(m_AnimePanel % 4) * m_data.SIZE, (m_AnimePanel / 4) * m_data.SIZE, -m_data.SIZE, m_data.SIZE,
+				RS::COPY);
+		}
+		else
+		{
+			m_data.Image->SetARGB((BYTE)255, (BYTE)255, (BYTE)255, (BYTE)255);
+			m_data.Image->Render((int)pos.x, (int)pos.y, m_data.SIZE, m_data.SIZE,
+				(m_AnimePanel % 4) * m_data.SIZE, (m_AnimePanel / 4) * m_data.SIZE, -m_data.SIZE, m_data.SIZE,
+				RS::COPY);
+		}
 	}
 
 	// 死んでる
@@ -276,7 +287,7 @@ void Sheep::Gold::Update()
 	if(m_seID != TDNSOUND_PLAY_NONE)se->SetPos("きらめく羊さん", m_seID, pos);
 
 	// きらきらエフェクト
-	if (process != CRUSHED)Particle2dManager::Effect_KiraKira(GetCenterPos(), Vector2(32, 32), 10.0f, 5.0f, 1, 90);
+	if (process != CRUSHED && process != PUSH)Particle2dManager::Effect_KiraKira(GetCenterPos(), Vector2(32, 32), 10.0f, 5.0f, 1, 90);
 }
 
 
@@ -289,7 +300,7 @@ void Sheep::Real::Update()
 	Sheep::Base::Update();
 
 	// エフェクト
-	if (process != PUSH)Particle2dManager::Effect_RealSheep(GetCenterPos() + Vector2(130, -5));
+	if (process != PUSH && process != CRUSHED)Particle2dManager::Effect_RealSheep(GetCenterPos() + Vector2(130, -5));
 }
 
 
@@ -364,6 +375,11 @@ SheepManager::SheepManager() :sp(0), m_CreateFrame(0)
 		ifs >> path;
 		m_pFatSheepImages[i] = new tdn2DObj(path);
 
+		// 掴まれ画像
+		ifs >> skip;
+		ifs >> path;
+		m_TextParam.data[i].CatchImage = new tdn2DObj(path);
+
 		// 得点倍率読み込み
 		ifs >> skip;
 		ifs >> m_TextParam.data[i].magnification;
@@ -393,6 +409,7 @@ SheepManager::~SheepManager()
 	{
 		SAFE_DELETE(m_TextParam.data[i].Image);
 		delete m_pFatSheepImages[i];
+		SAFE_DELETE(m_TextParam.data[i].CatchImage);
 	}
 	delete m_pBoneImage;
 
@@ -439,21 +456,21 @@ void SheepManager::Update()
 {
 	// デバッグ用
 	{
-		if (KeyBoardTRG(KB_DOT))
-		{
-			//m_ChangeLaneTime = 0;
-			g_CreateSheepFloor = 0;
-		}
-		else if (KeyBoardTRG(KB_SLASH))
-		{
-			//m_ChangeLaneTime = 0;
-			g_CreateSheepFloor = 1;
-		}
-		else if (KeyBoardTRG(KB_UNDER_BAR))
-		{
-			//m_ChangeLaneTime = 0;
-			g_CreateSheepFloor = 2;
-		}
+		//if (KeyBoardTRG(KB_DOT))
+		//{
+		//	//m_ChangeLaneTime = 0;
+		//	g_CreateSheepFloor = 0;
+		//}
+		//else if (KeyBoardTRG(KB_SLASH))
+		//{
+		//	//m_ChangeLaneTime = 0;
+		//	g_CreateSheepFloor = 1;
+		//}
+		//else if (KeyBoardTRG(KB_UNDER_BAR))
+		//{
+		//	//m_ChangeLaneTime = 0;
+		//	g_CreateSheepFloor = 2;
+		//}
 	}
 
 	// レーン変更時間

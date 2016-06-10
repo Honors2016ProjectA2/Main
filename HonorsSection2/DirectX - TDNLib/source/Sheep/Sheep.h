@@ -15,6 +15,7 @@ enum class SHEEP_TYPE
 struct SheepData
 {
 	tdn2DObj *Image;		// 画像
+	tdn2DObj *CatchImage;	// 掴まれ画像
 	tdn2DObj *BoneImage;	// 死んだ骨
 	float magnification;	// 得点倍率
 	int SIZE;				// サイズ(コマの)

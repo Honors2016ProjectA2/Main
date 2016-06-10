@@ -160,6 +160,12 @@ void NikuManager::Update()
 			}
 		}
 
+		//else if (m_pYakiniku->GetMode() == YAKINIKU_MODE::KOGETA)
+		//{
+		//	// 焦げ肉自動生成
+		//	CreateNiku();
+		//}
+
 		// 消去チェックt
 		if (m_pYakiniku->EraseOK())
 		{
@@ -310,6 +316,9 @@ YakinikuMode::Mediam::Mediam(Yakiniku *me) :Base(me)
 
 	// SEの再生
 	se->Play("今です", me->GetPos());
+
+	EffectMgr.AddEffect(me->GetPosX() + 128, me->GetPosY() + 120, EFFECT_TYPE::PUT);
+
 }
 //void YakinikuMode::Mediam::Update(Yakiniku *pYakiniku)
 //{

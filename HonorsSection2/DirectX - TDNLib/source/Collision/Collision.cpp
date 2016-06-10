@@ -176,8 +176,8 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 
 			if (ShinnnyoAndExclamationPoint(sinIterator, manIterator))
 			{
-				// リアル羊じゃなかったら
-				if (sinIterator->GetType() != SHEEP_TYPE::REAL)
+				// リアル羊じゃなかったらもしくは案リミテッドなら無条件で死ぬ
+				if (sinIterator->GetType() != SHEEP_TYPE::REAL || manIterator->isUnlimited())
 				{
 					if (!sinIterator->col_check)
 					{
@@ -347,10 +347,10 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 					AddTime = 1;
 					break;
 				case FAT_WOLF_TYPE::MIDDLE:
-					AddTime = 5;
+					AddTime = 3;
 					break;
 				case FAT_WOLF_TYPE::LARGE:
-					AddTime = 10;
+					AddTime = 7;
 					break;
 				}
 				break;
@@ -378,7 +378,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 					AddTime = 10;
 					break;
 				case FAT_WOLF_TYPE::LARGE:
-					AddTime = 20;
+					AddTime = 18;
 					break;
 				}
 				break;

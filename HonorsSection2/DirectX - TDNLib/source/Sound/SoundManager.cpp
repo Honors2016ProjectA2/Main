@@ -47,7 +47,8 @@ const SE_Manager::DATA all_dataS[] =
 	{ "ドン",			"DATA/Sound/SE/se9.wav",		1, false },
 	{ "ドドン",			"DATA/Sound/SE/se22.wav",		1, false },
 	{ "GO",				"DATA/Sound/BGM/se10.wav",		1, false },
-	{ "終了ホイッスル", "DATA/Sound/SE/whistle.wav",	1, false }
+	{ "終了ホイッスル", "DATA/Sound/SE/whistle.wav",	1, false },
+	{ "アンリミ!",		"DATA/Sound/SE/danger.wav",		5, false }
 };
 
 //==============================================================================================

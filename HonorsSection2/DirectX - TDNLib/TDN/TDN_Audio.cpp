@@ -1924,7 +1924,8 @@ void tdnSoundBGM::SetVolume(int ID, int volume)
 }
 void tdnSoundBGM::SetVolume(int ID, float volume)
 {
-	SetVolume(ID, (int)(-5000 * volume));
+	const int vol = (int)(MinVolume * (1.0f - volume));
+	SetVolume(ID, vol);
 }
 int	tdnSoundBGM::GetVolume(int ID)
 {

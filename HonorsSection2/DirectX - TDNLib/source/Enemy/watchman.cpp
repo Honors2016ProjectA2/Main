@@ -37,7 +37,7 @@ m_bUNLIMITED(unlimited), m_ZanzouFrame(0)
 
 	// 座標初期化
 	m_pos.x = 1280;
-	m_pos.y = (float)STAGE_POS_Y[floor] + LANE_WIDTH / 4;
+	m_pos.y = (float)STAGE_POS_Y[floor] + LANE_WIDTH / 8;
 
 	// モードポインタ初期亜k
 	ModeFunk[(int)MODE::RUN] = &Wolf::Run;
@@ -65,14 +65,14 @@ void Enemy::Wolf::Update()
 	if (m_bUNLIMITED)
 	{
 		// 残像
-		if (++m_ZanzouFrame > 2)
+		if (++m_ZanzouFrame > 1)
 		{
 			m_ZanzouFrame = 0;
 			m_ZanzouList.push_back(new Zanzou(m_pos, Vector2((float)((m_AnimePanel % 4) * W), (float)((m_AnimePanel / 4) * H))));
 		}
 
 		// パーティクル
-		Particle2dManager::Effect_Unlimited(m_pos);
+		Particle2dManager::Effect_Unlimited(m_pos + Vector2(60,60));
 
 		// 残像更新
 		for (auto it = m_ZanzouList.begin(); it != m_ZanzouList.end();)
@@ -300,6 +300,9 @@ void EnemyManager::Initialize()
 	// アンリミ率でアンリミフラグけってい
 	m_bUnlimitedCreate = (tdnRandom::Get(0, 99) < m_UnlimitedPercent);
 
+	// わーにんぐフラグ初期化
+	m_bWarning = false;
+
 
 	// 敵画像の読み込み
 	m_pImages[(int)ENEMY_TYPE::WOLF] = new tdn2DObj("DATA/CHR/「！」左移動.png");
@@ -309,6 +312,12 @@ void EnemyManager::Initialize()
 	m_pFatWolfImages[(int)SHEEP_TYPE::NOMAL] = new tdn2DObj("DATA/CHR/sinnnyou tubureru.png");
 	m_pFatWolfImages[(int)SHEEP_TYPE::GOLD] = new tdn2DObj("DATA/CHR/sinnnyou hajike.png");
 	m_pFatWolfImages[(int)SHEEP_TYPE::REAL] = new tdn2DObj("DATA/CHR/sinnnyou detekuru.png");
+}
+
+EnemyManager::~EnemyManager()
+{
+	// 狼大量バグ直す(デストラクタに書く)
+	for (auto it : m_ChangeSpeedLineList)delete it;
 }
 
 void EnemyManager::Release()
@@ -321,7 +330,6 @@ void EnemyManager::Release()
 	delete m_pNikukutteru;
 	delete m_pHoneImage;
 	FOR((int)SHEEP_TYPE::MAX) delete m_pFatWolfImages[i];
-	for (auto it : m_ChangeSpeedLineList)delete it;
 }
 
 //**************************************************
@@ -353,30 +361,46 @@ void EnemyManager::Update()
 		// 次のフロア作成
 		m_NextFloor = tdnRandom::Get(0, 2);
 	}
-	else if ((int)(m_CREATETIME * m_CreateSpeed) - m_CreateTimer == 80)
+	int rest = (int)(m_CREATETIME * m_CreateSpeed) - m_CreateTimer;
+	if (rest <= 80 && rest > 75)
 	{
-		// アンリミ率でアンリミフラグけってい
-		m_bUnlimitedCreate = (tdnRandom::Get(0, 99) < m_UnlimitedPercent);
-
-		// 肉センサー
-		Niku *pNiku = NikuMgr->GetNiku();
-		if (pNiku)
+		if (!m_bWarning)
 		{
-			if (pNiku->isSeted())m_NextFloor = pNiku->GetFloor();
+			// アンリミ率でアンリミフラグけってい
+			m_bUnlimitedCreate = (tdnRandom::Get(0, 99) < m_UnlimitedPercent);
+
+			// 肉センサー
+			Niku *pNiku = NikuMgr->GetNiku();
+			if (pNiku)
+			{
+				if (pNiku->isSeted())m_NextFloor = pNiku->GetFloor();
+			}
+
+			// 肉なかったら次は1/2の確率でデブ羊フロア
+			else if (rand() % 2)
+			{
+				if (!g_pSheepMgr->GetFatList()->empty())
+				{
+					m_NextFloor = (*g_pSheepMgr->GetFatList()->begin())->GetFloor();
+				}
+			}
+
+			// ポップアップ
+			EffectMgr.AddEffect(1100, STAGE_POS_Y[m_NextFloor] + LANE_WIDTH / 2, (m_bUnlimitedCreate) ? EFFECT_TYPE::DARK_NOTICE : EFFECT_TYPE::NOTICE);
+
+			// SEの再生
+			if (m_bUnlimitedCreate)
+			{
+				se->Play("アンリミ!");
+			}
+			else se->Play("!", Vector2(1100, (float)STAGE_POS_Y[m_NextFloor] + LANE_WIDTH / 2));
+
+			// わーにんぐON
+			m_bWarning = true;
 		}
-
-		// 肉なかったら次はデブ羊フロア
-		else if (!g_pSheepMgr->GetFatList()->empty())
-		{
-			m_NextFloor = (*g_pSheepMgr->GetFatList()->begin())->GetFloor();
-		}
-
-		// ポップアップ
-		EffectMgr.AddEffect(1100, STAGE_POS_Y[m_NextFloor] + LANE_WIDTH / 2, (m_bUnlimitedCreate) ? EFFECT_TYPE::DARK_NOTICE : EFFECT_TYPE::NOTICE);
-
-		// SEの再生
-		se->Play("!", Vector2(1100, (float)STAGE_POS_Y[m_NextFloor] + LANE_WIDTH / 2));
 	}
+	else m_bWarning = false;
+
 	for (auto it = m_list.begin(); it != m_list.end();)
 	{
 		// 敵たち更新

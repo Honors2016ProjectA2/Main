@@ -81,11 +81,12 @@ void Particle2dManager::Effect_FatSmoke(const Vector2 &pos, float scale, int Loo
 //*****************************************************************************
 void Particle2dManager::Effect_Unlimited(const Vector2 &pos)
 {
-	m_pParticle2d->Set(15, 0, 0x80550055, 45, 0x00000000, 25, 0x0c110011,
-		pos + Vector2((rand() % 25) - 12.0f, (rand() % 25) - 12.0f),
+	const Vector2 move = Vector2((rand() % 3 - 1.5f)*0.5f, (rand() % 2 + .0f) * -0.5f);
+	m_pParticle2d->Set(8, 0, 0x80ffffff, 45, 0x00000000, 20, 0x0cffffff,
+		pos + Vector2((rand() % 25) - 12.0f, (rand() % 41) - 20.0f),
 		Vector2((rand() % 4 - 1.5f)*0.5f, (rand() % 3 + .0f) * -0.5f),
-		Vector2(-.1f, -.001f),
-		-.05f, 1.05f, 64.0f, RS::SUB);
+		move*0.1f,
+		.01f, 1.02f, 64.0f - (rand() % 10), RS::SUB);
 }
 
 

@@ -295,8 +295,8 @@ void BokusouMode::Born::Update()
 //===========================================================
 Bokusou::Bokusou(const Vector2 &pos, int point) :m_point(point), m_pMode(nullptr), m_bErase(false), m_pos(pos), m_pBokusouFlower(new tdn2DObj("DATA/–q‘/–q‘‚ÌŽí.png")), m_pBokusouRoll(new tdn2DObj("DATA/–q‘/–q‘.png"))
 {
-	// ƒ‚[ƒh‰Šú‰»(‘o—tˆÇ‚©‚çŠJŽn)
-	this->ChangeMode(BOKUSOU_MODE::HUTABA);
+	// ƒ‚[ƒh‰Šú‰»(–q‘‚©‚çŠJŽn)
+	this->ChangeMode(BOKUSOU_MODE::BORN);
 }
 
 Bokusou::~Bokusou()
