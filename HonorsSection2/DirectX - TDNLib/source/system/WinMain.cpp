@@ -7,6 +7,9 @@
 #include	"System.h"
 #include	"../Sound/SoundManager.h"
 
+// ƒRƒƒ“ƒgƒAƒEƒg‚·‚é‚Æƒ^ƒCƒgƒ‹‚©‚ç
+//#define SCENEMAIN_START
+
 //*****************************/
 //		WinMain
 //*****************************/
@@ -41,8 +44,11 @@ BOOL InitApp(HINSTANCE hInstance, int nCmdShow)									// ƒQ[ƒ€‹N“®‚ÌÅ‰‚Ì
 	SYSTEM_Initialize();
 
 	MainFrame = new Framework();					// ƒƒCƒ“ƒtƒŒ[ƒ€ƒ[ƒN¶¬
+#ifdef SCENEMAIN_START
+	MainFrame->ChangeScene(new sceneMain);
+#else
 	MainFrame->ChangeScene(new Title());			// ‰ŠúƒV[ƒ“
-	//MainFrame->ChangeScene(new sceneMain);
+#endif
 	//MainFrame->ChangeScene(new sceneTest);		// ¼“c‚­‚ñ—p
 	//MainFrame->ChangeScene(new sceneResult);		// ¼“c‚­‚ñ—p
 	return TRUE;

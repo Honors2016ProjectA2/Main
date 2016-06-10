@@ -175,6 +175,11 @@ StageManager::~StageManager()
 		// 炎リストの開放
 		//for (auto it : m_Firelists[i]) delete it;
 	}
+
+	// タイトル用
+	STAGE_POS_Y[0] = 165;
+	STAGE_POS_Y[1] = 520;
+	STAGE_POS_Y[2] = 520;
 }
 
 //--------- public method -----------

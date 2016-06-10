@@ -5,8 +5,9 @@
 太ってる羊の加速度: 0.0025
 
 羊1:
-画像パス: DATA/CHR/sheep_animation.png
-デブ画像: DATA/CHR/fat_sheep.png
+画像パス: 	DATA/CHR/sheep_animation.png
+デブ画像:	DATA/CHR/fat_sheep.png
+掴画像:		DATA/CHR/burabura.png
 得点倍率: 1.0
 コマサイズ: 120
 アニメの枚数: 4
@@ -14,8 +15,9 @@
 出現率: 97.5
 
 羊2:
-画像パス: DATA/CHR/sheep_gold_animation.png
-デブ画像: DATA/CHR/fat_sheepG.png
+画像パス: 	DATA/CHR/sheep_gold_animation.png
+デブ画像: 	DATA/CHR/fat_sheepG.png
+掴画像:		DATA/CHR/burabura_gold.png
 得点倍率: 100.0
 コマサイズ: 120
 アニメの枚数: 4
@@ -23,8 +25,9 @@
 出現率: 2.0
 
 羊3:
-画像パス: DATA/CHR/「！」右移動.png
-デブ画像: DATA/CHR/fat_sheep_SATUI.png
+画像パス: 	DATA/CHR/「！」右移動.png
+デブ画像: 	DATA/CHR/fat_sheep_SATUI.png
+掴画像:		DATA/CHR/「！」右移動.png
 得点倍率: 1000.0
 コマサイズ: 175
 アニメの枚数: 4

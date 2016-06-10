@@ -70,6 +70,8 @@ namespace Enemy
 		void SetFatType(FAT_WOLF_TYPE type){ m_type = type; }
 		void SetSheepType(SHEEP_TYPE type){ m_SheepType = type; }
 
+		bool isUnlimited(){ return m_bUNLIMITED; }
+
 	private:
 		tdn2DObj *m_pNikukutteru, *m_pHoneImage;
 		int m_EAT_NIKU_TIMER;	// 固定値
@@ -86,10 +88,13 @@ namespace Enemy
 			Vector2 pos;	// 座標
 			Vector2 src;	// 画像取ってくる
 			BYTE alpha;
-			Zanzou(const Vector2 &pos, const Vector2 &src) :pos(pos), src(src), alpha(255){}
+			int frame;
+			Zanzou(const Vector2 &pos, const Vector2 &src) :pos(pos), src(src), alpha(255),frame(0){}
 			bool Update()
 			{
-				return ((alpha = max(alpha - 16, 0)) == 0); 
+				static const int END_FRAME = 10;
+				alpha = (BYTE)((1 - (float)(++frame) / END_FRAME) * 255);
+				return (frame > END_FRAME); 
 			}
 			void Render(tdn2DObj *pImage){ pImage->SetARGB(alpha, (BYTE)255, (BYTE)255, (BYTE)255); pImage->Render((int)pos.x, (int)pos.y, 120, 120, (int)src.x, (int)src.y, 120, 120, RS::COPY); }
 		};
@@ -127,6 +132,8 @@ public:
 	static EnemyManager *GetInstance(){ static EnemyManager i; return &i; }
 
 	void Initialize();
+	~EnemyManager();
+
 	void Release();
 	void Update();
 	void Render();
@@ -170,6 +177,7 @@ private:
 	int m_CREATETIME;					// 生成される時間
 	int m_NextFloor;
 	float m_CreateSpeed;	// 0～1の値。出現間隔
+	bool m_bWarning;	// わーにんぐ出したか
 
 	struct ChangeSpeedLine
 	{

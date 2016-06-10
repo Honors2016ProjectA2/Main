@@ -86,7 +86,9 @@ bool sceneMain::Initialize()
 	// 肉マネージャー初期化
 	NikuMgr->Initialize();
 
+	// BGM
 	bgm->Play("MAIN");
+	bgm->SetVolume("MAIN", 1);
 
 	// ポストエフェクト
 	PostEffectMgr;
@@ -272,6 +274,9 @@ void sceneMain::EndEvent()
 		{
 			isResultFlag = false;
 			RESULT_UIMNG.Action();
+
+			// BGMの音量少し下げる
+			bgm->SetVolume("MAIN", .5f);
 		}
 		
 
@@ -390,7 +395,6 @@ void sceneMain::MainRender()
 	g_pSheepMgr->Render();
 	EnemyMgr->Render();
 	BokusouMgr->Render();
-	NikuMgr->Render();
 
 	// ステージの前描画
 	stage->RenderFront();
@@ -401,6 +405,7 @@ void sceneMain::MainRender()
 	g_pSheepMgr->RenderFat();
 	EnemyMgr->RenderFat();
 
+	NikuMgr->Render();
 	NumberEffect.Render();
 }
 
