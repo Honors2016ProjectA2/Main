@@ -370,7 +370,7 @@ public:
 	DarkNoticeEffect()
 	{
 		m_picSize = 256;
-		m_pic = new AnimationPanel("Data/Effect/Darkbikkuri.png", 256, 256, 15, 2, 4, true, 60);
+		m_pic = new AnimationPanel("Data/Effect/Darkbikkuri.png", 256, 256, 15, 1, 4, true, 60);
 		state = RS::COPY;
 	};
 	~DarkNoticeEffect() {};
