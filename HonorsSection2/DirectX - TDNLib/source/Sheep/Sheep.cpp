@@ -227,7 +227,7 @@ void Sheep::Base::Render()
 		if (process == CAUGHT)
 		{
 			m_data.CatchImage->SetARGB((BYTE)255, (BYTE)255, (BYTE)255, (BYTE)255);
-			m_data.CatchImage->Render((int)pos.x, (int)pos.y, m_data.SIZE, m_data.SIZE,
+			m_data.CatchImage->Render((int)pos.x, (int)pos.y + 32, m_data.SIZE, m_data.SIZE,
 				(m_AnimePanel % 4) * m_data.SIZE, (m_AnimePanel / 4) * m_data.SIZE, -m_data.SIZE, m_data.SIZE,
 				RS::COPY);
 		}

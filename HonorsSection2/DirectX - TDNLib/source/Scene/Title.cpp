@@ -25,6 +25,8 @@ bool g_bExtraStage;
 
 bool Title::Initialize()
 {
+	tdnRandom::Initialize();
+
 	// スペースキーおしっぱで、えくすとりーむ
 	g_bExtraStage = false;
 

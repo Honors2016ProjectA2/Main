@@ -233,16 +233,16 @@ void StageManager::Update()
 				}
 			}
 
-			if (floor != -1)
+			if (floor != -1 && floor != g_CreateSheepFloor)
 			{
 				// リキャストOK
 				if (stage[floor]->GetRecastTime() <= 0)
 				{
+					// リキャスト設定
+					stage[g_CreateSheepFloor]->SetRecastTime(m_RECAST_TIME);
+
 					// 羊生成フロア変える
 					g_CreateSheepFloor = floor;
-
-					// リキャスト設定
-					stage[floor]->SetRecastTime(m_RECAST_TIME);
 
 					// SEの再生
 					se->Play("ドア", Vector2(128, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2));

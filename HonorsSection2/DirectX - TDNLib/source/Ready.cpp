@@ -154,7 +154,7 @@ void Ready::GoBigger()
 		if (scale >= GO::SCALE_MAX / 2.0f) // スケール3/4ぐらい
 		{
 			// ランダムにドア開ける！！
-			g_CreateSheepFloor = tdnRandom::Get(0, 3);
+			g_CreateSheepFloor = tdnRandom::Get(0, 2);
 
 			// SE
 			se->Play("ドア", Vector2(0, 150 + (g_CreateSheepFloor * 170.0f)));
