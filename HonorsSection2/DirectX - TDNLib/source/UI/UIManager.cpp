@@ -37,6 +37,8 @@ UIManager::UIManager()
 
 	// コンボ
 	m_combo = 0;
+	m_maxCombo = 0;
+
 	m_comboNum = new Number("DATA/Number/Number2.png", 64, Number::NUM_KIND::COMBO);
 	m_conboBG = new tdn2DObj("DATA/UI/UIcombo.png");
 	//m_conboBG->OrderMoveAppeared()
@@ -117,6 +119,7 @@ void UIManager::Init()
 	m_scorePoint = 0;
 	// コンボ
 	m_combo = 0;
+	m_maxCombo = 0;
 	m_energyRate = 1.0f;
 
 	m_timer = 60 * 2;
@@ -285,6 +288,13 @@ void UIManager::ConboCount()
 	m_energyRate = 1.0f;
 	m_comboNum->Action();
 	m_combo++;
+
+	// 最大コンボ数を保存
+	if (m_maxCombo <= m_combo)
+	{
+		m_maxCombo = m_combo;
+	}
+
 }
 
 // 時間上昇！

@@ -215,7 +215,7 @@ bool ResultUIManager::Update()
 
 	// ”’l‚ğXV
 	m_numNum[FONT::SCORE] = UIMNG.GetScore();
-	m_numNum[FONT::COMBO] = UIMNG.GetCombo();
+	m_numNum[FONT::COMBO] = UIMNG.GetMaxCombo();
 	m_numNum[FONT::WORF] = UIMNG.GetWorfHappyCount();
 	m_numNum[FONT::FIRE] = UIMNG.GetSheepKillCount();
 

@@ -55,6 +55,7 @@ public:
 
 	int GetScore() { return m_score; }
 	int GetCombo() { return m_combo; }
+	int GetMaxCombo() { return m_maxCombo; }
 
 	void GraphAction();
 private:
@@ -85,6 +86,7 @@ private: //変数
 	int m_scorePoint;
 
 	int m_combo;
+	int m_maxCombo;
 
 	// スコア
 	Number* m_scoreNum;
@@ -96,6 +98,7 @@ private: //変数
 	tdn2DObj* m_conboGage;
 	tdn2DObj* m_conboGageEnergy;
 	float m_energyRate;
+	
 
 	// タイマー
 	int m_timer;
