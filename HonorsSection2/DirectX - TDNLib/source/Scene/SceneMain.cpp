@@ -255,7 +255,7 @@ void sceneMain::MainUpdate()
 
 		state = SCENE::END;
 
-		UIMNG.SetTimer(120);
+		//UIMNG.SetTimer(120);
 	}
 
 	if (KeyBoard(KB_SPACE) == 3)

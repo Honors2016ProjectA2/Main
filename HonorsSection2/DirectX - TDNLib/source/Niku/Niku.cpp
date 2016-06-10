@@ -14,6 +14,12 @@ int g_YakiNikuModeChangeTime[(int)YAKINIKU_MODE::MAX];			// モードが変わっていく
 //**************************************************
 //    牧草管理クラス
 //**************************************************
+NikuManager *NikuManager::GetInstance()
+{
+	if (!pInstance) pInstance = new NikuManager;
+	return pInstance;
+}
+
 NikuManager::NikuManager() :m_pNiku(nullptr), m_pYakiniku(nullptr)
 {
 	m_pIkenieImages = new tdn2DObj*[(int)SHEEP_TYPE::MAX];

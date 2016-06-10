@@ -293,12 +293,22 @@ void EnemyManager::Initialize()
 	// 生成時間初期化
 	m_CreateTimer = 0;
 
-	// 生成間隔(1.0倍)
-	m_CreateSpeed = m_ChangeSpeedLineList[m_ChangeSpeedLineList.size() - 1]->speed;
-	// アンリミパーセント
-	m_UnlimitedPercent = m_ChangeSpeedLineList[m_ChangeSpeedLineList.size() - 1]->U_percent;
-	// アンリミ率でアンリミフラグけってい
-	m_bUnlimitedCreate = (tdnRandom::Get(0, 99) < m_UnlimitedPercent);
+	extern bool g_bExtraStage;
+	if (g_bExtraStage)
+	{
+		m_CreateSpeed = .2f;
+		m_UnlimitedPercent = 100;
+		m_bUnlimitedCreate = true;
+	}
+	else
+	{
+		// 生成間隔(1.0倍)
+		m_CreateSpeed = m_ChangeSpeedLineList[m_ChangeSpeedLineList.size() - 1]->speed;
+		// アンリミパーセント
+		m_UnlimitedPercent = m_ChangeSpeedLineList[m_ChangeSpeedLineList.size() - 1]->U_percent;
+		// アンリミ率でアンリミフラグけってい
+		m_bUnlimitedCreate = (tdnRandom::Get(0, 99) < m_UnlimitedPercent);
+	}
 
 	// わーにんぐフラグ初期化
 	m_bWarning = false;
@@ -432,12 +442,14 @@ void EnemyManager::Update()
 
 void EnemyManager::Render()
 {
-	for (auto it: m_list)
-		it->Render();
+	for (auto it: m_list) if(!it->isUnlimited())it->Render();
 }
 
 void EnemyManager::RenderFat()
 {
+	// アンリミ狼描画
+	for (auto it : m_list) if (it->isUnlimited())it->Render();
+
 	// でぶ狼たち描画
 	for (auto it : m_FatList)
 		it->Render();
@@ -468,6 +480,8 @@ void EnemyManager::CheckChangeSpeed(int WolfKillCount)
 		// ライン超えてたら
 		if (it->line < WolfKillCount)
 		{
+			if (m_UnlimitedPercent > it->U_percent) break;
+
 			// 生成間隔
 			m_CreateSpeed = it->speed;
 

@@ -174,11 +174,7 @@ private:
 class NikuManager
 {
 public:
-	static NikuManager *GetInstance()
-	{
-		if (!pInstance) pInstance = new NikuManager;
-		return pInstance;
-	}
+	static NikuManager *GetInstance();
 
 	~NikuManager();
 

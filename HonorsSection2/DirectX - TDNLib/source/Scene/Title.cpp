@@ -11,7 +11,7 @@
 #include "UI\ResultUIManager.h"
 #include "../Sound/SoundManager.h"
 #include "UI\SendPower\SendPower.h"
-
+#include "../Niku/Niku.h"
 #include "Scene\Explain.h"
 
 Explain* ex;
@@ -20,8 +20,14 @@ End* end;
 
 SendPower* m_send;
 
+// 超高難易度ステージ
+bool g_bExtraStage;
+
 bool Title::Initialize()
 {
+	// スペースキーおしっぱで、えくすとりーむ
+	g_bExtraStage = false;
+
 	m_send = new SendPower("Data/power.png",
 		Vector3(1280, 300, 0),Vector3(400, 500, 0), Vector3(100, 200, 0), Vector3(680, 0, 0), 48);
 
@@ -94,9 +100,10 @@ Title::~Title()
 	//RESULT_UIMNG.Release();
 	
 	SAFE_DELETE(m_BG_flont);
-
+	NikuMgr->Release();
 	SAFE_DELETE(m_send);
 	SAFE_DELETE(m_gameStart);
+	
 }
 
 bool Title::Update()
@@ -104,6 +111,18 @@ bool Title::Update()
 	if (KeyBoard(KB_E) == 3)
 	{
 		m_send->Action();
+
+		// エクストラステージ切り替え
+		if (g_bExtraStage)
+		{
+			se->Play("羊掴む", Vector2(640, 360));
+			g_bExtraStage = false;
+		}
+		else
+		{
+			se->Play("アンリミ!", Vector2(640, 360));
+			g_bExtraStage = true;
+		}
 	}
 
 	//if (KeyBoard(KB_E) == 3)
