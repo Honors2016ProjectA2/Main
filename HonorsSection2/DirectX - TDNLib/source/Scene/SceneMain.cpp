@@ -22,7 +22,7 @@
 #include	"../UI\ResultUIManager.h"
 #include	"result2.h"
 #include   "Explain.h"
-
+#include	"Tips.h"
 
 #include "../system/Framework.h"
 #include "Scene\Title.h"
@@ -31,7 +31,7 @@ namespace{
 	namespace SCENE
 	{
 		enum{
-			INIT,EXPLAIN, READY, MAIN, END, RESULT,
+			INIT,EXPLAIN, READY, MAIN, END, RESULT,TIPS
 		};
 	}
 }
@@ -43,7 +43,7 @@ namespace{
 bool sceneMain::Initialize()
 {
 	UIMNG.Init();
-	UIMNG.SetTimer(120);
+	UIMNG.SetTimer(1);
 	
 
 	EffectMgr;
@@ -60,6 +60,7 @@ bool sceneMain::Initialize()
 	explain = new Explain();
 	ready = new Ready();
 	end = new End();
+	tips = new Tips();
 	pointer = new MousePointer();
 	dataMNG = new DataManager();
 	g_pSheepMgr = new SheepManager();
@@ -107,6 +108,7 @@ sceneMain::~sceneMain()
 	SAFE_DELETE(back);
 	SAFE_DELETE(ready);
 	SAFE_DELETE(end);
+	SAFE_DELETE(tips);
 	SAFE_DELETE(pointer);
 	SAFE_DELETE(stage);
 	SAFE_DELETE(dataMNG);
@@ -159,6 +161,7 @@ bool sceneMain::Update()
 	case SCENE::MAIN:		MainUpdate();		break;
 	case SCENE::END:		EndEvent();			break;
 	case SCENE::RESULT:		ResultUpdate();		break;
+	case SCENE::TIPS:		TipsUpdate();		break;
 	}
 
 	return true;
@@ -182,6 +185,7 @@ void sceneMain::Init()
 	ready->Init();
 	end->Init();
 	explain->Initialize();
+	tips->Init();
 
 //	watchman->Init();
 //	m_pSheepMgr->Init();
@@ -289,15 +293,27 @@ void sceneMain::ResultUpdate()
 	//bgm->Play("RESULT");
 	if( FadeControl::IsFade() ) return;
 	if( FadeControl::IsEndFade() ){
+		state = SCENE::TIPS;
+		//bgm->Stop("MAIN");
 		//state = SCENE::INIT;
-		bgm->Stop("MAIN");
-		state = SCENE::INIT;
-		MainFrame->ChangeScene(new Title());
+		//MainFrame->ChangeScene(new Title());
 		return;
 	}
 
 	if (RESULT_UIMNG.Update()){
 		FadeControl::Setting(FadeControl::MODE::FADE_OUT, 30.0f);
+	}
+}
+
+void sceneMain::TipsUpdate()
+{
+
+	// ƒqƒ“ƒgI‚í‚Á‚½‚ç
+	if (tips->Update())
+	{
+		bgm->Stop("MAIN");
+		state = SCENE::INIT;
+		MainFrame->ChangeScene(new Title());
 	}
 }
 
@@ -361,6 +377,7 @@ void sceneMain::Render()
 	case SCENE::MAIN:		MainRender();		break;
 	case SCENE::END:		EndRender();		break;
 	case SCENE::RESULT:		ResultRender();		break;
+	case SCENE::TIPS:		TipsRender();		break;
 	}
 
 	EffectMgr.Render();
@@ -424,6 +441,13 @@ void sceneMain::ResultRender()
 	NumberEffect.Render();
 	//result->Render();
 	RESULT_UIMNG.Render();
+}
+
+void sceneMain::TipsRender()
+{
+	tips->Render();
+
+
 }
 
 

@@ -10,6 +10,7 @@ class DataManager;
 class Result;
 class Result2;
 class Explain;
+class Tips;
 
 class sceneMain	: public BaseScene
 {
@@ -27,6 +28,8 @@ private:
 	Explain* explain = nullptr;
 	Ready* ready = nullptr;
 	End* end = nullptr;
+	Tips* tips = nullptr;
+
 	MousePointer* pointer = nullptr;
 	StageManager* stage = nullptr;
 	DataManager* dataMNG = nullptr;
@@ -48,6 +51,7 @@ private:
 	void MainUpdate();
 	void EndEvent();
 	void ResultUpdate();
+	void TipsUpdate();
 
 	void DataDelivery();	//î•ñó‚¯“n‚µ
 
@@ -57,6 +61,7 @@ private:
 	void MainRender();
 	void EndRender();
 	void ResultRender();
+	void TipsRender();
 
 	void DebugText();
 };
