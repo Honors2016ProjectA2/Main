@@ -7,7 +7,9 @@
 Tips::Tips()
 {
 	m_state = STATE::START;
-	m_typs = new tdn2DObj("DATA/tips/tips.png");
+	m_typs = new tdn2DAnim("DATA/tips/tips.png");
+	m_typs->OrderMoveAppeared(24, 1280, 0);
+	//m_typs->Order(12, 1280, 0);
 }
 
 Tips::~Tips()
@@ -22,29 +24,43 @@ void Tips::Init()
 
 bool Tips::Update()
 {
+	// XV
+	m_typs->Update();
+	
 	// 
 	if (KeyBoard(KB_ENTER) == 3)
 	{
 		return true;
 	}
-	if (tdnMouse::GetLeft() == 3)
-	{
-		return true;
-	}
+	//if (tdnMouse::GetLeft() == 3)
+	//{
+	//	return true;
+	//}
 
 	switch (m_state)
 	{
 	case Tips::STATE::START:
-		FadeControl::Setting(FadeControl::MODE::FADE_IN, 30.0f);
-		
+		FadeControl::Setting(FadeControl::MODE::FADE_IN, 55.0f);	
 		m_state = STATE::EXECUTE;
+		m_typs->Action();
 
 		break;
 	case Tips::STATE::EXECUTE:
 		
+		if (tdnMouse::GetLeft() == 3)
+		{
+			m_state = STATE::END;
+			FadeControl::Setting(FadeControl::MODE::FADE_OUT, 30.0f);
+		}
+
 		break;
 	case Tips::STATE::END:
-		
+		if (FadeControl::IsFade()) return false;
+		if (FadeControl::IsEndFade())
+		{
+			return true;
+		}
+
 		break;
 	default:
 		break;

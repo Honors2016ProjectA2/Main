@@ -19,7 +19,7 @@ private:
 	STATE m_state;
 
 	// ƒqƒ“ƒg
-	tdn2DObj* m_typs;
+	tdn2DAnim* m_typs;
 
 
 public:
