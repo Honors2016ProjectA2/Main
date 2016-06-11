@@ -11,6 +11,8 @@ public:
 	bool Update();
 	void Render();
 
+	void TipsSelect();  // ó‹µ‚É‡‚í‚¹‚ÄŠG‚ğ•Ï‚¦‚é
+
 private:
 	enum class STATE
 	{
@@ -18,11 +20,15 @@ private:
 	};
 	STATE m_state;
 
-	// ƒqƒ“ƒg
-	tdn2DAnim* m_typs;
 
+	enum  TIPS_TYPE
+	{
+		MEAT, MEAT_TYPE, END
+	};
+	// ƒqƒ“ƒg
+	tdn2DAnim* m_typs[TIPS_TYPE::END];
+	int m_selectTips;
 
 public:
-
 
 };

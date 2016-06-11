@@ -1,5 +1,6 @@
 #include "Tips.h"
 #include	"../system/FadeCtrl.h"
+#include  "UI\UIManager.h"
 
 /********************/
 //	ヒントシーン
@@ -7,25 +8,43 @@
 Tips::Tips()
 {
 	m_state = STATE::START;
-	m_typs = new tdn2DAnim("DATA/tips/tips.png");
+
+
+	// タイプス
+	m_typs[TIPS_TYPE::MEAT ] = new tdn2DAnim("DATA/tips/tips.png");
+	m_typs[TIPS_TYPE::MEAT_TYPE ] = new tdn2DAnim("DATA/tips/tips2.png");
+
+	for (int i = 0; i < TIPS_TYPE::END ; i++)
+	{
+		//m_typs[i] = new tdn2DAnim("DATA/tips/tips.png");
+		m_typs[i]->OrderGrow(16, 0.5f, 0.5f / 16.0f);
+	}
+	
 	//m_typs->OrderMoveAppeared(18, 1280, 0);
-	m_typs->OrderGrow(16, 0.5f, 0.5f / 16.0f);
+	m_selectTips = TIPS_TYPE::MEAT;
+
+
 }
 
 Tips::~Tips()
 {
-	SAFE_DELETE(m_typs);
+	for (int i = 0; i < TIPS_TYPE::END; i++)
+	{
+		SAFE_DELETE(m_typs[i]);
+	}
+
 }
 
 void Tips::Init()
 {
 	m_state = STATE::START;
+	m_selectTips = TIPS_TYPE::MEAT;
 }
 
 bool Tips::Update()
 {
 	// 更新
-	m_typs->Update();
+	m_typs[m_selectTips]->Update();
 	
 	// 
 	if (KeyBoard(KB_ENTER) == 3)
@@ -42,7 +61,7 @@ bool Tips::Update()
 	case Tips::STATE::START:
 		FadeControl::Setting(FadeControl::MODE::FADE_IN, 5.0f);
 		m_state = STATE::EXECUTE;
-		m_typs->Action();
+		m_typs[m_selectTips]->Action();
 
 		break;
 	case Tips::STATE::EXECUTE:
@@ -75,5 +94,22 @@ void Tips::Render()
 	tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0xff000000);// 黒
 
 	// タイプス
-	m_typs->Render(0, 0);
+	m_typs[m_selectTips]->Render(0, 0);
+}
+
+
+// 状況に合わせて絵を変える
+void Tips::TipsSelect()
+{
+	// 焼いていなかったら
+	if (UIMNG.GetWorfHappyCount() == 0)
+	{
+		m_selectTips = TIPS_TYPE::MEAT;
+	}
+	else if (UIMNG.GetWorfHappyCount() > 1)
+	{
+		m_selectTips = TIPS_TYPE::MEAT_TYPE;
+	}
+	
+
 }

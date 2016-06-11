@@ -43,7 +43,7 @@ namespace{
 bool sceneMain::Initialize()
 {
 	UIMNG.Init();
-	UIMNG.SetTimer(1);
+	UIMNG.SetTimer(30);
 	
 
 	EffectMgr;
@@ -294,6 +294,8 @@ void sceneMain::ResultUpdate()
 	if( FadeControl::IsFade() ) return;
 	if( FadeControl::IsEndFade() ){
 		state = SCENE::TIPS;
+		tips->TipsSelect();// š ƒqƒ“ƒgXV
+
 		//bgm->Stop("MAIN");
 		//state = SCENE::INIT;
 		//MainFrame->ChangeScene(new Title());
