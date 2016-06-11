@@ -552,6 +552,66 @@ void AnimAction::Shrink::Action(tdn2DObj * pic, int delay)
 }
 
 
+/**********************/
+// 大きくなる
+/**********************/
+
+AnimAction::Grow::Grow(int endFlame, float startScale, float moveScale)
+{
+	m_nowFlame = 0;
+	m_endFlame = endFlame;
+	m_startscale = startScale;
+	m_movescale = moveScale;
+
+}
+
+AnimAction::Grow::~Grow()
+{
+
+}
+
+void AnimAction::Grow::Update(tdn2DObj * pic)
+{
+	// アクションフラグがたっていないと返す
+	//if (m_bActionFlag == false)return;
+	if (ActionCheck() == false)return;
+
+	// フレーム更新
+	m_nowFlame++;
+	// エンドフレームまで来たら終わる
+	if (m_nowFlame >= m_endFlame)
+	{
+		//m_bActionFlag = false;
+		m_bEndFlag = true; // 終りフラグON
+						   // 拡大率更新
+						   //pic->SetScale(m_startscale);
+
+		return; // 終り
+	}
+
+	// アルファ処理
+	float alpha = (float)m_nowFlame / (float)m_endFlame;//   0/30=0   60/30=2   1-(0~1)  
+	//alpha = 1.0f - alpha;
+	pic->SetARGB((int)(alpha * 255), 255, 255, 255);
+
+	// 拡大率更新
+	pic->SetScale(pic->GetScale() + m_movescale);
+
+
+}
+
+void AnimAction::Grow::Action(tdn2DObj * pic, int delay)
+{
+	AnimAction::Base::Action(pic, delay);
+	//m_bActionFlag = true; // 実行フラグOn
+
+	// 初期化
+	m_nowFlame = 0;
+	pic->SetScale(m_startscale);
+
+}
+
+
 /******************************************/
 // 描画をアニメ用に加工
 /******************************************/
@@ -587,4 +647,9 @@ void tdn2DAnim::OrderShrink(int endFlame, float startScale, float maxScale)
 	m_pAction = new AnimAction::Shrink(endFlame, startScale, maxScale);
 }
 
+void tdn2DAnim::OrderGrow(int endFlame, float startScale, float moveScale)
+{
+	if (m_pAction != nullptr) delete m_pAction;
+	m_pAction = new AnimAction::Grow(endFlame, startScale, moveScale);
 
+}

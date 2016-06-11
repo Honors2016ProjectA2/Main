@@ -37,7 +37,7 @@ Explain::~Explain()
 	SAFE_DELETE(howTo.obj);
 	SAFE_DELETE(nextIcon[0]);
 	SAFE_DELETE(nextIcon[1]);
-	delete pointer;
+	//delete pointer;
 }
 
 bool Explain::Initialize()
@@ -51,7 +51,7 @@ bool Explain::Initialize()
 	nextIcon[0] = new tdn2DObjEx("DATA/Explain/nextIcon01.png");
 	nextIcon[1] = new tdn2DObjEx("DATA/Explain/nextIcon02.png");
 
-	pointer = new MousePointer();
+	//pointer = new MousePointer();
 
 	return true;
 }
@@ -200,5 +200,5 @@ void Explain::Render()
 	nextIcon[0]->RenderCC(NEXT_ICON::X, NEXT_ICON::Y, (int)(NEXT_ICON::SIZE_X*scale), (int)(NEXT_ICON::SIZE_Y*scale), 0,0, NEXT_ICON::SIZE_X, NEXT_ICON::SIZE_Y,.0f);
 	nextIcon[1]->RenderCC(NEXT_ICON::X, NEXT_ICON::Y, (int)(NEXT_ICON::SIZE_X*scale), (int)(NEXT_ICON::SIZE_Y*scale), 0,0, NEXT_ICON::SIZE_X, NEXT_ICON::SIZE_Y,.0f, NULL, ARGB(alpha,255,255,255));
 
-	pointer->Render();
+	//pointer->Render();
 }

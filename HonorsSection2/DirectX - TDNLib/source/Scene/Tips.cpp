@@ -8,8 +8,8 @@ Tips::Tips()
 {
 	m_state = STATE::START;
 	m_typs = new tdn2DAnim("DATA/tips/tips.png");
-	m_typs->OrderMoveAppeared(24, 1280, 0);
-	//m_typs->Order(12, 1280, 0);
+	//m_typs->OrderMoveAppeared(18, 1280, 0);
+	m_typs->OrderGrow(16, 0.5f, 0.5f / 16.0f);
 }
 
 Tips::~Tips()
@@ -40,17 +40,18 @@ bool Tips::Update()
 	switch (m_state)
 	{
 	case Tips::STATE::START:
-		FadeControl::Setting(FadeControl::MODE::FADE_IN, 55.0f);	
+		FadeControl::Setting(FadeControl::MODE::FADE_IN, 5.0f);
 		m_state = STATE::EXECUTE;
 		m_typs->Action();
 
 		break;
 	case Tips::STATE::EXECUTE:
-		
+		if (FadeControl::IsFade()) return false;
+
 		if (tdnMouse::GetLeft() == 3)
 		{
 			m_state = STATE::END;
-			FadeControl::Setting(FadeControl::MODE::FADE_OUT, 30.0f);
+			FadeControl::Setting(FadeControl::MODE::FADE_OUT, 25.0f);
 		}
 
 		break;

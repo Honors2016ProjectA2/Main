@@ -1278,6 +1278,29 @@ namespace AnimAction
 		float m_alpha;
 	};
 	
+	/**
+	*@brief		大きくなるエフェクト
+	*@author		Nishida
+	*/
+	class Grow :public Base
+	{
+	public:
+		// 引数で設定
+		Grow(int endFlame, float startScale, float moveScale);
+		~Grow();
+
+		void Update(tdn2DObj* pic);// tdn2DObjの実態を中へ
+		void Action(tdn2DObj* pic, int delay);// 基本的にアニメの始動
+
+	private:
+		int m_nowFlame;
+		int m_endFlame;
+
+		float m_startscale;
+		float m_movescale;
+
+	};
+
 }
 
 /**
@@ -1303,6 +1326,7 @@ public:
 	void OrderShake(int endFlame, float shakeX, float shakeY, int cycle);
 	void OrderJump(int endFlame, float startScale, float addScale);
 	void OrderShrink(int endFlame, float startScale, float maxScale);
+	void OrderGrow(int endFlame, float startScale, float addScale);
 
 	// 実行・始動
 	void Update()
