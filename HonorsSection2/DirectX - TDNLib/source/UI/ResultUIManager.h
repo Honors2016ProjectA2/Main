@@ -110,6 +110,9 @@ public:
 
 	void RankUpdate();
 
+	//
+	tdn2DObj* m_resultBG;
+
 private:
 	static ResultUIManager* inst;
 

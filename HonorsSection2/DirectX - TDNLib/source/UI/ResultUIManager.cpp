@@ -159,9 +159,10 @@ ResultUIManager::ResultUIManager()
 
 	m_RankINPic = new tdn2DAnim("Data/Result/rankin.png");
 	m_RankINPic->OrderMoveAppeared(24, 600, 100);
+
+	m_resultBG = new tdn2DObj("Data/result/BG.png");
+
 }
-
-
 
 ResultUIManager::~ResultUIManager()
 {
@@ -200,6 +201,7 @@ ResultUIManager::~ResultUIManager()
 
 	SAFE_DELETE(m_RankINPic);
 
+	SAFE_DELETE(m_resultBG);
 }
 
 void ResultUIManager::Init()
@@ -545,7 +547,7 @@ bool ResultUIManager::CircleUpdate()
 		// 適当に拡大！！
 		// 行き過ぎ防止!!
 
-		m_circle.scale += 0.25f;
+		m_circle.scale += 0.20f;
 		if (m_circle.scale >= 3.0f)
 		{
 			m_circle.scale = 3.0f;
@@ -607,6 +609,7 @@ void ResultUIManager::Render()
 	if (m_step==STEP::START)
 	{
 		m_circleScreen->Render(0, 0);
+		m_resultBG->Render(0, 0,shader2D,"mask");
 	}
 	else
 	{
@@ -622,8 +625,7 @@ void ResultUIManager::Render()
 	tdnSystem::GetDevice()->SetRenderTarget(0, pBackBuffer);
 	m_screen->Render(0, 0);
 
-	
-
+	//m_circleScreen->Render(0, 0, 1280/4, 720 / 4, 0, 0, 1280 , 720 );
 	//m_maskScreen->Render(0, 0);
 
 	//tdnText::Draw(100, 200, 0xff555555, "x=%d:y=%d", m_invCircle.x, m_invCircle.y);
@@ -641,6 +643,9 @@ void ResultUIManager::ResultRender()
 	// サークルたち
 	m_invCircle.pic->Render(m_invCircle.x, m_invCircle.y);
 	m_circle.pic->Render(m_circle.x, m_circle.y);
+
+	// 追加（書き換え）
+	m_resultBG->Render(0, 0);
 
 	//// BG
 	//m_rankingBG->Render(780, 0, shader2D, "blind");
@@ -694,7 +699,8 @@ void ResultUIManager::CircleRender()
 	m_invCircle.pic->Render(m_invCircle.x, m_invCircle.y);
 	m_circle.pic->Render(m_circle.x, m_circle.y);
 
-
+	// ↑で描画した絵をマスク情報に	
+	shader2D->SetValue("MaskTex", m_circleScreen);
 }
 
 
@@ -901,6 +907,15 @@ void ResultUIManager::Action()
 	// ブラインド
 	m_blindRete = 0.0f;
 	shader2D->SetValue("blindRate", m_blindRete);
+
+
+	// 音初期化
+	for (int i = 0; i < FONT::END; i++)
+	{
+		// 分岐
+		m_font[i].isSE = false;
+	}
+
 }
 
 // 終り
