@@ -44,7 +44,7 @@ UIManager::UIManager()
 	//m_conboBG->OrderMoveAppeared()
 	m_conboGage = new tdn2DObj("DATA/UI/UIgage.png");
 	m_conboGageEnergy= new tdn2DObj("DATA/UI/UIenergy.png");
-	m_energyRate = 1.0f;
+	m_energyRate = 0.0f;
 
 	// タイマー
 	m_timerNum = new Number("DATA/Number/Number.png", 64);
@@ -120,7 +120,7 @@ void UIManager::Init()
 	// コンボ
 	m_combo = 0;
 	m_maxCombo = 0;
-	m_energyRate = 1.0f;
+	m_energyRate = 0.0f;
 
 	m_timer = 60 * 2;
 	//m_timer = 0;
@@ -262,7 +262,21 @@ void UIManager::ConboUpdate()
 {
 	// エネルギー
 	//m_energyRate -= 0.03f;
-	m_energyRate -= 0.01f;
+
+	// 時間によって速さを変えようと思います
+	if (m_combo <= 100)
+	{
+		m_energyRate -= 0.002f;
+	}
+	else if (m_combo <= 200)
+	{
+		m_energyRate -= 0.003f;
+	}
+	else
+	{
+		m_energyRate -= 0.005f;
+	}
+
 
 	// 真面目にコンボの計算
 	if (m_energyRate <= 0.0f)

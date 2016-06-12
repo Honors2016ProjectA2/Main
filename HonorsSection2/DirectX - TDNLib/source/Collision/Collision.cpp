@@ -378,7 +378,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 					AddTime = 10;
 					break;
 				case FAT_WOLF_TYPE::LARGE:
-					AddTime = 18;
+					AddTime = 20;
 					break;
 				}
 				break;

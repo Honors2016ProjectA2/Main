@@ -221,7 +221,7 @@ bool ResultUIManager::Update()
 
 	//↑での合計ポイント
 	m_MaxSumNum =
-		m_numNum[FONT::SCORE] + (m_numNum[FONT::COMBO] * 1000);
+		m_numNum[FONT::SCORE] + (m_numNum[FONT::COMBO] * 1000) + m_numNum[FONT::WORF] * 10000 + m_numNum[FONT::FIRE] * 1;
 
 	Debug();
 
@@ -564,11 +564,11 @@ bool ResultUIManager::CircleUpdate()
 void ResultUIManager::RankUpdate()
 {
 	// 点数ごとにランクを付ける
-	if (m_MaxSumNum < 10000)
+	if (m_MaxSumNum < 1000000)
 	{
 		m_rankType = C;
 	}
-	else if (m_MaxSumNum < 1000000)
+	else if (m_MaxSumNum < 3000000)
 	{
 		m_rankType = B;
 	}

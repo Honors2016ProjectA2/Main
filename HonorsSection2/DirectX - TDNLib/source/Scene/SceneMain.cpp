@@ -43,7 +43,7 @@ namespace{
 bool sceneMain::Initialize()
 {
 	UIMNG.Init();
-	UIMNG.SetTimer(30);
+	UIMNG.SetTimer(90);
 	
 
 	EffectMgr;
@@ -226,6 +226,7 @@ void sceneMain::MainUpdate()
 	ShakeMgr->Update();
 	BokusouMgr->Update();
 	UIMNG.Update();
+
 	if (KeyBoard(KB_N)==3)
 	{
 		EffectMgr.AddEffect( 220, 64, EFFECT_TYPE::BURN);
