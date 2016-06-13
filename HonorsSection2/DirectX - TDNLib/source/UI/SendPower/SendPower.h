@@ -32,7 +32,7 @@ public:
 
 	bool IsBokusou() { return m_bBokusou; }
 
-private:
+protected:
 	tdn2DObj* m_pic;
 
 	// Ž©•ª‚ÌˆÊ’u

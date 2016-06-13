@@ -20,7 +20,7 @@ NikuManager *NikuManager::GetInstance()
 	return pInstance;
 }
 
-NikuManager::NikuManager() :m_pNiku(nullptr), m_pYakiniku(nullptr)
+NikuManager::NikuManager() :m_pNiku(nullptr), m_pYakiniku(nullptr), m_pNikuBazier(nullptr)
 {
 	m_pIkenieImages = new tdn2DObj*[(int)SHEEP_TYPE::MAX];
 	m_pNikuImages = new tdn2DObj*[(int)SHEEP_TYPE::MAX];
@@ -80,8 +80,32 @@ void NikuManager::Release()
 
 void NikuManager::Update()
 {
+	// 肉ベジエ
+	if (m_pNikuBazier)
+	{
+		m_pNikuBazier->Update();
+
+		// ベジエ終わったら
+		if(m_pNikuBazier->IsEnd())
+		{
+			// ベジエ消して
+			delete m_pNikuBazier; m_pNikuBazier = nullptr;
+			// 肉消す(消えたら火がつくようになっている)
+			delete m_pNiku, m_pNiku = nullptr;
+
+			// 火エフェクト
+			EffectMgr.AddEffect((int)YAKINIKU_AREA.x + 128, (int)YAKINIKU_AREA.y + 128, EFFECT_TYPE::BURN);
+
+			// SE
+			se->Play("点火", YAKINIKU_AREA);
+		}
+	}
+	// 肉
 	if (m_pNiku)
 	{
+		// 消えてたらスルー
+		if (m_pNiku->isVisible()) return;
+
 		// 肉掴んでたら
 		if (m_bHoldNiku)
 		{
@@ -188,6 +212,7 @@ void NikuManager::RenderYakiniku()
 void NikuManager::RenderNiku()
 {
 	if (m_pNiku)m_pNiku->Render();
+	if (m_pNikuBazier)m_pNikuBazier->Render();
 }
 
 
@@ -198,6 +223,54 @@ void NikuManager::StartYakiniku(SHEEP_TYPE type)
 	// SEの再生
 	se->Play("焼けた", YAKINIKU_AREA);
 	se->Play("悲鳴", YAKINIKU_AREA);
+}
+
+void NikuManager::StartNikuBazier()
+{
+	// 肉無い
+	MyAssert(m_pNiku, "あるはずの肉がない");
+
+	// 開始と終了座標
+	Vector3 start(m_pNiku->GetCenterPos().x, m_pNiku->GetCenterPos().y, 0), end(YAKINIKU_AREA.x + 128, YAKINIKU_AREA.y + 128, 0);
+	
+	// 開始座標の位置に応じて、座標を算出
+	Vector3 center, center2;
+
+	float PowerLR = 480, PowerUD = 240;
+	if (start.y < 320)	// 上半分
+	{
+		// 左上
+		if (start.x < 640)
+		{
+			center = Vector3(start.x, start.y + PowerUD, 0);
+			center2 = Vector3(center.x + PowerLR/2, center.y + PowerUD/2, 0);
+		}
+		// 右上
+		else
+		{
+			center = Vector3(start.x, start.y + PowerUD, 0);
+			center2 = Vector3(center.x - PowerLR/2, center.y + PowerUD/2, 0);
+		}
+	}
+	else 	// 下半分
+	{
+		// 左下
+		if (start.x < 640)
+		{
+			center = Vector3(start.x, start.y - PowerUD, 0);
+			center2 = Vector3(center.x + PowerLR/2, center.y - PowerUD/2, 0);
+		}
+		// 右下
+		else
+		{
+			center = Vector3(start.x, start.y - PowerUD, 0);
+			center2 = Vector3(center.x - PowerLR/2, center.y - PowerUD/2, 0);
+		}
+	}
+
+	// 肉ベジエ生成
+	m_pNikuBazier = new NikuBazier("DATA/powerF.png", start, center, center2, end, 48);
+	m_pNikuBazier->Action();
 }
 
 // ここが肉を生成する瞬間
@@ -457,7 +530,7 @@ void Yakiniku::ChangeMode(YAKINIKU_MODE m)
 //		初期化・解放
 //===========================================================
 Niku::Niku(const Vector2 &pos, YAKINIKU_MODE type, tdn2DObj *image, SHEEP_TYPE SheepType) :m_SheepType(SheepType), m_pos(pos), m_bErase(false), m_orgY(pos.y),
-m_BoundPow(Vector2(6, -8)), m_gravity(1.0f), m_pImage(image), m_type(type), m_floor(FindFloor(pos.y)), m_bSet(false)
+m_BoundPow(Vector2(6, -8)), m_gravity(1.0f), m_pImage(image), m_type(type), m_floor(FindFloor(pos.y)), m_bSet(false), m_bVisible(false)
 {
 	m_move = m_BoundPow;
 	// Y座標補正
@@ -492,5 +565,5 @@ void Niku::Update()
 //===========================================================
 void Niku::Render()
 {
-	m_pImage->Render((int)m_pos.x, (int)m_pos.y, 120, 120, (int)m_type * 120, 0, 120, 120);
+	if(!m_bVisible)m_pImage->Render((int)m_pos.x, (int)m_pos.y, 120, 120, (int)m_type * 120, 0, 120, 120);
 }

@@ -2,7 +2,6 @@
 
 //***********************************
 //		牧草クラス
-
 // 牧草ステート
 enum class YAKINIKU_MODE
 {
@@ -152,6 +151,10 @@ public:
 	void Set(){ m_bSet = true; }
 	void UnSet(){ m_bSet = false; }
 
+	// ベジエで使う
+	bool isVisible(){ return m_bVisible; }
+	void SetVisible(){ m_bVisible = true; m_bSet = false; }
+
 	SHEEP_TYPE GetSheepType(){ return m_SheepType; }
 
 private:
@@ -165,10 +168,20 @@ private:
 	float m_orgY;
 	float m_gravity;
 	bool m_bSet;		// 配置したかどうか
-
+	bool m_bVisible;
 	SHEEP_TYPE m_SheepType;	// 焼いてる羊のタイプ
 };
 
+#include "../UI/SendPower/SendPower.h"
+
+// 肉ベジエ
+class NikuBazier : public SendPower
+{
+public:
+	NikuBazier(char* filename, Vector3 startPos, Vector3 centerPos,
+		Vector3 center2Pos, Vector3 endPos, int endFlame, int power = 10) :SendPower(filename, startPos, centerPos,
+		center2Pos, endPos, endFlame, power, 0){}
+};
 
 // 肉を管理するクラス
 class NikuManager
@@ -186,6 +199,7 @@ public:
 
 	// 肉作る
 	void StartYakiniku(SHEEP_TYPE type);
+	void StartNikuBazier();
 	void CreateNiku();
 
 	// ゲッタ
@@ -208,6 +222,9 @@ private:
 
 	// 完成した肉状態
 	Niku* m_pNiku;
+
+	// 肉食ったﾍﾞｼﾞｴ
+	NikuBazier *m_pNikuBazier;
 
 	bool m_bHoldNiku;
 

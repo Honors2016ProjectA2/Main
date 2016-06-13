@@ -505,7 +505,8 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				manIterator->SetCenterPos(pNiku->GetCenterPos());
 
 				// 肉消す
-				pNiku->Erase();
+				//pNiku->Erase();
+				NikuMgr->StartNikuBazier();	// ベジエに変更
 			}
 
 		}	// 狼が移動状態かどうかのif文
