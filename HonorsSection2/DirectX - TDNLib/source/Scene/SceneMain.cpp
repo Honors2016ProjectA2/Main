@@ -331,9 +331,12 @@ void sceneMain::Render()
 	tdnView::Clear(0xffffffff);
 	tdnView::Activate();
 
+
+/**********************************************/
+//	この間がゲーム画面
+/**************************************************/
 	renderTarget->RenderTarget();
 	//back->Render(0, 0);
-
 
 	// ステージの後ろ描画
 	stage->RenderBack();
@@ -357,8 +360,9 @@ void sceneMain::Render()
 	}break;
 	}
 
+/************************************************/
 
-	/******************************/
+/******************************/
 	// ポストエフェクト効果始まり	
 	PostEffectMgr.BloomBigin();
 	renderTarget->Render((int)ShakeMgr->move.x, (int)ShakeMgr->move.y);// レンダーターゲット																 

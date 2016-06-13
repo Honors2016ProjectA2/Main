@@ -940,7 +940,7 @@ float4 PS_post(VS_OUTPUT_G In) : COLOR
 	float4 OUT;
 OUT.rgba = In.Color * tex2D(DecaleSamp2, In.Tex);
 
-OUT.rgb -= 0.4f;
+OUT.rgb -= 0.5f;
 //max(OUT.r, 0.0f);
 //max(OUT.g, 0.0f);
 //max(OUT.b, 0.0f);
