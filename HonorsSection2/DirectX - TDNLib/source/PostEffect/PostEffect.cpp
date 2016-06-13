@@ -1,6 +1,6 @@
 #include "PostEffect.h"
 #include "system\System.h"
-
+#include	"../Shake/Shake.h"
 
 
 PostEffect* PostEffect::pInstance = nullptr;

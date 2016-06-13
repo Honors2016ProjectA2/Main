@@ -342,12 +342,26 @@ void sceneMain::Render()
 
 	UIMNG.Render();
 
+	// ステート描画
+	switch (state) {
+	case SCENE::EXPLAIN:	ExplainRender();	break;
+	case SCENE::READY:		ReadyRender();		break;
+	case SCENE::MAIN:		MainRender();		break;
+	case SCENE::END:		EndRender();		break;
+	case SCENE::RESULT:
+	{
+		stage->RenderFront();
+	}break;
+	case SCENE::TIPS:
+	{
+	}break;
+	}
 
 
 	/******************************/
 	// ポストエフェクト効果始まり	
 	PostEffectMgr.BloomBigin();
-	renderTarget->Render((int)ShakeMgr->move.x, (int)ShakeMgr->move.y);// レンダーターゲット
+	renderTarget->Render((int)ShakeMgr->move.x, (int)ShakeMgr->move.y);// レンダーターゲット																 
 	PostEffectMgr.BloomEnd();
 	/*****************************ポストエフェクトおわり*/
 
@@ -359,26 +373,18 @@ void sceneMain::Render()
 	/*****************************ブラ―おわり*/
 
 	tdnSystem::GetDevice()->SetRenderTarget(0, backUp);
-	renderTarget->Render((int)ShakeMgr->move.x, (int)ShakeMgr->move.y);
+	//renderTarget->Render((int)ShakeMgr->move.x, (int)ShakeMgr->move.y); //これは描画されていない
 
 	// ポストエフェクトたち
-	PostEffectMgr.RadialRender();
+	PostEffectMgr.RadialRender(); // ◎これが放射ブラ―を掛けた真の描画元
 
 	//if (KeyBoard(KB_ENTER))
 	{
 		PostEffectMgr.BloomRender();
 	}
 	
-
-
-
-
-	// ステート描画
+	// ↑
 	switch (state) {
-	case SCENE::EXPLAIN:	ExplainRender();	break;
-	case SCENE::READY:		ReadyRender();		break;
-	case SCENE::MAIN:		MainRender();		break;
-	case SCENE::END:		EndRender();		break;
 	case SCENE::RESULT:		ResultRender();		break;
 	case SCENE::TIPS:		TipsRender();		break;
 	}
@@ -440,7 +446,7 @@ void sceneMain::EndRender()
 void sceneMain::ResultRender()
 {
 	// ステージの前描画
-	stage->RenderFront();
+	//stage->RenderFront();
 	NumberEffect.Render();
 	//result->Render();
 	RESULT_UIMNG.Render();
