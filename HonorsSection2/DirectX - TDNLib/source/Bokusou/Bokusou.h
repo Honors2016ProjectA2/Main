@@ -129,13 +129,14 @@ private:
 	int m_point;
 };
 
+class BokusouManager;
 
 class BokusouTarget
 {
 public:
 	BokusouTarget();
 	~BokusouTarget();
-	void Update();
+	void Update(BokusouManager *pMgr);
 	void Render();
 
 	void ChangePos(const Vector2 &pos);
@@ -148,6 +149,7 @@ private:
 	float m_angle;
 	float m_scale;
 	BYTE m_alpha;
+	int m_srcX;
 };
 
 
