@@ -19,22 +19,30 @@ DebuBase::~DebuBase()
 void DebuBase::Update()
 {
 	// ƒAƒjƒ
-	if (++m_AnimFrame > 4)
+	if (++m_AnimFrame > 7)
 	{
 		m_AnimFrame = 0;
 		if (++m_AnimPanel > 3)m_AnimPanel = 0;
 	}
 
-	// SE–Â‚ç‚µ‚Ä‚È‚¢‚Æ‚«‚Ìó‘Ô
-	if (m_ReceiveSE == TDNSOUND_PLAY_NONE)
+	// “®‚¢‚Ä‚½‚ç
+	if (m_moveX != 0)
 	{
-		// “®‚¢‚Ä‚½‚ç
-		if (m_moveX != 0) m_ReceiveSE = se->Play("‘¾‚Á‚½—r‰Ÿ‚·", m_pos, Vector2(0, 0), true);	// SEÄ¶(ƒfƒXƒgƒ‰ƒNƒ^‚ÅŽ~‚ß‚é)
-	}
-	else
-	{
+		// SE–Â‚ç‚µ‚Ä‚È‚¢‚Æ‚«‚Ìó‘Ô
+		if (m_ReceiveSE == TDNSOUND_PLAY_NONE)m_ReceiveSE = se->Play("‘¾‚Á‚½—r‰Ÿ‚·", m_pos, Vector2(0, 0), true);	// SEÄ¶(ƒfƒXƒgƒ‰ƒNƒ^‚ÅŽ~‚ß‚é)
 		// SE‚ÌÀ•W‚ðÝ’è
 		se->SetPos("‘¾‚Á‚½—r‰Ÿ‚·", m_ReceiveSE, m_pos);
+	}
+	// “®‚¢‚Ä‚È‚©‚Á‚½‚ç
+	else
+	{
+		// SE—¬‚µ‚Ä‚½‚ç
+		if (m_ReceiveSE != TDNSOUND_PLAY_NONE)
+		{
+			// SEŽ~‚ß‚é
+			se->Stop("‘¾‚Á‚½—r‰Ÿ‚·", m_ReceiveSE);
+			m_ReceiveSE = TDNSOUND_PLAY_NONE;
+		}
 	}
 	// ‰Á‘¬“x‚ð‘«‚µ‚Ä‚¢‚­
 	m_moveX += m_accel;

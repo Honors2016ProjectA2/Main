@@ -27,7 +27,7 @@ const SE_Manager::DATA all_dataS[] =
 	{ "RANK_A",			"DATA/Sound/SE/se21.wav",		1, false },
 	{ "RANK_B",			"DATA/Sound/SE/se20.wav",		1, false },
 	{ "RANK_C",			"DATA/Sound/SE/se20.wav",		1, false },
-	{ "—rƒŒ[ƒ“•Ï‚í‚é",	"DATA/Sound/SE/arrert.wav",		3, false },
+	{ "ƒŠƒLƒƒƒXƒg",		"DATA/Sound/SE/arrert.wav",		2, false },
 	{ "–q‘‰è¶‚¦‚½",	"DATA/Sound/SE/born.wav",		3, false },
 	{ "‘¾‚Á‚½—r‰Ÿ‚·",	"DATA/Sound/SE/debuosu.wav",	6, false },
 	{ "–q‘¬’·",		"DATA/Sound/SE/grew.wav",		3, false },

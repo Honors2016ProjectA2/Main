@@ -73,12 +73,10 @@ private:
 		// ～ここにゲームキャラ達～
 
 		HOUSE_FRONT,	// ステージの家の前の部分
-		DOOR1_OPEN,		// 左上ドア空いてる
-		DOOR1_CLOSE,	// 左上ドア閉まってる
-		DOOR2_OPEN,		// 真ん中ドア空いてる
-		DOOR2_CLOSE,	// 真ん中ドア閉まってる
-		DOOR3_OPEN,		// 左下ドア空いてる
-		DOOR3_CLOSE,	// 左下ドア閉まってる
+		DOOR_OPEN1,
+		DOOR_OPEN2,
+		DOOR_OPEN3,
+		DOOR_CLOSE,
 
 		SAKU,			// 柵
 		KUSA,			// 草

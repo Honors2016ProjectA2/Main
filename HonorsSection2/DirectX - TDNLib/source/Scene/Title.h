@@ -52,3 +52,7 @@ private:
 
 	tdn2DAnim* m_gameStart;
 };
+
+
+// 超高難易度ステージ
+extern bool g_bExtraStage;

@@ -3,7 +3,7 @@
 //#include	"system.h"
 #include	"Framework.h"
 #include	"../Sound/SoundManager.h"
-//#include <time.h>
+#include	"../Scene/sceneLoading.h"
 
 
 //*****************************************************************************************************************************
@@ -106,4 +106,32 @@ void Framework::Render()
 	tdnSystem::EndScene();
 
 	dwRCurFrame ++;	//	描画フレーム数更新
+}
+
+//*****************************************************************************************************************************
+//		シーン変更
+//*****************************************************************************************************************************
+void Framework::ChangeScene(BaseScene* newScene, bool bLoadingScene)
+{
+	//	現在のシーン解放
+	if (scene != nullptr) delete scene;
+	//	シーンの切り替え＆初期化
+
+	// ローディング画面あり
+	if (bLoadingScene)
+	{
+		scene = new sceneLoading;
+		scene->Initialize(newScene);	// ここで、遷移先のInitializeを呼んでいる。
+	}
+
+	// ローディング画面なし
+	else
+	{
+		scene = newScene;
+
+		// Loadingでの2重Initialize阻止
+		if (scene->m_bLoad) return;
+
+		scene->Initialize();
+	}
 }

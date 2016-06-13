@@ -12,6 +12,12 @@
 
 //int g_FireModeChangeTime[(int)CurvePoint::FIRE_MODE::MAX];			// モードが変わっていく時間
 
+// 家の座標
+static const int HOUSE_POS_Y[STAGE_MAX] =
+{
+	116, 290, 500
+};
+
 //**************************************************
 //    StageManager class
 //**************************************************
@@ -258,12 +264,12 @@ void StageManager::Update()
 	}
 
 	// 時間経過でスコアを変える処理
-	if (++m_ChangeScoreTime > m_CHANGE_SCORE_TIME)
-	{
-		// レーン変える処理
-		m_ChangeScoreTime = 0;
-		ChangeScoreLane();
-	}
+	//if (++m_ChangeScoreTime > m_CHANGE_SCORE_TIME)
+	//{
+	//	// レーン変える処理
+	//	m_ChangeScoreTime = 0;
+	//	ChangeScoreLane();
+	//}
 
 	// 犬設置したフレームかどうか
 	g_bDogSetFrame = false;
@@ -585,13 +591,30 @@ void StageManager::RenderBack()
 	// 家の後ろ描画
 	m_pStageImages[StageImage::HOUSE_BACK]->Render(0, 0);
 
-	// 家のドア描画
-	m_pStageImages[(g_CreateSheepFloor == 0) ? StageImage::DOOR1_OPEN : StageImage::DOOR1_CLOSE]->Render(0, 0);
-	m_pStageImages[(g_CreateSheepFloor == 1) ? StageImage::DOOR2_OPEN : StageImage::DOOR2_CLOSE]->Render(0, 0);
-	m_pStageImages[(g_CreateSheepFloor == 2) ? StageImage::DOOR3_OPEN : StageImage::DOOR3_CLOSE]->Render(0, 0);
+	// 家描画
+	FOR(STAGE_MAX)
+	{
+		// 羊出てる家
+		if (i == g_CreateSheepFloor)
+		{
+			m_pStageImages[StageImage::DOOR_OPEN3]->Render(0, HOUSE_POS_Y[i]);
+			m_pStageImages[StageImage::DOOR_OPEN2]->Render(0, HOUSE_POS_Y[i]);
+		}
+		// 閉まってる家
+		else
+		{
+			// クールタイムゲージ処理
 
-	// 柵描画
-	m_pStageImages[StageImage::SAKU]->Render(0, 0);
+			// 下地
+			m_pStageImages[StageImage::DOOR_CLOSE]->SetARGB(0xff808080);
+			m_pStageImages[StageImage::DOOR_CLOSE]->Render(0, HOUSE_POS_Y[i]);
+
+			// ゲージ部分
+			const float GaugePercent = (stage[i]->GetRecastTime() / (float)m_RECAST_TIME);
+			m_pStageImages[StageImage::DOOR_CLOSE]->SetARGB(0xffffffff);
+			m_pStageImages[StageImage::DOOR_CLOSE]->Render(0, HOUSE_POS_Y[i] + (int)(180 * GaugePercent), 180, (int)((1 - GaugePercent) * 180), 0, (int)(180 * GaugePercent), 180, (int)((1 - GaugePercent) * 180));
+		}
+	}
 
 	// いけにえ棒描画
 	m_pStageImages[StageImage::IKENIE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256);
@@ -602,7 +625,7 @@ void StageManager::RenderBack()
 
 void StageManager::Render()
 {
-	for (int i = 0; i < STAGE_MAX; i++)
+	FOR(STAGE_MAX)
 	{
 		//static const int col[] = { 0x40ff0000, 0x4000ff00, 0x400000ff };
 		//// ステージ幅
@@ -613,7 +636,7 @@ void StageManager::Render()
 		//tdnPolygon::Rect(0, STAGE_POS_Y[i], 150, LANE_WIDTH, RS::COPY, 0x80ffffff);
 
 		// リキャスト
-		tdnText::Draw(64, STAGE_POS_Y[i] + 120, 0xffffffff, "%d", stage[i]->GetRecastTime());
+		//tdnText::Draw(64, STAGE_POS_Y[i] + 120, 0xffffffff, "%d", stage[i]->GetRecastTime());
 	}
 }
 
@@ -622,8 +645,14 @@ void StageManager::RenderFront()
 	// 犬描画
 	FOR(STAGE_MAX) for (auto it : m_Doglists[i]) it->Render();
 
-	// 家の前描画
+	// 右家の前描画
 	m_pStageImages[StageImage::HOUSE_FRONT]->Render(0, 0);
+
+	// 左家の前描画
+	FOR(STAGE_MAX) if (i == g_CreateSheepFloor) m_pStageImages[StageImage::DOOR_OPEN1]->Render(0, HOUSE_POS_Y[i]);
+
+	// 柵描画
+	m_pStageImages[StageImage::SAKU]->Render(0, 0);
 
 	// 草描画
 	m_pStageImages[StageImage::KUSA]->Render(0, 0);
@@ -724,7 +753,18 @@ void Stage::Init(Vector2 pos, Stage::StageState state)
 void Stage::Update()
 {
 	// リキャスト減らす処理
-	if (m_RecastTime > 0) m_RecastTime--;
+	if (m_RecastTime > 0)
+	{
+		// リキャスト溜まった瞬間！！
+		if (--m_RecastTime == 0)
+		{
+			// エフェクト
+			EffectMgr.AddEffect((int)pos.x + 68, (int)pos.y + 72, EFFECT_TYPE::PUT);
+
+			// SE
+			se->Play("リキャスト", pos);
+		}
+	}
 
 	switch (state)
 	{

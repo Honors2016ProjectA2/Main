@@ -5,9 +5,6 @@
 #include "../MousePointer.h"
 #include "SceneMain.h"
 
-// これを定義すると自動で説明読み飛ばしてくれる(デバッガー負荷軽減)
-//#define AUTO_EXPLAIN
-
 namespace{
 	namespace STATE{
 		enum{
@@ -91,7 +88,7 @@ void Explain::Text1()
 {
 	ScaleMove();
 	howTo.Open();
-#ifdef AUTO_EXPLAIN
+#ifdef GAME_SHORTCUT
 #else
 	if( tdnMouse::GetLeft() == 3 || KeyBoardTRG(KB_ENTER))
 #endif
@@ -112,7 +109,7 @@ void Explain::Text2()
 {
 	ScaleMove();
 	game.Open();
-#ifdef AUTO_EXPLAIN
+#ifdef GAME_SHORTCUT
 #else
 	if (tdnMouse::GetLeft() == 3 || KeyBoardTRG(KB_ENTER))
 #endif

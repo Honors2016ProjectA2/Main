@@ -9,6 +9,8 @@
 #include "../Sound/SoundManager.h"
 #include "../particle_2d/particle_2d.h"
 #include "../UI/UIManager.h"
+#include "../system/Framework.h"
+#include "../Scene/Title.h"
 
 //**************************************************
 //    基底
@@ -225,6 +227,8 @@ void FatWolf::Update()
 	// 基底クラスの更新
 	DebuBase::Update();
 
+	if (m_type == FAT_WOLF_TYPE::SMALL)m_AnimPanel = 0;	// 小デブはアニメなし
+
 	if (m_SheepType == SHEEP_TYPE::GOLD)
 	{
 		static int KiraKiraCoolTime = 0;
@@ -240,7 +244,7 @@ void FatWolf::Update()
 void FatWolf::Render()
 {
 	m_image->SetAngle(m_angle);
-	m_image->Render((int)m_pos.x, (int)m_pos.y, 240, 240, 0, (int)m_type * 240, 240, 240);
+	m_image->Render((int)m_pos.x, (int)m_pos.y, 240, 240, m_AnimPanel * 240, (int)m_type * 240, 240, 240);
 }
 
 
@@ -293,10 +297,9 @@ void EnemyManager::Initialize()
 	// 生成時間初期化
 	m_CreateTimer = 0;
 
-	extern bool g_bExtraStage;
 	if (g_bExtraStage)
 	{
-		m_CreateSpeed = .2f;
+		m_CreateSpeed = 1.0f;
 		m_UnlimitedPercent = 100;
 		m_bUnlimitedCreate = true;
 	}
@@ -362,19 +365,10 @@ void EnemyManager::Create(int floor, ENEMY_TYPE type)
 
 void EnemyManager::Update()
 {
-	// 敵生成タイマー
-	if (++m_CreateTimer > (int)(m_CREATETIME * m_CreateSpeed))
-	{
-		m_CreateTimer = 0;
-		Create(m_NextFloor, ENEMY_TYPE::WOLF);
-
-		// 次のフロア作成
-		m_NextFloor = tdnRandom::Get(0, 2);
-	}
 	int rest = (int)(m_CREATETIME * m_CreateSpeed) - m_CreateTimer;
-	if (rest <= 80 && rest > 75)
+	if (!m_bWarning)
 	{
-		if (!m_bWarning)
+		if (rest <= 80 && rest >= 50)
 		{
 			// アンリミ率でアンリミフラグけってい
 			m_bUnlimitedCreate = (tdnRandom::Get(0, 99) < m_UnlimitedPercent);
@@ -409,7 +403,18 @@ void EnemyManager::Update()
 			m_bWarning = true;
 		}
 	}
-	else m_bWarning = false;
+
+	// 敵生成タイマー
+	if (++m_CreateTimer > (int)(m_CREATETIME * m_CreateSpeed))
+	{
+		m_CreateTimer = 0;
+		Create(m_NextFloor, ENEMY_TYPE::WOLF);
+
+		// 次のフロア作成
+		m_NextFloor = tdnRandom::Get(0, 2);
+
+		m_bWarning = false;
+	}
 
 	for (auto it = m_list.begin(); it != m_list.end();)
 	{
@@ -480,13 +485,13 @@ void EnemyManager::CheckChangeSpeed(int WolfKillCount)
 		// ライン超えてたら
 		if (it->line < WolfKillCount)
 		{
-			if (m_UnlimitedPercent > it->U_percent) break;
+			//if (m_UnlimitedPercent > it->U_percent) break;
 
 			// 生成間隔
 			m_CreateSpeed = it->speed;
 
 			// アンリミパーセント
-			m_UnlimitedPercent = it->U_percent;
+			if (!g_bExtraStage)m_UnlimitedPercent = it->U_percent;
 			break;
 
 			//// リストから消去

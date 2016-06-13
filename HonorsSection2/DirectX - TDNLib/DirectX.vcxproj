@@ -137,6 +137,7 @@
     <ClCompile Include="source\Scene\Explain.cpp" />
     <ClCompile Include="source\Scene\result.cpp" />
     <ClCompile Include="source\Scene\Result2.cpp" />
+    <ClCompile Include="source\Scene\sceneLoading.cpp" />
     <ClCompile Include="source\Scene\SceneMain.cpp" />
     <ClCompile Include="source\Scene\sceneResult.cpp" />
     <ClCompile Include="source\Scene\Tips.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="source\Scene\Explain.h" />
     <ClInclude Include="source\Scene\result.h" />
     <ClInclude Include="source\Scene\Result2.h" />
+    <ClInclude Include="source\Scene\sceneLoading.h" />
     <ClInclude Include="source\Scene\SceneMain.h" />
     <ClInclude Include="source\Scene\sceneResult.h" />
     <ClInclude Include="source\Scene\Tips.h" />

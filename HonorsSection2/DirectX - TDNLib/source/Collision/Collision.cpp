@@ -34,6 +34,9 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 {
 	for (auto &sinIterator : *sinnMNG->Get_list()){
 
+		// 骨になってたら処理を全部省く！！
+		if (sinIterator->isDead()) continue;
+
 		Vector2 sPos = sinIterator->GetCenterPos();
 
 		// プレイヤーに掴まれてたら
@@ -61,7 +64,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 		// 羊と牧草花の判定
 		for (auto &kusaIterator : *BokusouMgr->GetList())
 		{
-			if (kusaIterator->GetFloor() != sinIterator->Get_floor()) continue;	// レーン違う
+			if (kusaIterator->GetFloor() != sinIterator->Get_floor() || kusaIterator->EraseOK()) continue;	// レーン違う&すでに誰かに食べられてたら(複数同時に太ってしまうのを防止)
 
 			Vector2 kPos = kusaIterator->GetCenterPos();
 
@@ -122,48 +125,48 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 		// 羊と火のダメージ判定
 		for (auto &fireIt : *stageMNG->GetFireList(sinIterator->Get_floor()))
 		{
-			// まずおいてなかったらthrough
-			if (!fireIt->IsOpening()) continue;
+		// まずおいてなかったらthrough
+		if (!fireIt->IsOpening()) continue;
 
-			Vector2 fPos;
-			Vector2 sPos2;
-			sinIterator->Get_pos2(sPos2);
-			sPos.x += sinIterator->Get_size();
-			fireIt->Get_pos2(fPos);
+		Vector2 fPos;
+		Vector2 sPos2;
+		sinIterator->Get_pos2(sPos2);
+		sPos.x += sinIterator->Get_size();
+		fireIt->Get_pos2(fPos);
 
 
-			// 火にあたった後の状態
-			if (fireIt->GetMode() == CurvePoint::FIRE_MODE::HITED)
-			{
-				// 羊座標のXが犬の座標とその前方範囲内
-				if (sPos.x > fPos.x - DOG_SIZE && sPos.x < fPos.x)
-				{
-					sinIterator->SetCurve(fireIt->GetDir());	// 羊に曲がれ命令を出す！
-				}
-				break;
-			}
+		// 火にあたった後の状態
+		if (fireIt->GetMode() == CurvePoint::FIRE_MODE::HITED)
+		{
+		// 羊座標のXが犬の座標とその前方範囲内
+		if (sPos.x > fPos.x - DOG_SIZE && sPos.x < fPos.x)
+		{
+		sinIterator->SetCurve(fireIt->GetDir());	// 羊に曲がれ命令を出す！
+		}
+		break;
+		}
 
-			// 判定
-			if ((sPos - fireIt->GetCenterPos()).LengthSq() < 64 * 64)
-			{
-				// 火の最終段階なら
-				if (fireIt->GetMode() == CurvePoint::FIRE_MODE::ENABLE && !sinIterator->col_check)
-				{
+		// 判定
+		if ((sPos - fireIt->GetCenterPos()).LengthSq() < 64 * 64)
+		{
+		// 火の最終段階なら
+		if (fireIt->GetMode() == CurvePoint::FIRE_MODE::ENABLE && !sinIterator->col_check)
+		{
 
-					sinIterator->Be_crushed();		// しぬ
-					sinIterator->col_check = true;
+		sinIterator->Be_crushed();		// しぬ
+		sinIterator->col_check = true;
 
-					se->Play("焼けた", *sinIterator->Get_pos());
-					se->Play("悲鳴", sinIterator->GetCenterPos());
+		se->Play("焼けた", *sinIterator->Get_pos());
+		se->Play("悲鳴", sinIterator->GetCenterPos());
 
-					NikuMgr->CreateNiku(sinIterator->GetCenterPos().x, sinIterator->Get_floor());
+		NikuMgr->CreateNiku(sinIterator->GetCenterPos().x, sinIterator->Get_floor());
 
-					// ヒット
-					fireIt->Hit();
-				}
-				// それ以外
-				//else fireIt->Change();// 炎消す
-			}
+		// ヒット
+		fireIt->Hit();
+		}
+		// それ以外
+		//else fireIt->Change();// 炎消す
+		}
 
 		}
 		*/
@@ -378,7 +381,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 					AddTime = 10;
 					break;
 				case FAT_WOLF_TYPE::LARGE:
-					AddTime = 20;
+					AddTime = 18;
 					break;
 				}
 				break;
@@ -387,7 +390,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 			// UIに時間を足す
 			//UIMNG.AddTimer(AddTime);
 			Vector3 startPos =
-				Vector3(fatIt->GetCenterPos().x-128, fatIt->GetCenterPos().y, 0.0f);
+				Vector3(fatIt->GetCenterPos().x - 128, fatIt->GetCenterPos().y, 0.0f);
 			Vector3 centerPos = Vector3(400, 600, 0);
 			Vector3 center2Pos = Vector3(100, 300, 0);
 			Vector3 endPos =	Vector3(720, 40, 0);
@@ -443,19 +446,26 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 	}
 
 	//犬と狼
-	for(auto& manIterator : *EnemyMgr->GetList()){
-		Vector2 wPos = manIterator->GetCenterPos();
-		for (auto& dogIterator : *stageMNG->GetDogList(manIterator->GetFloor()))
-		{
-			if (ExclamationDogAndWolf(dogIterator, manIterator)){
+	for (auto& manIterator : *EnemyMgr->GetList())
+	{
+		//for (auto& dogIterator : *stageMNG->GetDogList(manIterator->GetFloor()))
+		//{
+		//	if (ExclamationDogAndWolf(dogIterator, manIterator)){
 
-			}
-		}
+		//	}
+		//}
 
-		// 肉
-		Niku *pNiku = NikuMgr->GetNiku();
-		if (pNiku)
+		// 何回も肉を食わせないようにする処理
+		if (manIterator->GetMode() == Enemy::Wolf::MODE::RUN)
 		{
+			Vector2 wPos = manIterator->GetCenterPos();
+
+			// 肉
+			Niku *pNiku = NikuMgr->GetNiku();
+
+			// 肉おいてなかったら出ていけぇ！
+			if (!pNiku) continue;
+
 			// まだ設置してなかったらでていけぇ！！
 			if (!pNiku->isSeted()) continue;
 
@@ -497,8 +507,10 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				// 肉消す
 				pNiku->Erase();
 			}
-		}
-	}
+
+		}	// 狼が移動状態かどうかのif文
+
+	}	// 狼for文
 }
 
 bool CollisionManager::ShinnnyoAndExclamationPoint(Sheep::Base* sinn, Enemy::Wolf* enemy)

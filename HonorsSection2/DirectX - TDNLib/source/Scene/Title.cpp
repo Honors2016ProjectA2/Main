@@ -180,7 +180,7 @@ bool Title::Update()
 	{
 		if ( FadeControl::IsEndFade() )
 		{
-			MainFrame->ChangeScene(new sceneMain());
+			MainFrame->ChangeScene(new sceneMain(), true);	// シーンローディングを挟む
 			return true;
 		}
 	

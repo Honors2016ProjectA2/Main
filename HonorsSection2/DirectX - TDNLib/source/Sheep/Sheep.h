@@ -110,6 +110,7 @@ namespace Sheep
 		void Be_caught(bool bLeft);
 		bool isPushOK(){ return (process == MODE::WALK || process == MODE::PUSH); }
 		bool isCaught(){ return (process == MODE::CAUGHT); }
+		bool isDead(){ return (process == MODE::CRUSHED); }
 		void SetCurve(DIR dir)
 		{
 			if (process != MODE::WALK) return;

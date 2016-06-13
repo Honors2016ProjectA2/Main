@@ -2,6 +2,8 @@
 #ifndef __FRAMEWORK_H__
 #define __FRAMEWORK_H__
 
+// ショートカット(デバッグ用)
+//#define GAME_SHORTCUT
 
 #include	"TDNLIB.h"
 //#include	"System.h"
@@ -67,14 +69,7 @@ public:
 	//------------------------------------------------------
 	//	シーンの切り替え
 	//------------------------------------------------------
-	void ChangeScene(BaseScene* newScene)
-	{
-		//	現在のシーン解放
-		if( scene != NULL ) delete scene;
-		//	シーンの切り替え＆初期化
-		scene = newScene;
-		scene->Initialize();
-	}
+	void ChangeScene(BaseScene* newScene, bool bLoadingScene = false);
 };
 
 extern Framework *MainFrame;

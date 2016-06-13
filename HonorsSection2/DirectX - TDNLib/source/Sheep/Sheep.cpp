@@ -532,6 +532,9 @@ void SheepManager::Update()
 	{
 		for (auto& it : m_List)
 		{
+			// œ‚ð‚Â‚©‚Ü‚¹‚È‚¢II
+			if (it->isDead()) continue;
+
 			if ((it->GetCenterPos() - tdnMouse::GetPos()).LengthSq() < 60 * 60)
 			{
 				// —r•ß‚Ü‚¦‚éSE
