@@ -181,7 +181,8 @@ public:
 	void Initialize();
 	void Release();
 	void Update();
-	void Render();
+	void RenderYakiniku();
+	void RenderNiku();
 
 	// “÷ì‚é
 	void StartYakiniku(SHEEP_TYPE type);

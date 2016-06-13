@@ -180,10 +180,14 @@ void NikuManager::Update()
 	}
 }
 
-void NikuManager::Render()
+void NikuManager::RenderYakiniku()
+{
+	if (m_pYakiniku)m_pYakiniku->Render();
+}
+
+void NikuManager::RenderNiku()
 {
 	if (m_pNiku)m_pNiku->Render();
-	else if (m_pYakiniku)m_pYakiniku->Render();
 }
 
 

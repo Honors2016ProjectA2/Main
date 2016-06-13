@@ -418,6 +418,9 @@ void sceneMain::ReadyRender()
 
 void sceneMain::MainRender()
 {
+	// Ä“÷•`‰æ
+	NikuMgr->RenderYakiniku();
+
 	g_pSheepMgr->Render();
 	EnemyMgr->Render();
 	BokusouMgr->Render();
@@ -431,7 +434,7 @@ void sceneMain::MainRender()
 	g_pSheepMgr->RenderFat();
 	EnemyMgr->RenderFat();
 
-	NikuMgr->Render();
+	NikuMgr->RenderNiku();
 	NumberEffect.Render();
 }
 

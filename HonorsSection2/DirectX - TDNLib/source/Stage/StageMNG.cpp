@@ -616,6 +616,9 @@ void StageManager::RenderBack()
 		}
 	}
 
+	// ò•`‰æ
+	m_pStageImages[StageImage::SAKU]->Render(0, 0);
+
 	// ‚¢‚¯‚É‚¦–_•`‰æ
 	m_pStageImages[StageImage::IKENIE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256);
 
@@ -650,9 +653,6 @@ void StageManager::RenderFront()
 
 	// ¶‰Æ‚Ì‘O•`‰æ
 	FOR(STAGE_MAX) if (i == g_CreateSheepFloor) m_pStageImages[StageImage::DOOR_OPEN1]->Render(0, HOUSE_POS_Y[i]);
-
-	// ò•`‰æ
-	m_pStageImages[StageImage::SAKU]->Render(0, 0);
 
 	// ‘•`‰æ
 	m_pStageImages[StageImage::KUSA]->Render(0, 0);

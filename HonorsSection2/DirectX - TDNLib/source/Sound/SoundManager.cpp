@@ -34,7 +34,7 @@ const SE_Manager::DATA all_dataS[] =
 	{ "Œ¢",				"DATA/Sound/SE/inu.wav",		4, false },
 	{ "‚«‚ç‚ß‚­—r‚³‚ñ",	"DATA/Sound/SE/kiramekuhitsujisan.wav", 3, false },
 	{ "—r‘–‚é",			"DATA/Sound/SE/sheep_run.wav",	3, false },
-	{ "‘¾‚Á‚½—rIN",		"DATA/Sound/SE/fat_in.wav",		3, false },
+	{ "‘¾‚Á‚½—rIN",		"DATA/Sound/SE/fat_in.wav",		9, false },
 	{ "ƒhƒA",			"DATA/Sound/SE/door.wav",		3, false },
 	{ "BAD",			"DATA/Sound/SE/bad.wav",		1, false },
 	{ "GREAT",			"DATA/Sound/SE/great.wav",		1, false },
