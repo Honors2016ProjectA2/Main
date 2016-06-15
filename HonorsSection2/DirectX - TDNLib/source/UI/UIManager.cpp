@@ -2,6 +2,7 @@
 #include "particle_2d\particle_2d.h"
 #include "Effect\EffectManager.h"
 #include "Bokusou\Bokusou.h"
+#include "../Sound/SoundManager.h"
 
 //Particle_2d* particle;
 
@@ -361,6 +362,20 @@ void UIManager::TimerUpdate()
 		m_timer--;	
 	}
 
+
+	// 残りタイマーに応じてサウンドの速度を変更
+	// 30秒以下
+	if (m_timer <= 20)
+	{
+		const float percentage = (m_timer / 20.0f);
+		const float speed = 1.0f + (percentage * .025f);
+		bgm->SetSpeed("MAIN", speed);
+	}
+	else
+	{
+		// 元の速度
+		bgm->SetSpeed("MAIN", 1.0f);
+	}
 }
 
 void UIManager::TimerRender()

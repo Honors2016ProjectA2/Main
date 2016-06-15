@@ -336,7 +336,7 @@ void StageManager::UpdateDogs(const Vector2 &mPos)
 				else it->m_bCursorIn = false;
 
 				// 左マウス押して20フレーム以内に離したら！！かつカーソル範囲内かつ有効状態かつ肉持ってなかったらなら
-				if ((tdnMouse::GetLeft() == 2 && MouseLeftFrame <= 20) && it->m_bCursorIn && it->bEnable && !NikuMgr->isNikuHold())
+				if ((tdnMouse::GetLeft() == 2 && MouseLeftFrame <= 12) && it->m_bCursorIn && it->bEnable && !NikuMgr->isNikuHold())
 				{
 					// 犬回収
 					if (it->IsOpening())

@@ -81,7 +81,6 @@ private:
 		DOOR_CLOSE,
 
 		SAKU,			// çÚ
-		KUSA,			// ëê
 
 		IKENIE,			// Ç¢ÇØÇ…Ç¶ñ_
 		FIRE,			// âä

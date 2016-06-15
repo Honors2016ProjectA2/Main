@@ -65,7 +65,7 @@ bool Title::Initialize()
 
 	// ”wŒi
 	m_BG = new tdn2DObj("Data/Title/taitoru.png");
-	m_BG_flont = new tdn2DObj("Data/Title/taitoru2.png");
+	//m_BG_flont = new tdn2DObj("Data/Title/taitoru2.png");
 
 	m_titleLogo= new tdn2DObj("Data/title/titleLogo.png");
 
@@ -101,7 +101,7 @@ Title::~Title()
 	EffectMgr.Release();
 	//RESULT_UIMNG.Release();
 	
-	SAFE_DELETE(m_BG_flont);
+	//SAFE_DELETE(m_BG_flont);
 	NikuMgr->Release();
 	SAFE_DELETE(m_send);
 	SAFE_DELETE(m_gameStart);
@@ -300,7 +300,7 @@ void Title::Render()
 	// ƒCƒk
 	m_dog.pic->Render((int)m_dog.pos.x, (int)m_dog.pos.y, 120, 120, m_dog.anim * 120, 0, 120, 120);
 	
-	m_BG_flont->Render(0, 0);
+	//m_BG_flont->Render(0, 0);
 
 	// ƒ^ƒCƒgƒ‹
 	m_titleLogo->Render(0, -150);

@@ -6,7 +6,6 @@ DATA/Stage/doa_open1.png
 DATA/Stage/doa_open2.png
 DATA/Stage/doa_open3.png
 DATA/Stage/doa_simaru.png
-DATA/Stage/haikei_saku.png
 DATA/Stage/haikei_kusa_1.png
 DATA/Stage/haikei_ikenie.png
 DATA/Stage/haikei_fire.png

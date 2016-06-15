@@ -34,7 +34,7 @@ private:
 
 	// ”wŒi
 	tdn2DObj* m_BG;
-	tdn2DObj* m_BG_flont;
+	//tdn2DObj* m_BG_flont;
 
 	// ƒ^ƒCƒgƒ‹
 	tdn2DObj* m_titleLogo;
