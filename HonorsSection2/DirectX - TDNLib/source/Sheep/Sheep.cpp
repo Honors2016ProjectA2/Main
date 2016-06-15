@@ -8,6 +8,8 @@
 #include "../system/system.h"
 #include "../particle_2d/particle_2d.h"
 #include "../Niku/Niku.h"
+#include "../Number/Number.h"
+#include "../UI/UIManager.h"
 
 // グローバル領域
 int g_CreateSheepFloor;	// 羊を生成するフロア
@@ -636,50 +638,175 @@ void ResultSheep::Mode::Run::Update()
 }
 
 // リザルト羊掃けてる状態
+ResultSheep::Mode::Hakeru::Hakeru(ResultSheep *pSheep) :Base(pSheep)
+{
+	// 移動ベクトルランダムに作成
+	const float RandAngle = (PI * .5f)*((float)rand() / RAND_MAX) + (PI * .25f);	// 0～90
+
+	// アングル⇒ベクトル
+	m_vec.x = -sinf(RandAngle);
+	m_vec.y = cosf(RandAngle);
+}
 void ResultSheep::Mode::Hakeru::Update()
 {
 	// 基底クラスの更新(アニメ関連)
 	Base::Update();
 
 	// 左上に移動
-	m_pSheep->m_pos += Vector2(.5f, .5f) * (m_pSheep->m_speed * 2);
+	m_pSheep->m_pos += m_vec * ((1) ? 32 : m_pSheep->m_speed * 4);
+
+	// 回転
+	m_angle += (m_vec.y < 0) ? .2f : -.2f;
+
+	// 画面外判定(消去)
+	if (m_pSheep->m_pos.x < -120 || m_pSheep->m_pos.x > tdnSystem::GetScreenSize().right + 120||
+		m_pSheep->m_pos.y < -120 || m_pSheep->m_pos.y > tdnSystem::GetScreenSize().bottom + 120)
+		m_pSheep->Erase();
 }
 
 // リザルト羊管理
-ResultSheepManager::ResultSheepManager(float ScoreWakuY, float SohotaWakuY) :m_pSheepImage(new tdn2DObj("DATA/CHR/sheep_animation.png")), m_StartScoreY(ScoreWakuY), m_StartOtherY(SohotaWakuY)
+ResultSheepManager::ResultSheepManager(float ScoreWakuY, float SonotaWakuY, float startX, float speed)
+:m_pSheepImage(new tdn2DObj("DATA/CHR/sheep_animation.png")), m_StartScoreY(ScoreWakuY), m_StartOtherY(SonotaWakuY), m_StartX(startX), m_speed(speed)
 {
-
+	m_waku[0].pImage = new tdn2DObj("DATA/Result/boadScore.png");
+	m_waku[1].pImage = new tdn2DObj("DATA/Result/boadsonota.png");
+	m_waku[0].pos.y = ScoreWakuY;
+	m_waku[1].pos.y = SonotaWakuY;
+	FOR(NUMBER_TYPE::MAX)m_pNumbers[i] = new Number;
 }
 
 ResultSheepManager::~ResultSheepManager()
 {
-	for (auto it : m_ScoreSheepList) delete it;
-	for (auto it : m_OtherSheepList) delete it;
+	for (auto it = m_ScoreSheepList.begin(); it != m_ScoreSheepList.end();)
+	{
+		delete (*it);
+		it = m_ScoreSheepList.erase(it);
+	}
+	for (auto it = m_OtherSheepList.begin(); it != m_OtherSheepList.end();)
+	{
+		delete (*it);
+		it = m_OtherSheepList.erase(it);
+	}
 	delete m_pSheepImage;
+	delete m_waku[0].pImage;
+	delete m_waku[1].pImage;
+	FOR(NUMBER_TYPE::MAX)delete m_pNumbers[i];
+}
+
+void ResultSheepManager::Update()
+{
+	// スコア枠を羊が運んでいるときの状態
+	if (!m_ScoreSheepList.empty() && !m_waku[0].isSet)
+	{
+		m_waku[0].pos.x = (*m_ScoreSheepList.begin())->GetPos().x + 100;
+
+		// 端っこにあたったif文
+		if (m_waku[0].pos.x > tdnSystem::GetScreenSize().right - WAKU_WIDTH - 8)
+		{
+			se->Play("リザルトダン");
+			m_waku[0].isSet = true;
+
+			// 羊掃けさせる
+			HakeruScoreSheep();
+
+			// ナンバーアクション
+			m_pNumbers[NUMBER_TYPE::SCORE]->Action();
+		}
+	}
+
+	// その他枠を羊が運んでいるときの状態
+	if (!m_OtherSheepList.empty() && !m_waku[1].isSet)
+	{
+		m_waku[1].pos.x = (*m_OtherSheepList.begin())->GetPos().x + 100;
+
+		// 端っこにあたったif文
+		if (m_waku[1].pos.x > tdnSystem::GetScreenSize().right - WAKU_WIDTH - 8)
+		{
+			se->Play("リザルトダン");
+			m_waku[1].isSet = true;
+
+			// 羊掃けさせる
+			HakeruOtherSheep();
+
+			// ナンバーアクション
+			m_pNumbers[NUMBER_TYPE::COMBO]->Action();
+			m_pNumbers[NUMBER_TYPE::WOLFKILL]->Action();
+			m_pNumbers[NUMBER_TYPE::SHEEPKILL]->Action();
+		}
+	}
+
+	// ナンバーアップデート更新
+	FOR(NUMBER_TYPE::MAX)m_pNumbers[i]->Update();
+
+	// スコア枠羊更新
+	for (auto it = m_ScoreSheepList.begin(); it != m_ScoreSheepList.end();)
+	{
+		(*it)->Update();
+		// 消去チェック
+		if ((*it)->EraseOK())
+		{
+			delete (*it);
+			it = m_ScoreSheepList.erase(it);
+		}
+		else it++;
+	}
+
+	// その他枠羊更新
+	for (auto it = m_OtherSheepList.begin(); it != m_OtherSheepList.end();)
+	{
+		(*it)->Update();
+		// 消去チェック
+		if ((*it)->EraseOK())
+		{
+			delete (*it);
+			it = m_OtherSheepList.erase(it);
+		}
+		else it++;
+	}
+}
+
+void ResultSheepManager::Render()
+{
+	// 羊
+	for (auto& it : m_ScoreSheepList) it->Render(m_pSheepImage);
+	for (auto& it : m_OtherSheepList) it->Render(m_pSheepImage);
+
+	// 枠
+	m_waku[0].pImage->Render((int)m_waku[0].pos.x, (int)m_waku[0].pos.y);
+	m_waku[1].pImage->Render((int)m_waku[1].pos.x, (int)m_waku[1].pos.y);
+
+	// ナンバー
+	m_pNumbers[NUMBER_TYPE::SCORE]->Render((int)m_waku[0].pos.x + 630, (int)m_waku[0].pos.y + 35, UIMNG.GetScore());	// スコア
+
+
+	static const int OTHER_HABA = 85;
+	m_pNumbers[NUMBER_TYPE::COMBO]->Render((int)m_waku[1].pos.x + 630, (int)m_waku[1].pos.y + 35, UIMNG.GetCombo());								// コンボ
+	m_pNumbers[NUMBER_TYPE::WOLFKILL]->Render((int)m_waku[1].pos.x + 630, (int)m_waku[1].pos.y + 35 + OTHER_HABA, UIMNG.GetWorfHappyCount());		// 狼討伐
+	m_pNumbers[NUMBER_TYPE::SHEEPKILL]->Render((int)m_waku[1].pos.x + 630, (int)m_waku[1].pos.y + 35 + OTHER_HABA*2, UIMNG.GetSheepKillCount());	// 羊死に
 }
 
 // スコア羊スタート
 void ResultSheepManager::StartScoreSheep()
 {
-	static const int NUM_SHEEP = 5;		// 羊の数
-	static const float SHEEP_SPEED = 6;
+	static const int NUM_SHEEP = 3;		// 羊の数
+	static const int HUREHABA = 16;		// 横の振れ幅(縦一列に並ぶのもどうかと思うので)
 
 	FOR(NUM_SHEEP)
 	{
 		// スコア押す羊格納
-		m_ScoreSheepList.push_back(new ResultSheep(Vector2(-120, m_StartScoreY + i * 60), SHEEP_SPEED));
+		m_ScoreSheepList.push_back(new ResultSheep(Vector2(m_StartX - (rand() % HUREHABA), m_StartScoreY + i * 30), m_speed));
 	}
 }
 
 // その他項目羊スタート
 void ResultSheepManager::StartOtherSheep()
 {
-	static const int NUM_SHEEP = 8;		// 羊の数
-	static const float SHEEP_SPEED = 6;
+	static const int NUM_SHEEP = 7;		// 羊の数
+	static const int HUREHABA = 16;		// 横の振れ幅(縦一列に並ぶのもどうかと思うので)
 
 	FOR(NUM_SHEEP)
 	{
 		// スコア押す羊格納
-		m_ScoreSheepList.push_back(new ResultSheep(Vector2(-120, m_StartOtherY + i * 60), SHEEP_SPEED));
+		m_OtherSheepList.push_back(new ResultSheep(Vector2(m_StartX - (rand() % HUREHABA), m_StartOtherY + i * 30), m_speed));
 	}
 }

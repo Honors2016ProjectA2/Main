@@ -5,6 +5,7 @@
 
 #include "Effect\BaseEffect\BaseEffect.h"
 #include "Number\Number.h"
+#include "Sheep\Sheep.h"
 
 // ResultUI
 class ResultUIManager
@@ -13,7 +14,7 @@ public:
 	// ステップ(動きの流れ)
 	enum class STEP
 	{
-		START,EXE,SUM_CALC,RANK,RANKING_START, RANKING,END
+		START,SCORE,SONOTA,EXE,SUM_CALC,RANK,RANKING_START, RANKING,END
 	};
 	STEP m_step;
 
@@ -72,7 +73,6 @@ public:
 	enum FONT
 	{
 		RESULT, SCORE, COMBO, WORF, FIRE, SUM, END
-
 	};
 
 	struct Font
@@ -82,7 +82,7 @@ public:
 		bool isSE;
 
 	};
-	Font m_font[END];
+	//Font m_font[END];
 
 	// その他
 	tdn2DAnim* m_senPic;// 線
@@ -113,6 +113,16 @@ public:
 	//
 	tdn2DObj* m_resultBG;
 
+	ResultSheepManager* m_SheepMGN;
+
+	Font  m_sumFont;
+
+	// ボード達
+	//tdn2DAnim* m_boadScore;
+	//tdn2DAnim* m_boadEx;
+
+	//int m_boadScoreX, m_boadScoreY;
+	//int m_boadExX, m_boadExY;
 private:
 	static ResultUIManager* inst;
 

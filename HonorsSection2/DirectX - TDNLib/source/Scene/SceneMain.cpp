@@ -43,7 +43,7 @@ namespace{
 bool sceneMain::Initialize()
 {
 	UIMNG.Init();
-	UIMNG.SetTimer(90);
+	UIMNG.SetTimer(10);
 	
 
 	EffectMgr;

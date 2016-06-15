@@ -67,26 +67,33 @@ ResultUIManager::ResultUIManager()
 	m_circle.endFlame = 6;
 
 	// フォント
-	m_font[RESULT].pic = new tdn2DAnim("DATA/Result/F_result.png");	
-	m_font[SCORE].pic = new tdn2DAnim("DATA/Result/F_score.png");
-	m_font[COMBO].pic = new tdn2DAnim("DATA/Result/F_combo.png");
-	m_font[WORF].pic = new tdn2DAnim("DATA/Result/F_worf.png");
-	m_font[FIRE].pic = new tdn2DAnim("DATA/Result/F_fire.png");
-	m_font[SUM].pic = new tdn2DAnim("DATA/Result/F_sum.png");
+	//m_font[RESULT].pic = new tdn2DAnim("DATA/Result/F_result.png");	
+	//m_font[SCORE].pic = new tdn2DAnim("DATA/Result/F_score.png");
+	//m_font[COMBO].pic = new tdn2DAnim("DATA/Result/F_combo.png");
+	//m_font[WORF].pic = new tdn2DAnim("DATA/Result/F_worf.png");
+	//m_font[FIRE].pic = new tdn2DAnim("DATA/Result/F_fire.png");
+	//m_font[SUM].pic = new tdn2DAnim("DATA/Result/F_sum.png");
+	m_sumFont.pic = new tdn2DAnim("DATA/Result/F_sum.png");
 
-	for (int i = 0; i < FONT::END; i++)
-	{	
-		m_font[i].pic->OrderMoveAppeared(14, -360, i * 96);
-		m_font[i].x = 40;
-		m_font[i].y = (i * 92)+6;
-		m_font[i].isSE = false;
-	}
+	//for (int i = 0; i < FONT::END; i++)
+	//{	
+	//	m_font[i].pic->OrderMoveAppeared(14, -360, i * 96);
+	//	m_font[i].x = 40;
+	//	m_font[i].y = (i * 92)+6;
+	//	m_font[i].isSE = false;
+	//}
 
-	// 文字の効果書き換え
-	m_font[FONT::RESULT].pic->OrderShrink(6, 1.0f, 1.1f);
-	m_font[FONT::SUM].pic->OrderMoveAppeared(8, 0, 700);
-	m_font[FONT::SUM].x = 0;
-	m_font[FONT::SUM].y = 530;
+	//// 文字の効果書き換え
+	//m_font[FONT::RESULT].pic->OrderShrink(6, 1.0f, 1.1f);
+	//m_font[FONT::SUM].pic->OrderMoveAppeared(8, 0, 700);
+	//m_font[FONT::SUM].x = 0;
+	//m_font[FONT::SUM].y = 530;
+
+	m_sumFont.x = 500;
+	m_sumFont.y = 560;
+	m_sumFont.pic->OrderMoveAppeared(8, m_sumFont.x, 700);
+	m_sumFont.isSE = false;
+
 
 	// 線
 	m_senPic = new tdn2DAnim("DATA/Result/sen.png");
@@ -108,19 +115,19 @@ ResultUIManager::ResultUIManager()
 	}
 	//m_number[FONT::SUM]->GetAnim()->OrderShrink(6, 1.0f, 1.5f);
 	m_number[FONT::SUM] = new Number("DATA/Number/Number4.png", 96);
-	m_number[FONT::SUM]->GetAnim()->OrderMoveAppeared(8, 700, 700);
-	m_numX[FONT::SUM] = 650;
-	m_numY[FONT::SUM] = 540;
+	m_numX[FONT::SUM] = 1150;
+	m_numY[FONT::SUM] = 580;
+	m_number[FONT::SUM]->GetAnim()->OrderMoveAppeared(8, m_numX[FONT::SUM], 700);
 	m_numNum[FONT::SUM] = 0;
 	//m_number[FONT::SUM]->GetAnim()->SetScale()
 
 	m_WaitFlame = 0;
 
-	// ランク
+	// ランク ABCD
 	m_RankPic = new tdn2DAnim("DATA/Result/rank.png");
 	//m_RankPic->OrderMoveAppeared(12, 1500, 400);
 	m_RankPic->OrderShrink(12, 1.0f, 2.5f);
-	m_RankPicX = 850, m_RankPicY = 350;
+	m_RankPicX = 100, m_RankPicY = 350;
 	m_RankRipPic = new tdn2DAnim("DATA/Result/rank.png");
 	m_RankRipPic->OrderRipple(12, 1.0f, 0.1f);
 
@@ -148,8 +155,8 @@ ResultUIManager::ResultUIManager()
 	//
 	for (int i = 0; i < RANKING_MAX; i++)
 	{
-	m_rankingNumber[i] = new Number();
-	m_rankingNumber[i]->GetAnim()->OrderShake(60 * 120 , 0, 16, 12);
+		m_rankingNumber[i] = new Number();
+		m_rankingNumber[i]->GetAnim()->OrderShake(60 * 120, 0, 16, 12);
 	}
 
 
@@ -160,7 +167,17 @@ ResultUIManager::ResultUIManager()
 	m_RankINPic = new tdn2DAnim("Data/Result/rankin.png");
 	m_RankINPic->OrderMoveAppeared(24, 600, 100);
 
-	m_resultBG = new tdn2DObj("Data/result/BG.png");
+	m_resultBG = new tdn2DObj("Data/result/rizaruto.png");
+
+	//
+	m_SheepMGN = new ResultSheepManager(100, 250, -1000, 24);
+
+	// 
+	//m_boadScore = new tdn2DAnim("Data/result/boadScore.png");
+	//m_boadScore->OrderMoveAppeared(14, -40, 300);
+
+	//m_boadEx    = new tdn2DAnim("Data/result/boadEx.png");
+	//m_boadEx->OrderMoveAppeared(14, -40, 800);
 
 }
 
@@ -176,7 +193,7 @@ ResultUIManager::~ResultUIManager()
 
 	for (int i = 0; i < FONT::END; i++)
 	{
-		SAFE_DELETE(m_font[i].pic);
+		//SAFE_DELETE(m_font[i].pic);
 		SAFE_DELETE(m_number[i]);
 	}
 	SAFE_DELETE(m_senPic);
@@ -202,6 +219,14 @@ ResultUIManager::~ResultUIManager()
 	SAFE_DELETE(m_RankINPic);
 
 	SAFE_DELETE(m_resultBG);
+
+	SAFE_DELETE(m_SheepMGN);
+
+	//SAFE_DELETE(m_boadScore);
+	//SAFE_DELETE(m_boadEx);
+	
+	SAFE_DELETE(m_sumFont.pic);
+	
 }
 
 void ResultUIManager::Init()
@@ -225,6 +250,9 @@ bool ResultUIManager::Update()
 	m_MaxSumNum =
 		m_numNum[FONT::SCORE] + (m_numNum[FONT::COMBO] * 1000) + m_numNum[FONT::WORF] * 10000 + m_numNum[FONT::FIRE] * 1;
 
+
+	//m_MaxSumNum = 114514810;
+
 	Debug();
 
 	switch (m_step)
@@ -234,34 +262,76 @@ bool ResultUIManager::Update()
 		if (CircleUpdate())
 		{
 			// 文字たちの動きの更新
-			for (int i = 0; i < FONT::END; i++)
-			{
-				m_font[i].pic->Action((i * 38));
-				m_number[i]->GetAnim()->Action((i * 38));
-			}
-			//　線
-			m_senPic->Action();
-			// ヘルプ
-			m_helpPic->Action(12);
+			//for (int i = 0; i < FONT::END; i++)
+			//{
+			//	m_font[i].pic->Action((i * 38));
+			//	m_number[i]->GetAnim()->Action((i * 38));
+			//}
+			////　線
+			//m_senPic->Action();
+			//// ヘルプ
+			//m_helpPic->Action(12);
 
-			// 文字書き換え
-			m_font[FONT::RESULT].pic->Action();
-			m_font[FONT::SUM].pic->Action(6);
+			//// 文字書き換え
+			//m_font[FONT::RESULT].pic->Action();
+			//m_font[FONT::SUM].pic->Action(6);
+			m_sumFont.pic->Action(6);
 
-			// 数字書き換え
-			m_number[FONT::RESULT]->GetAnim()->Stop();
-			m_number[FONT::SUM]->GetAnim()->Stop();
+			//// 数字書き換え
+			//m_number[FONT::RESULT]->GetAnim()->Stop();
+			//m_number[FONT::SUM]->GetAnim()->Stop();
+			
+			//m_boadScore->Action();
+			//m_boadEx->Action();
 
+			m_SheepMGN->StartScoreSheep();
+
+			// 次のステップへ
+			m_step = STEP::SCORE;
+		}
+		
+		break;
+	case ResultUIManager::STEP::SCORE:	// スコア
+
+		// ボタン
+		if (KeyBoardTRG(KB_Y))
+		{
+			// 次のステップへ
+			m_step = STEP::SONOTA;
+		}
+		if (m_SheepMGN->isScoreEnd())
+		{
+			// 次のステップへ
+			m_step = STEP::SONOTA;
+
+			// 次の帆辻
+			m_SheepMGN->StartOtherSheep();
+		}
+		
+
+		break;
+	case ResultUIManager::STEP::SONOTA:	// その他
+
+		// ボタン
+		if (KeyBoardTRG(KB_Y))
+		{
 			// 次のステップへ
 			m_step = STEP::EXE;
 		}
-		
+
+		if (m_SheepMGN->isOtherEnd())
+		{
+			// 次のステップへ
+			m_step = STEP::EXE;
+
+		}
+
 		break;
 	case ResultUIManager::STEP::EXE:
 		// このモードの間にディレイを掛けられた項目が出てくる
 
 		m_WaitFlame++;
-		if (m_WaitFlame >= 200)
+		if (m_WaitFlame >= 40)
 		{
 			m_WaitFlame = 0;
 			// 次のステップへ
@@ -270,7 +340,7 @@ bool ResultUIManager::Update()
 			m_numNum[FONT::SUM] = 0;
 
 			// テレレレSE再生
-			se->Play("リザルトスコア", true);
+			//se->Play("リザルトスコア", true);
 		}
 
 		break;
@@ -314,6 +384,13 @@ bool ResultUIManager::Update()
 				m_numNum[FONT::SUM] += 1234567;
 			}
 
+			// SE単体 てれれれｒ
+			static int waitSE = 0;
+			if (++waitSE >= 4) {
+				waitSE = 0;
+				se->Play("リザルトスコア");
+			}
+			
 		}
 		else
 		{
@@ -329,7 +406,7 @@ bool ResultUIManager::Update()
 				m_RankPic->Action();
 
 				// テレレレSE停止
-				se->Stop("リザルトスコア", 0);
+				//se->Stop("リザルトスコア", 0);
 
 				RankUpdate();				// ランクの更新
 			}
@@ -410,10 +487,12 @@ bool ResultUIManager::Update()
 	}
 
 	// 文字たちの動きの更新
-	for (int i = 0; i < FONT::END; i++)
-	{
-		m_font[i].pic->Update();
-	}
+	//for (int i = 0; i < FONT::END; i++)
+	//{
+	//	m_font[i].pic->Update();
+	//}
+	m_sumFont.pic->Update();
+
 	// 線
 	m_senPic->Update();
 	// ヘルプ
@@ -442,19 +521,44 @@ bool ResultUIManager::Update()
 	/***************************/
 	//	音ならすポン
 	/**************************/
-	for (int i = 0; i < FONT::END; i++)
-	{
-		if (m_font[i].pic->GetAction()->IsEnd() == true)
-		{
-			// 分岐
-			if (m_font[i].isSE == false)
-			{
-				se->Play("リザルトダン");
-				m_font[i].isSE = true;
-			}
-		}	
-	}
+	//for (int i = 0; i < FONT::END; i++)
+	//{
+	//	if (m_font[i].pic->GetAction()->IsEnd() == true)
+	//	{
+	//		// 分岐
+	//		if (m_font[i].isSE == false)
+	//		{
+	//			se->Play("リザルトダン");
+	//			m_font[i].isSE = true;
+	//		}
+	//	}	
+	//}
+
+		//if (m_sumFont.pic->GetAction()->IsEnd() == true)
+		//{
+		//	// 分岐
+		//	if (m_sumFont.isSE == false)
+		//	{
+		//		se->Play("リザルトダン");
+		//		m_sumFont.isSE = true;
+		//	}
+		//}	
 	
+	
+
+	//if (KeyBoardTRG(KB_R))
+	//{
+	//	m_SheepMGN->StartScoreSheep();
+	//}
+	if (KeyBoardTRG(KB_ENTER))
+	{
+		m_SheepMGN->Reset();
+	}
+	m_SheepMGN->Update();
+
+	// ボード
+	//m_boadScore->Update();
+	//m_boadEx->Update();
 
 	return false;
 }
@@ -509,7 +613,7 @@ bool ResultUIManager::CircleUpdate()
 	// ↓が緑の方
 	/**********************************************/
 
-	if (m_invCircle.scale >= 2.7f) // ★★★　もう頭おかしいソースコードだが、もうどうなってもいい
+	if (m_invCircle.scale >= 2.7f) // ★★★　頭おかしいソースコードだが、もうどうなってもいい
 	{
 		moveX = abs(m_circle.startX - m_circle.endX);
 		moveY = abs(m_circle.startY - m_circle.endY);
@@ -616,7 +720,12 @@ void ResultUIManager::Render()
 		// その次はアルファ考慮なしのレンダーターゲットで
 		//m_circleScreen->Render(0, 0);
 		m_resultScreen->Render(0, 0);
-		m_rankingScreen->Render(780, 0, shader2D, "blind");
+		m_rankingScreen->Render(0, 0, shader2D, "blind");
+		m_SheepMGN->Render();
+		// ボード
+		//m_boadScore->Render(500,300);
+		//m_boadEx->Render(500, 300);
+
 	}
 	//m_resultScreen->Render(0, 0);
 	//m_rankingScreen->Render(780, 0, shader2D, "blind");
@@ -625,8 +734,8 @@ void ResultUIManager::Render()
 	tdnSystem::GetDevice()->SetRenderTarget(0, pBackBuffer);
 	m_screen->Render(0, 0);
 
-	//m_circleScreen->Render(0, 0, 1280/4, 720 / 4, 0, 0, 1280 , 720 );
-	//m_maskScreen->Render(0, 0);
+	// m_circleScreen->Render(0, 0, 1280/4, 720 / 4, 0, 0, 1280 , 720 );
+	// m_maskScreen->Render(0, 0);
 
 	//tdnText::Draw(100, 200, 0xff555555, "x=%d:y=%d", m_invCircle.x, m_invCircle.y);
 	//tdnText::Draw(100, 300, 0xff555555, "x=%d:y=%d", m_circle.x, m_circle.y);
@@ -653,14 +762,16 @@ void ResultUIManager::ResultRender()
 	//m_rankingFont->Render(780, 0, shader2D, "blind");
 
 	// 線
-	m_senPic->Render(0, 0);
+	//m_senPic->Render(0, 0);
 	// help
-	m_helpPic->Render(0, 650);
+	//m_helpPic->Render(0, 650);
 	// 文字たち
-	for (int i = 0; i < FONT::END; i++)
-	{
-		m_font[i].pic->Render(m_font[i].x, m_font[i].y);
-	}
+	//for (int i = 0; i < FONT::END; i++)
+	//{
+	//	m_font[i].pic->Render(m_font[i].x, m_font[i].y);
+	//}
+	m_sumFont.pic->Render(m_sumFont.x, m_sumFont.y);
+
 	// 数字
 	for (int i = 0; i < FONT::END; i++)
 	{
@@ -674,6 +785,14 @@ void ResultUIManager::ResultRender()
 	switch (m_step)
 	{
 	case ResultUIManager::STEP::START:
+		break;
+	case ResultUIManager::STEP::SCORE:
+		tdnText::Draw(0, 90, 0xfff00fff, "Score");
+
+		break;
+	case ResultUIManager::STEP::SONOTA:
+		tdnText::Draw(0, 90, 0xfff00fff, "EX");
+
 		break;
 	case ResultUIManager::STEP::EXE:
 		break;
@@ -878,10 +997,12 @@ void ResultUIManager::Action()
 	m_circle.pic->SetScale(m_circle.scale);
 
 	// 文字たち
-	for (int i = 0; i < FONT::END; i++)
-	{
-		m_font[i].pic->Stop();
-	}
+	//for (int i = 0; i < FONT::END; i++)
+	//{
+	//	m_font[i].pic->Stop();
+	//}
+	m_sumFont.pic->Stop();
+
 	// 線
 	m_senPic->Stop();
 	// help
@@ -910,11 +1031,12 @@ void ResultUIManager::Action()
 
 
 	// 音初期化
-	for (int i = 0; i < FONT::END; i++)
-	{
-		// 分岐
-		m_font[i].isSE = false;
-	}
+	//for (int i = 0; i < FONT::END; i++)
+	//{
+	//	// 分岐
+	//	m_font[i].isSE = false;
+	//}
+	m_sumFont.isSE = false;
 
 }
 

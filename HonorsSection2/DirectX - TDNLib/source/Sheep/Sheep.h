@@ -267,6 +267,8 @@ public:
 			break;
 		}
 	}
+
+	Vector2 &GetPos(){ return m_pos; }
 private:
 
 	Vector2 m_pos;	// 座標
@@ -282,8 +284,9 @@ private:
 		protected:
 			ResultSheep *m_pSheep;	// 親
 			int m_AnimFrame, m_AnimPanel;	// アニメ関係
+			float m_angle;
 		public:
-			Base(ResultSheep *pSheep):m_pSheep(pSheep){}
+			Base(ResultSheep *pSheep) :m_pSheep(pSheep), m_AnimFrame(0), m_AnimPanel(rand() % 4),m_angle(0){}
 			virtual void Update()
 			{
 				// あにめ
@@ -295,7 +298,8 @@ private:
 			}
 			virtual void Render(tdn2DObj *pImage)
 			{
-				pImage->Render((int)m_pSheep->m_pos.x, (int)m_pSheep->m_pos.y, 120, 120, m_AnimPanel * 120, 0, 120, 120);
+				pImage->SetAngle(m_angle);
+				pImage->Render((int)m_pSheep->m_pos.x, (int)m_pSheep->m_pos.y, 120, 120, m_AnimPanel * 120, 0, -120, 120);
 			}
 		};
 
@@ -311,8 +315,10 @@ private:
 		// 掃ける
 		class Hakeru:public Base
 		{
+		private:
+			Vector2 m_vec;
 		public:
-			Hakeru(ResultSheep *pSheep) :Base(pSheep){}
+			Hakeru(ResultSheep *pSheep);
 			void Update();
 			//void Render(tdn2DObj *pImage);
 		};
@@ -322,43 +328,17 @@ private:
 	Mode::Base *m_pMode;
 };
 
+class Number;
+
 // リザルト用羊管理
 class ResultSheepManager
 {
 public:
-	ResultSheepManager(float ScoreWakuY, float SohotaWakuY);
+	ResultSheepManager(float ScoreWakuY, float SohotaWakuY, float startX, float speed);
 	~ResultSheepManager();
 
-	void Update()
-	{
-		for (auto it = m_ScoreSheepList.begin(); it != m_ScoreSheepList.end();)
-		{
-			(*it)->Update();
-			// 消去チェック
-			if ((*it)->EraseOK())
-			{
-				delete (*it);
-				it = m_ScoreSheepList.erase(it);
-			}
-			else it++;
-		}
-		for (auto it = m_OtherSheepList.begin(); it != m_OtherSheepList.end();)
-		{
-			(*it)->Update();
-			// 消去チェック
-			if ((*it)->EraseOK())
-			{
-				delete (*it);
-				it = m_ScoreSheepList.erase(it);
-			}
-			else it++;
-		}
-	}
-	void Render()
-	{
-		for (auto& it : m_ScoreSheepList) it->Render(m_pSheepImage);
-		for (auto& it : m_OtherSheepList) it->Render(m_pSheepImage);
-	}
+	void Update();
+	void Render();
 
 	// スコアの羊スタート
 	void StartScoreSheep();
@@ -369,6 +349,25 @@ public:
 	void StartOtherSheep();
 	// その他項目の羊が掃ける
 	void HakeruOtherSheep(){ for (auto& it : m_OtherSheepList)it->ChangeMode(ResultSheep::MODE::HAKERU); }
+
+	bool isScoreEnd(){ return m_waku[0].isSet; }
+	bool isOtherEnd(){ return m_waku[1].isSet; }
+
+	void Reset()
+	{
+		for (auto it = m_ScoreSheepList.begin(); it != m_ScoreSheepList.end();)
+		{
+			delete (*it);
+			it = m_ScoreSheepList.erase(it);
+		}
+		for (auto it = m_OtherSheepList.begin(); it != m_OtherSheepList.end();)
+		{
+			delete (*it);
+			it = m_OtherSheepList.erase(it);
+		}
+		m_waku[0].pos.x = m_waku[1].pos.x = -1280;
+		m_waku[0].isSet = m_waku[1].isSet = false;
+	}
 private:
 	// スコア枠用の羊
 	std::list <ResultSheep*> m_ScoreSheepList;
@@ -376,9 +375,29 @@ private:
 	// その他枠用の羊
 	std::list <ResultSheep*> m_OtherSheepList;
 
+	// スコアのナンバー
+	enum NUMBER_TYPE{ SCORE, COMBO, WOLFKILL, SHEEPKILL, MAX };
+	Number *m_pNumbers[NUMBER_TYPE::MAX];
+
 	// 羊画像
 	tdn2DObj *m_pSheepImage;
 
+	// 枠画像
+	struct Waku
+	{
+		tdn2DObj *pImage;
+		Vector2 pos;
+		bool isSet;
+		Waku() :pos(-1280, 0), isSet(false){}
+	}m_waku[2];	// [0]:スコア枠, [1]:その他枠
+
 	// 枠羊の開始地点Y
 	const float m_StartScoreY, m_StartOtherY;
+	// 開始座標X
+	const float m_StartX;
+	// 羊の速度
+	const float m_speed;
+
+	// 枠の幅
+	static const int WAKU_WIDTH = 756;
 };
