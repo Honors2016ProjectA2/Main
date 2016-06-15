@@ -806,16 +806,18 @@ void Stage::Update()
 		// ¬‰®‚Ì“_–Å
 		if (m_bTenmtsuUp)
 		{
-			if (++m_TenmetsuFrame >= TENMETSU)
+			if ((m_TenmetsuFrame += m_bPoint ? 4 : 1) >= TENMETSU)
 			{
 				m_bTenmtsuUp = !m_bTenmtsuUp;
+				m_TenmetsuFrame = TENMETSU;
 			}
 		}
 		else
 		{
-			if (--m_TenmetsuFrame <= 0)
+			if ((m_TenmetsuFrame -= m_bPoint ? 4 : 1) <= 0)
 			{
 				m_bTenmtsuUp = !m_bTenmtsuUp;
+				m_TenmetsuFrame = 0;
 			}
 		}
 	}
