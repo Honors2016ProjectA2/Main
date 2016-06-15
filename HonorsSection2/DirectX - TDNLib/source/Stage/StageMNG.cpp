@@ -219,46 +219,54 @@ void StageManager::Update()
 	// マウス座標
 	Vector2 mPos = tdnMouse::GetPos();
 
-	// マウス左クリックしたかどうか
-	bool bLeftClick = (tdnMouse::GetLeft() == 3);
 
-	// 羊生成の小屋を変える処理
-	if (bLeftClick)
+	// 小屋のリキャスト関連
+	int floor = -1;
+	for (int i = 0; i < STAGE_MAX; i++)
 	{
-		// マウスが左端
-		if (mPos.x < 150)
+		int y = (int)mPos.y;
+
+		// マウスカーソル範囲内！
+		if (y > STAGE_POS_Y[i] && y < STAGE_POS_Y[i] + LANE_WIDTH && mPos.x < 150)
 		{
-			int floor = -1;
-			for (int i = 0; i < STAGE_MAX; i++)
+			floor = i;
+
+			// 初回フレーム
+			if (!stage[i]->m_bPoint)
 			{
-				int y = (int)mPos.y;
-				if (y > STAGE_POS_Y[i] && y < STAGE_POS_Y[i] + LANE_WIDTH)
-				{
-					floor = i;
-					break;
-				}
+
 			}
+			stage[i]->m_bPoint = true;
+		}
+		else
+		{
+			// 範囲内じゃない
+			stage[i]->m_bPoint = false;
+		}
+	}
 
-			if (floor != -1 && floor != g_CreateSheepFloor)
+	if (tdnMouse::GetLeft() == 3)
+	{
+		// 羊生成の小屋を変える処理
+		if (floor != -1 && floor != g_CreateSheepFloor)
+		{
+			// リキャストOK
+			if (stage[floor]->GetRecastTime() <= 0)
 			{
-				// リキャストOK
-				if (stage[floor]->GetRecastTime() <= 0)
-				{
-					// リキャスト設定
-					stage[g_CreateSheepFloor]->SetRecastTime(m_RECAST_TIME);
+				// リキャスト設定
+				stage[g_CreateSheepFloor]->SetRecastTime(m_RECAST_TIME);
 
-					// 羊生成フロア変える
-					g_CreateSheepFloor = floor;
+				// 羊生成フロア変える
+				g_CreateSheepFloor = floor;
 
-					// SEの再生
-					se->Play("ドア", Vector2(128, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2));
+				// SEの再生
+				se->Play("ドア", Vector2(128, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2));
 
-					// 犬配置リセット
-					m_DogStock = 2;
+				// 犬配置リセット
+				m_DogStock = 2;
 
-					// 犬レーン変更
-					SetDogFloor(floor);
-				}
+				// 犬レーン変更
+				SetDogFloor(floor);
 			}
 		}
 	}
@@ -270,6 +278,24 @@ void StageManager::Update()
 	//	m_ChangeScoreTime = 0;
 	//	ChangeScoreLane();
 	//}
+
+	// 犬関連の更新
+	UpdateDogs(mPos);
+
+	// ステージのアニメーション
+	if (++m_FireAnimFrame > 4)
+	{
+		m_FireAnimFrame = 0;
+		if (++m_FireAnimPanel > 2)m_FireAnimPanel = 0;
+	}
+}
+
+void StageManager::UpdateDogs(const Vector2 &mPos)
+{
+	static int MouseLeftFrame = 0;
+	// マウスのフレーム
+	MouseLeftFrame = (tdnMouse::GetLeft() == 0) ? 0 : MouseLeftFrame + 1;
+
 
 	// 犬設置したフレームかどうか
 	g_bDogSetFrame = false;
@@ -309,8 +335,8 @@ void StageManager::Update()
 				}
 				else it->m_bCursorIn = false;
 
-				// 左クリック！！かつカーソル範囲内かつ有効状態かつ肉持ってなかったらなら
-				if (bLeftClick && it->m_bCursorIn && it->bEnable && !NikuMgr->isNikuHold())
+				// 左マウス押して20フレーム以内に離したら！！かつカーソル範囲内かつ有効状態かつ肉持ってなかったらなら
+				if ((tdnMouse::GetLeft() == 2 && MouseLeftFrame <= 20) && it->m_bCursorIn && it->bEnable && !NikuMgr->isNikuHold())
 				{
 					// 犬回収
 					if (it->IsOpening())
@@ -332,7 +358,7 @@ void StageManager::Update()
 						// ストック残ってたら
 						if (m_DogStock > 0)
 						{
-							EffectMgr.AddEffect((int)it->GetPos().x+64, (int)it->GetPos().y+64,EFFECT_TYPE::DOG_EFFECT);
+							EffectMgr.AddEffect((int)it->GetPos().x + 64, (int)it->GetPos().y + 64, EFFECT_TYPE::DOG_EFFECT);
 							se->Play("犬", it->GetPos());
 							m_DogStock--;
 							it->Change();	// 犬のON_OFF
@@ -465,7 +491,7 @@ void StageManager::Update()
 						m_Doglists[0][0]->bEnable = true;
 						m_Doglists[0][1]->bEnable = true;
 					}
-					else if(g_CreateSheepFloor == 2) m_Doglists[2][0]->bEnable = true;
+					else if (g_CreateSheepFloor == 2) m_Doglists[2][0]->bEnable = true;
 				}
 
 				// 下レーン左
@@ -523,13 +549,6 @@ void StageManager::Update()
 		//}	// 炎リスト
 
 	}	// レーンfor
-
-	// ステージのアニメーション
-	if (++m_FireAnimFrame > 4)
-	{
-		m_FireAnimFrame = 0;
-		if (++m_FireAnimPanel > 2)m_FireAnimPanel = 0;
-	}
 }
 
 void StageManager::ChangeScoreLane()
@@ -606,11 +625,17 @@ void StageManager::RenderBack()
 			// クールタイムゲージ処理
 
 			// 下地
-			m_pStageImages[StageImage::DOOR_CLOSE]->SetARGB(0xff808080);
+			m_pStageImages[StageImage::DOOR_CLOSE]->SetARGB(0x80808080);
+			m_pStageImages[StageImage::DOOR_CLOSE]->SetScale(1.0f);
 			m_pStageImages[StageImage::DOOR_CLOSE]->Render(0, HOUSE_POS_Y[i]);
 
 			// ゲージ部分
 			const float GaugePercent = (stage[i]->GetRecastTime() / (float)m_RECAST_TIME);
+			// ゲージMAXif文
+			if (GaugePercent <= .0f)
+			{
+				m_pStageImages[StageImage::DOOR_CLOSE]->SetScale(stage[i]->m_bPoint ? 1.1f : 1.0f);
+			}
 			m_pStageImages[StageImage::DOOR_CLOSE]->SetARGB(0xffffffff);
 			m_pStageImages[StageImage::DOOR_CLOSE]->Render(0, HOUSE_POS_Y[i] + (int)(180 * GaugePercent), 180, (int)((1 - GaugePercent) * 180), 0, (int)(180 * GaugePercent), 180, (int)((1 - GaugePercent) * 180));
 		}
@@ -717,7 +742,7 @@ Vector2 StageManager::GetBalloonPos(int floorIdx)
 //------- constructor,destructor ---------
 
 Stage::Stage() :
-W(1280), H(240),
+W(1280), H(240), m_bPoint(false),
 START_Y(-240), SPEED_Y(32), SHUTTER_X(541), SHUTTER_Y(18), m_RecastTime(0)
 {
 	image = nullptr;

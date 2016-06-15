@@ -45,6 +45,8 @@ public:
 	enum StageState { NONE, FALL };
 	StageState state;
 
+	bool m_bPoint;		// マウスポイントしてるか。
+
 	//------- method --------
 public:
 	Stage();
@@ -113,6 +115,9 @@ private:
 	void SetDogFloor(int floor);
 
 	int m_DogStock;		// 犬のストック
+
+	// 犬更新
+	void UpdateDogs(const Vector2 &pos);
 
 	//------ method --------
 public:

@@ -17,7 +17,7 @@ public:
 
 	void Update();
 	void Bezier();
-	void Move();
+	virtual void Move();	// パーティクル分岐でバーチャル
 	void EndJuge();
 
 	void Render();

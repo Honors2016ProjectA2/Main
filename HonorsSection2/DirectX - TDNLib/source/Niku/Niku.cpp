@@ -242,14 +242,14 @@ void NikuManager::StartNikuBazier()
 		// 左上
 		if (start.x < 640)
 		{
-			center = Vector3(start.x, start.y + PowerUD, 0);
-			center2 = Vector3(center.x + PowerLR/2, center.y + PowerUD/2, 0);
+			center = Vector3(start.x, start.y + PowerUD / 2, 0);
+			center2 = Vector3(center.x + PowerLR / 2, center.y + PowerUD, 0);
 		}
 		// 右上
 		else
 		{
-			center = Vector3(start.x, start.y + PowerUD, 0);
-			center2 = Vector3(center.x - PowerLR/2, center.y + PowerUD/2, 0);
+			center = Vector3(start.x, start.y + PowerUD / 2, 0);
+			center2 = Vector3(center.x - PowerLR / 2, center.y + PowerUD, 0);
 		}
 	}
 	else 	// 下半分
@@ -257,19 +257,19 @@ void NikuManager::StartNikuBazier()
 		// 左下
 		if (start.x < 640)
 		{
-			center = Vector3(start.x, start.y - PowerUD, 0);
-			center2 = Vector3(center.x + PowerLR/2, center.y - PowerUD/2, 0);
+			center = Vector3(start.x, start.y - PowerUD / 2, 0);
+			center2 = Vector3(center.x + PowerLR / 2, center.y - PowerUD, 0);
 		}
 		// 右下
 		else
 		{
-			center = Vector3(start.x, start.y - PowerUD, 0);
-			center2 = Vector3(center.x - PowerLR/2, center.y - PowerUD/2, 0);
+			center = Vector3(start.x, start.y - PowerUD / 2, 0);
+			center2 = Vector3(center.x - PowerLR / 2, center.y - PowerUD, 0);
 		}
 	}
 
 	// 肉ベジエ生成
-	m_pNikuBazier = new NikuBazier("DATA/powerF.png", start, center, center2, end, 48);
+	m_pNikuBazier = new NikuBazier("DATA/powerF.png", start, center, center2, end, 46);
 	m_pNikuBazier->Action();
 }
 
@@ -566,4 +566,20 @@ void Niku::Update()
 void Niku::Render()
 {
 	if(!m_bVisible)m_pImage->Render((int)m_pos.x, (int)m_pos.y, 120, 120, (int)m_type * 120, 0, 120, 120);
+}
+
+
+
+
+
+
+void NikuBazier::Move()
+{
+	// レートを足していく
+	m_percent += m_percentRate;
+	// クランプ
+	m_percent = Math::Clamp(m_percent, 0.0f, 1.0f);
+
+
+	FOR(3)Particle2dManager::Effect_Hinoko(Vector2(m_pos.x, m_pos.y));// ぱーてぃくる
 }

@@ -244,7 +244,7 @@ void FatWolf::Update()
 void FatWolf::Render()
 {
 	m_image->SetAngle(m_angle);
-	m_image->Render((int)m_pos.x, (int)m_pos.y, 240, 240, m_AnimPanel * 240, (int)m_type * 240, 240, 240);
+	m_image->Render((int)m_pos.x, (int)m_pos.y, 240, 240, 0, (int)m_type * 240, 240, 240);
 }
 
 

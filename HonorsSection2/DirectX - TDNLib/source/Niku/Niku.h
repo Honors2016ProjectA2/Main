@@ -181,6 +181,8 @@ public:
 	NikuBazier(char* filename, Vector3 startPos, Vector3 centerPos,
 		Vector3 center2Pos, Vector3 endPos, int endFlame, int power = 10) :SendPower(filename, startPos, centerPos,
 		center2Pos, endPos, endFlame, power, 0){}
+
+	void Move()override;
 };
 
 // “÷‚ğŠÇ—‚·‚éƒNƒ‰ƒX

@@ -120,7 +120,7 @@ public:
 	void Cross_fade(LPSTR inID, LPSTR outID, float fade_speed = .0075f, bool loop = true);
 	void Cross_fade(LPSTR inID, LPSTR outID, float in_speed, float out_speed, bool loop);
 	bool isPlay(LPSTR _ID);
-	void SetSpeed(LPSTR _ID, float speed);
+	void SetSpeed(LPSTR _ID, float speed){ play_manager->SetSpeed(ID[_ID], speed); }
 	void SetVolume(LPSTR _ID, float volume){ play_manager->SetVolume(ID[_ID], volume); }
 
 	void SetListener(const Vector2 &pos, const Vector2 &move);											// ƒŠƒXƒi[î•ñ

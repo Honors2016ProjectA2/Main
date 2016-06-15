@@ -20,7 +20,7 @@ const SE_Manager::DATA all_dataS[] =
 	{ "!"		,		"DATA/Sound/SE/wolf.wav",		3, false },
 	{ "パクモグ",		"DATA/Sound/SE/pakumogu.wav",	2, false },
 	{ "リアルHIT",		"DATA/Sound/SE/hit.wav",		2, false },
-	{ "リザルトスコア",	"DATA/Sound/SE/score.wav",		1, false },
+	{ "リザルトスコア",	"DATA/Sound/SE/score.wav",		50, false },
 	{ "リザルトダン",	"DATA/Sound/SE/dan.wav",		3, false },
 	{ "DAMAGE",			"DATA/Sound/SE/eat.wav",		20, false },
 	{ "RANK_S",			"DATA/Sound/SE/se14.wav",		1, false },

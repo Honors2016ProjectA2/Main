@@ -1,5 +1,7 @@
 #pragma once
 
+class Pie_graph;
+
 //***********************************
 //		ñqëêÉNÉâÉX
 
@@ -142,6 +144,7 @@ public:
 	void ChangePos(const Vector2 &pos);
 private:
 	tdn2DAnim *m_pTargetAnim;
+	Pie_graph *m_pGraph;
 	int m_AnimFrame;
 	const int ANIM_FRAME;
 	tdn2DObj *m_pKusa;

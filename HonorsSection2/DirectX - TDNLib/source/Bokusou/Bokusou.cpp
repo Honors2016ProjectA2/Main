@@ -5,6 +5,7 @@
 #include "../UI/UIManager.h"
 #include "Effect\EffectManager.h"
 #include "../particle_2d/particle_2d.h"
+#include "../pie_graph/pie_graph.h"
 
 // グローバル変数
 int g_ModeChangeTime[(int)BOKUSOU_MODE::MAX];			// モードが変わっていく時間
@@ -362,6 +363,9 @@ void Bokusou::ChangeMode(BOKUSOU_MODE m)
 BokusouTarget::BokusouTarget() :m_pKusa(new tdn2DObj("DATA/牧草/牧草の種.png")), m_pos(Vector2(0, 0)), m_angle(0), m_alpha(0), m_AnimFrame(0),
 ANIM_FRAME(30)
 {
+	// グラフ
+	m_pGraph = new Pie_graph("DATA/UI/Circle/SpiritCircle_gage2.png");
+
 	m_pTargetAnim = new tdn2DAnim("DATA/traget.png");
 	m_pTargetAnim->OrderJump(ANIM_FRAME, .65f, .2f);
 	m_pTargetAnim->Action();
@@ -371,6 +375,7 @@ BokusouTarget::~BokusouTarget()
 {
 	delete m_pKusa;
 	delete m_pTargetAnim;
+	delete m_pGraph;
 }
 
 void BokusouTarget::Update(BokusouManager *pMgr)
@@ -380,6 +385,9 @@ void BokusouTarget::Update(BokusouManager *pMgr)
 	m_pKusa->SetARGB(m_alpha, (BYTE)255, (BYTE)255, (BYTE)255);
 
 	m_srcX = ((int)(pMgr->GetGaugePercentage() * 100) / 25) * 128;
+
+	// ゲージ処理
+	m_pGraph->Set_percent(pMgr->GetGaugePercentage());
 
 	// ターゲットのアニメーション
 	m_pTargetAnim->Update();
@@ -392,6 +400,9 @@ void BokusouTarget::Update(BokusouManager *pMgr)
 
 void BokusouTarget::Render()
 {
+	// グラフ
+	m_pGraph->Render((int)m_pos.x, (int)m_pos.y, 128, 128, 0, 0, 128, 128);
+
 	// 草
 	m_pKusa->Render((int)m_pos.x, (int)m_pos.y, 128, 128, m_srcX, 0, 128, 128);
 	

@@ -39,7 +39,7 @@ SendPower::SendPower(char* filename, Vector3 startPos, Vector3 centerPos,
 	// ‘—‚é’l
 	m_power = power;
 
-	m_bBokusou = bBokusou;
+	m_bBokusou = (bBokusou) ? true : false;	// ‚í[‚É‚ñ‚®–h~
 }
 
 SendPower::~SendPower()
