@@ -679,9 +679,6 @@ void StageManager::RenderFront()
 	// ¶‰Æ‚Ì‘O•`‰æ
 	FOR(STAGE_MAX) if (i == g_CreateSheepFloor) m_pStageImages[StageImage::DOOR_OPEN1]->Render(0, HOUSE_POS_Y[i]);
 
-	// ‘•`‰æ
-	m_pStageImages[StageImage::KUSA]->Render(0, 0);
-
 	// ‰Š•`‰æ
 	if (!NikuMgr->GetNiku()) m_pStageImages[StageImage::FIRE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256);
 
