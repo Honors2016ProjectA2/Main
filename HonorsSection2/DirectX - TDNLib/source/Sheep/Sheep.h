@@ -230,3 +230,155 @@ private:
 // 実体
 extern SheepManager* g_pSheepMgr;
 extern int g_CreateSheepFloor;
+
+
+
+
+
+
+
+
+
+
+// リザルトにて、管理される個々の羊
+class ResultSheep
+{
+public:
+	enum MODE{ RUN, HAKERU };
+
+	ResultSheep(const Vector2 &pos, float speed) :m_pos(pos), m_speed(speed), m_pMode(nullptr), m_bErase(false){ ChangeMode(MODE::RUN); };
+	void Update(){ m_pMode->Update(); }
+	void Render(tdn2DObj *pImage){ m_pMode->Render(pImage); }
+
+	// 消去関連
+	bool EraseOK(){ return m_bErase; }
+	void Erase(){ m_bErase = true; }
+
+	void ChangeMode(MODE m)
+	{
+		if (m_pMode) delete m_pMode;
+		switch (m)
+		{
+		case ResultSheep::RUN:
+			m_pMode = new Mode::Run(this);
+			break;
+		case ResultSheep::HAKERU:
+			m_pMode = new Mode::Hakeru(this);
+			break;
+		}
+	}
+private:
+
+	Vector2 m_pos;	// 座標
+	float m_speed;	// 速度
+	bool m_bErase;	// 消去フラグ
+
+	// モード分岐用
+	class Mode
+	{
+	public:
+		class Base
+		{
+		protected:
+			ResultSheep *m_pSheep;	// 親
+			int m_AnimFrame, m_AnimPanel;	// アニメ関係
+		public:
+			Base(ResultSheep *pSheep):m_pSheep(pSheep){}
+			virtual void Update()
+			{
+				// あにめ
+				if (++m_AnimFrame > 7)
+				{
+					m_AnimFrame = 0;
+					if (++m_AnimPanel >= 4)m_AnimPanel = 0;
+				}
+			}
+			virtual void Render(tdn2DObj *pImage)
+			{
+				pImage->Render((int)m_pSheep->m_pos.x, (int)m_pSheep->m_pos.y, 120, 120, m_AnimPanel * 120, 0, 120, 120);
+			}
+		};
+
+		// 左から右に走る
+		class Run:public Base
+		{
+		public:
+			Run(ResultSheep *pSheep) :Base(pSheep){}
+			void Update();
+			//void Render(tdn2DObj *pImage);
+		};
+
+		// 掃ける
+		class Hakeru:public Base
+		{
+		public:
+			Hakeru(ResultSheep *pSheep) :Base(pSheep){}
+			void Update();
+			//void Render(tdn2DObj *pImage);
+		};
+	};
+
+	// モードポインタ
+	Mode::Base *m_pMode;
+};
+
+// リザルト用羊管理
+class ResultSheepManager
+{
+public:
+	ResultSheepManager(float ScoreWakuY, float SohotaWakuY);
+	~ResultSheepManager();
+
+	void Update()
+	{
+		for (auto it = m_ScoreSheepList.begin(); it != m_ScoreSheepList.end();)
+		{
+			(*it)->Update();
+			// 消去チェック
+			if ((*it)->EraseOK())
+			{
+				delete (*it);
+				it = m_ScoreSheepList.erase(it);
+			}
+			else it++;
+		}
+		for (auto it = m_OtherSheepList.begin(); it != m_OtherSheepList.end();)
+		{
+			(*it)->Update();
+			// 消去チェック
+			if ((*it)->EraseOK())
+			{
+				delete (*it);
+				it = m_ScoreSheepList.erase(it);
+			}
+			else it++;
+		}
+	}
+	void Render()
+	{
+		for (auto& it : m_ScoreSheepList) it->Render(m_pSheepImage);
+		for (auto& it : m_OtherSheepList) it->Render(m_pSheepImage);
+	}
+
+	// スコアの羊スタート
+	void StartScoreSheep();
+	// スコア項目の羊が掃ける
+	void HakeruScoreSheep(){ for (auto& it : m_ScoreSheepList)it->ChangeMode(ResultSheep::MODE::HAKERU); }
+
+	// その他項目の羊スタート
+	void StartOtherSheep();
+	// その他項目の羊が掃ける
+	void HakeruOtherSheep(){ for (auto& it : m_OtherSheepList)it->ChangeMode(ResultSheep::MODE::HAKERU); }
+private:
+	// スコア枠用の羊
+	std::list <ResultSheep*> m_ScoreSheepList;
+
+	// その他枠用の羊
+	std::list <ResultSheep*> m_OtherSheepList;
+
+	// 羊画像
+	tdn2DObj *m_pSheepImage;
+
+	// 枠羊の開始地点Y
+	const float m_StartScoreY, m_StartOtherY;
+};

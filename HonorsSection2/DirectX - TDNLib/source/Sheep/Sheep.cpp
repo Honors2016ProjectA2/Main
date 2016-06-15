@@ -519,7 +519,8 @@ void SheepManager::Update()
 			*OutbLeft = false;
 			return true;
 		}
-		else if (!g_bDogSetFrame && tdnMouse::GetLeft() == 3 && !bNikuHold)
+		// 5フレーム目
+		else if (KeyBoard(MOUSE_LEFT) == 5 && !bNikuHold)
 		{
 			*OutbLeft = true;
 			return true;
@@ -615,3 +616,70 @@ int SheepManager::MakeNextFloor(int current)
 
 
 SheepManager *g_pSheepMgr = nullptr;
+
+
+
+
+
+
+
+
+
+// リザルト羊走ってる状態
+void ResultSheep::Mode::Run::Update()
+{
+	// 基底クラスの更新(アニメ関連)
+	Base::Update();
+
+	// 右に移動
+	m_pSheep->m_pos.x += m_pSheep->m_speed;
+}
+
+// リザルト羊掃けてる状態
+void ResultSheep::Mode::Hakeru::Update()
+{
+	// 基底クラスの更新(アニメ関連)
+	Base::Update();
+
+	// 左上に移動
+	m_pSheep->m_pos += Vector2(.5f, .5f) * (m_pSheep->m_speed * 2);
+}
+
+// リザルト羊管理
+ResultSheepManager::ResultSheepManager(float ScoreWakuY, float SohotaWakuY) :m_pSheepImage(new tdn2DObj("DATA/CHR/sheep_animation.png")), m_StartScoreY(ScoreWakuY), m_StartOtherY(SohotaWakuY)
+{
+
+}
+
+ResultSheepManager::~ResultSheepManager()
+{
+	for (auto it : m_ScoreSheepList) delete it;
+	for (auto it : m_OtherSheepList) delete it;
+	delete m_pSheepImage;
+}
+
+// スコア羊スタート
+void ResultSheepManager::StartScoreSheep()
+{
+	static const int NUM_SHEEP = 5;		// 羊の数
+	static const float SHEEP_SPEED = 6;
+
+	FOR(NUM_SHEEP)
+	{
+		// スコア押す羊格納
+		m_ScoreSheepList.push_back(new ResultSheep(Vector2(-120, m_StartScoreY + i * 60), SHEEP_SPEED));
+	}
+}
+
+// その他項目羊スタート
+void ResultSheepManager::StartOtherSheep()
+{
+	static const int NUM_SHEEP = 8;		// 羊の数
+	static const float SHEEP_SPEED = 6;
+
+	FOR(NUM_SHEEP)
+	{
+		// スコア押す羊格納
+		m_ScoreSheepList.push_back(new ResultSheep(Vector2(-120, m_StartOtherY + i * 60), SHEEP_SPEED));
+	}
+}
