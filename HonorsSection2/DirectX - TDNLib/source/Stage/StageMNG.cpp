@@ -161,7 +161,7 @@ m_FireAnimFrame(0), m_FireAnimPanel(0), m_ChangeScoreTime(0)
 	{
 		if (stage[i] == nullptr)
 			stage[i] = new Stage;
-		stage[i]->Init(Vector2((float)0, (float)STAGE_POS_Y[i]), Stage::StageState::FALL);
+		stage[i]->Init(Vector2((float)0, (float)HOUSE_POS_Y[i]), Stage::StageState::FALL);
 	}
 }
 
@@ -267,6 +267,8 @@ void StageManager::Update()
 
 				// 犬レーン変更
 				SetDogFloor(floor);
+
+				stage[floor]->m_TenmetsuFrame = 0;
 			}
 		}
 	}
@@ -618,14 +620,13 @@ void StageManager::RenderBack()
 		{
 			m_pStageImages[StageImage::DOOR_OPEN3]->Render(0, HOUSE_POS_Y[i]);
 			m_pStageImages[StageImage::DOOR_OPEN2]->Render(0, HOUSE_POS_Y[i]);
+			m_pStageImages[StageImage::DOOR_OPEN1]->Render(0, HOUSE_POS_Y[i]);
 		}
 		// 閉まってる家
 		else
 		{
-			// クールタイムゲージ処理
-
 			// 下地
-			m_pStageImages[StageImage::DOOR_CLOSE]->SetARGB(0x80808080);
+			m_pStageImages[StageImage::DOOR_CLOSE]->SetARGB(0xf0808080);
 			m_pStageImages[StageImage::DOOR_CLOSE]->SetScale(1.0f);
 			m_pStageImages[StageImage::DOOR_CLOSE]->Render(0, HOUSE_POS_Y[i]);
 
@@ -634,10 +635,14 @@ void StageManager::RenderBack()
 			// ゲージMAXif文
 			if (GaugePercent <= .0f)
 			{
-				m_pStageImages[StageImage::DOOR_CLOSE]->SetScale(stage[i]->m_bPoint ? 1.1f : 1.0f);
+				m_pStageImages[StageImage::DOOR_CLOSE]->SetScale(stage[i]->m_bPoint ? 1.05f : 1.0f);
 			}
 			m_pStageImages[StageImage::DOOR_CLOSE]->SetARGB(0xffffffff);
 			m_pStageImages[StageImage::DOOR_CLOSE]->Render(0, HOUSE_POS_Y[i] + (int)(180 * GaugePercent), 180, (int)((1 - GaugePercent) * 180), 0, (int)(180 * GaugePercent), 180, (int)((1 - GaugePercent) * 180));
+
+			// 点滅加算合成
+			m_pStageImages[StageImage::DOOR_CLOSE]->SetARGB((BYTE)(128 * ((float)stage[i]->m_TenmetsuFrame / stage[i]->TENMETSU)), (BYTE)255, (BYTE)255, (BYTE)255);
+			m_pStageImages[StageImage::DOOR_CLOSE]->Render(0, HOUSE_POS_Y[i], RS::ADD);
 		}
 	}
 
@@ -653,31 +658,34 @@ void StageManager::RenderBack()
 
 void StageManager::Render()
 {
-	FOR(STAGE_MAX)
-	{
+	//FOR(STAGE_MAX)
+	//{
 		//static const int col[] = { 0x40ff0000, 0x4000ff00, 0x400000ff };
 		//// ステージ幅
 		//tdnPolygon::Rect(0, STAGE_POS_Y[i], 1280, LANE_WIDTH, RS::COPY, col[i]);
 
-		stage[i]->Render();
+		//stage[i]->Render();
 
 		//tdnPolygon::Rect(0, STAGE_POS_Y[i], 150, LANE_WIDTH, RS::COPY, 0x80ffffff);
 
 		// リキャスト
 		//tdnText::Draw(64, STAGE_POS_Y[i] + 120, 0xffffffff, "%d", stage[i]->GetRecastTime());
-	}
+	//}
 }
 
 void StageManager::RenderFront()
 {
 	// 犬描画
-	FOR(STAGE_MAX) for (auto it : m_Doglists[i]) it->Render();
+	FOR(STAGE_MAX)
+	{
+		for (auto it : m_Doglists[i]) it->Render();
+
+		// 家りっぷる
+		stage[i]->Render();
+	}
 
 	// 右家の前描画
 	m_pStageImages[StageImage::HOUSE_FRONT]->Render(0, 0);
-
-	// 左家の前描画
-	FOR(STAGE_MAX) if (i == g_CreateSheepFloor) m_pStageImages[StageImage::DOOR_OPEN1]->Render(0, HOUSE_POS_Y[i]);
 
 	// 炎描画
 	if (!NikuMgr->GetNiku()) m_pStageImages[StageImage::FIRE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256);
@@ -740,8 +748,11 @@ Vector2 StageManager::GetBalloonPos(int floorIdx)
 
 Stage::Stage() :
 W(1280), H(240), m_bPoint(false),
-START_Y(-240), SPEED_Y(32), SHUTTER_X(541), SHUTTER_Y(18), m_RecastTime(0)
+START_Y(-240), SPEED_Y(32), SHUTTER_X(541), SHUTTER_Y(18), m_RecastTime(0), m_TenmetsuFrame(0), TENMETSU(60), m_bTenmtsuUp(true)
 {
+	m_pHouseRipple = new tdn2DAnim("DATA/Stage/doa_simaruRipple.png");
+	m_pHouseRipple->OrderRipple(16, 1.0f, .05f);
+
 	image = nullptr;
 	pos = Vector2(0, 0);
 	state = StageState::NONE;
@@ -753,6 +764,7 @@ Stage::~Stage()
 	// マネージャーのを参照していてるだけなので、削除はマネージャーがする
 	//for (auto it : m_CPlist) delete it;
 	//m_CPlist.clear();
+	delete m_pHouseRipple;
 }
 
 //---------- public method ------------
@@ -785,8 +797,30 @@ void Stage::Update()
 
 			// SE
 			se->Play("リキャスト", pos);
+
+			m_pHouseRipple->Action();
 		}
 	}
+	else
+	{
+		// 小屋の点滅
+		if (m_bTenmtsuUp)
+		{
+			if (++m_TenmetsuFrame >= TENMETSU)
+			{
+				m_bTenmtsuUp = !m_bTenmtsuUp;
+			}
+		}
+		else
+		{
+			if (--m_TenmetsuFrame <= 0)
+			{
+				m_bTenmtsuUp = !m_bTenmtsuUp;
+			}
+		}
+	}
+
+	m_pHouseRipple->Update();
 
 	switch (state)
 	{
@@ -805,7 +839,7 @@ void Stage::Update()
 
 void Stage::Render()
 {
-	//for(auto it : *m_CPlist)it->Render();
+	m_pHouseRipple->Render(0, (int)pos.y, RS::ADD);
 }
 
 int Stage::GetWidth()

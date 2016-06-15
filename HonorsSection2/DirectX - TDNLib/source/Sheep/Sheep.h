@@ -225,6 +225,9 @@ private:
 
 	StageManager *sp;
 	DataManager *dmp;
+
+	// ’Í‚ÝXV
+	void CatchUpdate();
 };
 
 // ŽÀ‘Ì
@@ -247,6 +250,7 @@ public:
 	enum MODE{ RUN, HAKERU };
 
 	ResultSheep(const Vector2 &pos, float speed) :m_pos(pos), m_speed(speed), m_pMode(nullptr), m_bErase(false){ ChangeMode(MODE::RUN); };
+	~ResultSheep(){ SAFE_DELETE(m_pMode); }
 	void Update(){ m_pMode->Update(); }
 	void Render(tdn2DObj *pImage){ m_pMode->Render(pImage); }
 

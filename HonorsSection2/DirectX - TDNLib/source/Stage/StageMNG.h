@@ -41,11 +41,15 @@ private:
 	const int SHUTTER_Y;
 	int offsetY;
 	int m_RecastTime;	// こやのリキャスト
+	tdn2DAnim *m_pHouseRipple;
 public:
 	enum StageState { NONE, FALL };
 	StageState state;
 
 	bool m_bPoint;		// マウスポイントしてるか。
+	int m_TenmetsuFrame;	// 小屋溜まった点滅
+	bool m_bTenmtsuUp;
+	const int TENMETSU;
 
 	//------- method --------
 public:

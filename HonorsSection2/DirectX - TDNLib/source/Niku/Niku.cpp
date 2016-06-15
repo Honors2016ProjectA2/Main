@@ -230,6 +230,9 @@ void NikuManager::StartNikuBazier()
 	// 肉無い
 	MyAssert(m_pNiku, "あるはずの肉がない");
 
+	// 肉消す(実体は消さず、表示だけ)
+	m_pNiku->SetVisible();
+
 	// 開始と終了座標
 	Vector3 start(m_pNiku->GetCenterPos().x, m_pNiku->GetCenterPos().y, 0), end(YAKINIKU_AREA.x + 128, YAKINIKU_AREA.y + 128, 0);
 	

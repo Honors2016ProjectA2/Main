@@ -514,6 +514,36 @@ void SheepManager::Update()
 		create(g_CreateSheepFloor);
 	}
 
+	// ’Í‚ÝXV
+	CatchUpdate();
+
+	// —rXV
+	for (auto it = m_List.begin(); it != m_List.end();)
+	{
+		(*it)->Update();
+		if ((*it)->EraseOK() || (*it)->Get_pos()->x < -2048 || (*it)->Get_pos()->x > 2048)
+		{
+			delete (*it);
+			it = m_List.erase(it);
+		}
+		else it++;
+	}
+
+	// –q‘H‚Á‚Ä‘¾‚Á‚½—rXV
+	for (auto it = m_FatList.begin(); it != m_FatList.end();)
+	{
+		(*it)->Update();
+		if ((*it)->EraseOK())
+		{
+			delete (*it);
+			it = m_FatList.erase(it);
+		}
+		else it++;
+	}
+}
+
+void SheepManager::CatchUpdate()
+{
 	auto CheckCatch = [](bool *OutbLeft, bool bNikuHold)
 	{
 		if (tdnMouse::GetRight() == 3)
@@ -548,31 +578,6 @@ void SheepManager::Update()
 				break;
 			}
 		}
-	}
-
-
-	// —rXV
-	for (auto it = m_List.begin(); it != m_List.end();)
-	{
-		(*it)->Update();
-		if ((*it)->EraseOK() || (*it)->Get_pos()->x < -2048 || (*it)->Get_pos()->x > 2048)
-		{
-			delete (*it);
-			it = m_List.erase(it);
-		}
-		else it++;
-	}
-
-	// –q‘H‚Á‚Ä‘¾‚Á‚½—rXV
-	for (auto it = m_FatList.begin(); it != m_FatList.end();)
-	{
-		(*it)->Update();
-		if ((*it)->EraseOK())
-		{
-			delete (*it);
-			it = m_FatList.erase(it);
-		}
-		else it++;
 	}
 }
 
