@@ -154,7 +154,7 @@ void UIManager::Update()
 	SendPowerUpdate();
 
 	//‰¼
-	Debug();
+	//Debug();
 
 
 	//particle->Set(

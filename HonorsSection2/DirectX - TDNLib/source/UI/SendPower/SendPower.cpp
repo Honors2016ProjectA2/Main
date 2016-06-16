@@ -51,14 +51,14 @@ void SendPower::Update()
 {
 	if (m_bAction == false)return;// ‚Å‚Ä‚¢‚¯
 
-	if (KeyBoard(KB_J))
-	{
-		m_percent -= 0.01f;
-	}
-	if (KeyBoard(KB_K))
-	{
-		m_percent += 0.01f;
-	}
+	//if (KeyBoard(KB_J))
+	//{
+	//	m_percent -= 0.01f;
+	//}
+	//if (KeyBoard(KB_K))
+	//{
+	//	m_percent += 0.01f;
+	//}
 
 	// ƒWƒƒƒbƒW‚Å‚·‚Ì
 	EndJuge();

@@ -149,10 +149,10 @@ bool sceneMain::Update()
 
 	// EffectMGR
 	EffectMgr.Update();
-	if (KeyBoard(KB_F) == 3)
-	{
-		EffectMgr.AddEffect(300, 300, EFFECT_TYPE::NOTICE);
-	}
+	//if (KeyBoard(KB_F) == 3)
+	//{
+	//	EffectMgr.AddEffect(300, 300, EFFECT_TYPE::NOTICE);
+	//}
 
 	switch (state) {
 	case SCENE::INIT:		Init();				break;
@@ -227,16 +227,16 @@ void sceneMain::MainUpdate()
 	BokusouMgr->Update();
 	UIMNG.Update();
 
-	if (KeyBoard(KB_N)==3)
-	{
-		EffectMgr.AddEffect( 220, 64, EFFECT_TYPE::BURN);
-	}
-
-	// G
-	if (KeyBoard(KB_G) == 3)
-	{
-		EffectMgr.AddEffect(220, 64, EFFECT_TYPE::EAT);
-	}
+	//if (KeyBoard(KB_N)==3)
+	//{
+	//	EffectMgr.AddEffect( 220, 64, EFFECT_TYPE::BURN);
+	//}
+	//
+	//// G
+	//if (KeyBoard(KB_G) == 3)
+	//{
+	//	EffectMgr.AddEffect(220, 64, EFFECT_TYPE::EAT);
+	//}
 
 	// タイムが0になったらゲームオーバー処理
 	//if( dataMNG->GetTime() <= 0 ){
@@ -263,10 +263,10 @@ void sceneMain::MainUpdate()
 		//UIMNG.SetTimer(120);
 	}
 
-	if (KeyBoard(KB_SPACE) == 3)
-	{
-		UIMNG.AddTimer(10);
-	}
+	//if (KeyBoard(KB_SPACE) == 3)
+	//{
+	//	UIMNG.AddTimer(10);
+	//}
 		
 }
 
@@ -382,7 +382,7 @@ void sceneMain::Render()
 	// ポストエフェクトたち
 	PostEffectMgr.RadialRender(); // ◎これが放射ブラ―を掛けた真の描画元
 
-	//if (KeyBoard(KB_ENTER))
+	if (KeyBoard(KB_ENTER))
 	{
 		PostEffectMgr.BloomRender();
 	}

@@ -1,6 +1,7 @@
 #include	"TDNLIB.h"
 #include	"system/Framework.h"
 #include	"sceneLoading.h"
+#include	"../system/FadeCtrl.h"
 
 //=============================================================================================
 //		グ	ロ	ー	バ	ル	領	域
@@ -13,6 +14,9 @@ bool sceneLoading::Initialize(BaseScene *newScene)
 {
 	m_pImage = new tdn2DObj("DATA/UI/loading.png");
 	m_AnimeCount = m_AnimeFrame = 0;
+
+	// 白フェードイン
+	//FadeControl::Setting(FadeControl::MODE::WHITE_IN, 10.0f);
 
 	//	別スレッド作成
 	//次のシーンのポインタは後で使うのでnewSceneに保存しておく。
@@ -53,6 +57,9 @@ void sceneLoading::Thread_funk(void *arg)
 //		更			新
 bool sceneLoading::Update()
 {
+	// フェード
+	//FadeControl::Update();
+
 	// 画像アニメーション処理
 	if (++m_AnimeFrame > m_AnimeSpeed)
 	{
@@ -82,6 +89,9 @@ void sceneLoading::Render()
 
 	tdnPolygon::Rect(0, 0, tdnSystem::GetScreenSize().right, tdnSystem::GetScreenSize().bottom , RS::COPY, 0xffffffff);
 	m_pImage->Render(800, 620, 512, 64, 0, m_AnimeCount * 64, 512, 64);
+
+	// フェード
+	//FadeControl::Render();
 }
 //
 //=============================================================================================

@@ -552,7 +552,7 @@ void SheepManager::CatchUpdate()
 			return true;
 		}
 		// 5フレーム目
-		else if (KeyBoard(MOUSE_LEFT) == 5 && !bNikuHold)
+		else if (KeyBoard(MOUSE_LEFT) == 3 && !bNikuHold)
 		{
 			*OutbLeft = true;
 			return true;
@@ -568,10 +568,13 @@ void SheepManager::CatchUpdate()
 			// 骨をつかませない！！
 			if (it->isDead()) continue;
 
-			if ((it->GetCenterPos() - tdnMouse::GetPos()).LengthSq() < 60 * 60)
+			Vector2 sPos = *it->Get_pos();
+			Vector2 mPos = tdnMouse::GetPos();
+			if (mPos.x > sPos.x && mPos.x < sPos.x + it->Get_size() &&
+				mPos.y > sPos.y && mPos.y < sPos.y + it->Get_size())
 			{
 				// 羊捕まえるSE
-				se->Play((it->GetType() == SHEEP_TYPE::REAL) ? "リアル掴む" : "羊掴む", *it->Get_pos());
+				se->Play((it->GetType() == SHEEP_TYPE::REAL) ? "リアル掴む" : "羊掴む", sPos);
 
 				// 捕まれてるモードに変更
 				it->Be_caught(bLeftCatch);

@@ -94,7 +94,7 @@ void NikuManager::Update()
 			delete m_pNiku, m_pNiku = nullptr;
 
 			// 火エフェクト
-			EffectMgr.AddEffect((int)YAKINIKU_AREA.x + 128, (int)YAKINIKU_AREA.y + 128, EFFECT_TYPE::BURN);
+			EffectMgr.AddEffect((int)YAKINIKU_AREA.x + 128, (int)YAKINIKU_AREA.y + 138, EFFECT_TYPE::BURN);
 
 			// SE
 			se->Play("点火", YAKINIKU_AREA);
@@ -239,37 +239,28 @@ void NikuManager::StartNikuBazier()
 	// 開始座標の位置に応じて、座標を算出
 	Vector3 center, center2;
 
-	float PowerLR = 480, PowerUD = 240;
-	if (start.y < 320)	// 上半分
-	{
-		// 左上
-		if (start.x < 640)
-		{
-			center = Vector3(start.x, start.y + PowerUD / 2, 0);
-			center2 = Vector3(center.x + PowerLR / 2, center.y + PowerUD, 0);
-		}
-		// 右上
-		else
-		{
-			center = Vector3(start.x, start.y + PowerUD / 2, 0);
-			center2 = Vector3(center.x - PowerLR / 2, center.y + PowerUD, 0);
-		}
+	float PowerLR = 420, PowerUD = 150;
+
+	// 真ん中レーンじゃなかったら
+	if (m_pNiku->GetFloor() != 1)
+	{								/*	左		右	*/
+		PowerLR = (start.x < 640) ? PowerLR : -PowerLR;
+									/*	下		上	*/
+		PowerUD = (start.y < 320) ? PowerUD : -PowerUD;
+
+		center = Vector3(start.x + PowerLR, start.y - PowerUD, 0);
+		center2 = Vector3(center.x + PowerLR * 1.85f, center.y + PowerUD, 0);
 	}
-	else 	// 下半分
+	// 真ん中レーン
+	else
 	{
-		// 左下
-		if (start.x < 640)
-		{
-			center = Vector3(start.x, start.y - PowerUD / 2, 0);
-			center2 = Vector3(center.x + PowerLR / 2, center.y - PowerUD, 0);
-		}
-		// 右下
-		else
-		{
-			center = Vector3(start.x, start.y - PowerUD / 2, 0);
-			center2 = Vector3(center.x - PowerLR / 2, center.y - PowerUD, 0);
-		}
+		PowerLR = (start.x < 640) ? 260.0f : -260.0f;
+		PowerUD = start.y;
+
+		center = Vector3(start.x + PowerLR, start.y - PowerUD, 0);
+		center2 = Vector3(center.x + PowerLR * 2.6f, PowerUD - 100, 0);
 	}
+
 
 	// 肉ベジエ生成
 	m_pNikuBazier = new NikuBazier("DATA/powerF.png", start, center, center2, end, 46);
@@ -559,6 +550,13 @@ void Niku::Update()
 			m_move = m_BoundPow;
 		}
 	}
+
+	// 超高校級の肉なら
+	if (m_type == YAKINIKU_MODE::MEDIAM)
+	{
+		// 湯気パーティクル
+		Particle2dManager::Effect_NikuSmoke(m_pos + Vector2(60, 60));
+	}
 }
 
 
@@ -579,10 +577,9 @@ void Niku::Render()
 void NikuBazier::Move()
 {
 	// レートを足していく
-	m_percent += m_percentRate;
-	// クランプ
-	m_percent = Math::Clamp(m_percent, 0.0f, 1.0f);
+	m_percent = min(m_percent + m_percentRate, 1.0f);
 
-
-	FOR(3)Particle2dManager::Effect_Hinoko(Vector2(m_pos.x, m_pos.y));// ぱーてぃくる
+	// ぱーてぃくる
+	Particle2dManager::Effect_KiraKira(Vector2(m_pos.x, m_pos.y), Vector2(16, 16), 15, 10, 1, 70);// ぱーてぃくる
+	FOR(4)Particle2dManager::Effect_Hinoko(Vector2(m_pos.x, m_pos.y));
 }

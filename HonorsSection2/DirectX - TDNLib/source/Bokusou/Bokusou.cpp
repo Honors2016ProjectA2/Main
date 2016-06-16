@@ -407,7 +407,7 @@ void BokusouTarget::Render()
 	m_pKusa->Render((int)m_pos.x, (int)m_pos.y, 128, 128, m_srcX, 0, 128, 128);
 	
 	// ターゲット
-	m_pTargetAnim->Render((int)m_pos.x - 6, (int)m_pos.y);
+	//m_pTargetAnim->Render((int)m_pos.x - 6, (int)m_pos.y);
 }
 
 void BokusouTarget::ChangePos(const Vector2 &pos)

@@ -16,9 +16,11 @@
 
 Explain* ex;
 
-End* end;
+//End* end;
 
 SendPower* m_send;
+
+Vector3 start, center, center2, end;
 
 // 超高難易度ステージ
 bool g_bExtraStage;
@@ -30,8 +32,9 @@ bool Title::Initialize()
 	// スペースキーおしっぱで、えくすとりーむ
 	g_bExtraStage = false;
 
+	start = Vector3(462, 393, 0), center = Vector3(722, 0, 0), center2 = Vector3(1402, 293, 0), end = Vector3(442 + 128, 362 + 128, 0);
 	m_send = new SendPower("Data/power.png",
-		Vector3(1280, 300, 0),Vector3(400, 500, 0), Vector3(100, 200, 0), Vector3(680, 0, 0), 48);
+		start,center, center2, end, 48);
 
 //end = new End();
 	//end->Init();
@@ -110,22 +113,22 @@ Title::~Title()
 
 bool Title::Update()
 {
-	if (KeyBoard(KB_E) == 3)
-	{
-		m_send->Action();
-
-		// エクストラステージ切り替え
-		if (g_bExtraStage)
-		{
-			se->Play("羊掴む", Vector2(640, 360));
-			g_bExtraStage = false;
-		}
-		else
-		{
-			se->Play("アンリミ!", Vector2(640, 360));
-			g_bExtraStage = true;
-		}
-	}
+	//if (KeyBoard(KB_E) == 3)
+	//{
+	//	m_send->Action();
+	//
+	//	// エクストラステージ切り替え
+	//	if (g_bExtraStage)
+	//	{
+	//		se->Play("羊掴む", Vector2(640, 360));
+	//		g_bExtraStage = false;
+	//	}
+	//	else
+	//	{
+	//		se->Play("アンリミ!", Vector2(640, 360));
+	//		g_bExtraStage = true;
+	//	}
+	//}
 
 	//if (KeyBoard(KB_E) == 3)
 	//{
@@ -164,15 +167,15 @@ bool Title::Update()
 	// 小屋
 	KoyaVsSheep();
 
-	if (KeyBoardTRG(KB_ENTER))
-	{
-		// 羊ループ
-		for (auto &it : *m_pSheepMgr->Get_list())
-		{
-			// カーブを掛ける
-			it->SetCurve(DIR::UP);
-		}
-	}
+	//if (KeyBoardTRG(KB_ENTER))
+	//{
+	//	// 羊ループ
+	//	for (auto &it : *m_pSheepMgr->Get_list())
+	//	{
+	//		// カーブを掛ける
+	//		it->SetCurve(DIR::UP);
+	//	}
+	//}
 
 
 	// ゲーム画面へ
@@ -323,6 +326,11 @@ void Title::Render()
 	
 	//ex->Render();
 
+	// ベジエデバッグ
+	//tdnPolygon::Rect((int)start.x - 32, (int)start.y - 32, 64, 64, RS::COPY, 0xffff0000);
+	//tdnPolygon::Rect((int)center.x - 32, (int)center.y - 32, 64, 64, RS::COPY, 0xff00ff00);
+	//tdnPolygon::Rect((int)center2.x - 32, (int)center2.y - 32, 64, 64, RS::COPY, 0xff0000ff);
+	//tdnPolygon::Rect((int)end.x - 32, (int)end.y - 32, 64, 64, RS::COPY, 0xffffff00);
 
 	//RESULT_UIMNG.Render();
 	//Fade

@@ -253,7 +253,7 @@ bool ResultUIManager::Update()
 
 	//m_MaxSumNum = 114514810;
 
-	Debug();
+	//Debug();
 
 	switch (m_step)
 	{
@@ -294,11 +294,11 @@ bool ResultUIManager::Update()
 	case ResultUIManager::STEP::SCORE:	// スコア
 
 		// ボタン
-		if (KeyBoardTRG(KB_Y))
-		{
-			// 次のステップへ
-			m_step = STEP::SONOTA;
-		}
+		//if (KeyBoardTRG(KB_Y))
+		//{
+		//	// 次のステップへ
+		//	m_step = STEP::SONOTA;
+		//}
 		if (m_SheepMGN->isScoreEnd())
 		{
 			// 次のステップへ
@@ -313,11 +313,11 @@ bool ResultUIManager::Update()
 	case ResultUIManager::STEP::SONOTA:	// その他
 
 		// ボタン
-		if (KeyBoardTRG(KB_Y))
-		{
-			// 次のステップへ
-			m_step = STEP::EXE;
-		}
+		//if (KeyBoardTRG(KB_Y))
+		//{
+		//	// 次のステップへ
+		//	m_step = STEP::EXE;
+		//}
 
 		if (m_SheepMGN->isOtherEnd())
 		{
@@ -550,10 +550,10 @@ bool ResultUIManager::Update()
 	//{
 	//	m_SheepMGN->StartScoreSheep();
 	//}
-	if (KeyBoardTRG(KB_ENTER))
-	{
-		m_SheepMGN->Reset();
-	}
+	//if (KeyBoardTRG(KB_ENTER))
+	//{
+	//	m_SheepMGN->Reset();
+	//}
 	m_SheepMGN->Update();
 
 	// ボード
@@ -827,32 +827,32 @@ void ResultUIManager::CircleRender()
 void ResultUIManager::MaskRender()
 {
 
-	if (KeyBoard(KB_T) == 3)
-	{
-		m_blindSplit++;
-	}
-	if (KeyBoard(KB_R) == 3)
-	{
-		m_blindSplit--;
-	}
-	if (KeyBoard(KB_Y) == 3)
-	{
-		m_blindAngle -= 0.1f;
-	}
-	if (KeyBoard(KB_U) == 3)
-	{
-		m_blindAngle += 0.1f;
-	}
-
-	
-	if (KeyBoard(KB_Q))
-	{
-		m_blindRete -= 0.1f;
-	}
-	if (KeyBoard(KB_E))
-	{
-		m_blindRete += 0.1f;
-	}
+	//if (KeyBoard(KB_T) == 3)
+	//{
+	//	m_blindSplit++;
+	//}
+	//if (KeyBoard(KB_R) == 3)
+	//{
+	//	m_blindSplit--;
+	//}
+	//if (KeyBoard(KB_Y) == 3)
+	//{
+	//	m_blindAngle -= 0.1f;
+	//}
+	//if (KeyBoard(KB_U) == 3)
+	//{
+	//	m_blindAngle += 0.1f;
+	//}
+	//
+	//
+	//if (KeyBoard(KB_Q))
+	//{
+	//	m_blindRete -= 0.1f;
+	//}
+	//if (KeyBoard(KB_E))
+	//{
+	//	m_blindRete += 0.1f;
+	//}
 
 	m_blindRete = Math::Clamp(m_blindRete, 0.0f, 1.0f);
 	shader2D->SetValue("blindRate", m_blindRete);

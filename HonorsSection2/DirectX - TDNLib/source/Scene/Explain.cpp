@@ -90,7 +90,7 @@ void Explain::Text1()
 	howTo.Open();
 #ifdef GAME_SHORTCUT
 #else
-	if( tdnMouse::GetLeft() == 3 || KeyBoardTRG(KB_ENTER))
+	if( tdnMouse::GetLeft() == 3)
 #endif
 	{
 		howTo.openFlg = false;
@@ -111,7 +111,7 @@ void Explain::Text2()
 	game.Open();
 #ifdef GAME_SHORTCUT
 #else
-	if (tdnMouse::GetLeft() == 3 || KeyBoardTRG(KB_ENTER))
+	if (tdnMouse::GetLeft() == 3)
 #endif
 	{
 		game.openFlg = false;

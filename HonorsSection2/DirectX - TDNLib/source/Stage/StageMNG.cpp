@@ -29,7 +29,7 @@ int STAGE_POS_Y[3] =
 	165, 520, 520// š‚±‚±‚¢‚¶‚Á‚½‚ë
 };
 int LANE_WIDTH = 0;
-Vector2 YAKINIKU_AREA(0, 0);
+Vector2 YAKINIKU_AREA(442, 362);
 bool g_bDogSetFrame = false;		// Œ¢‚ğİ’u‚µ‚½ƒtƒŒ[ƒ€‚©‚Ç‚¤‚©
 
 int FindFloor(float posY)
