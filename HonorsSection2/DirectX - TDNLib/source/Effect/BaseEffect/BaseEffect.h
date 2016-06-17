@@ -381,3 +381,23 @@ public:
 
 private:
 };
+
+// ‰Œ
+class SmokeEffect :public BaseEffect
+{
+public:
+	SmokeEffect()
+	{
+		m_picSize = 256;
+		m_pic = new AnimationPanel("Data/Effect/smoke.png", 256, 256, 15, 1, 4, false);
+		//state = RS::COPY;
+		m_pic->GetPic()->SetScale(1.5f);
+	};
+	~SmokeEffect() {};
+
+	void Update() { BaseEffect::Update(); };
+	void Render() { BaseEffect::Render(); };
+	void Action(int x = 0, int y = 0) { BaseEffect::Action(x, y); };
+
+private:
+};

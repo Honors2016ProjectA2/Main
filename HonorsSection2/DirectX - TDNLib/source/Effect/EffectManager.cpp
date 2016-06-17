@@ -152,7 +152,11 @@ void EffectManager::AddEffect(int x, int y, EFFECT_TYPE type)
 		break;
 	case EFFECT_TYPE::DARK_NOTICE:
 		data = new DarkNoticeEffect();
+		break;	
+	case EFFECT_TYPE::SMOKE:
+		data = new SmokeEffect();
 		break;
+
 	default:
 		break;
 	}
