@@ -552,7 +552,7 @@ void SheepManager::CatchUpdate()
 			return true;
 		}
 		// 5フレーム目
-		else if (KeyBoard(MOUSE_LEFT) == 6 && !bNikuHold)
+		else if (KeyBoard(MOUSE_LEFT) == 3 && !bNikuHold)
 		{
 			*OutbLeft = true;
 			return true;
@@ -789,7 +789,7 @@ void ResultSheepManager::Render()
 
 
 	static const int OTHER_HABA = 85;
-	m_pNumbers[NUMBER_TYPE::COMBO]->Render((int)m_waku[1].pos.x + 630, (int)m_waku[1].pos.y + 35, UIMNG.GetCombo());								// コンボ
+	m_pNumbers[NUMBER_TYPE::COMBO]->Render((int)m_waku[1].pos.x + 630, (int)m_waku[1].pos.y + 35, UIMNG.GetMaxCombo());								// コンボ
 	m_pNumbers[NUMBER_TYPE::WOLFKILL]->Render((int)m_waku[1].pos.x + 630, (int)m_waku[1].pos.y + 35 + OTHER_HABA, UIMNG.GetWorfHappyCount());		// 狼討伐
 	m_pNumbers[NUMBER_TYPE::SHEEPKILL]->Render((int)m_waku[1].pos.x + 630, (int)m_waku[1].pos.y + 35 + OTHER_HABA*2, UIMNG.GetSheepKillCount());	// 羊死に
 }

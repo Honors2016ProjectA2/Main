@@ -16,7 +16,7 @@ bool sceneLoading::Initialize(BaseScene *newScene)
 	m_AnimeCount = m_AnimeFrame = 0;
 
 	// 白フェードイン
-	//FadeControl::Setting(FadeControl::MODE::WHITE_IN, 10.0f);
+	FadeControl::Setting(FadeControl::MODE::WHITE_IN, 10.0f);
 
 	//	別スレッド作成
 	//次のシーンのポインタは後で使うのでnewSceneに保存しておく。
@@ -44,6 +44,9 @@ void sceneLoading::Thread_funk(void *arg)
 	scene->Initialize();	// ★ここで本体のsceneが必要な時間をかかる初期化を行う
 	scene->m_bLoad = true;	// この時点でロードフラグをON。シーンを切り替える際の読み込みをしないようにする
 
+	// フェードアウト
+	FadeControl::Setting(FadeControl::MODE::WHITE_OUT, 20.0f);
+
 	//	スレッド終了処理
 	isThread = false;
 	_endthread();
@@ -58,7 +61,7 @@ void sceneLoading::Thread_funk(void *arg)
 bool sceneLoading::Update()
 {
 	// フェード
-	//FadeControl::Update();
+	FadeControl::Update();
 
 	// 画像アニメーション処理
 	if (++m_AnimeFrame > m_AnimeSpeed)
@@ -69,8 +72,9 @@ bool sceneLoading::Update()
 	}
 
 	//ロードが終わったら、シーンをチェンジ
-	if (!isThread)
+	if (!isThread && FadeControl::IsEndFade())
 	{
+		FadeControl::Setting(FadeControl::MODE::WHITE_IN, 30.0f);
 		MainFrame->ChangeScene(m_newScene);
 	}
 
@@ -91,7 +95,7 @@ void sceneLoading::Render()
 	m_pImage->Render(800, 620, 512, 64, 0, m_AnimeCount * 64, 512, 64);
 
 	// フェード
-	//FadeControl::Render();
+	FadeControl::Render();
 }
 //
 //=============================================================================================

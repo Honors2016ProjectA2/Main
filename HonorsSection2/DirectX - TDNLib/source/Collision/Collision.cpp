@@ -271,13 +271,13 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 			switch (fatIt->GetType())
 			{
 			case SHEEP_TYPE::NOMAL:
-				Bairitsu = 2000.0f;
+				Bairitsu = 2500.0f;
 				break;
 			case SHEEP_TYPE::GOLD:
 				Bairitsu = 5000.0f;
 				break;
 			case SHEEP_TYPE::REAL:
-				Bairitsu = 10000.0f;
+				Bairitsu = 7500.0f;
 				break;
 			}
 			SetScore(dataMNG, fatIt->GetFloor(), Bairitsu);	// 10000”{
