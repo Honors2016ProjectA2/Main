@@ -170,7 +170,7 @@ ResultUIManager::ResultUIManager()
 	m_resultBG = new tdn2DObj("Data/result/rizaruto.png");
 
 	//
-	m_SheepMGN = new ResultSheepManager(100, 250, -1000, 24);
+	m_SheepMGN = new ResultSheepManager(50, 200, -1000, 24);
 
 	// 
 	//m_boadScore = new tdn2DAnim("Data/result/boadScore.png");

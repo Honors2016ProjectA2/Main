@@ -9,6 +9,7 @@
 #include "../Niku/Niku.h"
 #include "Effect\EffectManager.h"
 #include "../Sheep/Sheep.h"
+#include "../TipsCount/TipsCounter.h"
 
 //int g_FireModeChangeTime[(int)CurvePoint::FIRE_MODE::MAX];			// モードが変わっていく時間
 
@@ -269,6 +270,9 @@ void StageManager::Update()
 				SetDogFloor(floor);
 
 				stage[floor]->m_TenmetsuFrame = 0;
+
+				// Tipsカウント
+				TipsCountMgr->m_LaneChange++;
 			}
 		}
 	}
@@ -369,6 +373,9 @@ void StageManager::UpdateDogs(const Vector2 &mPos)
 
 							// 犬設置フラグ
 							DogFlag = DOG::SET;
+
+							// Tipsカウント
+							TipsCountMgr->m_DogUse++;
 							break;
 						}
 					}

@@ -23,6 +23,7 @@
 #include	"result2.h"
 #include   "Explain.h"
 #include	"Tips.h"
+#include	"../TipsCount/TipsCounter.h"
 
 #include "../system/Framework.h"
 #include "Scene\Title.h"
@@ -45,6 +46,8 @@ bool sceneMain::Initialize()
 	UIMNG.Init();
 	UIMNG.SetTimer(90);
 	
+	// TipsCountリセット
+	TipsCountMgr->Reset();
 
 	EffectMgr;
 
@@ -141,8 +144,6 @@ bool sceneMain::Update()
 
 	/*　データ受け渡し　*/
 	DataDelivery();
-	/*　当たり判定　*/
-	CollisionMgr->Update(g_pSheepMgr, dataMNG, stage);
 
 	// PosyEffect
 	PostEffectMgr.Update();
@@ -218,6 +219,9 @@ void sceneMain::ReadyEvent()
 
 void sceneMain::MainUpdate()
 {
+	/*　当たり判定　*/
+	CollisionMgr->Update(g_pSheepMgr, dataMNG, stage);
+
 	dataMNG->Update();
 	NikuMgr->Update();
 	stage->Update();
@@ -382,7 +386,7 @@ void sceneMain::Render()
 	// ポストエフェクトたち
 	PostEffectMgr.RadialRender(); // ◎これが放射ブラ―を掛けた真の描画元
 
-	if (KeyBoard(KB_ENTER))
+	//if (KeyBoard(KB_ENTER))
 	{
 		PostEffectMgr.BloomRender();
 	}

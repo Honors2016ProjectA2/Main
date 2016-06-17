@@ -82,21 +82,21 @@ void BokusouManager::Update()
 	if (++m_CreateTimer > m_CREATETIME)
 	{
 		// 牧草生成した瞬間
-		EffectMgr.AddEffect((int)m_CreatePosList[m_NextPoint].pos.x+64, (int)m_CreatePosList[m_NextPoint].pos.y+64, EFFECT_TYPE::PUT);
+		//EffectMgr.AddEffect((int)m_CreatePosList[m_NextPoint].pos.x+64, (int)m_CreatePosList[m_NextPoint].pos.y+64, EFFECT_TYPE::PUT);
 		UIMNG.GraphAction();//  アクション
 
 		m_CreateTimer = 0;
 
 		// 生成
-		Bokusou *set = new Bokusou(m_CreatePosList[m_NextPoint].pos, m_NextPoint);	// 座標リストからランダムに
-		set->SetFloor(m_CreatePosList[m_NextPoint].floor);
-		m_list.push_back(set);
+		//Bokusou *set = new Bokusou(m_CreatePosList[m_NextPoint].pos, m_NextPoint);	// 座標リストからランダムに
+		//set->SetFloor(m_CreatePosList[m_NextPoint].floor);
+		//m_list.push_back(set);
 
 		m_PrevPoint = m_NextPoint;
 
 		//m_CreatePosList[m_NextPoint].pos
-		//UIMNG.AddSendPower("Data/Power.png", Vector3(40, 40, 0), Vector3(0, 400, 0), Vector3(100, 600, 0),
-		//	Vector3(m_CreatePosList[m_NextPoint].pos.x + 64, m_CreatePosList[m_NextPoint].pos.y + 64, 0), 48, 114514, true);
+		UIMNG.AddSendPower("Data/Power.png", Vector3(40, 40, 0), Vector3(0, 400, 0), Vector3(100, 600, 0),
+			Vector3(m_CreatePosList[m_NextPoint].pos.x + 64, m_CreatePosList[m_NextPoint].pos.y + 64, 0), 48, 114514, true);
 
 		// 次の生成座標
 		while (true)
@@ -119,7 +119,7 @@ void BokusouManager::Update()
 		}
 
 		// ターゲットの位置変更
-		m_pBokusouTarget->ChangePos(m_CreatePosList[m_NextPoint].pos);
+		//m_pBokusouTarget->ChangePos(m_CreatePosList[m_NextPoint].pos);
 	}
 
 	m_pBokusouTarget->Update(this);
@@ -148,7 +148,6 @@ void BokusouManager::Render()
 
 void BokusouManager::CreateByBazier()
 {
-	/*
 	// エフェクト
 	EffectMgr.AddEffect((int)m_CreatePosList[m_PrevPoint].pos.x + 64, (int)m_CreatePosList[m_PrevPoint].pos.y + 64, EFFECT_TYPE::PUT);
 
@@ -159,7 +158,6 @@ void BokusouManager::CreateByBazier()
 
 	// ターゲットの位置変更
 	m_pBokusouTarget->ChangePos(m_CreatePosList[m_NextPoint].pos);
-	*/
 }
 
 
@@ -401,13 +399,13 @@ void BokusouTarget::Update(BokusouManager *pMgr)
 void BokusouTarget::Render()
 {
 	// グラフ
-	m_pGraph->Render((int)m_pos.x, (int)m_pos.y, 128, 128, 0, 0, 128, 128);
+	//m_pGraph->Render((int)m_pos.x, (int)m_pos.y, 128, 128, 0, 0, 128, 128);
 
 	// 草
 	m_pKusa->Render((int)m_pos.x, (int)m_pos.y, 128, 128, m_srcX, 0, 128, 128);
 	
 	// ターゲット
-	//m_pTargetAnim->Render((int)m_pos.x - 6, (int)m_pos.y);
+	m_pTargetAnim->Render((int)m_pos.x - 6, (int)m_pos.y);
 }
 
 void BokusouTarget::ChangePos(const Vector2 &pos)

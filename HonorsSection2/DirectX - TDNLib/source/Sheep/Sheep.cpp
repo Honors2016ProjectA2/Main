@@ -570,7 +570,8 @@ void SheepManager::CatchUpdate()
 
 			Vector2 sPos = *it->Get_pos();
 			Vector2 mPos = tdnMouse::GetPos();
-			if (mPos.x > sPos.x && mPos.x < sPos.x + it->Get_size() &&
+			if (mPos.x >= 150 && 
+				mPos.x > sPos.x && mPos.x < sPos.x + it->Get_size() &&
 				mPos.y > sPos.y && mPos.y < sPos.y + it->Get_size())
 			{
 				// órïﬂÇ‹Ç¶ÇÈSE

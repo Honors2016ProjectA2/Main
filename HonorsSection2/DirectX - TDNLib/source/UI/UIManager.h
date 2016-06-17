@@ -49,11 +49,14 @@ public:
 	// 
 	int GetWorfHappyCount() { return m_worfHappyCount; }
 	void AddWorfHappyCount(int add = 1) { m_worfHappyCount += add; }
+	int *GetWolfHappyCountAddress(){ return &m_worfHappyCount; }
 
 	int GetSheepKillCount() { return m_sheepKillCount; }
 	void AddSheepKillCount(int add = 1) { m_sheepKillCount += add; }
+	int *GetSheepKillCountAddress(){ return &m_sheepKillCount; }
 
 	int GetScore() { return m_score; }
+	int *GetScoreAddress(){ return &m_score; }
 	int GetCombo() { return m_combo; }
 	int GetMaxCombo() { return m_maxCombo; }
 

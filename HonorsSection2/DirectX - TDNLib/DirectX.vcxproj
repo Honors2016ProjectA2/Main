@@ -147,6 +147,7 @@
     <ClCompile Include="source\Stage\StageMNG.cpp" />
     <ClCompile Include="source\system\FadeCtrl.cpp" />
     <ClCompile Include="source\system\textLoader.cpp" />
+    <ClCompile Include="source\TipsCount\TipsCounter.cpp" />
     <ClCompile Include="source\UI\ResultUIManager.cpp" />
     <ClCompile Include="source\UI\SendPower\SendPower.cpp" />
     <ClCompile Include="source\UI\UIManager.cpp" />
@@ -174,7 +175,7 @@
     <ClCompile Include="TDN\TDN_Input.cpp" />
     <ClCompile Include="TDN\TDN_Math.cpp" />
     <ClCompile Include="TDN\TDN_Movie.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
     </ClCompile>
@@ -229,6 +230,7 @@
     <ClInclude Include="source\Stage\StageMNG.h" />
     <ClInclude Include="source\system\FadeCtrl.h" />
     <ClInclude Include="source\system\textLoader.h" />
+    <ClInclude Include="source\TipsCount\TipsCounter.h" />
     <ClInclude Include="source\UI\ResultUIManager.h" />
     <ClInclude Include="source\UI\SendPower\SendPower.h" />
     <ClInclude Include="source\UI\UIManager.h" />

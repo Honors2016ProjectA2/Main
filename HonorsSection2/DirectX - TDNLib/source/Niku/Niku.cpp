@@ -5,6 +5,7 @@
 #include "../Sound/SoundManager.h"
 #include "Effect\EffectManager.h"
 #include "../particle_2d/particle_2d.h"
+#include "../TipsCount/TipsCounter.h"
 
 // 静的メンバ変数
 NikuManager *NikuManager::pInstance = nullptr;	// 1つしかない実体
@@ -300,7 +301,10 @@ void NikuManager::CreateNiku()
 			break;
 		}
 		
-
+		// 肉の焼き加減Tipsカウント
+		TipsCountMgr->m_YakinikuSteps[(int)m_pYakiniku->GetMode()]++;
+		// 何の羊の肉かTipsカウント
+		TipsCountMgr->m_NikuSheepTypes[(int)m_pYakiniku->GetSheepType()]++;
 
 		m_pYakiniku->Erase();
 	}
