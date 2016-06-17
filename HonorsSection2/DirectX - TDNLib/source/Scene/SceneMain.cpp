@@ -44,7 +44,7 @@ namespace{
 bool sceneMain::Initialize()
 {
 	UIMNG.Init();
-	UIMNG.SetTimer(90);
+	UIMNG.SetTimer(60);
 	
 	// TipsCountƒŠƒZƒbƒg
 	TipsCountMgr->Reset();

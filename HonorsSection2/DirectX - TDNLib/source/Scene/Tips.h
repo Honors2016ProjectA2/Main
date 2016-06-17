@@ -23,12 +23,14 @@ private:
 
 	enum  TIPS_TYPE
 	{
-		MEAT, MEAT_TYPE, END
+		MEAT, MEAT_TYPE, HOUSE,KUSA_GAGE, END
 	};
 	// ƒqƒ“ƒg
 	tdn2DAnim* m_typs[TIPS_TYPE::END];
 	int m_selectTips;
 
 public:
+	
+
 
 };

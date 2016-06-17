@@ -9,10 +9,12 @@ Tips::Tips()
 {
 	m_state = STATE::START;
 
-
 	// タイプス
-	m_typs[TIPS_TYPE::MEAT ] = new tdn2DAnim("DATA/tips/tips.png");
-	m_typs[TIPS_TYPE::MEAT_TYPE ] = new tdn2DAnim("DATA/tips/tips2.png");
+	m_typs[TIPS_TYPE::MEAT ] = new tdn2DAnim("DATA/tips/MEAT.png");
+	m_typs[TIPS_TYPE::MEAT_TYPE ] = new tdn2DAnim("DATA/tips/MEAT_TYPE.png");
+	m_typs[TIPS_TYPE::HOUSE ] = new tdn2DAnim("DATA/tips/HOUSE.png");
+	m_typs[TIPS_TYPE::KUSA_GAGE ] = new tdn2DAnim("DATA/tips/KUSA_GAGE.png");
+
 
 	for (int i = 0; i < TIPS_TYPE::END ; i++)
 	{
@@ -106,10 +108,22 @@ void Tips::TipsSelect()
 	{
 		m_selectTips = TIPS_TYPE::MEAT;
 	}
-	else if (UIMNG.GetWorfHappyCount() > 1)
+	else if (UIMNG.GetWorfHappyCount() < 5)
 	{
 		m_selectTips = TIPS_TYPE::MEAT_TYPE;
 	}
-	
+	else
+	{
+		int ram = rand() % 2;
+		if (ram==0)
+		{
+			m_selectTips = TIPS_TYPE::HOUSE;
+		}
+		else if (ram == 1)
+		{
+			m_selectTips = TIPS_TYPE::KUSA_GAGE;
+		}
 
+	}
+	
 }
