@@ -207,11 +207,12 @@ void NikuManager::Update()
 
 void NikuManager::RenderYakiniku()
 {
-	if (m_pYakiniku)m_pYakiniku->Render();
+	//if (m_pYakiniku)m_pYakiniku->Render();
 }
 
 void NikuManager::RenderNiku()
 {
+	if (m_pYakiniku)m_pYakiniku->Render();
 	if (m_pNiku)m_pNiku->Render();
 	if (m_pNikuBazier)m_pNikuBazier->Render();
 }

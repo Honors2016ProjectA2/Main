@@ -11,7 +11,7 @@ private:
 	int			m_AnimeCount;
 	int			m_AnimeFrame;
 	tdn2DObj*	m_pImage;
-	const static int m_AnimeSpeed = 2;
+	const static int m_AnimeSpeed = 8;
 
 public:
 

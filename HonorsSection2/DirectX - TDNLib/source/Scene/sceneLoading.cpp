@@ -67,7 +67,7 @@ bool sceneLoading::Update()
 	if (++m_AnimeFrame > m_AnimeSpeed)
 	{
 		m_AnimeFrame = 0;
-		if (++m_AnimeCount > 5) m_AnimeFrame = 0;
+		if (++m_AnimeCount > 4) m_AnimeFrame = 0;
 
 	}
 
@@ -92,7 +92,7 @@ void sceneLoading::Render()
 	tdnView::Clear();
 
 	tdnPolygon::Rect(0, 0, tdnSystem::GetScreenSize().right, tdnSystem::GetScreenSize().bottom , RS::COPY, 0xffffffff);
-	m_pImage->Render(800, 620, 512, 64, 0, m_AnimeCount * 64, 512, 64);
+	m_pImage->Render(960, 620, 256, 64, 0, m_AnimeCount * 64, 256, 64);
 
 	// フェード
 	FadeControl::Render();
