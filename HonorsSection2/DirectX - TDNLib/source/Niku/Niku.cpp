@@ -207,12 +207,12 @@ void NikuManager::Update()
 
 void NikuManager::RenderYakiniku()
 {
-	//if (m_pYakiniku)m_pYakiniku->Render();
+	if (m_pYakiniku)m_pYakiniku->Render();
 }
 
 void NikuManager::RenderNiku()
 {
-	if (m_pYakiniku)m_pYakiniku->Render();
+	if (m_pYakiniku)m_pYakiniku->RenderFront();
 	if (m_pNiku)m_pNiku->Render();
 	if (m_pNikuBazier)m_pNikuBazier->Render();
 }
@@ -330,6 +330,13 @@ void YakinikuMode::Base::Update()
 void YakinikuMode::Base::Render()
 {
 	m_pYakiniku->pImage->Render(m_pYakiniku->GetPosX(), m_pYakiniku->GetPosY(), 256, 256, m_srcX, 0, 256, 256);
+}
+
+void YakinikuMode::Base::RenderFront()
+{
+	m_pYakiniku->pImage->SetAlpha(64);
+	m_pYakiniku->pImage->Render(m_pYakiniku->GetPosX(), m_pYakiniku->GetPosY(), 256, 256, m_srcX, 0, 256, 256);
+	m_pYakiniku->pImage->SetAlpha(255);
 }
 
 void YakinikuMode::Base::NextMode()
@@ -487,6 +494,11 @@ void Yakiniku::Update()
 void Yakiniku::Render()
 {
 	m_pMode->Render();
+}
+
+void Yakiniku::RenderFront()
+{
+	m_pMode->RenderFront();
 }
 
 void Yakiniku::ChangeMode(YAKINIKU_MODE m)

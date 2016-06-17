@@ -31,6 +31,7 @@ namespace YakinikuMode
 		virtual ~Base(){}
 		virtual void Update();
 		virtual void Render();
+		void RenderFront();
 		virtual YAKINIKU_MODE GetMode() = 0;
 		void NextMode();
 		void SetChangeModeTime(int val){ m_limit = val; }
@@ -93,6 +94,7 @@ public:
 	~Yakiniku();
 	void Update();
 	void Render();
+	void RenderFront();
 
 	// ÉÇÅ[ÉhïœçX
 	void ChangeMode(YAKINIKU_MODE m);
