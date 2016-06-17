@@ -212,8 +212,13 @@ void NikuManager::RenderYakiniku()
 
 void NikuManager::RenderNiku()
 {
-	if (m_pYakiniku)m_pYakiniku->RenderFront();
 	if (m_pNiku)m_pNiku->Render();
+}
+
+void NikuManager::RenderFront()
+{
+	if (m_pYakiniku)m_pYakiniku->RenderFront();
+	if (m_pNiku)m_pNiku->RenderFront();
 	if (m_pNikuBazier)m_pNikuBazier->Render();
 }
 
@@ -586,6 +591,15 @@ void Niku::Render()
 	if(!m_bVisible)m_pImage->Render((int)m_pos.x, (int)m_pos.y, 120, 120, (int)m_type * 120, 0, 120, 120);
 }
 
+void Niku::RenderFront()
+{
+	if (!m_bVisible)
+	{
+		m_pImage->SetARGB(0x80ffffff);
+		m_pImage->Render((int)m_pos.x, (int)m_pos.y, 120, 120, (int)m_type * 120, 0, 120, 120);
+		m_pImage->SetARGB(0xffffffff);
+	}
+}
 
 
 

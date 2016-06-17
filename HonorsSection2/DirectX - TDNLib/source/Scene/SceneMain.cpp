@@ -436,14 +436,16 @@ void sceneMain::MainRender()
 	// ステージの前描画
 	stage->RenderFront();
 
+	NikuMgr->RenderNiku();
+
 	Particle2dManager::Render();
 
 	// デブたち描画
 	g_pSheepMgr->RenderFat();
 	EnemyMgr->RenderFat();
 	stage->RenderFront2();
-	NikuMgr->RenderNiku();
 	BokusouMgr->RenderFront();
+	NikuMgr->RenderFront();
 	NumberEffect.Render();
 }
 

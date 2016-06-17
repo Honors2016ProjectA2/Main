@@ -135,6 +135,7 @@ public:
 	Niku(const Vector2 &pos, YAKINIKU_MODE type, tdn2DObj *image, SHEEP_TYPE SheepType);
 	void Update();
 	void Render();
+	void RenderFront();
 
 	void SetPos(const Vector2 &pos){ m_pos = pos; }
 	void SetPosY(float y){ m_pos.y = y; }
@@ -200,6 +201,7 @@ public:
 	void Update();
 	void RenderYakiniku();
 	void RenderNiku();
+	void RenderFront();
 
 	// ì˜çÏÇÈ
 	void StartYakiniku(SHEEP_TYPE type);
