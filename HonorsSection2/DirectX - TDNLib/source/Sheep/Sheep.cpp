@@ -552,7 +552,7 @@ void SheepManager::CatchUpdate()
 			return true;
 		}
 		// 5ƒtƒŒ[ƒ€–Ú
-		else if (KeyBoard(MOUSE_LEFT) == 3 && !bNikuHold)
+		else if (KeyBoard(MOUSE_LEFT) == 6 && !bNikuHold)
 		{
 			*OutbLeft = true;
 			return true;

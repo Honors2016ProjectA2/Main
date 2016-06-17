@@ -262,6 +262,10 @@ void StageManager::Update()
 				// SEの再生
 				se->Play("ドア", Vector2(128, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2));
 
+				// 開くエフェクト
+				EffectMgr.AddEffect(96, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2, EFFECT_TYPE::SMOKE);
+				EffectMgr.AddEffect(96, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2, EFFECT_TYPE::INEFFECT_MINI);
+
 				// 犬配置リセット
 				m_DogStock = 2;
 
@@ -793,7 +797,7 @@ void Stage::Update()
 		if (--m_RecastTime == 0)
 		{
 			// エフェクト
-			EffectMgr.AddEffect((int)pos.x + 68, (int)pos.y + 72, EFFECT_TYPE::PUT);
+			//EffectMgr.AddEffect((int)pos.x + 68, (int)pos.y + 72, EFFECT_TYPE::PUT);
 
 			// SE
 			se->Play("リキャスト", pos);
@@ -841,6 +845,7 @@ void Stage::Update()
 
 void Stage::Render()
 {
+	m_pHouseRipple->Render(0, (int)pos.y, RS::ADD);
 	m_pHouseRipple->Render(0, (int)pos.y, RS::ADD);
 }
 
