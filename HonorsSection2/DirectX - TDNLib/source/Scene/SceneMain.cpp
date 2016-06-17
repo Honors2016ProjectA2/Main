@@ -397,7 +397,15 @@ void sceneMain::Render()
 	case SCENE::TIPS:		TipsRender();		break;
 	}
 
-	EffectMgr.Render();
+	
+	switch (state) {
+	case SCENE::EXPLAIN:	EffectMgr.Render();		break;
+	case SCENE::READY:		EffectMgr.Render();		break;
+	case SCENE::MAIN:		EffectMgr.Render();		break;
+	case SCENE::END:								break;
+	case SCENE::RESULT:		EffectMgr.Render();		break;
+	case SCENE::TIPS								:break;
+	}
 
 	//Šî–{“I‚É‚ÍÅŒãBà–¾‚Ì‚İà–¾‘‚ÌŒã‚ë‚É‚·‚é‚Ì‚Å•Ê“r
 	pointer->Render();
