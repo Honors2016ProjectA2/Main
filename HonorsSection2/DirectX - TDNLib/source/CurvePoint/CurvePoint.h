@@ -45,6 +45,7 @@ namespace CurvePoint
 		virtual ~Base();
 		virtual void Update();
 		virtual void Render();
+		void RenderFront();
 		void SetPos(int y);
 		virtual void Change()		// ON_OFF‚ÌØ‚è‘Ö‚¦
 		{

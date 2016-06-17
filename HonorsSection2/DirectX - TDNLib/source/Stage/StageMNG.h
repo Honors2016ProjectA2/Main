@@ -134,6 +134,7 @@ public:
 	void Render();
 	void RenderBack();	// ”wŒi‚Æ‚©•`‰æ
 	void RenderFront();	// ‘‚Æ‚©ò‚Æ‚©•`‰æ
+	void RenderFront2();	// ‚³‚ç‚É‘O
 
 	void CurvePointLock(int floorIdx);
 

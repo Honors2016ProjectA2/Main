@@ -264,8 +264,8 @@ void StageManager::Update()
 				se->Play("ドア", Vector2(128, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2));
 
 				// 開くエフェクト
-				EffectMgr.AddEffect(96, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2, EFFECT_TYPE::SMOKE);
-				EffectMgr.AddEffect(96, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2, EFFECT_TYPE::INEFFECT_MINI);
+				EffectMgr.AddEffect(96, STAGE_POS_Y[floor] + LANE_WIDTH / 2, EFFECT_TYPE::SMOKE);
+				EffectMgr.AddEffect(96, STAGE_POS_Y[floor] + LANE_WIDTH / 2, EFFECT_TYPE::INEFFECT_MINI);
 
 				// 犬配置リセット
 				m_DogStock = 2;
@@ -707,6 +707,11 @@ void StageManager::RenderFront()
 	//tdnText::Draw(1200, STAGE_POS_Y[0] + 0, 0xffffffff, "%d", m_AddScore[0]);
 	//tdnText::Draw(1200, STAGE_POS_Y[1] + 0, 0xffffffff, "%d", m_AddScore[1]);
 	//tdnText::Draw(1200, STAGE_POS_Y[2] + 270, 0xffffffff, "%d", m_AddScore[2]);
+}
+
+void StageManager::RenderFront2()
+{
+	FOR(STAGE_MAX)for (auto& it : m_Doglists[i]) it->RenderFront();
 }
 
 void StageManager::Reflection(DataManager* data, MousePointer* mouse)

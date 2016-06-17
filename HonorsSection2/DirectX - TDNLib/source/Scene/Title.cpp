@@ -113,22 +113,22 @@ Title::~Title()
 
 bool Title::Update()
 {
-	//if (KeyBoard(KB_E) == 3)
-	//{
-	//	m_send->Action();
-	//
-	//	// エクストラステージ切り替え
-	//	if (g_bExtraStage)
-	//	{
-	//		se->Play("羊掴む", Vector2(640, 360));
-	//		g_bExtraStage = false;
-	//	}
-	//	else
-	//	{
-	//		se->Play("アンリミ!", Vector2(640, 360));
-	//		g_bExtraStage = true;
-	//	}
-	//}
+	if (KeyBoard(KB_E) == 3)
+	{
+		m_send->Action();
+	
+		// エクストラステージ切り替え
+		if (g_bExtraStage)
+		{
+			se->Play("羊掴む", Vector2(640, 360));
+			g_bExtraStage = false;
+		}
+		else
+		{
+			se->Play("アンリミ!", Vector2(640, 360));
+			g_bExtraStage = true;
+		}
+	}
 
 	//if (KeyBoard(KB_E) == 3)
 	//{
@@ -228,7 +228,10 @@ void Title::DogVsMouse()
 	// 距離計算 
 	float len=Math::Length(m_dog.pos.x+60, m_dog.pos.y + 60, tdnMouse::GetPos().x, tdnMouse::GetPos().y);
 	// 左クリック！！
-	if (tdnMouse::GetLeft() == 3)
+
+	// マウス離した
+	static int frame = 0;
+	if (tdnMouse::GetLeft() == 2 && frame <= 12)
 	{
 		if (len < 60)
 		{
@@ -237,6 +240,9 @@ void Title::DogVsMouse()
 
 		}
 	}
+
+	// 左クリックフレーム
+	frame = KeyBoard(MOUSE_LEFT);
 }
 
 void Title::DogVsSheep()

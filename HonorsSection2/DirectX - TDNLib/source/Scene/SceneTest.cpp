@@ -20,7 +20,7 @@ tdn2DObj* anim2;
 //tdn2DAnim* d;
 //tdn2DAnim* d2;
 
-tdnMovie *pMovie;
+//tdnMovie *pMovie;
 tdn2DObj *pMovieImage;
 
 tdn2DAnim* app[4];
@@ -93,8 +93,8 @@ bool sceneTest::Initialize()
 	m_blindAngle=0.0f;
 	maskScreen = new tdn2DObj(512, 512, TDN2D::RENDERTARGET);
 
-	pMovie = new tdnMovie("DATA/movie/title.wmv");
-	pMovieImage = new tdn2DObj(pMovie->GetTexture());
+	//pMovie = new tdnMovie("DATA/movie/title.wmv");
+	//pMovieImage = new tdn2DObj(pMovie->GetTexture());
 
 	return true;
 }
@@ -126,7 +126,7 @@ sceneTest::~sceneTest()
 
 	NumberEffect.Release();
 
-	delete pMovie;
+	//delete pMovie;
 	delete pMovieImage;
 }
 
@@ -139,7 +139,7 @@ static int HOGE_NUM2 = 0;
 bool sceneTest::Update()
 {
 	// ƒ‹[ƒv
-	pMovie->LoopUpdate();
+	//pMovie->LoopUpdate();
 
 	// SoundManager::Update();
 	if (KeyBoard(KB_F))cameraPos.z += 1;

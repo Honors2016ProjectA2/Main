@@ -42,12 +42,31 @@ void CurvePoint::Base::Render()
 	// 有効状態じゃなかったら出ていけぇ！！
 	if (!bEnable) return;
 
+	m_pImage->SetScale(this->m_bCursorIn ? 1.1f : 1.0f);
 	if (IsOpening())
 	{
 		m_pImage->SetARGB((BYTE)255, (BYTE)255, (BYTE)255, (BYTE)255);
 		m_pImage->Render((int)m_pos.x, (int)m_pos.y, W, H, m_AnimPanel*SW, 0, SW, SH);
 	}
 	else
+	{
+		m_pImage->SetARGB((BYTE)96, (BYTE)255, (BYTE)255, (BYTE)255);
+		m_pImage->Render((int)m_pos.x, (int)m_pos.y, W, H, m_AnimPanel*SW, 0, SW, SH);
+	}
+
+}
+
+void CurvePoint::Base::RenderFront()
+{
+	// 有効状態じゃなかったら出ていけぇ！！
+	if (!bEnable) return;
+
+	if (IsOpening())
+	{
+		m_pImage->SetARGB((BYTE)128, (BYTE)255, (BYTE)255, (BYTE)255);
+		m_pImage->Render((int)m_pos.x, (int)m_pos.y, W, H, m_AnimPanel*SW, 0, SW, SH);
+	}
+	else if (m_bCursorIn)
 	{
 		m_pImage->SetARGB((BYTE)96, (BYTE)255, (BYTE)255, (BYTE)255);
 		m_pImage->Render((int)m_pos.x, (int)m_pos.y, W, H, m_AnimPanel*SW, 0, SW, SH);

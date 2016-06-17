@@ -146,6 +146,12 @@ void BokusouManager::Render()
 	m_pBokusouTarget->Render();
 }
 
+void BokusouManager::RenderFront()
+{
+	for (auto it : m_list) it->RenderFront();
+	m_pBokusouTarget->RenderFront();
+}
+
 void BokusouManager::CreateByBazier()
 {
 	// エフェクト
@@ -177,6 +183,13 @@ void BokusouMode::Base::Update()
 void BokusouMode::Base::Render()
 {
 	m_pImage->Render(pBokusou->GetPosX(), pBokusou->GetPosY(), 128, 128, m_srcX, 0, 128, 128);
+}
+
+void BokusouMode::Base::RenderFront()
+{
+	m_pImage->SetARGB(0x80ffffff);
+	m_pImage->Render(pBokusou->GetPosX(), pBokusou->GetPosY(), 128, 128, m_srcX, 0, 128, 128);
+	m_pImage->SetARGB(0xffffffff);
 }
 
 void BokusouMode::Base::NextMode()
@@ -406,6 +419,19 @@ void BokusouTarget::Render()
 	
 	// ターゲット
 	m_pTargetAnim->Render((int)m_pos.x - 6, (int)m_pos.y);
+}
+
+void BokusouTarget::RenderFront()
+{
+	// 草
+	m_pKusa->SetARGB(0x80ffffff);
+	m_pKusa->Render((int)m_pos.x, (int)m_pos.y, 128, 128, m_srcX, 0, 128, 128);
+	m_pKusa->SetARGB(0xffffffff);
+
+	// ターゲット
+	m_pTargetAnim->SetARGB(0x80ffffff);
+	m_pTargetAnim->Render((int)m_pos.x - 6, (int)m_pos.y);
+	m_pTargetAnim->SetARGB(0xffffffff);
 }
 
 void BokusouTarget::ChangePos(const Vector2 &pos)

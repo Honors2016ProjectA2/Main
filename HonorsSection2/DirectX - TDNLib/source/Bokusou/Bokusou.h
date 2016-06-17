@@ -35,6 +35,7 @@ namespace BokusouMode
 		virtual ~Base(){}
 		virtual void Update();
 		virtual void Render();
+		void RenderFront();
 		virtual BOKUSOU_MODE GetMode() = 0;
 		void NextMode();
 		void SetChangeModeTime(int val){ m_limit = val; }
@@ -97,6 +98,7 @@ public:
 	~Bokusou();
 	void Update();
 	void Render();
+	void RenderFront(){ m_pMode->RenderFront(); }
 
 	// モード変更
 	void ChangeMode(BOKUSOU_MODE m);
@@ -140,6 +142,7 @@ public:
 	~BokusouTarget();
 	void Update(BokusouManager *pMgr);
 	void Render();
+	void RenderFront();
 
 	void ChangePos(const Vector2 &pos);
 private:
@@ -172,6 +175,7 @@ public:
 	void Release();
 	void Update();
 	void Render();
+	void RenderFront();
 
 	// ゲッタ
 	std::list<Bokusou*> *GetList(){ return &m_list; }

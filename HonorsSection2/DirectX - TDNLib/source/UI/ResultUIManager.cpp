@@ -678,13 +678,17 @@ void ResultUIManager::RankUpdate()
 	{
 		m_rankType = B;
 	}
-	else if (m_MaxSumNum < 10000000)
+	else if (m_MaxSumNum < 5000000)
 	{
 		m_rankType = A;
 	}
-	else
+	else if (m_MaxSumNum < 7500000)
 	{
 		m_rankType = S;
+	}
+	else
+	{
+		m_rankType = SS;
 	}
 	
 

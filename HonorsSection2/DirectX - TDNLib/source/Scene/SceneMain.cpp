@@ -397,15 +397,7 @@ void sceneMain::Render()
 	case SCENE::TIPS:		TipsRender();		break;
 	}
 
-	
-	switch (state) {
-	case SCENE::EXPLAIN:	EffectMgr.Render();		break;
-	case SCENE::READY:		EffectMgr.Render();		break;
-	case SCENE::MAIN:		EffectMgr.Render();		break;
-	case SCENE::END:								break;
-	case SCENE::RESULT:		EffectMgr.Render();		break;
-	case SCENE::TIPS								:break;
-	}
+	EffectMgr.Render();
 
 	//基本的には最後。説明時のみ説明書の後ろにするので別途
 	pointer->Render();
@@ -449,8 +441,9 @@ void sceneMain::MainRender()
 	// デブたち描画
 	g_pSheepMgr->RenderFat();
 	EnemyMgr->RenderFat();
-
+	stage->RenderFront2();
 	NikuMgr->RenderNiku();
+	BokusouMgr->RenderFront();
 	NumberEffect.Render();
 }
 

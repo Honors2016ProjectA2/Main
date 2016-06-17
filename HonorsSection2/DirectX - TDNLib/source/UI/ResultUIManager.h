@@ -99,7 +99,7 @@ public:
 	// ƒ‰ƒ“ƒNˆ—
 	enum RANK_TYPE
 	{
-		S,A,B,C
+		SS,S,A,B,C
 	};
 	int m_rankType;
 	tdn2DAnim* m_RankPic;

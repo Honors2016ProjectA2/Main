@@ -568,11 +568,13 @@ void SheepManager::CatchUpdate()
 			// œ‚ð‚Â‚©‚Ü‚¹‚È‚¢II
 			if (it->isDead()) continue;
 
-			Vector2 sPos = *it->Get_pos();
-			Vector2 mPos = tdnMouse::GetPos();
+			const Vector2 sPos = *it->Get_pos();
+			const Vector2 mPos = tdnMouse::GetPos();
+			const int s = it->Get_size();
+			const int size = (it->GetType() != SHEEP_TYPE::NOMAL) ? (int)(s * 1.2f) : s;
 			if (mPos.x >= 150 && 
-				mPos.x > sPos.x && mPos.x < sPos.x + it->Get_size() &&
-				mPos.y > sPos.y && mPos.y < sPos.y + it->Get_size())
+				mPos.x > sPos.x && mPos.x < sPos.x +  size&&
+				mPos.y > sPos.y && mPos.y < sPos.y + size)
 			{
 				// —r•ß‚Ü‚¦‚éSE
 				se->Play((it->GetType() == SHEEP_TYPE::REAL) ? "ƒŠƒAƒ‹’Í‚Þ" : "—r’Í‚Þ", sPos);

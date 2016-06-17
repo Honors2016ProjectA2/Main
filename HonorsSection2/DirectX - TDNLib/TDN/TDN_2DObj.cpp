@@ -1162,7 +1162,7 @@ void tdn2DObj::SetAlpha(BYTE A)
 // 
 void tdn2DObj::SetAlpha(int A)
 {	
-	BYTE a = Math::Clamp((int)A, (int)0, (int)255);
+	BYTE a = (BYTE)Math::Clamp((float)A, 0, 255);
 
 	DWORD orgColor = (color & 0x00ffffff);	
 	color = (a << 24) | orgColor;
@@ -1177,9 +1177,9 @@ void tdn2DObj::SetRGB(BYTE R, BYTE G, BYTE B)
 
 void tdn2DObj::SetRGB(int R, int G, int B)
 {
-	BYTE r = Math::Clamp((int)R, (int)0, (int)255);
-	BYTE g = Math::Clamp((int)G, (int)0, (int)255);
-	BYTE b = Math::Clamp((int)B, (int)0, (int)255);
+	BYTE r = (BYTE)Math::Clamp((float)R, 0, 255);
+	BYTE g = (BYTE)Math::Clamp((float)G, 0, 255);
+	BYTE b = (BYTE)Math::Clamp((float)B, 0, 255);
 
 	DWORD orgColor = (color & 0xff000000);
 	color = (r << 16) | (g << 8) | (b) | orgColor;
