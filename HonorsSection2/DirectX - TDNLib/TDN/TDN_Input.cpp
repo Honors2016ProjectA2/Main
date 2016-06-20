@@ -714,13 +714,15 @@ RECT tdnMouse::m_Rc;
 int tdnMouse::m_PrevWheel;
 int tdnMouse::m_CurrentWheel;
 WHEEL_FLAG tdnMouse::m_FlagW = WHEEL_FLAG::NONE;
+bool tdnMouse::m_bWindowIn = false;
 
 //------------------------------------------------------
 //	初期化
 //------------------------------------------------------
-void tdnMouse::Initialize(BOOL show)
+void tdnMouse::Initialize(BOOL show, bool bWindowIn)
 {
 	ShowCursor(show);
+	m_bWindowIn = bWindowIn;
 }
 
 
@@ -751,6 +753,13 @@ void tdnMouse::Update()
 	////中央オフセット＆正規化
 	m_Axis.x = ((float)m_Pos.x - (tdnSystem::GetScreenSize().right / 2)) / (tdnSystem::GetScreenSize().right / 2);
 	m_Axis.y = -((float)m_Pos.y - (tdnSystem::GetScreenSize().bottom / 2)) / (tdnSystem::GetScreenSize().bottom / 2);
+	
+	// 画面外に出ないようにする処理
+	if (m_bWindowIn)
+	{
+		if (m_Pos.x > tdnSystem::GetScreenSize().right - 10)		SetCursorPos(tdnSystem::GetScreenSize().right - 10, (int)m_Pos.y + 29);
+		else if (m_Pos.y > tdnSystem::GetScreenSize().bottom - 10)	SetCursorPos((int)m_Pos.x + 8, tdnSystem::GetScreenSize().bottom - 10);
+	}
 
 	// 最大値制御
 	if (m_Axis.x > Max)m_Axis.x = Max;
