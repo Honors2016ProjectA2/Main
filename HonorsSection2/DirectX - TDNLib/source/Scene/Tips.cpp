@@ -19,7 +19,7 @@ Tips::Tips()
 	for (int i = 0; i < TIPS_TYPE::END ; i++)
 	{
 		//m_typs[i] = new tdn2DAnim("DATA/tips/tips.png");
-		m_typs[i]->OrderGrow(16, 0.5f, 0.5f / 16.0f);
+		m_typs[i]->OrderGrow(24, 0.5f, 0.5f / 24.0f);
 	}
 	
 	//m_typs->OrderMoveAppeared(18, 1280, 0);
@@ -61,7 +61,7 @@ bool Tips::Update()
 	switch (m_state)
 	{
 	case Tips::STATE::START:
-		FadeControl::Setting(FadeControl::MODE::FADE_IN, 5.0f);
+		FadeControl::Setting(FadeControl::MODE::FADE_IN, 30.0f);
 		m_state = STATE::EXECUTE;
 		m_typs[m_selectTips]->Action();
 

@@ -670,7 +670,7 @@ bool ResultUIManager::CircleUpdate()
 void ResultUIManager::RankUpdate()
 {
 	// “_”‚²‚Æ‚Éƒ‰ƒ“ƒN‚ğ•t‚¯‚é
-	if (m_MaxSumNum < 1000000)
+	if (m_MaxSumNum < 1500000)
 	{
 		m_rankType = C;
 	}

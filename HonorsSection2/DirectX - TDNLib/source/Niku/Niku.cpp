@@ -85,7 +85,9 @@ void NikuManager::Update()
 	if (m_pNikuBazier)
 	{
 		m_pNikuBazier->Update();
-
+		static float fireAngle = 0.0f;
+		fireAngle -= 0.5f;
+		m_pNikuBazier->GetPic()->SetAngle(fireAngle);
 		// ベジエ終わったら
 		if(m_pNikuBazier->IsEnd())
 		{

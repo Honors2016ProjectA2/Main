@@ -32,6 +32,7 @@ public:
 
 	bool IsBokusou() { return m_bBokusou; }
 
+	tdn2DObj* GetPic() { return m_pic; }
 protected:
 	tdn2DObj* m_pic;
 

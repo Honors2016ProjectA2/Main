@@ -43,6 +43,8 @@ private:
 
 	bool isResultFlag;
 
+
+
 	//INIT, TITLE, EXPLAIN, READY, MAIN, END, RESULT
 	void Init();
 	//更新処理
@@ -64,4 +66,44 @@ private:
 	void TipsRender();
 
 	void DebugText();
+
+public:
+	// ポーズメニュー
+	struct POSE
+	{
+		tdn2DAnim* pic;
+		int x, y;
+		bool isAction;
+
+		tdn2DAnim* rip;
+	};
+	POSE m_stop;
+	POSE m_again;
+
+	struct POSE_TIMER 
+	{
+		tdn2DAnim* one;
+		tdn2DAnim* two;
+		tdn2DAnim* three;
+	};
+	POSE_TIMER m_poseTimer;
+
+	enum class POSE_STATE
+	{
+		START, EXE, COUNT, TITLE
+	};
+	POSE_STATE m_poseState;
+
+	struct PoseIcon
+	{
+		tdn2DObj* pic;
+		int x, y;
+
+	};
+	PoseIcon m_poseIcon;
+
+private:
+
+	void PoseUpdate();
+	void PoseRender();
 };

@@ -32,7 +32,7 @@ namespace{
 	namespace SCENE
 	{
 		enum{
-			INIT,EXPLAIN, READY, MAIN, END, RESULT,TIPS
+			INIT, EXPLAIN, READY, MAIN, END, RESULT, TIPS, POSE
 		};
 	}
 }
@@ -103,6 +103,45 @@ bool sceneMain::Initialize()
 	// 全部のドア閉まってる！！
 	g_CreateSheepFloor = -1;
 
+	// ポーズ
+	m_again.pic = new tdn2DAnim("Data/UI/Pose/again.png");
+	m_again.pic->OrderShake(12, 0, 18, 4);
+	m_again.x = 400;
+	m_again.y = 200;
+	m_again.isAction = false;
+	m_again.rip = new tdn2DAnim("Data/UI/Pose/again.png");
+	m_again.rip->OrderRipple(12, 1.0, 0.02f);
+
+	m_stop.pic = new tdn2DAnim("Data/UI/Pose/stop.png");
+	m_stop.pic->OrderShake(12, 0, 18, 4);
+	m_stop.x = 400;
+	m_stop.y = 400;
+	m_stop.isAction = false;
+	m_stop.rip = new tdn2DAnim("Data/UI/Pose/stop.png");
+	m_stop.rip->OrderRipple(12, 1.0, 0.02f);
+
+	m_poseState = POSE_STATE::START;
+
+	//m_again->Action();
+	//m_stop->Action();
+
+	m_poseTimer.one = new tdn2DAnim("Data/UI/Pose/1.png");
+	m_poseTimer.one->OrderShrink(18, 1.0f, 1.5f);
+	m_poseTimer.one->OrderRipple(28, 1.0, 0.01f);
+
+	m_poseTimer.two = new tdn2DAnim("Data/UI/Pose/2.png");
+	m_poseTimer.two->OrderShrink(18, 1.0f, 1.5f);
+	m_poseTimer.two->OrderRipple(28, 1.0, 0.01f);
+
+	m_poseTimer.three = new tdn2DAnim("Data/UI/Pose/3.png");
+	m_poseTimer.three->OrderShrink(18, 1.0f, 1.5f);
+	m_poseTimer.three->OrderRipple(28, 1.0, 0.01f);
+
+	m_poseIcon.pic = new tdn2DObj("Data/UI/Pose/poseIcon.png");
+	m_poseIcon.x = 1240;
+	m_poseIcon.y = 32;
+	m_poseIcon.pic->SetARGB(0xffaaaaaa);// 色
+	
 	return true;
 }
 
@@ -128,6 +167,17 @@ sceneMain::~sceneMain()
 	EffectMgr.Release();
 	NikuMgr->Release();
 	SAFE_DELETE(explain);
+
+	SAFE_DELETE(m_stop.pic);
+	SAFE_DELETE(m_again.pic);
+	SAFE_DELETE(m_stop.rip);
+	SAFE_DELETE(m_again.rip);
+
+	SAFE_DELETE(m_poseTimer.one);
+	SAFE_DELETE(m_poseTimer.two);
+	SAFE_DELETE(m_poseTimer.three);
+
+	SAFE_DELETE(m_poseIcon.pic);
 }
 
 //******************************************************************
@@ -145,11 +195,11 @@ bool sceneMain::Update()
 	/*　データ受け渡し　*/
 	DataDelivery();
 
-	// PosyEffect
-	PostEffectMgr.Update();
+	//// PosyEffect
+	//PostEffectMgr.Update();
 
-	// EffectMGR
-	EffectMgr.Update();
+	//// EffectMGR
+	//EffectMgr.Update();
 	//if (KeyBoard(KB_F) == 3)
 	//{
 	//	EffectMgr.AddEffect(300, 300, EFFECT_TYPE::NOTICE);
@@ -163,6 +213,7 @@ bool sceneMain::Update()
 	case SCENE::END:		EndEvent();			break;
 	case SCENE::RESULT:		ResultUpdate();		break;
 	case SCENE::TIPS:		TipsUpdate();		break;
+	case SCENE::POSE:		PoseUpdate();		break;
 	}
 
 	return true;
@@ -200,6 +251,12 @@ void sceneMain::Init()
 
 void sceneMain::ExplainUpdate()
 {
+	// PosyEffect
+	PostEffectMgr.Update();
+
+	// EffectMGR
+	EffectMgr.Update();
+
 	if( explain->Update() ){
 		state = SCENE::READY;
 		se->Play("ドン", true);
@@ -209,6 +266,12 @@ void sceneMain::ExplainUpdate()
 
 void sceneMain::ReadyEvent()
 {
+	// PosyEffect
+	PostEffectMgr.Update();
+
+	// EffectMGR
+	EffectMgr.Update();
+
 	if( ready->Update() ){
 		state = SCENE::MAIN;
 		//g_pSheepMgr->Start();
@@ -219,6 +282,13 @@ void sceneMain::ReadyEvent()
 
 void sceneMain::MainUpdate()
 {
+	// PosyEffect
+	PostEffectMgr.Update();
+
+	// EffectMGR
+	EffectMgr.Update();
+
+
 	/*　当たり判定　*/
 	CollisionMgr->Update(g_pSheepMgr, dataMNG, stage);
 
@@ -267,15 +337,40 @@ void sceneMain::MainUpdate()
 		//UIMNG.SetTimer(120);
 	}
 
-	//if (KeyBoard(KB_SPACE) == 3)
-	//{
-	//	UIMNG.AddTimer(10);
-	//}
+
+	// ポーズ
+	//if (KeyBoard(KB_P) == 3)
+		if (32 > Math::Length(m_poseIcon.x, m_poseIcon.y, tdnMouse::GetPos().x, tdnMouse::GetPos().y))
+		{
+			if (tdnMouse::GetLeft() == 3)
+			{
+				state = SCENE::POSE;
+				m_poseState = POSE_STATE::START;
+			}
+		
+			// 色
+			m_poseIcon.pic->SetARGB(0xffffffff);
+		}
+		else
+		{
+			// 色
+			m_poseIcon.pic->SetARGB(0xffaaaaaa);
+		}
+	
+
+	
 		
 }
 
 void sceneMain::EndEvent()
 {
+	// PosyEffect
+	PostEffectMgr.Update();
+
+	// EffectMGR
+	EffectMgr.Update();
+
+
 	if( end->Update() ){
 
 		
@@ -295,6 +390,13 @@ void sceneMain::EndEvent()
 
 void sceneMain::ResultUpdate()
 {
+	// PosyEffect
+	PostEffectMgr.Update();
+
+	// EffectMGR
+	EffectMgr.Update();
+
+
 	//bgm->Play("RESULT");
 	if( FadeControl::IsFade() ) return;
 	if( FadeControl::IsEndFade() ){
@@ -314,6 +416,11 @@ void sceneMain::ResultUpdate()
 
 void sceneMain::TipsUpdate()
 {
+	// PosyEffect
+	PostEffectMgr.Update();
+
+	// EffectMGR
+	EffectMgr.Update();
 
 	// ヒント終わったら
 	if (tips->Update())
@@ -348,6 +455,7 @@ void sceneMain::Render()
 	stage->Render();
 
 	UIMNG.Render();
+	m_poseIcon.pic->Render(m_poseIcon.x - 32, m_poseIcon.y - 32);
 
 	// ステート描画
 	switch (state) {
@@ -395,9 +503,19 @@ void sceneMain::Render()
 	switch (state) {
 	case SCENE::RESULT:		ResultRender();		break;
 	case SCENE::TIPS:		TipsRender();		break;
+	case SCENE::POSE:		PoseRender();		break;
 	}
 
-	EffectMgr.Render();
+	switch (state) {
+	case SCENE::EXPLAIN:	EffectMgr.Render();	break;
+	case SCENE::READY:		EffectMgr.Render();	break;
+	case SCENE::MAIN:		EffectMgr.Render();	break;
+	case SCENE::END:		            		break;
+	case SCENE::RESULT:		EffectMgr.Render(); break;
+	case SCENE::TIPS:		EffectMgr.Render(); break;
+	case SCENE::POSE:		                    break;
+	}
+	
 
 	//基本的には最後。説明時のみ説明書の後ろにするので別途
 	pointer->Render();
@@ -479,4 +597,227 @@ void sceneMain::DebugText()
 	//	デバッグ用_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 	//DEBUG_TEXT::DebugText("TEST%d, %s, %d, %c", 1, "aaa", 741, 'A');
 	//	_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+}
+
+void sceneMain::PoseUpdate()
+{
+
+	// ウェイトタイマー
+	static int waitTimer = 0;
+	static bool againFlag = false;
+
+	// ポーズ
+	if (KeyBoard(KB_P) == 3)
+	{
+		state = SCENE::MAIN;
+	}
+
+
+
+
+	m_again.pic->Update();
+	m_again.rip->Update();
+
+	m_stop.pic->Update();
+	m_stop.rip->Update();
+
+
+	// 数値
+	m_poseTimer.one->Update();
+	m_poseTimer.two->Update();
+	m_poseTimer.three->Update();
+
+
+
+	switch (m_poseState)
+	{
+	case sceneMain::POSE_STATE::START:
+
+		// 後でSE全部ここで止めてもらお
+
+		m_poseState = POSE_STATE::EXE;
+		waitTimer = 0;
+		againFlag = false;
+
+		break;
+	case sceneMain::POSE_STATE::EXE:
+	{
+		/***************************/
+		// アゲインの動き
+		// 距離計算 
+		float len = Math::Length(m_again.x + 240, m_again.y + 64, tdnMouse::GetPos().x, tdnMouse::GetPos().y);
+		if (len < 220 && 60 > abs((m_again.y + 64) - tdnMouse::GetPos().y))// ＋Yをカットする
+		{
+			// 色を実体化
+			m_again.pic->GetObj()->SetARGB(0xffffffff);
+			if (m_again.isAction == false)
+			{
+				m_again.isAction = true;
+				m_again.pic->Action();
+			}
+
+			// クリックすると
+			if (tdnMouse::GetLeft() == 3)
+			{
+				m_again.rip->Action();
+				againFlag = true;
+				
+			}
+
+		}
+		else
+		{
+			m_again.pic->GetObj()->SetARGB(0xffaaaaaa);
+			m_again.isAction = false;
+		}
+
+		//★
+		// わっしょいしょいのしょいのすけ
+		if (againFlag == true)
+		{
+			waitTimer++;
+			if (waitTimer > 22)
+			{
+				waitTimer = 0;
+				m_poseState = POSE_STATE::COUNT;	//  カウントステートへ
+			}
+
+		}
+		/****************************/
+
+		/***************************/
+		// ストップの動き
+		// 距離計算 
+		len = Math::Length(m_stop.x + 240, m_stop.y + 64, tdnMouse::GetPos().x, tdnMouse::GetPos().y);
+		if (len < 220 && 60 > abs((m_stop.y + 64) - tdnMouse::GetPos().y))// ＋Yをカットする
+		{
+			// 色を実体化
+			m_stop.pic->GetObj()->SetARGB(0xffffffff);
+			if (m_stop.isAction == false)
+			{
+				m_stop.isAction = true;
+				m_stop.pic->Action();
+			}
+
+			// クリックすると
+			if (tdnMouse::GetLeft() == 3)
+			{
+				m_stop.rip->Action();
+				FadeControl::Setting(FadeControl::MODE::FADE_OUT, 40.0f);
+				m_poseState = POSE_STATE::TITLE;	//  タイトルステートへ
+			}
+		}
+		else
+		{
+			m_stop.pic->GetObj()->SetARGB(0xffaaaaaa);
+			m_stop.isAction = false;
+		}
+		/****************************/
+
+	}
+		break;
+	case sceneMain::POSE_STATE::COUNT:
+		waitTimer++;
+		if (waitTimer == 1)
+		{
+			m_poseTimer.three->Action();		
+		}
+		if (waitTimer == 32)
+		{
+			m_poseTimer.two->Action();
+		}
+		if (waitTimer == 64)
+		{
+			m_poseTimer.one->Action();
+		}		
+		if (waitTimer == 96)
+		{
+			state = SCENE::MAIN;
+		}
+
+		break;
+	case sceneMain::POSE_STATE::TITLE:
+		//
+		if (FadeControl::IsFade()) return;
+		if (FadeControl::IsEndFade())
+		{
+			bgm->Stop("MAIN");
+			state = SCENE::INIT;
+			MainFrame->ChangeScene(new Title());
+			return;
+		}
+
+		break;
+	default:
+		break;
+	}
+
+
+
+
+}
+
+void sceneMain::PoseRender()
+{
+
+	// 焼肉描画
+	NikuMgr->RenderYakiniku();
+
+	g_pSheepMgr->Render();
+	EnemyMgr->Render();
+	BokusouMgr->Render();
+
+	// ステージの前描画
+	stage->RenderFront();
+
+	NikuMgr->RenderNiku();
+
+	Particle2dManager::Render();
+
+	// デブたち描画
+	g_pSheepMgr->RenderFat();
+	EnemyMgr->RenderFat();
+	stage->RenderFront2();
+	BokusouMgr->RenderFront();
+	NikuMgr->RenderFront();
+	NumberEffect.Render();
+
+	// ステージの前描画
+	//stage->RenderFront();
+	//NumberEffect.Render();
+
+	EffectMgr.Render();
+
+	switch (m_poseState)
+	{
+	case sceneMain::POSE_STATE::COUNT:
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x55000000); //黒い板
+
+		m_poseTimer.one->Render  (550, 250);
+		m_poseTimer.two->Render  (550, 250);
+		m_poseTimer.three->Render(550, 250);
+		m_poseTimer.one->Render(550, 250);
+		m_poseTimer.two->Render(550, 250);
+		m_poseTimer.three->Render(550, 250);
+		m_poseTimer.one->Render(550, 250);
+		m_poseTimer.two->Render(550, 250);
+		m_poseTimer.three->Render(550, 250);
+		break;
+	default:
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0xaa000000); //黒い板
+
+		m_again.pic->Render(m_again.x, m_again.y);
+		m_again.rip->Render(m_again.x, m_again.y, RS::ADD);
+
+		m_stop.pic->Render(m_stop.x, m_stop.y);
+		m_stop.rip->Render(m_stop.x, m_stop.y, RS::ADD);
+		break;
+	}
+	
+
+	//tdnPolygon::Rect(400, 300, 120, 120, RS::COPY, 0xff00ffff);
+	//tdnPolygon::Rect(400, 500, 120, 120, RS::COPY, 0xffff00ff);
+
+
+
 }
