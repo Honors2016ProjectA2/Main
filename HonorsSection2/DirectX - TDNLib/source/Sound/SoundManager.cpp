@@ -14,7 +14,7 @@
 //==============================================================================================
 const SE_Manager::DATA all_dataS[] =
 {
-	{ "CURSUR",			"DATA/Sound/SE/se1.wav",		3, false },
+	{ "É|Å[ÉY",			"DATA/Sound/SE/se1.wav",		1, false },
 	{ "CLICK",			"DATA/Sound/SE/se4.wav",		3, false },
 	{ "Ç”Ç∆ÇÈ",			"DATA/Sound/SE/be_fat.wav",		3, false },
 	{ "!"		,		"DATA/Sound/SE/wolf.wav",		3, false },

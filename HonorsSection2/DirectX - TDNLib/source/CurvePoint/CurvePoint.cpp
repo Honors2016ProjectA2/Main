@@ -42,7 +42,9 @@ void CurvePoint::Base::Render()
 	// —LŒøó‘Ô‚¶‚á‚È‚©‚Á‚½‚ço‚Ä‚¢‚¯‚¥II
 	if (!bEnable) return;
 
-	m_pImage->SetScale(this->m_bCursorIn ? 1.1f : 1.0f);
+	// ‚Ô‚ê‚é‚Ì–hŽ~
+	//m_pImage->SetScale(this->m_bCursorIn ? 1.1f : 1.0f);
+
 	if (IsOpening())
 	{
 		m_pImage->SetARGB((BYTE)255, (BYTE)255, (BYTE)255, (BYTE)255);

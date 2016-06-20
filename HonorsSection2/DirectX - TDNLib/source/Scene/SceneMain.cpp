@@ -634,6 +634,11 @@ void sceneMain::PoseUpdate()
 	case sceneMain::POSE_STATE::START:
 
 		// 後でSE全部ここで止めてもらお
+		se->Stop_all();
+		bgm->SetVolume("MAIN", .5f);
+
+		// クリックしたSE
+		se->Play("ポーズ");
 
 		m_poseState = POSE_STATE::EXE;
 		waitTimer = 0;
@@ -659,6 +664,9 @@ void sceneMain::PoseUpdate()
 			// クリックすると
 			if (tdnMouse::GetLeft() == 3)
 			{
+				// 選択クリック音
+				se->Play("CLICK");
+
 				m_again.rip->Action();
 				againFlag = true;
 				
@@ -732,6 +740,9 @@ void sceneMain::PoseUpdate()
 		}		
 		if (waitTimer == 96)
 		{
+			// BGMの音戻す
+			bgm->SetVolume("MAIN", 1.0f);
+
 			state = SCENE::MAIN;
 		}
 

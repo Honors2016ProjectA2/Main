@@ -395,7 +395,8 @@ void BokusouTarget::Update(BokusouManager *pMgr)
 	m_alpha = min(m_alpha + 8, 128);
 	m_pKusa->SetARGB(m_alpha, (BYTE)255, (BYTE)255, (BYTE)255);
 
-	m_srcX = ((int)(pMgr->GetGaugePercentage() * 100) / 25) * 128;
+	// –q‘‚µ‚å‚Ú‚­‚È‚é‘Îô
+	if(m_srcX < 3 * 128)m_srcX = ((int)(pMgr->GetGaugePercentage() * 100) / 25) * 128;
 
 	// ƒQ[ƒWˆ—
 	m_pGraph->Set_percent(pMgr->GetGaugePercentage());

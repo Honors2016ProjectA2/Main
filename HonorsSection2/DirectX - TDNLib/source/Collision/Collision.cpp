@@ -218,8 +218,8 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 						manIterator->col_check = true;
 						se->Play("ƒŠƒAƒ‹HIT", sinIterator->GetCenterPos());
 
-						// UI‚É˜T‚â‚Á‚Â‚¯‚½
-						UIMNG.AddWorfHappyCount();
+						// UI‚É˜T‚â‚Á‚Â‚¯‚½(‚¢‚ç‚È‚¢)
+						//UIMNG.AddWorfHappyCount();
 
 						// “GŠÇ—‚É˜TƒJƒEƒ“ƒg
 						EnemyMgr->CheckChangeSpeed(UIMNG.GetWorfHappyCount());
