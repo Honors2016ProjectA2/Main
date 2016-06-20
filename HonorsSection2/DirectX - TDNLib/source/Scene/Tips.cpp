@@ -25,7 +25,7 @@ Tips::Tips()
 	//m_typs->OrderMoveAppeared(18, 1280, 0);
 	m_selectTips = TIPS_TYPE::MEAT;
 
-
+	//m_MovieList.push_back(new MovieInfo("DATA/tips/title.wmv", Vector2(0, 0)));
 }
 
 Tips::~Tips()
@@ -35,6 +35,8 @@ Tips::~Tips()
 		SAFE_DELETE(m_typs[i]);
 	}
 
+	// 動画開放
+	for (auto it : m_MovieList)delete it;
 }
 
 void Tips::Init()
@@ -47,6 +49,9 @@ bool Tips::Update()
 {
 	// 更新
 	m_typs[m_selectTips]->Update();
+
+	// 動画たち更新
+	for (auto &it : m_MovieList)it->Update();
 	
 	// 
 	if (KeyBoard(KB_ENTER) == 3)
@@ -97,6 +102,9 @@ void Tips::Render()
 
 	// タイプス
 	m_typs[m_selectTips]->Render(0, 0);
+
+	// 動画たち描画
+	for (auto &it : m_MovieList) it->Render();
 }
 
 
