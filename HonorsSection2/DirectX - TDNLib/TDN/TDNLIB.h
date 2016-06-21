@@ -1983,6 +1983,7 @@ private:
 	static Vector2 m_Axis;
 	static Vector2 m_Pos;
 	static int m_FlagRight, m_FlagLeft;
+	static bool m_bWindowIn;
 
 public:
 
@@ -1991,7 +1992,7 @@ public:
 		m_CurrentWheel = (f == WHEEL_FLAG::DOWN) ? m_CurrentWheel - 1 : m_CurrentWheel + 1;
 	}
 
-	static void Initialize(BOOL show);
+	static void Initialize(BOOL show, bool bWindowIn);
 	static void Update();
 	static Vector2 &GetPos(){ return m_Pos; }
 	static int GetLeft(){ return m_FlagLeft; }									// 左クリックしたかどうか(iexみたいにおしっぱ1、押した瞬間3が返る)
