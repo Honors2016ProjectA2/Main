@@ -127,9 +127,12 @@ ResultUIManager::ResultUIManager()
 	m_RankPic = new tdn2DAnim("DATA/Result/rank.png");
 	//m_RankPic->OrderMoveAppeared(12, 1500, 400);
 	m_RankPic->OrderShrink(12, 1.0f, 2.5f);
-	m_RankPicX = 100, m_RankPicY = 350;
+	m_RankPicX = 80, m_RankPicY = 300;
 	m_RankRipPic = new tdn2DAnim("DATA/Result/rank.png");
 	m_RankRipPic->OrderRipple(12, 1.0f, 0.1f);
+
+	m_RankFrame = new tdn2DAnim("DATA/Result/waku.png");
+	m_RankFrame->OrderMoveAppeared(14, m_RankPicX - 32, m_RankPicY - 32 + 300);
 
 	isStopFlag = false;
 
@@ -200,6 +203,7 @@ ResultUIManager::~ResultUIManager()
 	SAFE_DELETE(m_helpPic);
 	SAFE_DELETE(m_RankPic);
 	SAFE_DELETE(m_RankRipPic);
+	SAFE_DELETE(m_RankFrame);
 
 	SAFE_DELETE(m_blindPic);
 	SAFE_DELETE(m_maskScreen);
@@ -276,6 +280,7 @@ bool ResultUIManager::Update()
 			//m_font[FONT::RESULT].pic->Action();
 			//m_font[FONT::SUM].pic->Action(6);
 			m_sumFont.pic->Action(6);
+			m_RankFrame->Action();
 
 			//// 数字書き換え
 			//m_number[FONT::RESULT]->GetAnim()->Stop();
@@ -506,6 +511,7 @@ bool ResultUIManager::Update()
 
 	m_RankPic->Update();
 	m_RankRipPic->Update();
+	m_RankFrame->Update();
 
 	//  ランキング表示
 	for (int i = 0; i < RANKING_MAX; i++)
@@ -782,8 +788,10 @@ void ResultUIManager::ResultRender()
 		m_number[i]->Render(m_numX[i], m_numY[i], m_numNum[i]);
 	}
 
+	m_RankFrame->Render(m_RankPicX - 32, m_RankPicY - 38);
 	m_RankPic->Render(m_RankPicX, m_RankPicY, 360, 360, 360* m_rankType, 0, 360, 360,RS::COPY_NOZ);
 	m_RankRipPic->Render(m_RankPicX, m_RankPicY, 360, 360, 360 * m_rankType, 0, 360, 360,RS::ADD);
+
 
 	// スイッチ
 	switch (m_step)

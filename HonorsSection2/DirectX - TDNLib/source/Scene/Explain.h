@@ -27,11 +27,12 @@ private:
 		bool Open();
 		bool Close();
 		void Render();
-	}game, howTo;
+	}game, howTo, howTo2;
 
 	void FadeStart();
 	void Text1();
 	void Text2();
+	void Text3();
 	void FadeEnd();
 	void ScaleMove();
 };

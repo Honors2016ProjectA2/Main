@@ -8,7 +8,7 @@
 namespace{
 	namespace STATE{
 		enum{
-			FADE_START, TEXT1, TEXT2, FADE_END, RET_TRUE
+			FADE_START, TEXT1, TEXT2, TEXT3, FADE_END, RET_TRUE
 		};
 	}
 	const float FADE_ALPHA = 0.5f;
@@ -32,6 +32,8 @@ Explain::~Explain()
 {
 	SAFE_DELETE(game.obj);
 	SAFE_DELETE(howTo.obj);
+	SAFE_DELETE(howTo2.obj);
+
 	SAFE_DELETE(nextIcon[0]);
 	SAFE_DELETE(nextIcon[1]);
 	//delete pointer;
@@ -42,9 +44,12 @@ bool Explain::Initialize()
 	state = STATE::FADE_START;
 	game.Init();
 	howTo.Init();
+	howTo2.Init();
 
-	game.obj = new tdn2DObjEx("DATA/Explain/GameSetumei.png");
-	howTo.obj = new tdn2DObjEx("DATA/Explain/GameSyoukai.png");
+	game.obj = new tdn2DObjEx("DATA/Explain/info2.png");
+	howTo.obj = new tdn2DObjEx("DATA/Explain/info1.png");
+	howTo2.obj = new tdn2DObjEx("DATA/Explain/info3.png");
+
 	nextIcon[0] = new tdn2DObjEx("DATA/Explain/nextIcon01.png");
 	nextIcon[1] = new tdn2DObjEx("DATA/Explain/nextIcon02.png");
 
@@ -62,6 +67,7 @@ bool Explain::Update()
 	case STATE::FADE_START:	FadeStart();	break;
 	case STATE::TEXT1:		Text1();		break;
 	case STATE::TEXT2:		Text2();		break;
+	case STATE::TEXT3:		Text3();		break;
 	case STATE::FADE_END:	FadeEnd();		break;
 	case STATE::RET_TRUE:	return true;
 	}
@@ -121,9 +127,32 @@ void Explain::Text2()
 
 	if( game.Close() ){
 		//FadeControl::Setting(FadeControl::MODE::FADE_IN, 30.0f, .0f, FADE_ALPHA);
+		howTo2.openFlg = true;
+		state = STATE::TEXT3;
+		//bgm->Fade_out("TITLE", .025f);
+	}
+}
+
+void Explain::Text3()
+{
+	ScaleMove();
+	howTo2.Open();
+#ifdef GAME_SHORTCUT
+#else
+	if (tdnMouse::GetLeft() == 3)
+#endif
+	{
+		howTo2.openFlg = false;
+		howTo2.closeFlg = true;
+		se->Play("CLICK");
+	}
+
+	if (howTo2.Close()) {
+		//FadeControl::Setting(FadeControl::MODE::FADE_IN, 30.0f, .0f, FADE_ALPHA);
 		state = STATE::FADE_END;
 		//bgm->Fade_out("TITLE", .025f);
 	}
+
 }
 
 // ‚©‚«‚©‚¦‚½‚Á‚½
@@ -190,6 +219,9 @@ void Explain::Render()
 		break;
 	case STATE::TEXT2:
 		game.Render();
+		break;
+	case STATE::TEXT3:
+		howTo2.Render();
 		break;
 	}
 	float scale = 1.0f;

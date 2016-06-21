@@ -107,6 +107,7 @@ public:
 	int m_RankPicX, m_RankPicY;
 
 	tdn2DAnim* m_RankINPic;
+	tdn2DAnim* m_RankFrame;
 
 	void RankUpdate();
 
