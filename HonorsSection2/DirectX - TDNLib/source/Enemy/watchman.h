@@ -163,7 +163,7 @@ private:
 	tdn2DObj *m_pImages[(int)ENEMY_TYPE::MAX];
 
 	// 肉食ってるオオカミの画像
-	tdn2DObj *m_pNikukutteru, *m_pFatWolfImages[(int)SHEEP_TYPE::MAX], *m_pHoneImage;
+	tdn2DObj *m_pNikukutteru[(int)ENEMY_TYPE::MAX], *m_pFatWolfImages[(int)ENEMY_TYPE::MAX][(int)SHEEP_TYPE::MAX], *m_pHoneImage;
 
 	// 敵の移動速度
 	float m_EnemySpeed[(int)ENEMY_TYPE::MAX];

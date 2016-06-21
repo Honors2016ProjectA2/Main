@@ -757,8 +757,9 @@ void tdnMouse::Update()
 	// 画面外に出ないようにする処理
 	if (m_bWindowIn)
 	{
-		if (m_Pos.x > tdnSystem::GetScreenSize().right - 10)		SetCursorPos(tdnSystem::GetScreenSize().right - 10, (int)m_Pos.y + 29);
-		else if (m_Pos.y > tdnSystem::GetScreenSize().bottom - 10)	SetCursorPos((int)m_Pos.x + 8, tdnSystem::GetScreenSize().bottom - 10);
+		static const int WIDTH = 32;	// 補正幅
+		if (m_Pos.x > tdnSystem::GetScreenSize().right - WIDTH)		SetCursorPos(tdnSystem::GetScreenSize().right - WIDTH, (int)m_Pos.y + 29);
+		else if (m_Pos.y > tdnSystem::GetScreenSize().bottom - WIDTH)	SetCursorPos((int)m_Pos.x + 8, tdnSystem::GetScreenSize().bottom - WIDTH);
 	}
 
 	// 最大値制御

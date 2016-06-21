@@ -183,7 +183,7 @@ void NikuManager::Update()
 
 		static int onFrame = 0;
 		// マウス左クリックで肉作成(放し)
-		if (tdnMouse::GetLeft() == 2 && onFrame <= 22)// [追記]少し長くしてみました 入れた瞬間焼けるようになってしまった
+		if (tdnMouse::GetLeft() == 2 && onFrame <= 8)
 		{
 			Vector2 mPos = tdnMouse::GetPos();
 			// 焼肉エリア内なら

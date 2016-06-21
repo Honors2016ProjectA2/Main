@@ -320,11 +320,15 @@ void EnemyManager::Initialize()
 	// 敵画像の読み込み
 	m_pImages[(int)ENEMY_TYPE::WOLF] = new tdn2DObj("DATA/CHR/「！」左移動.png");
 	m_pImages[(int)ENEMY_TYPE::UNLIMITED_WOLF] = new tdn2DObj("DATA/CHR/unlimited.png");
-	m_pNikukutteru = new tdn2DObj("DATA/CHR/kuruma back.png");
+	m_pNikukutteru[(int)ENEMY_TYPE::WOLF] = new tdn2DObj("DATA/CHR/kuruma back.png");
+	m_pNikukutteru[(int)ENEMY_TYPE::UNLIMITED_WOLF] = new tdn2DObj("DATA/CHR/Ukuruma back.png");
 	m_pHoneImage = new tdn2DObj("DATA/CHR/hone_motion.png");
-	m_pFatWolfImages[(int)SHEEP_TYPE::NOMAL] = new tdn2DObj("DATA/CHR/sinnnyou tubureru.png");
-	m_pFatWolfImages[(int)SHEEP_TYPE::GOLD] = new tdn2DObj("DATA/CHR/sinnnyou hajike.png");
-	m_pFatWolfImages[(int)SHEEP_TYPE::REAL] = new tdn2DObj("DATA/CHR/sinnnyou detekuru.png");
+	m_pFatWolfImages[(int)ENEMY_TYPE::WOLF][(int)SHEEP_TYPE::NOMAL] = new tdn2DObj("DATA/CHR/sinnnyou tubureru.png");
+	m_pFatWolfImages[(int)ENEMY_TYPE::WOLF][(int)SHEEP_TYPE::GOLD] = new tdn2DObj("DATA/CHR/sinnnyou hajike.png");
+	m_pFatWolfImages[(int)ENEMY_TYPE::WOLF][(int)SHEEP_TYPE::REAL] = new tdn2DObj("DATA/CHR/sinnnyou detekuru.png");
+	m_pFatWolfImages[(int)ENEMY_TYPE::UNLIMITED_WOLF][(int)SHEEP_TYPE::NOMAL] = new tdn2DObj("DATA/CHR/Usinnnyou tubureru.png");
+	m_pFatWolfImages[(int)ENEMY_TYPE::UNLIMITED_WOLF][(int)SHEEP_TYPE::GOLD] = new tdn2DObj("DATA/CHR/Usinnnyou hajike.png");
+	m_pFatWolfImages[(int)ENEMY_TYPE::UNLIMITED_WOLF][(int)SHEEP_TYPE::REAL] = new tdn2DObj("DATA/CHR/Usinnnyou detekuru.png");
 }
 
 EnemyManager::~EnemyManager()
@@ -338,11 +342,12 @@ void EnemyManager::Release()
 	FOR ((int)ENEMY_TYPE::MAX)
 	{
 		delete m_pImages[i];
+		delete m_pNikukutteru[i];
+		for (int j = 0; j < (int)SHEEP_TYPE::MAX; j++) delete m_pFatWolfImages[i][j];
 	}
 	Clear();
-	delete m_pNikukutteru;
 	delete m_pHoneImage;
-	FOR((int)SHEEP_TYPE::MAX) delete m_pFatWolfImages[i];
+	//FOR((int)SHEEP_TYPE::MAX) delete m_pFatWolfImages[i];
 }
 
 //**************************************************
@@ -350,11 +355,12 @@ void EnemyManager::Release()
 void EnemyManager::Create(int floor, ENEMY_TYPE type)
 {
 	Enemy::Wolf *set = nullptr;
+	int GazounoSoeji = (m_bUnlimitedCreate) ? (int)ENEMY_TYPE::UNLIMITED_WOLF : (int)ENEMY_TYPE::WOLF;
 
 	switch (type)
 	{
 	case ENEMY_TYPE::WOLF:
-		set = new Enemy::Wolf(m_pImages[(m_bUnlimitedCreate) ? (int)ENEMY_TYPE::UNLIMITED_WOLF : (int)ENEMY_TYPE::WOLF], m_pNikukutteru, m_pHoneImage, floor, m_EnemySpeed[(int)ENEMY_TYPE::WOLF], m_NikuTime, m_bUnlimitedCreate);
+		set = new Enemy::Wolf(m_pImages[GazounoSoeji], m_pNikukutteru[GazounoSoeji], m_pHoneImage, floor, m_EnemySpeed[(int)ENEMY_TYPE::WOLF], m_NikuTime, m_bUnlimitedCreate);
 		break;
 	default:
 		assert(0);	// 例外処理
@@ -472,7 +478,7 @@ void EnemyManager::Clear()
 void EnemyManager::CreateFatWolf(Enemy::Wolf *wolf, FAT_WOLF_TYPE type, SHEEP_TYPE SheepType)
 {
 	wolf->Erase();	// 元の羊を消去
-	FatWolf *set = new FatWolf(m_pFatWolfImages[(int)SheepType], Vector2(wolf->GetPos().x - 60, (float)STAGE_POS_Y[wolf->GetFloor()] - 30), type, SheepType);// 太った狼生成
+	FatWolf *set = new FatWolf(m_pFatWolfImages[(int)(wolf->isUnlimited() ? ENEMY_TYPE::UNLIMITED_WOLF : ENEMY_TYPE::WOLF)][(int)SheepType], Vector2(wolf->GetPos().x - 60, (float)STAGE_POS_Y[wolf->GetFloor()] - 30), type, SheepType);// 太った狼生成
 	set->SetFloor(wolf->GetFloor());	// フロア設定
 	m_FatList.push_back(set);			// リストに突っ込む
 }

@@ -182,7 +182,10 @@ bool Title::Update()
 	// ゲーム画面へ
 	if (m_bKoyaFlag == true)
 	{
-		if ( FadeControl::IsEndFade() )
+		// フェード終わって、SEも終わったら
+		if (
+			//FadeControl::IsEndFade() && 
+			!se->isPlay("ゲームスタート", 0))
 		{
 			MainFrame->ChangeScene(new sceneMain(), true);	// シーンローディングを挟む
 			return true;
@@ -260,7 +263,7 @@ void Title::DogVsSheep()
 		{
 			// 羊ループ
 
-				// カーブを掛ける
+			// カーブを掛ける
 			it->SetCurve(DIR::UP);
 
 		}
@@ -287,6 +290,9 @@ void Title::KoyaVsSheep()
 			// 小屋フラグおｎ
 			m_bKoyaFlag = true;
 			FadeControl::Setting(FadeControl::MODE::WHITE_OUT, 255 / 12);
+
+			// SE再生
+			se->Play("ゲームスタート");
 		}
 
 	}

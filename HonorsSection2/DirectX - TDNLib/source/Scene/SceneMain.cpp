@@ -659,6 +659,9 @@ void sceneMain::PoseUpdate()
 			{
 				m_again.isAction = true;
 				m_again.pic->Action();
+
+				// カーソルを合わせたSEの再生
+				se->Play("カーソル");
 			}
 
 			// クリックすると
@@ -705,11 +708,17 @@ void sceneMain::PoseUpdate()
 			{
 				m_stop.isAction = true;
 				m_stop.pic->Action();
+
+				// カーソルを合わせたSEの再生
+				se->Play("カーソル");
 			}
 
 			// クリックすると
 			if (tdnMouse::GetLeft() == 3)
 			{
+				// 選択クリック音
+				se->Play("キャンセル");
+
 				m_stop.rip->Action();
 				FadeControl::Setting(FadeControl::MODE::FADE_OUT, 40.0f);
 				m_poseState = POSE_STATE::TITLE;	//  タイトルステートへ

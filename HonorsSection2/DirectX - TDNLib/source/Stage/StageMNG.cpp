@@ -637,7 +637,7 @@ void StageManager::RenderBack()
 		else
 		{
 			// ‰º’n
-			m_pStageImages[StageImage::DOOR_CLOSE]->SetARGB(0xa0808080);
+			m_pStageImages[StageImage::DOOR_CLOSE]->SetARGB(0x80101010);
 			m_pStageImages[StageImage::DOOR_CLOSE]->SetScale(1.0f);
 			m_pStageImages[StageImage::DOOR_CLOSE]->Render(0, HOUSE_POS_Y[i]);
 
@@ -652,9 +652,11 @@ void StageManager::RenderBack()
 			m_pStageImages[StageImage::DOOR_CLOSE]->Render(0, HOUSE_POS_Y[i] + (int)(180 * GaugePercent), 180, (int)((1 - GaugePercent) * 180), 0, (int)(180 * GaugePercent), 180, (int)((1 - GaugePercent) * 180));
 
 			// “_–Å‰ÁŽZ‡¬
-			m_pStageImages[StageImage::DOOR_CLOSE]->SetARGB((BYTE)(160 * ((float)stage[i]->m_TenmetsuFrame / stage[i]->TENMETSU)), (BYTE)255, (BYTE)255, (BYTE)255);
-			m_pStageImages[StageImage::DOOR_CLOSE]->Render(0, HOUSE_POS_Y[i], RS::ADD);
-
+			if (GaugePercent <= .0f)
+			{
+				m_pStageImages[StageImage::DOOR_CLOSE]->SetARGB((BYTE)(160 * ((float)stage[i]->m_TenmetsuFrame / stage[i]->TENMETSU)), (BYTE)255, (BYTE)255, (BYTE)255);
+				m_pStageImages[StageImage::DOOR_CLOSE]->Render(0, HOUSE_POS_Y[i], RS::ADD);
+			}
 		}
 	}
 
