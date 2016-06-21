@@ -49,7 +49,10 @@ const SE_Manager::DATA all_dataS[] =
 	{ "GO",				"DATA/Sound/BGM/se10.wav",		1, false },
 	{ "終了ホイッスル", "DATA/Sound/SE/whistle.wav",	1, false },
 	{ "アンリミ!",		"DATA/Sound/SE/danger.wav",		5, false },
-	{ "点火",			"DATA/Sound/SE/burn.wav",		1, false }
+	{ "点火",			"DATA/Sound/SE/burn.wav",		1, false },
+	{ "ゲームスタート", "DATA/Sound/SE/moetekita.wav",	1, false },
+	{ "カーソル",		"DATA/Sound/SE/se12.wav",		6, false },	
+	{ "キャンセル",		"DATA/Sound/SE/cancel.wav",		1, false }
 };
 
 //==============================================================================================

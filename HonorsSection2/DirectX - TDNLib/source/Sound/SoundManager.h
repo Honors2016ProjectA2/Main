@@ -61,7 +61,7 @@ public:
 	//===============================================
 	//	ˆ		—
 	//===============================================
-	bool isPlay(LPSTR _ID, int no);
+	bool isPlay(LPSTR _ID, int no){ return play_manager->isPlay(ID[_ID], no); }
 	int Play(LPSTR _ID, bool loop = false);																			// ŠÈˆÕ”Å																								// ƒ{ƒŠƒ…[ƒ€İ’è”Å
 	int Play(LPSTR _ID, const Vector2 &pos, const Vector2 &move = Vector2(0, 0), bool loop = false);				// 3Dİ’è”Å
 	void SetTone(LPSTR _ID, int tone);
