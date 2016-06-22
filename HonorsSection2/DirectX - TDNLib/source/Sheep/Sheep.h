@@ -181,7 +181,7 @@ public:
 	std::list<Sheep::Base*> *Get_list(){ return &m_List; };
 	std::list<FatSheep*> *GetFatList(){ return &m_FatList; }
 
-	SheepManager();
+	SheepManager(bool bTitle = false);
 	~SheepManager();
 
 	void Update();
@@ -228,6 +228,9 @@ private:
 
 	// 掴み更新
 	void CatchUpdate();
+
+	// タイトル用か
+	bool m_bTitle;
 };
 
 // 実体

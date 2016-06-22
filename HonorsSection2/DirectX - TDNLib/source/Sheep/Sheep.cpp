@@ -327,7 +327,7 @@ FatSheep::~FatSheep()
 
 //**************************************************
 
-SheepManager::SheepManager() :sp(0), m_CreateFrame(0)
+SheepManager::SheepManager(bool bTitle) :m_bTitle(bTitle), sp(0), m_CreateFrame(0)
 {
 	m_pBoneImage = new tdn2DObj("DATA/CHR/hone_motion.png");
 
@@ -514,8 +514,8 @@ void SheepManager::Update()
 		create(g_CreateSheepFloor);
 	}
 
-	// 掴み更新
-	CatchUpdate();
+	// 掴み更新(タイトルだったらなし)
+	if(!m_bTitle)CatchUpdate();
 
 	// 羊更新
 	for (auto it = m_List.begin(); it != m_List.end();)

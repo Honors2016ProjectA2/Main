@@ -50,7 +50,7 @@ bool Title::Initialize()
 	FadeControl::Setting(FadeControl::MODE::WHITE_IN, 30.0f);
 	tdnView::Init();
 
-	m_pSheepMgr = new SheepManager();
+	m_pSheepMgr = new SheepManager(true);
 	m_pointer = new MousePointer();
 
 	// ÉCÉk
