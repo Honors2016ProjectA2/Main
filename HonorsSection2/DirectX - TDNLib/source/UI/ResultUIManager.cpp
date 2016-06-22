@@ -125,6 +125,7 @@ ResultUIManager::ResultUIManager()
 
 	// ランク ABCD
 	m_RankPic = new tdn2DAnim("DATA/Result/rank.png");
+	//m_RankPic->GetObj()->SetScale(0.5f);
 	//m_RankPic->OrderMoveAppeared(12, 1500, 400);
 	m_RankPic->OrderShrink(12, 1.0f, 2.5f);
 	m_RankPicX = 80, m_RankPicY = 300;
@@ -153,7 +154,8 @@ ResultUIManager::ResultUIManager()
 	m_rankingScreen = new tdn2DObj(512, 720, TDN2D::RENDERTARGET);
 
 	m_rankingFont = new tdn2DObj("Data/Result/Ranking.png");
-
+	//m_rankingFont->SetScale
+	
 	/*****************************************/
 	//
 	for (int i = 0; i < RANKING_MAX; i++)
@@ -165,7 +167,7 @@ ResultUIManager::ResultUIManager()
 
 	Load();
 	m_RankingPic = new tdn2DObj("Data/ranking.png");
-
+	m_RankingPic->SetScale(0.8f);
 
 	m_RankINPic = new tdn2DAnim("Data/Result/rankin.png");
 	m_RankINPic->OrderMoveAppeared(24, 600, 100);
@@ -907,7 +909,7 @@ void ResultUIManager::RankingRender()
 	//  ランキング表示
 	for (int i = 0; i < RANKING_MAX; i++)
 	{
-		m_RankingPic->Render(10, (112 * i) + 205, 128, 128, 0, i * 128, 128, 128);
+		m_RankingPic->Render(50, (112 * i) + 205, 128, 128, 0, i * 128, 128, 128);
 		m_rankingNumber[i]->Render(400, (112 * i) + 230, m_RankingNum[i]);
 
 		//tdnText::Draw(0, 0, 0xffffffff, "あああああああああ");

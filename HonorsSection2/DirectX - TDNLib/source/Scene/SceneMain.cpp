@@ -139,7 +139,7 @@ bool sceneMain::Initialize()
 
 	m_poseIcon.pic = new tdn2DObj("Data/UI/Pose/poseIcon.png");
 	m_poseIcon.x = 1240;
-	m_poseIcon.y = 32;
+	m_poseIcon.y = 42;
 	m_poseIcon.pic->SetARGB(0xffaaaaaa);// F
 	
 	return true;

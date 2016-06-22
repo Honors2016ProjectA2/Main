@@ -126,6 +126,7 @@ private: //•Ï”
 	int m_worfHappyCount;
 	int m_sheepKillCount;
 
+	tdn2DObj* m_UIBoad;
 
 	/****************/
 	// ƒxƒWƒF‚ÌŒõ

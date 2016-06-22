@@ -78,6 +78,9 @@ UIManager::UIManager()
 	m_worfHappyCount = 0;
 	m_sheepKillCount = 0;
 
+	m_UIBoad = new tdn2DObj("DATA/UI/ue.png");
+
+
 	NumberEffect;
 }
 
@@ -100,6 +103,8 @@ UIManager::~UIManager()
 	SAFE_DELETE(m_graphRip);
 
 	SAFE_DELETE(m_tttPic);
+
+	SAFE_DELETE(m_UIBoad);
 
 	NumberEffect.Release();
 
@@ -173,6 +178,8 @@ void UIManager::Update()
 void UIManager::Render()
 {
 	
+	m_UIBoad->Render(0, 0);
+
 	/****************************************/
 	// スコア
 	ScoreRender();
@@ -246,8 +253,8 @@ void UIManager::ScoreUpdate()
 
 void UIManager::ScoreRender()
 {
-	m_scoreNum->Render(350, 20, m_scorePoint);
-	m_scorePic->Render(400, 30);
+	m_scoreNum->Render(350, 14, m_scorePoint);
+	//m_scorePic->Render(400, 30);
 }
 
 void UIManager::AddScore(int score)
@@ -289,12 +296,12 @@ void UIManager::ConboUpdate()
 
 void UIManager::ConboRender()
 {
-	m_conboBG->Render(1000, -10);
-	m_conboGage->Render(1000, 70);	// ゲージ	  
+	//m_conboBG->Render(1000, -10);
+	m_conboGage->Render(900, 55);	// ゲージ	  
 									//m_conboGageEnergy->SetTurnOver(true);
 									//m_conboGageEnergy->SetAngle(1.57);
-	m_conboGageEnergy->Render((1000+128)-(int)(128 * m_energyRate), 70, (int)(128 * m_energyRate) , 128, 0, 0, 128, 128);  // ゲージエネルギー
-	m_comboNum->Render(1080, 20, m_combo);// 数値
+	m_conboGageEnergy->Render((900+128)-(int)(128 * m_energyRate), 55, (int)(128 * m_energyRate) , 128, 0, 0, 128, 128);  // ゲージエネルギー
+	m_comboNum->Render(980, 10, m_combo);// 数値
 
 }
 
@@ -386,7 +393,7 @@ void UIManager::TimerRender()
 
 	const int second = m_timer % 60,
 		minutes = m_timer / 60;
-	const int TimerX = 600;
+	const int TimerX = 570;
 	m_timerPic->Render(TimerX, 16, 64, 64, minutes * 64, 0, 64, 64);			// 分
 	m_timerPic->Render(TimerX + 36, 16, 64, 64, 13 * 64, 0, 64, 64);			// :
 	m_timerPic->Render(TimerX + 72, 16, 64, 64, second / 10 * 64, 0, 64, 64);	// 秒(10の位)
