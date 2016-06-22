@@ -1672,20 +1672,29 @@ private:
 
 	static BOOL CALLBACK EnumDeviceCallback(const DIDEVICEINSTANCE* pdidi, VOID* pContext);
 	static BOOL CALLBACK EnumAxes(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef);
+	static IDirectInputDevice8 *m_pMouse;
 
 public:
 	static void Initialize();
 	static void Release()
 	{
+		if (m_pMouse)
+		{
+			m_pMouse->Unacquire();
+			m_pMouse->Release();
+			m_pMouse = nullptr;
+		}
 		if (m_lpDI)
 		{
-			delete m_lpDI;
+			//delete m_lpDI;
+			m_lpDI->Release();
 			m_lpDI = nullptr;
 		}
 	}
 	static LPDIRECTINPUTDEVICE8 GetDevice(int no);
 	static LPSTR GetGroupID(int no){ return m_GroupID[no]; }
 	static LPSTR GetDeviceInstanceName(int no){ return m_DeviceInstances[no].tszInstanceName; }
+	static IDirectInputDevice8* GetMouseDevice(){ return m_pMouse; }
 };
 
 enum KEYCODE
@@ -1983,7 +1992,6 @@ private:
 	static Vector2 m_Axis;
 	static Vector2 m_Pos;
 	static int m_FlagRight, m_FlagLeft;
-	static bool m_bWindowIn;
 
 public:
 
@@ -1992,7 +2000,7 @@ public:
 		m_CurrentWheel = (f == WHEEL_FLAG::DOWN) ? m_CurrentWheel - 1 : m_CurrentWheel + 1;
 	}
 
-	static void Initialize(BOOL show, bool bWindowIn);
+	static void Initialize(BOOL show);
 	static void Update();
 	static Vector2 &GetPos(){ return m_Pos; }
 	static int GetLeft(){ return m_FlagLeft; }									// 左クリックしたかどうか(iexみたいにおしっぱ1、押した瞬間3が返る)
@@ -2004,6 +2012,7 @@ public:
 		float vx = (float)(m_CurrentPoint.x - m_PrevPoint.x), vy = (float)(m_CurrentPoint.y - m_PrevPoint.y);
 		return sqrtf(vx*vx + vy*vy);
 	}
+	static void SetExclusion(bool exclusion);
 };
 
 

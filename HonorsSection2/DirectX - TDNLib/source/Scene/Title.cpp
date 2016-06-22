@@ -28,7 +28,8 @@ bool g_bExtraStage;
 bool Title::Initialize()
 {
 	tdnRandom::Initialize();
-	tdnMouse::Initialize(FALSE, true);
+	tdnMouse::Initialize(FALSE);
+	tdnMouse::SetExclusion(true);	// ★★超重要、排他処理をONにして、アクセスを拒否的なことをしている(要は右上の×も押せないし、画面外をクリックしても反応しなくなる)
 
 	// スペースキーおしっぱで、えくすとりーむ
 	g_bExtraStage = false;
@@ -344,6 +345,8 @@ void Title::Render()
 	//tdnPolygon::Rect((int)center.x - 32, (int)center.y - 32, 64, 64, RS::COPY, 0xff00ff00);
 	//tdnPolygon::Rect((int)center2.x - 32, (int)center2.y - 32, 64, 64, RS::COPY, 0xff0000ff);
 	//tdnPolygon::Rect((int)end.x - 32, (int)end.y - 32, 64, 64, RS::COPY, 0xffffff00);
+
+	//tdnText::Draw(30, 30, 0xffffffff, "%.1f : %.1f", tdnMouse::GetPos().x, tdnMouse::GetPos().y);
 
 	//RESULT_UIMNG.Render();
 	//Fade

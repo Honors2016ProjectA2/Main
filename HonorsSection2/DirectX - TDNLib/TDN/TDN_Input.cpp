@@ -13,6 +13,7 @@ LPDIRECTINPUT8 tdnInputManager::m_lpDI = nullptr;
 int tdnInputManager::m_NumDevice = 0;
 DIDEVICEINSTANCE tdnInputManager::m_DeviceInstances[tdnInputEnum::INPUT_DEVICE_MAX];
 char tdnInputManager::m_GroupID[tdnInputEnum::INPUT_DEVICE_MAX][32];
+IDirectInputDevice8* tdnInputManager::m_pMouse;
 
 //------------------------------------------------------
 //		コントローラー列挙
@@ -130,6 +131,13 @@ void tdnInputManager::Initialize()
 	MyAssert(DirectInput8Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_lpDI, nullptr) == DI_OK, "DirectInputの初期化でエラー");
 	m_lpDI->Initialize(GetModuleHandle(nullptr), DIRECTINPUT_VERSION);
 
+	// マウスデバイス初期化
+	m_lpDI->CreateDevice(GUID_SysMouse, &m_pMouse, nullptr);
+	// データ形式を保存
+	m_pMouse->SetDataFormat(&c_dfDIMouse2);
+	// 強調レベルの設定(非排他)
+	m_pMouse->SetCooperativeLevel(tdnSystem::GetWindow(), DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
+
 	m_NumDevice = 0;
 
 	// 最初は全員デフォルトのID
@@ -137,6 +145,9 @@ void tdnInputManager::Initialize()
 
 	//	ゲームパッドの列挙(この中でIDの振り分けしてます)
 	m_lpDI->EnumDevices(DI8DEVCLASS_GAMECTRL, EnumDeviceCallback, m_lpDI, DIEDFL_ATTACHEDONLY);
+
+
+
 }
 
 //------------------------------------------------------
@@ -213,6 +224,7 @@ LPDIRECTINPUTDEVICE8 tdnInputManager::GetDevice(int no)
 	lpDevice->EnumObjects(EnumAxes, lpDevice, DIDFT_AXIS);
 
 	// 入力制御開始
+	m_pMouse->Acquire();
 	lpDevice->Acquire();
 
 	return lpDevice;
@@ -714,15 +726,13 @@ RECT tdnMouse::m_Rc;
 int tdnMouse::m_PrevWheel;
 int tdnMouse::m_CurrentWheel;
 WHEEL_FLAG tdnMouse::m_FlagW = WHEEL_FLAG::NONE;
-bool tdnMouse::m_bWindowIn = false;
 
 //------------------------------------------------------
 //	初期化
 //------------------------------------------------------
-void tdnMouse::Initialize(BOOL show, bool bWindowIn)
+void tdnMouse::Initialize(BOOL show)
 {
 	ShowCursor(show);
-	m_bWindowIn = bWindowIn;
 }
 
 
@@ -744,8 +754,10 @@ void tdnMouse::Update()
 	// 前回座標保存
 	m_PrevPoint = m_CurrentPoint;
 	//ShowCursor(TRUE);			// 勝手にファルスに
+
 	// 取得
 	GetCursorPos(&m_CurrentPoint);
+
 	GetWindowRect(tdnSystem::GetWindow(), &m_Rc);
 	// 窓位置と縁による調整
 	m_Pos.x = (float)(m_CurrentPoint.x - m_Rc.left - 8);
@@ -753,14 +765,6 @@ void tdnMouse::Update()
 	////中央オフセット＆正規化
 	m_Axis.x = ((float)m_Pos.x - (tdnSystem::GetScreenSize().right / 2)) / (tdnSystem::GetScreenSize().right / 2);
 	m_Axis.y = -((float)m_Pos.y - (tdnSystem::GetScreenSize().bottom / 2)) / (tdnSystem::GetScreenSize().bottom / 2);
-	
-	// 画面外に出ないようにする処理
-	if (m_bWindowIn)
-	{
-		static const int WIDTH = 32;	// 補正幅
-		if (m_Pos.x > tdnSystem::GetScreenSize().right - WIDTH)		SetCursorPos(tdnSystem::GetScreenSize().right - WIDTH, (int)m_Pos.y + 29);
-		else if (m_Pos.y > tdnSystem::GetScreenSize().bottom - WIDTH)	SetCursorPos((int)m_Pos.x + 8, tdnSystem::GetScreenSize().bottom - WIDTH);
-	}
 
 	// 最大値制御
 	if (m_Axis.x > Max)m_Axis.x = Max;
@@ -781,4 +785,18 @@ void tdnMouse::Update()
 	work = (KeyBoard(MOUSE_RIGHT)) ? 1 : 0;
 	(m_FlagRight & 0x01) ? (m_FlagRight = (work) ? 1 : 2) : (m_FlagRight = (work) ? 3 : 0);
 
+}
+
+void tdnMouse::SetExclusion(bool exclusion)
+{
+	//	一時的にデバイスへのアクセス権を解放
+	tdnInputManager::GetMouseDevice()->Unacquire();
+
+	//	排他
+	if (exclusion) tdnInputManager::GetMouseDevice()->SetCooperativeLevel(tdnSystem::GetWindow(), DISCL_EXCLUSIVE | DISCL_FOREGROUND);
+	//	非排他
+	else tdnInputManager::GetMouseDevice()->SetCooperativeLevel(tdnSystem::GetWindow(), DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
+
+	//	アクセス権を再取得
+	tdnInputManager::GetMouseDevice()->Acquire();
 }

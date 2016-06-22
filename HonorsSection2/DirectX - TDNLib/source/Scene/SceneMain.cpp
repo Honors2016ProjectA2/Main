@@ -53,7 +53,7 @@ bool sceneMain::Initialize()
 
 	srand(timeGetTime());
 
-	tdnMouse::Initialize(FALSE, true);
+	tdnMouse::Initialize(FALSE);
 	tdnView::Init();
 
 	// レーンの幅とか読み込むので、ステージを真っ先にnew

@@ -151,8 +151,11 @@ BOOL tdnSystem::InitWindow(HINSTANCE hInstance, int nCmdShow, char* AppTitle, DW
 			FALSE,						// メニューを持つかどうかの指定
 			NULL);						// 拡張ウィンドウスタイル
 
+		const	LONG	WindowCoordX = 1920 / 2 - 1280 / 2;
+		const	LONG	WindowCoordY = 1080 / 2 - 720 / 2;
+
 		Window = CreateWindowEx(WS_EX_ACCEPTFILES, wcex.lpszClassName, AppTitle, WS_SYSMENU,	// 1.拡張ウィンドウスタイル　2.登録したクラス名　3.ウィンドウ名　4.ウィンドウスタイル
-			0, 0, WindowSize.right - WindowSize.left, WindowSize.bottom - WindowSize.top,		// ウィンドウの初期位置やサイズ
+			WindowCoordX, WindowCoordY, WindowSize.right - WindowSize.left, WindowSize.bottom - WindowSize.top,		// ウィンドウの初期位置やサイズ
 			NULL, NULL, hInstance, NULL);														// NULLには特に意味はないアプリケーションのインスタンスハンドルだけ送る
 
 	}

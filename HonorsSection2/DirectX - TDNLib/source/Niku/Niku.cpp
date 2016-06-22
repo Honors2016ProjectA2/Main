@@ -181,9 +181,11 @@ void NikuManager::Update()
 
 		m_pYakiniku->Update();
 
-		static int onFrame = 0;
+		//static int onFrame = 0;
 		// マウス左クリックで肉作成(放し)
-		if (tdnMouse::GetLeft() == 2 && onFrame <= 8)
+		if (tdnMouse::GetLeft() == 3
+			//&& onFrame <= 10
+			)
 		{
 			Vector2 mPos = tdnMouse::GetPos();
 			// 焼肉エリア内なら
@@ -195,7 +197,7 @@ void NikuManager::Update()
 		}
 
 		// 左押してるフレーム
-		onFrame = KeyBoard(MOUSE_LEFT);
+		//onFrame = KeyBoard(MOUSE_LEFT);
 
 		//else if (m_pYakiniku->GetMode() == YAKINIKU_MODE::KOGETA)
 		//{
