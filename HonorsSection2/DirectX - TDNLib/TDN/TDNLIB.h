@@ -1316,6 +1316,7 @@ private:
 	AnimAction::Base *m_pAction;
 public:
 	tdn2DAnim(const char* fileName) :m_obj(new tdn2DObj(fileName)) { m_pAction = nullptr; }
+	tdn2DAnim(Texture2D *texture) : m_obj(new tdn2DObj(texture)), m_pAction(nullptr){}
 	tdn2DAnim(const char* IDName, const char* pArchiveName) :m_obj(new tdn2DObj(IDName, pArchiveName)){ m_pAction = nullptr; }
 
 	~tdn2DAnim() { SAFE_DELETE(m_pAction); SAFE_DELETE(m_obj);	}
