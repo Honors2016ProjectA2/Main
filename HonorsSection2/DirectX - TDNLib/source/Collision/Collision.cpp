@@ -551,7 +551,7 @@ bool CollisionManager::ExclamationPointAndCurvePoint(Sheep::Base* sheep, CurvePo
 		cp->Get_pos2(DogPos);
 
 		// —rÀ•W‚ÌX‚ªŒ¢‚ÌÀ•W‚Æ‚»‚Ì‘O•û”ÍˆÍ“à
-		if (SheepPos.x > DogPos.x - DOG_SIZE && SheepPos.x < DogPos.x){
+		if (SheepPos.x > DogPos.x - DOG_SIZE && SheepPos.x < DogPos.x + 60){
 			return true;
 		}
 	}

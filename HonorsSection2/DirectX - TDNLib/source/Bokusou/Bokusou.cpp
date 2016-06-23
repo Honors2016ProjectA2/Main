@@ -150,6 +150,14 @@ void BokusouManager::RenderFront()
 {
 	for (auto it : m_list) it->RenderFront();
 	m_pBokusouTarget->RenderFront();
+
+	//if (KeyBoard(KB_1))
+	//{
+	//	for (UINT i = 0; i < m_CreatePosList.size(); i++)
+	//	{
+	//		tdnPolygon::Rect(m_CreatePosList[i].pos.x, m_CreatePosList[i].pos.y, 128, 128, RS::COPY, 0xffffffff);
+	//	}
+	//}
 }
 
 void BokusouManager::CreateByBazier()

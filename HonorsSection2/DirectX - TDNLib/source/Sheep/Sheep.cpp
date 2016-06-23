@@ -115,7 +115,10 @@ void Sheep::Base::Curve()
 	else
 	{
 		// 90度曲がり終わったら、曲がったフラグON
-		if ((m_sinAngle += addAngle) >= PI * 0.5f) m_bTurned = true;
+		if ((m_sinAngle += addAngle) >= PI * 0.5f)
+		{
+			m_bTurned = true;
+		}
 	}
 	// フロア計算
 	for (int i = STAGE_MAX - 1; i >= 0; i--)
@@ -256,12 +259,14 @@ void Sheep::Base::Be_crushed()
 {
 	if (col_check) return;
 
+	m_bPushOK = false;
 	m_AnimePanel = animeframe = 0;
 	process = CRUSHED; 
 	//obj = file[CRUSHED];
 }
 void Sheep::Base::Be_caught(bool bLeft)
 { 
+	m_bPushOK = false;
 	m_bLeftCatch = bLeft;
 	process = CAUGHT; 
 	//obj = file[RAN_OVER];

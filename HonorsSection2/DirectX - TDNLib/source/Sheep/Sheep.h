@@ -48,6 +48,7 @@ namespace Sheep
 		float m_sinAngle;	// カーブをサインカーブでするので、それ用の変数
 		bool m_bErase;		// 消去フラグ
 		bool m_bLeftCatch;	// 左クリックでつかんだか
+		bool m_bPushOK;		// デブ押してもいい状態
 
 		//const int PNGSIZE;
 		int m_floor;
@@ -104,16 +105,17 @@ namespace Sheep
 
 		int Get_size(){ return m_data.SIZE; }
 		int Get_floor(){ return m_floor; }
-		void Be_Walk(){ if(process == MODE::PUSH) process = MODE::WALK; }
-		void Be_Push(){ if(process == MODE::WALK) process = MODE::PUSH; }
+		void Be_Walk(){ if (process == MODE::PUSH){ process = MODE::WALK; m_bPushOK = true; } }
+		void Be_Push(){ if (process == MODE::WALK){ process = MODE::PUSH; m_bPushOK = true; } }
 		void Be_crushed();
 		void Be_caught(bool bLeft);
-		bool isPushOK(){ return (process == MODE::WALK || process == MODE::PUSH); }
+		bool isPushOK(){ return m_bPushOK; }
 		bool isCaught(){ return (process == MODE::CAUGHT); }
 		bool isDead(){ return (process == MODE::CRUSHED); }
 		void SetCurve(DIR dir)
 		{
 			if (process != MODE::WALK) return;
+			m_bPushOK = true;
 			m_CurveDir = dir; process = MODE::CURVE; m_sinAngle = 0; m_bTurned = false;
 		}
 		float TokutenBairitsu(){ return m_data.magnification; }
