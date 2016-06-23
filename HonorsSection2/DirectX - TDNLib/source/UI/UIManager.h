@@ -45,6 +45,7 @@ public:
 	int GetTimer() { return m_timer; }
 	void SetTimer(int timer) { m_timer = timer; }
 
+	int GetFlame() { return m_flame; }
 
 	// 
 	int GetWorfHappyCount() { return m_worfHappyCount; }

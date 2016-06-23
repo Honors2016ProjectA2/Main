@@ -128,6 +128,12 @@ void Tips::TipsSelect()
 		m_selectTips = TIPS_TYPE::TO_SS_ROAD;
 	}
 
+	// ‹]µ‚È‚­‚µ‚Ä
+	else if (UIMNG.GetWorfHappyCount() == 0)
+	{
+		m_selectTips = TIPS_TYPE::GISEINAKUSHITE;
+	}
+
 	// ‚Ý‚ñ‚È‚¿‚ª‚Á‚Ä‚Ý‚ñ‚È‚¢‚¢
 	else if (TipsCountMgr->m_NikuSheepTypes[(int)SHEEP_TYPE::GOLD] <= 1 && TipsCountMgr->m_NikuSheepTypes[(int)SHEEP_TYPE::REAL] <= 1)
 	{
@@ -138,12 +144,6 @@ void Tips::TipsSelect()
 	else if (RESULT_UIMNG.m_rankType == ResultUIManager::A)
 	{
 		m_selectTips = TIPS_TYPE::TO_S_ROAD;
-	}
-
-	// ‹]µ‚È‚­‚µ‚Ä
-	else if (UIMNG.GetWorfHappyCount() == 0)
-	{
-		m_selectTips = TIPS_TYPE::GISEINAKUSHITE;
 	}
 	else MyAssert(false, "ðŒˆø‚Á‚©‚©‚ç‚È‚¢");
 

@@ -363,12 +363,18 @@ void UIManager::TimerUpdate()
 
 	// カウントダウン
 	m_flame--;
-	if (m_flame <= 0)
+	if (m_flame < 0)
 	{
 		m_flame = 60;
 		m_timer--;	
+
 	}
 
+	// 0以下にさせない
+	if (m_timer <= 0)
+	{
+		m_timer = 0;
+	}
 
 	// 残りタイマーに応じてサウンドの速度を変更
 	// 30秒以下

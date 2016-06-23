@@ -170,7 +170,8 @@ ResultUIManager::ResultUIManager()
 	m_RankingPic->SetScale(0.8f);
 
 	m_RankINPic = new tdn2DAnim("Data/Result/rankin.png");
-	m_RankINPic->OrderMoveAppeared(24, 600, 100);
+	//m_RankINPic->OrderMoveAppeared(24, 600, 100);
+	m_RankINPic->OrderShrink(12, 1.0f, 2.0f);
 
 	m_resultBG = new tdn2DObj("Data/result/rizaruto.png");
 
@@ -790,7 +791,7 @@ void ResultUIManager::ResultRender()
 		m_number[i]->Render(m_numX[i], m_numY[i], m_numNum[i]);
 	}
 
-	m_RankFrame->Render(m_RankPicX - 32, m_RankPicY - 38);
+	//m_RankFrame->Render(m_RankPicX - 32, m_RankPicY - 38);
 	m_RankPic->Render(m_RankPicX, m_RankPicY, 360, 360, 360* m_rankType, 0, 360, 360,RS::COPY_NOZ);
 	m_RankRipPic->Render(m_RankPicX, m_RankPicY, 360, 360, 360 * m_rankType, 0, 360, 360,RS::ADD);
 
@@ -801,11 +802,11 @@ void ResultUIManager::ResultRender()
 	case ResultUIManager::STEP::START:
 		break;
 	case ResultUIManager::STEP::SCORE:
-		tdnText::Draw(0, 90, 0xfff00fff, "Score");
+		//tdnText::Draw(0, 90, 0xfff00fff, "Score");
 
 		break;
 	case ResultUIManager::STEP::SONOTA:
-		tdnText::Draw(0, 90, 0xfff00fff, "EX");
+		//tdnText::Draw(0, 90, 0xfff00fff, "EX");
 
 		break;
 	case ResultUIManager::STEP::EXE:
@@ -904,7 +905,7 @@ void ResultUIManager::RankingRender()
 	m_rankingBG->Render(0, 0);
 
 	// ランキングフォント
-	m_rankingFont->Render(0, 0);
+	m_rankingFont->Render(0, -30);
 
 	//  ランキング表示
 	for (int i = 0; i < RANKING_MAX; i++)

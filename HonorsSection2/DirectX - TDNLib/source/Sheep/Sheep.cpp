@@ -18,7 +18,7 @@ Sheep::Base::Base(const SheepData &data, int floor, const SheepTextParam &textpa
 animepos(0, 0),
 m_floor(floor),
 process(WALK),
-m_AnimePanel(0), m_bErase(false)
+m_AnimePanel(0), m_bErase(false),m_bPushOK(true)
 {
 	Move[MODE::WALK] = &Sheep::Base::Walk;
 	Move[MODE::CURVE] = &Sheep::Base::Curve;
@@ -186,6 +186,7 @@ void Sheep::Base::Caught()
 	{
 		// 歩くモードに戻る
 		process = MODE::WALK;
+		m_bPushOK = true;
 
 		// 最短フロアにいる
 		m_floor = FindFloor(pos.y);

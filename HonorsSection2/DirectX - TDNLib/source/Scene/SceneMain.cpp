@@ -324,7 +324,7 @@ void sceneMain::MainUpdate()
 	//}
 
 	// タイムが0になったらゲームオーバー処理
-	if (UIMNG.GetTimer() <= 0)
+	if (UIMNG.GetTimer() <= 0&& UIMNG.GetFlame() <= 0)
 	{
 		// SE全ストップ
 		se->Stop_all();
