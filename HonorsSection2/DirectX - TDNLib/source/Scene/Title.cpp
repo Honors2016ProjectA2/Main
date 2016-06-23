@@ -61,6 +61,10 @@ bool Title::Initialize()
 	m_dog.anim = 0;
 	m_dog.animFlame = 0;
 
+	// EXIT
+	m_pExit = new ExitInfo("DATA/title/exit.png", Vector2(16, 640), Vector2(128, 128));
+
+
 	// 小屋
 	m_bKoyaFlag = false;
 	m_koya.pic = new tdn2DObj("DATA/title/koyaflont.png");
@@ -91,7 +95,7 @@ bool Title::Initialize()
 Title::~Title()
 {
 	m_pStreamSound->Stop();
-
+	delete m_pExit;
 	delete m_pSheepMgr;
 	SAFE_DELETE(m_pointer);
 	SAFE_DELETE(m_dog.pic);
@@ -192,6 +196,17 @@ bool Title::Update()
 			return true;
 		}
 	
+	}
+	else
+	{
+		// カーソル範囲内処理
+		m_pExit->bPoint = m_pExit->CheckCurosrIn(tdnMouse::GetPos());
+
+		// 左クリック
+		if (tdnMouse::GetLeft() == 3 && m_pExit->bPoint)
+		{
+			PostMessage(tdnSystem::GetWindow(), WM_CLOSE, 0, 0);
+		}
 	}
 
 	m_send->Update();
@@ -322,6 +337,8 @@ void Title::Render()
 	// タイトル
 	m_titleLogo->Render(0, -150);
 
+	// EXIT看板
+	m_pExit->Render();
 
 	// エフェクトマネージャー
 	EffectMgr.Render();

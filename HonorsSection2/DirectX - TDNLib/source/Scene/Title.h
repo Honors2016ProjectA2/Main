@@ -29,6 +29,24 @@ private:
 	}m_dog;
 	bool m_bDogFlag;
 
+	// EXIT
+	struct ExitInfo
+	{
+		tdn2DObj *pImage;	// 画像
+		Vector2 pos;		// 座標
+		Vector2 size;		// 画像サイズ
+		bool bPoint;		// カーソル範囲内か
+		ExitInfo(char *filename, const Vector2 &pos, const Vector2 &size) :pImage(new tdn2DObj(filename)), pos(pos), size(size), bPoint(false){}
+		~ExitInfo(){delete pImage; }
+		void Render()
+		{
+			pImage->SetARGB(bPoint ? 0xffffffff : 0xffa0a0a0);
+			pImage->SetScale(bPoint ? 1.1f: 1.0f);
+			pImage->Render((int)pos.x, (int)pos.y);
+		}
+		bool CheckCurosrIn(const Vector2 &mPos){ return (mPos.x > pos.x && mPos.x < pos.x + size.x && mPos.y > pos.y && mPos.y < pos.y + size.y); }
+	}*m_pExit;
+
 	// マウスポインタ―
 	MousePointer* m_pointer;
 
