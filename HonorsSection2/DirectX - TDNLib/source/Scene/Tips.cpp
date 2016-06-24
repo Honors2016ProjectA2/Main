@@ -21,6 +21,7 @@ Tips::Tips() : m_typs(nullptr), m_pTipsMovie(nullptr)
 	m_paths[TIPS_TYPE::TO_S_ROAD] = "DATA/tips/to_s.wmv";
 	m_paths[TIPS_TYPE::TO_SS_ROAD] = "DATA/tips/to_ss.wmv";
 	m_paths[TIPS_TYPE::NANIMOIUMAI] = "DATA/tips/iumai.png";
+	m_paths[TIPS_TYPE::OK_BOKUSOU] = "DATA/tips/ok.wmv";
 
 	for (int i = 0; i < TIPS_TYPE::END ; i++)
 	{
@@ -145,7 +146,7 @@ void Tips::TipsSelect()
 	{
 		m_selectTips = TIPS_TYPE::TO_S_ROAD;
 	}
-	else MyAssert(false, "ðŒˆø‚Á‚©‚©‚ç‚È‚¢");
+	else m_selectTips = TIPS_TYPE::OK_BOKUSOU;
 
 	/* ‚±‚±‚ÅtypsƒAƒjƒ‚Ì‰Šú‰»‚ðs‚¤ */
 
