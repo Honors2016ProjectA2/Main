@@ -57,7 +57,7 @@ int FindFloor(float posY)
 //------- constructor,destructor ---------
 
 StageManager::StageManager() :m_pDogImage(new tdn2DObj("DATA/CHR/dog.png")), m_pFireImage(new tdn2DObj("DATA/巻き/炎の種.png")),
-m_FireAnimFrame(0), m_FireAnimPanel(0), m_ChangeScoreTime(0)
+m_FireAnimFrame(0), m_FireAnimPanel(0), m_ChangeScoreTime(0), m_pBatuImage(new tdn2DObj("DATA/batu.png")), m_pNumber(new tdn2DObj("DATA/Number/Number.png"))
 {
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
@@ -171,7 +171,7 @@ StageManager::~StageManager()
 	FOR(StageImage::MAX)delete m_pStageImages[i];
 	delete m_pDogImage;
 	delete m_pFireImage;
-
+	delete m_pBatuImage;
 	FOR(STAGE_MAX)
 	{
 		SAFE_DELETE(stage[i]);
@@ -182,7 +182,7 @@ StageManager::~StageManager()
 		// 炎リストの開放
 		//for (auto it : m_Firelists[i]) delete it;
 	}
-
+	delete m_pNumber;
 	// タイトル用
 	STAGE_POS_Y[0] = 165;
 	STAGE_POS_Y[1] = 520;
@@ -642,7 +642,7 @@ void StageManager::RenderBack()
 			m_pStageImages[StageImage::DOOR_CLOSE]->Render(0, HOUSE_POS_Y[i]);
 
 			// ゲージ部分
-			const float GaugePercent = (stage[i]->GetRecastTime() / (float)m_RECAST_TIME);
+			const float GaugePercent = (max(stage[i]->GetRecastTime()-60,0) / (float)m_RECAST_TIME);
 			// ゲージMAXif文
 			if (GaugePercent <= .0f)
 			{
@@ -656,6 +656,29 @@ void StageManager::RenderBack()
 			{
 				m_pStageImages[StageImage::DOOR_CLOSE]->SetARGB((BYTE)(160 * ((float)stage[i]->m_TenmetsuFrame / stage[i]->TENMETSU)), (BYTE)255, (BYTE)255, (BYTE)255);
 				m_pStageImages[StageImage::DOOR_CLOSE]->Render(0, HOUSE_POS_Y[i], RS::ADD);
+			}
+			else
+			{
+				if (stage[i]->m_bPoint)
+				{
+					// ×描画
+					static bool up = true;
+					static float scale = .7f;
+					static const float add = .01f;
+					if (up)
+					{
+						if ((scale += add) > 1.0f) up = false;
+					}
+					else
+					{
+						if ((scale -= add) < .7f) up = true;
+					}
+					m_pBatuImage->SetScale(scale);
+					m_pBatuImage->Render(32, HOUSE_POS_Y[i] + 16);
+
+					// リキャストタイム
+					m_pNumber->Render(64, HOUSE_POS_Y[i] + 54, 64, 64, stage[i]->GetRecastTime() / 60 * 64, 0, 64, 64);
+				}
 			}
 		}
 	}
@@ -809,8 +832,9 @@ void Stage::Update()
 	if (m_RecastTime > 0)
 	{
 		// リキャスト溜まった瞬間！！
-		if (--m_RecastTime == 0)
+		if (--m_RecastTime <= 60)
 		{
+			m_RecastTime = 0;
 			// エフェクト
 			//EffectMgr.AddEffect((int)pos.x + 68, (int)pos.y + 72, EFFECT_TYPE::PUT);
 

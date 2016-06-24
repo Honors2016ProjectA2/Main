@@ -301,10 +301,10 @@ void sceneMain::MainUpdate()
 	BokusouMgr->Update();
 	UIMNG.Update();
 
-	if (KeyBoard(KB_N)==3)
-	{
-		UIMNG.SetTimer(1);
-	}
+	//if (KeyBoard(KB_N)==3)
+	//{
+	//	UIMNG.SetTimer(1);
+	//}
 	//
 	//// G
 	//if (KeyBoard(KB_G) == 3)

@@ -97,7 +97,8 @@ private:
 	tdn2DObj *m_pStageImages[StageImage::MAX];
 	int m_FireAnimFrame, m_FireAnimPanel;
 
-	tdn2DObj *m_pDogImage, *m_pFireImage;
+	tdn2DObj *m_pDogImage, *m_pFireImage, *m_pBatuImage;
+	tdn2DObj *m_pNumber;
 
 	enum ImageSrc { STAGE, SHUTTER };
 
