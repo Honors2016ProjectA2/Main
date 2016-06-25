@@ -153,7 +153,7 @@ void Number::Render(int x, int y, int num, NUM_KIND kind)
 	case Number::NUM_KIND::TIMER:
 	{
 		// ※　でかく
-		float PiccScale = 1.25f;
+		float PiccScale = 1.5f;
 		m_pic->SetScale(PiccScale);
 
 		int count = 0;
@@ -169,6 +169,29 @@ void Number::Render(int x, int y, int num, NUM_KIND kind)
 
 		m_pic->Render(x - ((++count * (34 * PiccScale))*m_picScale)+8, y, m_picSize*m_picScale, m_picSize*m_picScale, 10 * m_picSize, 0, m_picSize, m_picSize);// 数字描画
 		m_pic->Render(x - ((++count * (36 * PiccScale))*m_picScale)+8, y, m_picSize*m_picScale, m_picSize*m_picScale, 11 * m_picSize, 0, m_picSize, m_picSize);// 数字描画
+
+
+		break;
+	}
+	case Number::NUM_KIND::BIG:
+	{
+		// ※　でかく
+		float PiccScale = 1.5f;
+		m_pic->SetScale(PiccScale);
+
+		int count = 0;
+		for (;; ++count)
+		{
+			int digitNum = number % 10;	// 一番小さい桁を入手
+			number = (int)(number / 10);// 数値の一番小さい桁を消す
+
+			m_pic->Render(x - ((count * (32 * PiccScale))*m_picScale), y, m_picSize*m_picScale, m_picSize*m_picScale, digitNum*m_picSize, 0, m_picSize, m_picSize);// 数字描画
+
+			if (number <= 0)break;// 数値が０以下になったらさよなら
+		}
+
+		//m_pic->Render(x - ((++count * (34 * PiccScale))*m_picScale) + 8, y, m_picSize*m_picScale, m_picSize*m_picScale, 10 * m_picSize, 0, m_picSize, m_picSize);// 数字描画
+		//m_pic->Render(x - ((++count * (36 * PiccScale))*m_picScale) + 8, y, m_picSize*m_picScale, m_picSize*m_picScale, 11 * m_picSize, 0, m_picSize, m_picSize);// 数字描画
 
 
 		break;
@@ -350,6 +373,92 @@ void Number_Effect::Update()
 				it++;
 			}
 		}// timer
+		 // タイマーなら遅く標示
+		else if ((*it)->kind == Number::NUM_KIND::BIG)
+		{
+			// ステートで動きを分岐
+			switch ((*it)->state)
+			{
+			case NumberData::STATE::START:
+
+				// y座標を↑にずらす
+				(*it)->y -= 2;
+
+				// アルファを上げる
+				(*it)->alpha += 50;
+				if ((*it)->alpha >= 255)(*it)->alpha = 255;
+
+				// フレームで調整
+				(*it)->flame++;
+
+				//if ((*it)->alpha >= 255)
+				if ((*it)->flame >= 32)
+				{
+					//　アルファがマックスになったら終了
+					(*it)->state = NumberData::STATE::ARRIVAL;
+
+					// フレームを初期化
+					(*it)->flame = 0;
+
+					//(*it)->number->GetAnim()->OrderJump(14, 1.0f, 1.3f);
+					//(*it)->number->GetAnim()->Action();
+				}
+
+				break;
+			case NumberData::STATE::ARRIVAL:
+
+				// y座標を↑にずらす
+				(*it)->y -= 1;
+
+				// フレームで時間稼ぎ
+				(*it)->flame++;
+
+				if ((*it)->flame > 32)
+				{
+					(*it)->state = NumberData::STATE::END;
+				}
+
+				break;
+			case NumberData::STATE::END:
+				(*it)->y += 1;
+				// アルファを下げる
+				(*it)->alpha -= 40;
+
+				// なんか終わるフラグを立てる
+				if ((*it)->alpha <= 0)
+				{
+					(*it)->alpha = 0;
+					// 終了フラグOn 
+					(*it)->isEnd = true;
+				}
+
+				break;
+			default:
+				break;
+			}
+
+			// アルファ更新
+			//(*it)->number->GetAnim()->SetARGB((*it)->alpha, 255, 255, 255);
+			(*it)->number->GetAnim()->SetAlpha((*it)->alpha);
+
+			// ナンバー更新
+			(*it)->number->Update();
+
+			if ((*it)->isEnd == true)
+			{
+				// 先に消す
+				SAFE_DELETE((*it)->number);
+				SAFE_DELETE((*it));
+				// 勝手に更新される
+				it = m_NumberData.erase(it);
+			}
+			else
+			{
+				// 自分で更新
+				it++;
+			}
+
+		}
 		else // ふつう
 		{
 			//it->Update();
@@ -514,6 +623,11 @@ void Number_Effect::AddNumber(int x, int y, int score, COLOR_TYPE type, Number::
 		break;
 	case Number_Effect::COLOR_TYPE::YELLOW_GREEN:
 		data->number->GetAnim()->SetARGB(0xffaaff77);// 色
+		
+		break;	
+	case Number_Effect::COLOR_TYPE::ORANGE:
+
+		data->number->GetAnim()->SetARGB(0xffff8000);// 色
 		
 		break;
 	default:

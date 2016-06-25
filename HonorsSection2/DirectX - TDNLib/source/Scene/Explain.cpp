@@ -128,7 +128,7 @@ void Explain::Text2()
 	if( game.Close() ){
 		//FadeControl::Setting(FadeControl::MODE::FADE_IN, 30.0f, .0f, FADE_ALPHA);
 		howTo2.openFlg = true;
-		state = STATE::TEXT3;
+		state = STATE::FADE_END;//
 		//bgm->Fade_out("TITLE", .025f);
 	}
 }

@@ -75,9 +75,6 @@
     <ClCompile Include="TDN\IEX_Mesh.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="TDN\TDN_File.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="TDN\IEX_SkinMesh.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -214,6 +211,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="source\TipsCount\TipsCounter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="TDN\TDN_File.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

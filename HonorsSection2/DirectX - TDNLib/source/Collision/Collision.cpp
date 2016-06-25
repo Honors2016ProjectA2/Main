@@ -277,10 +277,19 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				Bairitsu = 5000.0f;
 				break;
 			case SHEEP_TYPE::REAL:
-				Bairitsu = 7500.0f;
+				Bairitsu = 9999.99f;
 				break;
 			}
-			SetScore(dataMNG, fatIt->GetFloor(), Bairitsu);	// 10000倍
+
+			// ★UIさんに知らせる
+			int add = dataMNG->AddScore(fatIt->GetFloor(), Bairitsu);// データマネージャーのスコア加算関数で加算したスコアを返すから、それをUIに渡す
+			UIMNG.AddScore(add);
+			UIMNG.ConboCount();
+			// ナンバーエフェクト発動
+			NumberEffect.AddNumber(1000, STAGE_POS_Y[fatIt->GetFloor()] + 64, add,Number_Effect::COLOR_TYPE::ORANGE,Number::NUM_KIND::BIG);
+			//SetScore(dataMNG, fatIt->GetFloor(), Bairitsu);	// 10000倍
+
+
 			se->Play("太った羊IN");
 
 			// ゆらす！！

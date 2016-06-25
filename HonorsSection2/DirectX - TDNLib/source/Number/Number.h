@@ -19,7 +19,7 @@ public:
 	// 数字の色のタイプ
 	enum class NUM_KIND
 	{
-		NORMAL, HEAL, COMBO, TIMER
+		NORMAL, HEAL, COMBO, TIMER, BIG
 	};
 
 	// 実体
@@ -122,7 +122,7 @@ public:
 
 	enum class COLOR_TYPE
 	{
-		WHITE, BLUE, RED, GREEN, LIGHT_BLUE, YELLOW_GREEN
+		WHITE, BLUE, RED, GREEN, LIGHT_BLUE, YELLOW_GREEN, ORANGE
 	};
 
 	// 数字追加

@@ -388,6 +388,7 @@ void sceneMain::EndEvent()
 
 			// BGM‚Ì‰¹—Ê­‚µ‰º‚°‚é
 			bgm->SetVolume("MAIN", .5f);
+			bgm->SetSpeed("MAIN", 1.0f);
 		}
 		
 
