@@ -387,6 +387,8 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 				break;
 			}
 
+			//■■
+			//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 			// UIに時間を足す
 			//UIMNG.AddTimer(AddTime);
 			Vector3 startPos =
@@ -394,8 +396,11 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 			Vector3 centerPos = Vector3(400, 600, 0);
 			Vector3 center2Pos = Vector3(100, 300, 0);
 			Vector3 endPos =	Vector3(720, 40, 0);
+			UIMNG.AddSendPower("Data/power.png", startPos, centerPos, center2Pos, endPos, 48, AddTime, false, 0);
+			NumberEffect.AddNumber(startPos.x-196, startPos.y+32, AddTime, Number_Effect::COLOR_TYPE::YELLOW_GREEN,Number::NUM_KIND::TIMER);
 
-			UIMNG.AddSendPower("Data/power.png", startPos, centerPos, center2Pos, endPos, 48, AddTime);
+			///_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+
 
 			// UIに狼やっつけた
 			UIMNG.AddWorfHappyCount();
@@ -593,5 +598,5 @@ void CollisionManager::SetScore(DataManager *dataMNG, int floor, float bairitsu)
 	UIMNG.AddScore(add);
 	UIMNG.ConboCount();
 	// ナンバーエフェクト発動
-	NumberEffect.AddNumber(1100, STAGE_POS_Y[floor] + 32, add);
+	NumberEffect.AddNumber(1200, STAGE_POS_Y[floor] + 32, add);
 }

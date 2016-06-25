@@ -11,7 +11,7 @@ class SendPower
 {
 public:
 	SendPower(char* filename, Vector3 startPos, Vector3 centerPos,
-		Vector3 center2Pos, Vector3 endPos, int endFlame, int power = 10, int bBokusou = false);
+		Vector3 center2Pos, Vector3 endPos, int endFlame, int power = 10, int bBokusou = false,int waitTimer = 0);
 
 	~SendPower();
 
@@ -57,6 +57,8 @@ protected:
 	int m_power;
 
 	bool m_bBokusou;
+
+	int m_waitTimer;
 public:
 	Vector3 m_movePos[(int)MOVE_POS::MAX];
 

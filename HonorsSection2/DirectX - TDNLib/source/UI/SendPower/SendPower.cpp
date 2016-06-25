@@ -3,7 +3,7 @@
 
 
 SendPower::SendPower(char* filename, Vector3 startPos, Vector3 centerPos,
-	Vector3 center2Pos, Vector3 endPos, int endFlame, int power, int bBokusou)
+	Vector3 center2Pos, Vector3 endPos, int endFlame, int power, int bBokusou,int waitTimer)
 {
 	// いらす地
 	m_pic = new tdn2DObj(filename);
@@ -31,6 +31,9 @@ SendPower::SendPower(char* filename, Vector3 startPos, Vector3 centerPos,
 	// レート
 	m_percentRate = 1.0f / (float)m_endFlame;
 
+	// ウェイトタイマー
+	m_waitTimer = waitTimer;
+
 	/*****************/
 	m_bAction = false;
 	m_bEnd = false;
@@ -50,6 +53,13 @@ SendPower::~SendPower()
 void SendPower::Update()
 {
 	if (m_bAction == false)return;// でていけ
+
+	// ウェイトタイマー
+	if (m_waitTimer > 0)// 0秒までとおさない
+	{
+		m_waitTimer--;
+		return;
+	}
 
 	//if (KeyBoard(KB_J))
 	//{

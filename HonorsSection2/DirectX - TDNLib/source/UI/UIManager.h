@@ -34,7 +34,7 @@ public:
 
 	// “®‚­Œõ
 	void AddSendPower(char* filename, Vector3 startPos, Vector3 centerPos,
-		Vector3 center2Pos, Vector3 endPos, int endFlame, int power, bool bokusouFlag = false);
+		Vector3 center2Pos, Vector3 endPos, int endFlame, int power, bool bokusouFlag = false, int waitTimer = 0);
 
 	// ƒOƒ‰ƒt‚Ìİ’è
 	void SetGraph(float graph) {

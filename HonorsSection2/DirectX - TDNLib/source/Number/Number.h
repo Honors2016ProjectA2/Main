@@ -19,7 +19,7 @@ public:
 	// 数字の色のタイプ
 	enum class NUM_KIND
 	{
-		NORMAL, HEAL, COMBO
+		NORMAL, HEAL, COMBO, TIMER
 	};
 
 	// 実体
@@ -90,6 +90,7 @@ struct NumberData
 	Number* number;
 	int x, y;
 	int score;
+	Number::NUM_KIND kind;
 
 	int flame;
 	int endFlame;
@@ -117,13 +118,15 @@ public:
 	void Update();
 	void Render();
 
+	void Time_Update();
+
 	enum class COLOR_TYPE
 	{
 		WHITE, BLUE, RED, GREEN, LIGHT_BLUE, YELLOW_GREEN
 	};
 
 	// 数字追加
-	void AddNumber(int x,int y,int score, COLOR_TYPE type = COLOR_TYPE::WHITE);
+	void AddNumber(int x, int y, int score, COLOR_TYPE type = COLOR_TYPE::WHITE, Number::NUM_KIND kind = Number::NUM_KIND::NORMAL);
 
 	//// NumberData
 	//NumberData  

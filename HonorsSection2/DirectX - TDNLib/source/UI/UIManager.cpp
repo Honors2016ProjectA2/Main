@@ -498,6 +498,7 @@ void UIManager::SendPowerUpdate()
 	// List
 	for (auto it = m_SendPowerData.begin(); it != m_SendPowerData.end();)
 	{
+		//¡¡‚±‚±‚Å‚Å‚¡‚ê‚¢
 
 		(*it)->Update();
 
@@ -539,11 +540,11 @@ void UIManager::SendPowerRender()
 
 // ƒxƒWƒF
 void UIManager::AddSendPower(char* filename, Vector3 startPos, Vector3 centerPos,
-	Vector3 center2Pos, Vector3 endPos, int endFlame, int power, bool bokusouFlag)
+	Vector3 center2Pos, Vector3 endPos, int endFlame, int power, bool bokusouFlag, int waitTimer)
 {
 
 	SendPower* data;
-	data = new SendPower(filename, startPos, centerPos, center2Pos, endPos, endFlame, power, bokusouFlag);
+	data = new SendPower(filename, startPos, centerPos, center2Pos, endPos, endFlame, power, bokusouFlag, waitTimer);
 
 	data->Action();
 
