@@ -2456,71 +2456,71 @@ public:
 
 
 
-//// ファイルディレクトリ列挙に使用される構造体
-//typedef struct tagDirectoryInfo
-//{
-//	// newとかめんどくさくなりそうなのでvector使う
-//	//int NumFile;				// ファイルの個数
-//	//std::string *FileNames;		// ファイルの名前(可変長)
-//	//int NumFolder;				// フォルダの個数
-//	//std::string *FolderNames;	// フォルダの名前(可変長)
-//
-//	// string型での動的配列で、ファイル名とフォルダー名を格納
-//	std::vector<std::string> FileNames;		// 列挙されたファイル名
-//	std::vector<std::string> FolderNames;	// 列挙されたフォルダ名
-//
-//	tagDirectoryInfo(){ FileNames.clear(), FolderNames.clear(); }
-//	~tagDirectoryInfo(){ FileNames.clear(), FolderNames.clear(); }
-//}DirectoryInfo;
-//
-//class tdnFile
-//{
-//public:
-//
-//	/**
-//	*@brief			フォルダ(ディレクトリ)作成
-//	*@param[in]		*path	example…"DATA/CHR/Airou"ならCHRフォルダにAirouというフォルダが作られる
-//	*@return		成功したら「0」フォルダが既に作られていたりして失敗したら「-1」が返る
-//	*/
-//	static int CreateFolder(char *path);
-//
-//	/**
-//	*@brief					ディレクトリの列挙
-//	*@param[in]		*path	ディレクトリパス("DATA/CHR"ならCHRフォルダの中が列挙される)
-//	*@param[in]		*out	列挙したファイル名をフォルダー名を格納する構造体へのアドレス
-//	*@param[in]		bExt	ファイル名の場合、拡張子をつけるかつけないか
-//	*/
-//	static void EnumDirectory(char *path, DirectoryInfo *out, bool bExt = true);
-//
-//	/**
-//	*@brief					ファイルの拡張子を返す("tdn.txt"なら.txtが返る)
-//	*@param[in]		*path	ファイルパス
-//	*/
-//	static std::string GetFileExtention(char *path);
-//
-//	/**
-//	*@brief					ファイルパスからファイル名を返す("DATA/Text/tdn.txt"ならtdn.txtが返る)
-//	*@param[in]		*path	ファイルパス
-//	*@param[in]		bExt	拡張子をくっつけるか　[true: return tdn.txt]　[false: return tdn]
-//	*/
-//	static std::string GetFileName(char *path, bool bExt = true);
-//
-//	/**
-//	*@brief					ファイルを開くダイアログを作成
-//	*@param[in]		*filter	拡張子フィルター example:"TEXT DATA(*.txt)\0 *.txt\0\0"
-//	*@return				成功したらダイアログで選択された絶対パスを返す、失敗したら""(空の文字列)
-//	*/
-//	static std::string OpenFileDialog(char *filter = "すべてのファイル(*.*)\0 * .*\0\0");
-//
-//	/**
-//	*@brief					ファイルを保存するダイアログを作成
-//	*@param[in]		*filter	拡張子フィルター example:"TEXT DATA(*.txt)\0 *.txt\0\0"
-//	*@return				成功したらダイアログで選択された絶対パスを返す、失敗したら""(空の文字列)
-//	*/
-//	static std::string SaveFileDialog(char *filter = "すべてのファイル(*.*)\0 * .*\0\0");
-//private:
-//	static char strFile[256];			// ダイアログを開くときに、前のパスを残したいときとかに
-//};
+// ファイルディレクトリ列挙に使用される構造体
+typedef struct tagDirectoryInfo
+{
+	// newとかめんどくさくなりそうなのでvector使う
+	//int NumFile;				// ファイルの個数
+	//std::string *FileNames;		// ファイルの名前(可変長)
+	//int NumFolder;				// フォルダの個数
+	//std::string *FolderNames;	// フォルダの名前(可変長)
+
+	// string型での動的配列で、ファイル名とフォルダー名を格納
+	std::vector<std::string> FileNames;		// 列挙されたファイル名
+	std::vector<std::string> FolderNames;	// 列挙されたフォルダ名
+
+	tagDirectoryInfo(){ FileNames.clear(), FolderNames.clear(); }
+	~tagDirectoryInfo(){ FileNames.clear(), FolderNames.clear(); }
+}DirectoryInfo;
+
+class tdnFile
+{
+public:
+
+	/**
+	*@brief			フォルダ(ディレクトリ)作成
+	*@param[in]		*path	example…"DATA/CHR/Airou"ならCHRフォルダにAirouというフォルダが作られる
+	*@return		成功したら「0」フォルダが既に作られていたりして失敗したら「-1」が返る
+	*/
+	static int CreateFolder(char *path);
+
+	/**
+	*@brief					ディレクトリの列挙
+	*@param[in]		*path	ディレクトリパス("DATA/CHR"ならCHRフォルダの中が列挙される)
+	*@param[in]		*out	列挙したファイル名をフォルダー名を格納する構造体へのアドレス
+	*@param[in]		bExt	ファイル名の場合、拡張子をつけるかつけないか
+	*/
+	static void EnumDirectory(char *path, DirectoryInfo *out, bool bExt = true);
+
+	/**
+	*@brief					ファイルの拡張子を返す("tdn.txt"なら.txtが返る)
+	*@param[in]		*path	ファイルパス
+	*/
+	static std::string GetFileExtention(char *path);
+
+	/**
+	*@brief					ファイルパスからファイル名を返す("DATA/Text/tdn.txt"ならtdn.txtが返る)
+	*@param[in]		*path	ファイルパス
+	*@param[in]		bExt	拡張子をくっつけるか　[true: return tdn.txt]　[false: return tdn]
+	*/
+	static std::string GetFileName(char *path, bool bExt = true);
+
+	/**
+	*@brief					ファイルを開くダイアログを作成
+	*@param[in]		*filter	拡張子フィルター example:"TEXT DATA(*.txt)\0 *.txt\0\0"
+	*@return				成功したらダイアログで選択された絶対パスを返す、失敗したら""(空の文字列)
+	*/
+	static std::string OpenFileDialog(char *filter = "すべてのファイル(*.*)\0 * .*\0\0");
+
+	/**
+	*@brief					ファイルを保存するダイアログを作成
+	*@param[in]		*filter	拡張子フィルター example:"TEXT DATA(*.txt)\0 *.txt\0\0"
+	*@return				成功したらダイアログで選択された絶対パスを返す、失敗したら""(空の文字列)
+	*/
+	static std::string SaveFileDialog(char *filter = "すべてのファイル(*.*)\0 * .*\0\0");
+private:
+	static char strFile[256];			// ダイアログを開くときに、前のパスを残したいときとかに
+};
 
 
 

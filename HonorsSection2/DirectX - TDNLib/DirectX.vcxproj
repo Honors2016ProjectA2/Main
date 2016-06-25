@@ -170,7 +170,7 @@
     <ClCompile Include="TDN\TDN_Collision.cpp" />
     <ClCompile Include="TDN\TDN_File.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="TDN\TDN_Input.cpp" />
     <ClCompile Include="TDN\TDN_Math.cpp" />

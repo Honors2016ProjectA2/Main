@@ -136,7 +136,7 @@ void Tips::TipsSelect()
 	}
 
 	// みんなちがってみんないい
-	else if (TipsCountMgr->m_NikuSheepTypes[(int)SHEEP_TYPE::GOLD] <= 1 && TipsCountMgr->m_NikuSheepTypes[(int)SHEEP_TYPE::REAL] <= 1)
+	else if (TipsCountMgr->m_NikuSheepTypes[(int)SHEEP_TYPE::GOLD] < 1 && TipsCountMgr->m_NikuSheepTypes[(int)SHEEP_TYPE::REAL] < 1)
 	{
 		m_selectTips = TIPS_TYPE::MINNATIGATTE;
 	}
@@ -150,8 +150,8 @@ void Tips::TipsSelect()
 
 	/* ここでtypsアニメの初期化を行う */
 
-	// 何も言うまいじゃなかったら
-	if (m_selectTips != TIPS_TYPE::NANIMOIUMAI)
+	// 動画ファイルだったら
+	if (tdnFile::GetFileExtention((char*)m_paths[m_selectTips].c_str()) == ".wmv")
 	{
 		// 動画
 		m_pTipsMovie = new tdnMovie((char*)m_paths[m_selectTips].c_str());
@@ -163,7 +163,7 @@ void Tips::TipsSelect()
 	else
 	{
 		// 1枚絵
-		m_typs = new tdn2DAnim((char*)m_paths[TIPS_TYPE::NANIMOIUMAI].c_str());
+		m_typs = new tdn2DAnim((char*)m_paths[m_selectTips].c_str());
 	}
 
 	// アニメ設定
