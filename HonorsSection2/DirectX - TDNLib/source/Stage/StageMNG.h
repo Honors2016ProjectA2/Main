@@ -100,6 +100,26 @@ private:
 	tdn2DObj *m_pDogImage, *m_pFireImage, *m_pBatuImage;
 	tdn2DObj *m_pNumber;
 
+	// 火点滅系
+	struct FireFlash
+	{
+		bool up;
+		int frame;
+		static const int TURN = 20;
+		FireFlash() :up(false), frame(0){}
+		void Update()
+		{
+			if (up)
+			{
+				if (++frame >= TURN) up = false;
+			}
+			else
+			{
+				if (--frame <= 0) up = true;
+			}
+		}
+	}*m_pFireFlash;
+
 	enum ImageSrc { STAGE, SHUTTER };
 
 	// スコアレーン変更

@@ -69,7 +69,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 			Vector2 kPos = kusaIterator->GetCenterPos();
 
 			// ‘”ÍˆÍ“à
-			if (sPos.x < kPos.x && sPos.x > kPos.x - 128)
+			if (sPos.x < kPos.x + 64 && sPos.x > kPos.x - 64)
 			{
 				// “–‚½‚Á‚½‚â‚Â‚Å‘¾‚Á‚½—rì¬
 				if (kusaIterator->GetMode() == BOKUSOU_MODE::BORN){

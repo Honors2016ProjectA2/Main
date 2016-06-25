@@ -206,6 +206,16 @@ public:
 	void SetDownLane() { g_CreateSheepFloor = m_NextChangeFloor = 2; }
 	SheepTextParam *GetSheepTextParam() { return &m_TextParam; }
 
+	// 火の点滅で使う。プレイヤーが羊をつかんでるかどうか
+	bool isHoldSheep()
+	{
+		for (auto& it : m_List)if (it->isCaught()) return true;
+		return false;
+	}
+
+	// マウスポインターで使う。マウスが羊の範囲内かどうか
+	bool isSheepPointerIn();
+
 private:
 	//tdn2DObj *Getfile(int num){ return files[num]; }
 	tdn2DObj *m_pFatSheepImages[(int)SHEEP_TYPE::MAX];

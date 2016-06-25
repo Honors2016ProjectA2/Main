@@ -216,6 +216,14 @@ public:
 	float GetGaugePercentage(){ return (float)m_CreateTimer / m_CREATETIME; }	// 牧草ゲージのpercent
 
 	bool isNikuHold(){ return m_bHoldNiku; }
+
+	// マウスカーソル変更で使う。マウスカーソルが肉の範囲内であればtrue
+	bool isNikuPointerIn()
+	{
+		if (!m_pNiku) return false;	// そもそも肉なかったら
+		if (m_bHoldNiku) return true;	// 肉掴んでたら問答無用でtrue
+		return ((tdnMouse::GetPos() - m_pNiku->GetCenterPos()).LengthSq() < 64 * 64);
+	}
 private:
 	// 1つしかない実体
 	static NikuManager *pInstance;

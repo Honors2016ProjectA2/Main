@@ -1,5 +1,7 @@
 #include	"MousePointer.h"
 #include	"Stage/StageMNG.h"
+#include	"Sheep/Sheep.h"
+#include	"Niku/Niku.h"
 
 namespace{
 	const int FLOOR_SIZE = 720/3;
@@ -11,6 +13,7 @@ MousePointer::MousePointer()
 	pointerObj = new tdn2DObj("DATA/icon.png");
 	m_Effect = new tdn2DAnim("DATA/ring.png");
 	m_Effect->OrderRipple(8, 1.0f, 0.1f);
+	m_state = STATE::NOMAL;
 
 	ShowCursor(false);
 }
@@ -36,6 +39,8 @@ void MousePointer::Update()
 
 	m_Effect->Update();
 
+	// ★★ここでマウスカーソルの変更更新を行う！
+	if(g_pSheepMgr)m_state = (g_pSheepMgr->isSheepPointerIn() || NikuMgr->isNikuPointerIn()) ? STATE::CATCH : STATE::NOMAL;
 }
 
 void MousePointer::CheckFloor()
@@ -66,16 +71,9 @@ MousePointer::WHEEL_STATE MousePointer::GetWheelState()
 	return WHEEL_STATE::NOT_MOVE;
 }
 
-MousePointer::CLICK MousePointer::GetClickState()
+void MousePointer::SetState(STATE s)
 {
-	if (tdnMouse::GetLeft() == 1){
-		return CLICK::LEFT;
-	}
-	if (tdnMouse::GetRight() == 1){
-		return CLICK::RIGHT;
-	}
-
-	return CLICK::NONE;
+	m_state = s;
 }
 
 void MousePointer::Render()
@@ -85,7 +83,7 @@ void MousePointer::Render()
 	m_Effect->Render(posX - 32, posY - 32);
 
 	//もしポインタの画像を差し替える事があれば、ここに
-	pointerObj->Render(posX, posY, 47, 64, 0,0,47,64);
+	pointerObj->Render(posX, posY, 64, 64, (tdnMouse::GetLeft() == 1) ? 64 : 0, (int)m_state * 64, 64, 64);
 
 	
 

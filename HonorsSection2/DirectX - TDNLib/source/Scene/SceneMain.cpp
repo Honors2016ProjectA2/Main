@@ -338,6 +338,9 @@ void sceneMain::MainUpdate()
 
 		state = SCENE::END;
 
+		// ƒJ[ƒ\ƒ‹–ß‚·
+		pointer->SetState(MousePointer::STATE::NOMAL);
+
 		//UIMNG.SetTimer(120);
 	}
 
@@ -647,6 +650,7 @@ void sceneMain::PoseUpdate()
 		m_poseState = POSE_STATE::EXE;
 		waitTimer = 0;
 		againFlag = false;
+		pointer->SetState(MousePointer::STATE::NOMAL);
 
 		break;
 	case sceneMain::POSE_STATE::EXE:

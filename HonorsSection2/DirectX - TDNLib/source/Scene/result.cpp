@@ -88,7 +88,7 @@ bool Result::Save()
 
 bool Result::Show()
 {
-	if (mp->GetClickState() == mp->LEFT)
+	if (tdnMouse::GetLeft() == 3)
 	{
 		process = 0;
 		process_r = 0;

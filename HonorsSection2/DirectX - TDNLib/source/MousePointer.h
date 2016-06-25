@@ -19,13 +19,17 @@ public:
 	};
 	WHEEL_STATE GetWheelState();	//現在のホイールの状態を取ってくる
 
-	/*　クリックに関して　*/
-	enum CLICK{
-		NONE, RIGHT, LEFT
+	/*　ポインターの状態に関して　*/
+	enum class STATE
+	{
+		NOMAL,	// 普通の状態
+		CATCH	// 羊の上に来たときと、肉の上に来たとき
 	};
-	CLICK GetClickState();	//現在のクリックの状態を取ってくる
+
+	void SetState(STATE s);
 
 private:
+	STATE m_state;
 	tdn2DObj* pointerObj = nullptr;
 	tdn2DAnim* m_Effect;
 	int posX, posY;

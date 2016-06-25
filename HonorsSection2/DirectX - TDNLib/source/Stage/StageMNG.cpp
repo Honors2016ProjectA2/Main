@@ -57,7 +57,7 @@ int FindFloor(float posY)
 //------- constructor,destructor ---------
 
 StageManager::StageManager() :m_pDogImage(new tdn2DObj("DATA/CHR/dog.png")), m_pFireImage(new tdn2DObj("DATA/巻き/炎の種.png")),
-m_FireAnimFrame(0), m_FireAnimPanel(0), m_ChangeScoreTime(0), m_pBatuImage(new tdn2DObj("DATA/batu.png")), m_pNumber(new tdn2DObj("DATA/Number/Number.png"))
+m_FireAnimFrame(0), m_FireAnimPanel(0), m_ChangeScoreTime(0), m_pBatuImage(new tdn2DObj("DATA/batu.png")), m_pNumber(new tdn2DObj("DATA/Number/Number.png")), m_pFireFlash(new FireFlash)
 {
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
@@ -183,6 +183,7 @@ StageManager::~StageManager()
 		//for (auto it : m_Firelists[i]) delete it;
 	}
 	delete m_pNumber;
+	delete m_pFireFlash;
 	// タイトル用
 	STAGE_POS_Y[0] = 165;
 	STAGE_POS_Y[1] = 520;
@@ -220,6 +221,8 @@ void StageManager::Update()
 	// マウス座標
 	Vector2 mPos = tdnMouse::GetPos();
 
+	// 火の点滅更新
+	m_pFireFlash->Update();
 
 	// 小屋のリキャスト関連
 	int floor = -1;
@@ -688,6 +691,13 @@ void StageManager::RenderBack()
 
 	// いけにえ棒描画
 	m_pStageImages[StageImage::IKENIE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256);
+	// 羊掴んだら点滅
+	if (g_pSheepMgr->isHoldSheep() && !NikuMgr->GetNiku() && !NikuMgr->GetYakiniku())
+	{
+		m_pStageImages[StageImage::IKENIE]->SetARGB((0x00ffffff | ((BYTE)(96 * ((float)m_pFireFlash->frame / m_pFireFlash->TURN)) << 24)));	// α処理
+		m_pStageImages[StageImage::IKENIE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256, RS::ADD);
+		m_pStageImages[StageImage::IKENIE]->SetARGB(0xffffffff);
+	}
 
 	// 消えた描画
 	if (NikuMgr->GetNiku())m_pStageImages[StageImage::KIETA_FIRE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, 0, 0, 256, 256);
@@ -725,7 +735,19 @@ void StageManager::RenderFront()
 	m_pStageImages[StageImage::HOUSE_FRONT]->Render(0, 0);
 
 	// 炎描画
-	if (!NikuMgr->GetNiku()) m_pStageImages[StageImage::FIRE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256);
+	if (!NikuMgr->GetNiku())
+	{
+		m_pStageImages[StageImage::FIRE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256);
+
+		// 羊掴んだら点滅
+		if (g_pSheepMgr->isHoldSheep() && !NikuMgr->GetNiku() && !NikuMgr->GetYakiniku())
+		{
+			m_pStageImages[StageImage::FIRE]->SetARGB((0x00ffffff | ((BYTE)(255 * ((float)m_pFireFlash->frame / m_pFireFlash->TURN)) << 24)));	// α処理
+			m_pStageImages[StageImage::FIRE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256, RS::ADD);	// α処理
+			m_pStageImages[StageImage::FIRE]->SetARGB(0xffffffff);
+		}
+
+	}
 
 	// 数字描画
 	// 入ったら加算されるスコア

@@ -10,6 +10,7 @@
 #include "../Niku/Niku.h"
 #include "../Number/Number.h"
 #include "../UI/UIManager.h"
+#include "../MousePointer.h"
 
 // グローバル領域
 int g_CreateSheepFloor;	// 羊を生成するフロア
@@ -548,17 +549,49 @@ void SheepManager::Update()
 	}
 }
 
+bool SheepManager::isSheepPointerIn()
+{
+	for (auto& it : m_List)
+	{
+		// 骨をつかませない！！
+		if (it->isDead()) continue;
+
+		// 羊捕まえてたら問答無用でtrue
+		if (it->isCaught()) return true;
+
+		Vector2 sPos = Vector2(it->Get_pos()->x - 16, it->Get_pos()->y - 8);
+		Vector2 mPos = tdnMouse::GetPos();
+		Vector2 size = Vector2((float)it->Get_size() + 16, (float)it->Get_size() + 8);
+		// 俺うまいんじゃねと思わせる処理
+		if (it->GetType() != SHEEP_TYPE::NOMAL)
+		{
+			sPos.x -= 64;
+			size.x += 128;	// 横だけ(縦やると肉焼きに誤爆してしまう)
+		}
+
+		// マウス範囲内
+		if (mPos.x >= 150 &&
+			mPos.x > sPos.x && mPos.x < sPos.x + size.x&&
+			mPos.y > sPos.y && mPos.y < sPos.y + size.y)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void SheepManager::CatchUpdate()
 {
 	auto CheckCatch = [](bool *OutbLeft, bool bNikuHold)
 	{
-		if (tdnMouse::GetRight() == 3)
-		{
-			*OutbLeft = false;
-			return true;
-		}
+		// 右クリック無し
+		//if (tdnMouse::GetRight() == 3)
+		//{
+		//	*OutbLeft = false;
+		//	return true;
+		//}
 		// 5フレーム目
-		else if (KeyBoard(MOUSE_LEFT) == 3 && !bNikuHold)
+		if (KeyBoard(MOUSE_LEFT) == 3 && !bNikuHold)
 		{
 			*OutbLeft = true;
 			return true;
@@ -574,16 +607,17 @@ void SheepManager::CatchUpdate()
 			// 骨をつかませない！！
 			if (it->isDead()) continue;
 
-			Vector2 sPos = *it->Get_pos();
+			Vector2 sPos = Vector2(it->Get_pos()->x - 16, (float)STAGE_POS_Y[it->Get_floor()]);
 			Vector2 mPos = tdnMouse::GetPos();
-
-			Vector2 size = Vector2((float)it->Get_size(),(float)it->Get_size());
+			Vector2 size = Vector2((float)it->Get_size() + 16, (float)it->Get_size() + 16);
 			// 俺うまいんじゃねと思わせる処理
 			if (it->GetType() != SHEEP_TYPE::NOMAL)
 			{
 				sPos.x -= 64;
 				size.x += 128;	// 横だけ(縦やると肉焼きに誤爆してしまう)
 			}
+
+			// マウス範囲内
 			if (mPos.x >= 150 && 
 				mPos.x > sPos.x && mPos.x < sPos.x +  size.x&&
 				mPos.y > sPos.y && mPos.y < sPos.y + size.y)
