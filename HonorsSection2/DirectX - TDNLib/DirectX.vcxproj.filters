@@ -488,6 +488,9 @@
     <ClInclude Include="source\TipsCount\TipsCounter.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="TDN\ogg\ogg_static.lib" />
@@ -495,5 +498,15 @@
     <Library Include="TDN\ogg\vorbisfile_static.lib" />
     <Library Include="TDN\DirectShow\strmbasd.lib" />
     <Library Include="TDN\DirectShow\strmbase.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DirectX.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
   </ItemGroup>
 </Project>

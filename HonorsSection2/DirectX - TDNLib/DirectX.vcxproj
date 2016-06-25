@@ -193,6 +193,7 @@
     <ClCompile Include="SOURCE\system\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="source\Bokusou\Bokusou.h" />
     <ClInclude Include="source\CharaBase\CharaBase.h" />
     <ClInclude Include="source\Collision\Collision.h" />
@@ -370,6 +371,12 @@
     <Library Include="TDN\ogg\ogg_static.lib" />
     <Library Include="TDN\ogg\vorbisfile_static.lib" />
     <Library Include="TDN\ogg\vorbis_static.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DirectX.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
