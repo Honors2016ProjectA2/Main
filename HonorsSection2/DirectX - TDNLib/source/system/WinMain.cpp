@@ -13,7 +13,7 @@
 
 Framework*	MainFrame = NULL;			// フレームワーク
 
-char*	AppTitle = "オオカミとひつじたち";			// ゲームのタイトル 
+char*	AppTitle = "おおかみとひつじたち";			// ゲームのタイトル 
 BOOL	bFullScreen = FALSE;			// フルスクリーンにしますか？
 DWORD	ScreenMode = SCREEN1280x720;	// Windowの画面のサイズ
 

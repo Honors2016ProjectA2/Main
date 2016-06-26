@@ -16,12 +16,12 @@ Tips::Tips() : m_typs(nullptr), m_pTipsMovie(nullptr)
 	//m_typs[TIPS_TYPE::MEAT_TYPE ] = new tdn2DAnim("DATA/tips/MEAT_TYPE.png");
 	//m_typs[TIPS_TYPE::HOUSE ] = new tdn2DAnim("DATA/tips/HOUSE.png");
 	//m_typs[TIPS_TYPE::KUSA_GAGE ] = new tdn2DAnim("DATA/tips/KUSA_GAGE.png");
-	m_paths[TIPS_TYPE::GISEINAKUSHITE] = "DATA/tips/gisei.wmv";
-	m_paths[TIPS_TYPE::MINNATIGATTE] = "DATA/tips/minnna.wmv";
+	m_paths[TIPS_TYPE::GISEINAKUSHITE] = "DATA/tips/Åönewhinto/newhinto3.png";
+	m_paths[TIPS_TYPE::MINNATIGATTE] = "DATA/tips/Åönewhinto/newhinto1.png";
 	m_paths[TIPS_TYPE::TO_S_ROAD] = "DATA/tips/to_s.wmv";
 	m_paths[TIPS_TYPE::TO_SS_ROAD] = "DATA/tips/to_ss.wmv";
 	m_paths[TIPS_TYPE::NANIMOIUMAI] = "DATA/tips/iumai.png";
-	m_paths[TIPS_TYPE::OK_BOKUSOU] = "DATA/tips/ok.wmv";
+	m_paths[TIPS_TYPE::OK_BOKUSOU] = "DATA/tips/Åönewhinto/newhinto2.png";
 
 	for (int i = 0; i < TIPS_TYPE::END ; i++)
 	{
