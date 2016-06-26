@@ -380,8 +380,8 @@ void UIManager::TimerUpdate()
 	// 30•bˆÈ‰º
 	if (m_timer <= 20)
 	{
-		const float percentage =  1 - (m_timer / 20.0f);
-		const float speed = 1.0f + (percentage * .05f);
+		const float percentage =  (m_timer / 20.0f);
+		const float speed = 1.0f + (percentage * .025f);
 		bgm->SetSpeed("MAIN", speed);
 	}
 	else

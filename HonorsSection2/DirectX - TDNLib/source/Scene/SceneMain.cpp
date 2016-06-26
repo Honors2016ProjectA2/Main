@@ -404,6 +404,9 @@ void sceneMain::ResultUpdate()
 	// EffectMGR
 	EffectMgr.Update();
 
+	// カーソル戻す
+	pointer->SetState(MousePointer::STATE::NOMAL);
+
 
 	//bgm->Play("RESULT");
 	if( FadeControl::IsFade() ) return;
@@ -429,6 +432,9 @@ void sceneMain::TipsUpdate()
 
 	// EffectMGR
 	EffectMgr.Update();
+
+	// カーソル戻す
+	pointer->SetState(MousePointer::STATE::NOMAL);
 
 	// ヒント終わったら
 	if (tips->Update())
@@ -609,6 +615,8 @@ void sceneMain::DebugText()
 
 void sceneMain::PoseUpdate()
 {
+	// カーソル戻す
+	pointer->SetState(MousePointer::STATE::NOMAL);
 
 	// ウェイトタイマー
 	static int waitTimer = 0;
