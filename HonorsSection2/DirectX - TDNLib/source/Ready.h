@@ -5,11 +5,13 @@
 class Ready
 {
 public:
-	Ready();
+	Ready(bool bTutorial);
 	~Ready();
 	void Init();
 	bool Update();
 	void Render();
+
+	const bool m_bTutorial;
 private:
 	//tdn2DObjEx* sinnRun = nullptr;
 	//tdn2DObjEx* sinnJump = nullptr;

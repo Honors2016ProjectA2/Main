@@ -183,7 +183,7 @@ public:
 	std::list<Sheep::Base*> *Get_list(){ return &m_List; };
 	std::list<FatSheep*> *GetFatList(){ return &m_FatList; }
 
-	SheepManager(bool bTitle = false);
+	SheepManager(bool bTutorial, bool bTitle = false);
 	~SheepManager();
 
 	void Update();
@@ -215,6 +215,9 @@ public:
 
 	// マウスポインターで使う。マウスが羊の範囲内かどうか
 	bool isSheepPointerIn();
+
+	const bool m_bTutorial;
+	bool m_bCatchOK;
 
 private:
 	//tdn2DObj *Getfile(int num){ return files[num]; }

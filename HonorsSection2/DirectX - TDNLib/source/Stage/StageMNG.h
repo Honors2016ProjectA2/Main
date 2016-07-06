@@ -132,7 +132,6 @@ private:
 	int m_AddScore[STAGE_MAX];			// レーンゴールしたときに加算されるスコア
 	Stage* stage[STAGE_MAX];
 
-	std::vector<CurvePoint::Dog*> m_Doglists[STAGE_MAX];
 	//std::vector<CurvePoint::Fire*> m_Firelists[STAGE_MAX];
 
 	// 犬レーン
@@ -145,7 +144,7 @@ private:
 
 	//------ method --------
 public:
-	StageManager();
+	StageManager(bool bTutorial);
 	~StageManager();
 	void Init();
 	void Reset();
@@ -165,7 +164,7 @@ public:
 	///<param name="floorIdx">判定するフロアの添字</param>
 	bool IsOpen(int floorIdx);
 
-	std::vector<CurvePoint::Dog*> *GetDogList(int floor){ return &m_Doglists[floor]; }
+	std::vector<CurvePoint::Dog*> m_Doglists[STAGE_MAX];
 	//std::vector<CurvePoint::Fire*> *GetFireList(int floor){ return &m_Firelists[floor]; }
 	CurvePoint::Dog *GetDog(int floor, UINT id){ for (UINT i = 0; i < m_Doglists[floor].size(); i++){ if (m_Doglists[floor][i]->GetID() == id)return m_Doglists[floor][i]; } return nullptr; }
 	//CurvePoint::Fire *GetFire(int floor, UINT id){ for (UINT i = 0; i < m_Firelists[floor].size(); i++){ if (m_Firelists[floor][i]->GetID() == id)return m_Firelists[floor][i]; } return nullptr; }
@@ -174,6 +173,9 @@ public:
 	Vector2 GetWarningPos(int floorIdx, bool IsRight);
 	Vector2 GetPopupPos(int floorIdx, bool IsRight);
 	Vector2 GetBalloonPos(int floorIdx);
+
+	const bool m_bTutorial;
+	bool m_bDogUpdate;
 };
 
 // 最短フロア検索関数

@@ -49,15 +49,16 @@ BokusouManager::BokusouManager():m_PrevPoint(0)
 
 		m_CreatePosList.push_back(CreatePos(Vector2(x, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 4), floor));
 	}
-
-	// ŽŸ‚Ì¶¬À•W
-	m_NextPoint = tdnRandom::Get(0, m_CreatePosList.size() - 1);
 }
 
-void BokusouManager::Initialize()
+void BokusouManager::Initialize(bool bTutorial)
 {
+	m_bTutorial = bTutorial;
 	m_CreateTimer = 0;
 	m_list.clear();
+
+	// ŽŸ‚Ì¶¬À•W
+	m_NextPoint = bTutorial ? 1 : tdnRandom::Get(0, m_CreatePosList.size() - 1);
 
 	m_pBokusouTarget = new BokusouTarget;
 	m_pBokusouTarget->ChangePos(m_CreatePosList[m_NextPoint].pos);
@@ -78,8 +79,8 @@ void BokusouManager::Release()
 void BokusouManager::Update()
 {
 	// –q‘‚ÌŽíƒQ[ƒW‘‰Á
-	UIMNG.SetGraph((float)m_CreateTimer / m_CREATETIME);
-	if (++m_CreateTimer > m_CREATETIME)
+	UIMNG.SetGraph((float)m_CreateTimer / (m_bTutorial ? (m_CREATETIME / 2) : m_CREATETIME));
+	if (++m_CreateTimer > (m_bTutorial ? (m_CREATETIME / 2) : m_CREATETIME))
 	{
 		// –q‘¶¬‚µ‚½uŠÔ
 		//EffectMgr.AddEffect((int)m_CreatePosList[m_NextPoint].pos.x+64, (int)m_CreatePosList[m_NextPoint].pos.y+64, EFFECT_TYPE::PUT);
@@ -91,6 +92,8 @@ void BokusouManager::Update()
 		//Bokusou *set = new Bokusou(m_CreatePosList[m_NextPoint].pos, m_NextPoint);	// À•WƒŠƒXƒg‚©‚çƒ‰ƒ“ƒ_ƒ€‚É
 		//set->SetFloor(m_CreatePosList[m_NextPoint].floor);
 		//m_list.push_back(set);
+
+		if (m_bTutorial) m_NextPoint = 1;
 
 		m_PrevPoint = m_NextPoint;
 

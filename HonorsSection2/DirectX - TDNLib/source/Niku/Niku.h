@@ -224,6 +224,9 @@ public:
 		if (m_bHoldNiku) return true;	// 肉掴んでたら問答無用でtrue
 		return ((tdnMouse::GetPos() - m_pNiku->GetCenterPos()).LengthSq() < 64 * 64);
 	}
+
+	// チュートリアル用
+	bool m_bClickOK;
 private:
 	// 1つしかない実体
 	static NikuManager *pInstance;

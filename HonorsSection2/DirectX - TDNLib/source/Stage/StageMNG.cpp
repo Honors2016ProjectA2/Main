@@ -56,7 +56,7 @@ int FindFloor(float posY)
 
 //------- constructor,destructor ---------
 
-StageManager::StageManager() :m_pDogImage(new tdn2DObj("DATA/CHR/dog.png")), m_pFireImage(new tdn2DObj("DATA/巻き/炎の種.png")),
+StageManager::StageManager(bool bTutorial) :m_pDogImage(new tdn2DObj("DATA/CHR/dog.png")), m_pFireImage(new tdn2DObj("DATA/巻き/炎の種.png")), m_bTutorial(bTutorial), m_bDogUpdate(true),
 m_FireAnimFrame(0), m_FireAnimPanel(0), m_ChangeScoreTime(0), m_pBatuImage(new tdn2DObj("DATA/batu.png")), m_pNumber(new tdn2DObj("DATA/Number/Number.png")), m_pFireFlash(new FireFlash)
 {
 	for (int i = 0; i < STAGE_MAX; i++)
@@ -293,7 +293,7 @@ void StageManager::Update()
 	//}
 
 	// 犬関連の更新
-	UpdateDogs(mPos);
+	if(m_bDogUpdate)UpdateDogs(mPos);
 
 	// ステージのアニメーション
 	if (++m_FireAnimFrame > 4)

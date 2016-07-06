@@ -2,7 +2,7 @@
 #include	"Framework.h"
 #include	"../Scene/Title.h"
 #include	"../Scene/SceneMain.h"
-#include	"../Scene/SceneTest.h"
+#include	"../Scene/SceneTutorial.h"
 #include	"../Scene/sceneResult.h"
 #include	"System.h"
 #include	"../Sound/SoundManager.h"
@@ -42,11 +42,11 @@ BOOL InitApp(HINSTANCE hInstance, int nCmdShow)									// ƒQ[ƒ€‹N“®‚ÌÅ‰‚Ì
 
 	MainFrame = new Framework();					// ƒƒCƒ“ƒtƒŒ[ƒ€ƒ[ƒN¶¬
 #ifdef GAME_SHORTCUT
-	MainFrame->ChangeScene(new sceneMain);
+	//MainFrame->ChangeScene(new sceneMain);
+	MainFrame->ChangeScene(new sceneTutorial);		// ƒ`ƒ…[ƒgƒŠƒAƒ‹—p
 #else
 	MainFrame->ChangeScene(new Title());			// ‰ŠúƒV[ƒ“
 #endif
-	//MainFrame->ChangeScene(new sceneTest);		// ¼“c‚­‚ñ—p
 	//MainFrame->ChangeScene(new sceneResult);		// ¼“c‚­‚ñ—p
 	return TRUE;
 }

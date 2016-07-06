@@ -1,6 +1,5 @@
 #include	"SceneTutorial.h"
 #include	"Ready.h"
-#include	"End.h"
 #include	"MousePointer.h"
 #include	"../Stage/StageMNG.h"
 #include	"../CurvePoint/CurvePoint.h"
@@ -11,7 +10,6 @@
 #include	"../Sheep/Sheep.h"
 #include	"../Enemy/watchman.h"
 #include	"../system/system.h"
-#include	"result.h"
 #include	"../Bokusou/Bokusou.h"
 #include	"../Shake/Shake.h"
 #include	"../UI/UIManager.h"
@@ -20,9 +18,6 @@
 #include	"../Effect/EffectManager.h"
 #include	"../Niku/Niku.h"
 #include	"../UI\ResultUIManager.h"
-#include	"result2.h"
-#include   "Explain.h"
-#include	"Tips.h"
 #include	"../TipsCount/TipsCounter.h"
 
 #include "../system/Framework.h"
@@ -32,7 +27,7 @@ namespace{
 	namespace SCENE
 	{
 		enum{
-			INIT, EXPLAIN, READY, MAIN, END, RESULT, TIPS, POSE
+			INIT, READY, MAIN
 		};
 	}
 }
@@ -43,8 +38,13 @@ namespace{
 
 bool sceneTutorial::Initialize()
 {
+	// チュートリアルステップ初期亜k
+	m_TutorialStep = 0;
+	m_bPause = false;
+	m_WaitTimer = 0;
+
 	UIMNG.Init();
-	UIMNG.SetTimer(90);
+	UIMNG.SetTimer(540);
 	
 	// TipsCountリセット
 	TipsCountMgr->Reset();
@@ -57,26 +57,20 @@ bool sceneTutorial::Initialize()
 	tdnView::Init();
 
 	// レーンの幅とか読み込むので、ステージを真っ先にnew
-	stage = new StageManager();
+	stage = new StageManager(true);
 
 	back = new tdn2DObj("DATA/GameHaikei.png");
-	explain = new Explain();
-	ready = new Ready();
-	end = new End();
-	tips = new Tips();
+	ready = new Ready(true);
 	pointer = new MousePointer();
 	dataMNG = new DataManager();
-	g_pSheepMgr = new SheepManager();
+	g_pSheepMgr = new SheepManager(true);
 	//result = new Result2();
 	RESULT_UIMNG.Init();
 
 	isResultFlag = true;
 
 	// 敵マネージャ初期k
-	EnemyMgr->Initialize();
-
-	byunAlpha = new tdn2DObj("DATA/alpha.png");
-	shader2D->SetValue("ByunAlphaMap", byunAlpha);
+	EnemyMgr->Initialize(true);
 
 	tdnSystem::GetDevice()->GetRenderTarget(0, &backUp);
 	renderTarget = new tdn2DObj(1280, 720, RENDERTARGET);
@@ -85,7 +79,7 @@ bool sceneTutorial::Initialize()
 	this->Init();
 
 	// 牧草マネージャー初期化
-	BokusouMgr->Initialize();
+	BokusouMgr->Initialize(true);
 
 	// 肉マネージャー初期化
 	NikuMgr->Initialize();
@@ -149,15 +143,11 @@ sceneTutorial::~sceneTutorial()
 {
 	SAFE_DELETE(back);
 	SAFE_DELETE(ready);
-	SAFE_DELETE(end);
-	SAFE_DELETE(tips);
 	SAFE_DELETE(pointer);
 	SAFE_DELETE(stage);
 	SAFE_DELETE(dataMNG);
 	SAFE_DELETE(g_pSheepMgr);
 	EnemyMgr->Release();
-	SAFE_DELETE(byunAlpha);
-	//SAFE_DELETE(result);
 	RESULT_UIMNG.Release();
 	SAFE_DELETE(renderTarget);
 	BokusouMgr->Release();
@@ -166,7 +156,6 @@ sceneTutorial::~sceneTutorial()
 	UIMNG.Release();
 	EffectMgr.Release();
 	NikuMgr->Release();
-	SAFE_DELETE(explain);
 
 	SAFE_DELETE(m_stop.pic);
 	SAFE_DELETE(m_again.pic);
@@ -207,13 +196,10 @@ bool sceneTutorial::Update()
 
 	switch (state) {
 	case SCENE::INIT:		Init();				break;
-	case SCENE::EXPLAIN:	ExplainUpdate();	break;
 	case SCENE::READY:		ReadyEvent();		break;
-	case SCENE::MAIN:		MainUpdate();		break;
-	case SCENE::END:		EndEvent();			break;
-	case SCENE::RESULT:		ResultUpdate();		break;
-	case SCENE::TIPS:		TipsUpdate();		break;
-	case SCENE::POSE:		PoseUpdate();		break;
+	case SCENE::MAIN:
+		if (MainUpdate())MainFrame->ChangeScene(new Title);
+		break;
 	}
 
 	return true;
@@ -223,7 +209,6 @@ void sceneTutorial::DataDelivery()
 {
 	stage->Reflection(dataMNG, pointer);
 	pointer->DataReceive(stage);
-	end->DataReceive(stage);
 	g_pSheepMgr->Set_pointers(stage, dataMNG);
 	EnemyMgr->Set_Pointers(stage, dataMNG);
 	//result->Set_MousePointer(pointer);
@@ -235,33 +220,14 @@ void sceneTutorial::Init()
 	stage->Init();
 	dataMNG->Init();
 	ready->Init();
-	end->Init();
-	explain->Initialize();
-	tips->Init();
 
 //	watchman->Init();
 //	m_pSheepMgr->Init();
 
 	FadeControl::Setting(FadeControl::MODE::WHITE_IN, 30.0f);
 
-	// ここのかっこを0にするとレディーゴーの処理が出る(デバッグの時短でレディーゴーを無しにしてる)
-	state = (0) ? SCENE::MAIN : SCENE::EXPLAIN;
+	state = SCENE::READY;
 	DataDelivery();
-}
-
-void sceneTutorial::ExplainUpdate()
-{
-	// PosyEffect
-	PostEffectMgr.Update();
-
-	// EffectMGR
-	EffectMgr.Update();
-
-	if( explain->Update() ){
-		state = SCENE::READY;
-		se->Play("ドン", true);
-	}
-	//stage->Update();
 }
 
 void sceneTutorial::ReadyEvent()
@@ -280,169 +246,553 @@ void sceneTutorial::ReadyEvent()
 	//stage->Update();
 }
 
-void sceneTutorial::MainUpdate()
+bool sceneTutorial::MainUpdate()
 {
-	// PosyEffect
-	PostEffectMgr.Update();
-
-	// EffectMGR
-	EffectMgr.Update();
-
-
-	/*　当たり判定　*/
-	CollisionMgr->Update(g_pSheepMgr, dataMNG, stage);
-
-	dataMNG->Update();
-	NikuMgr->Update();
-	stage->Update();
-	g_pSheepMgr->Update();
-	EnemyMgr->Update();
-	ShakeMgr->Update();
-	BokusouMgr->Update();
-	UIMNG.Update();
-
-
-	if (KeyBoard(KB_T))
+	switch (m_TutorialStep)
 	{
-		if (KeyBoard(KB_E) == 3)
+	case 0:	// ゲームスタートして羊が出てくるまでの待機期間
+	{
+				g_pSheepMgr->m_bCatchOK = false;	// 羊掴む昨日オフ
+				stage->m_bDogUpdate = false;		// 犬の機能オフ
+				NikuMgr->m_bClickOK = false;		// 肉クリックして焼く機能オフ
+				if (++m_WaitTimer > 24)
+				{ 
+					m_WaitTimer = 0; 
+					m_TutorialStep++; 
+					m_bPause = true;
+				}
+	}
+		break;
+
+	case 1:	// 羊がレーンから出てくるよ！！
+		if (tdnMouse::GetLeft() == 3)
 		{
-			UIMNG.SetTimer(1);
+			m_TutorialStep++; 
+			m_bPause = false;
 		}
-	}
-	//
-	//// G
-	//if (KeyBoard(KB_G) == 3)
-	//{
-	//	EffectMgr.AddEffect(220, 64, EFFECT_TYPE::EAT);
-	//}
+		break;
 
-	// タイムが0になったらゲームオーバー処理
-	//if( dataMNG->GetTime() <= 0 ){
-	//	state = SCENE::END;
-	//	watchman->Reset();
-	//	/* 変更 */
-	//	m_pSheepMgr->Reset();
-	//	result->Set_data(dataMNG->GetScore());
-	//	bgm->Stop("MAIN");
-	//	se->Play("TIME_UP");
-	//}
-
-	// タイムが0になったらゲームオーバー処理
-	if (UIMNG.GetTimer() <= 0&& UIMNG.GetFlame() <= 0)
+	case 2:	// 羊がレーンに入るまでの待機時間
 	{
-		// SE全ストップ
-		se->Stop_all();
-
-		// ピピー
-		se->Play("終了ホイッスル");
-
-		state = SCENE::END;
-
-		// カーソル戻す
-		pointer->SetState(MousePointer::STATE::NOMAL);
-
-		//UIMNG.SetTimer(120);
+				if (++m_WaitTimer > 110)
+				{
+					m_WaitTimer = 0; 
+					m_TutorialStep++;
+					m_bPause = true;
+				}
 	}
+		break;
 
-
-	// ポーズ
-	//if (KeyBoard(KB_P) == 3)
-		if (32 > Math::Length(m_poseIcon.x, m_poseIcon.y, tdnMouse::GetPos().x, tdnMouse::GetPos().y))
+	case 3:	// 羊が右まで逃げたらスコアはいるよ！！
+		if (tdnMouse::GetLeft() == 3)
 		{
-			if (tdnMouse::GetLeft() == 3)
+			m_TutorialStep++; 
+			m_bPause = false;
+		}
+		break;
+
+	case 4:	// 適当な待機時間
+		if (++m_WaitTimer > 110)
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			m_bPause = true;
+		}
+		break;
+
+	case 5:	// 犬をクリックすると流れを変えられるぞ！
+	{
+				if (tdnMouse::GetLeft() == 3)
+				{
+					const Vector2 ClickPoint(stage->m_Doglists[2][0]->GetPos().x + 64, stage->m_Doglists[2][0]->GetPos().y + 64);
+					if ((tdnMouse::GetPos() - ClickPoint).LengthSq() < 64 * 64)
+					{
+						m_TutorialStep++;
+						m_bPause = false;
+
+						EffectMgr.AddEffect((int)stage->m_Doglists[2][0]->GetPos().x + 64, (int)stage->m_Doglists[2][0]->GetPos().y + 64, EFFECT_TYPE::DOG_EFFECT);
+						se->Play("犬", stage->m_Doglists[2][0]->GetPos());
+						stage->m_Doglists[2][0]->Change();	// 犬のON_OFF
+
+						stage->m_Doglists[0][0]->bEnable = false;
+						stage->m_Doglists[0][1]->bEnable = false;
+						stage->m_Doglists[1][0]->bEnable = true;
+						stage->m_Doglists[1][1]->bEnable = true;
+						stage->m_Doglists[2][1]->bEnable = false;
+					}
+				}
+	}
+		break;
+
+	case 6:	// この間に羊が曲がっている
+		if (++m_WaitTimer > 60)
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			m_bPause = true;
+		}
+		break;
+
+	case 7:	// 羊の流れが変わったな
+		if (tdnMouse::GetLeft() == 3)
+		{
+			m_TutorialStep++;
+			m_bPause = false;
+		}
+		break;
+
+	case 8:	// 適当な待機時間
+		if (++m_WaitTimer > 60)
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			m_bPause = true;
+		}
+		break;
+
+	case 9:	// もう一度クリックすると解除するぞ！
+	{
+				if (tdnMouse::GetLeft() == 3)
+				{
+					const Vector2 ClickPoint(stage->m_Doglists[2][0]->GetPos().x + 64, stage->m_Doglists[2][0]->GetPos().y + 64);
+					if ((tdnMouse::GetPos() - ClickPoint).LengthSq() < 64 * 64)
+					{
+						m_TutorialStep++;
+						m_bPause = false;
+
+						se->Play("犬", stage->m_Doglists[2][0]->GetPos());
+						stage->m_Doglists[2][0]->Change();	// 犬のON_OFF
+
+						// レーンを有効・無効化
+						stage->m_Doglists[1][0]->bEnable = false;
+						stage->m_Doglists[1][1]->bEnable = false;
+						stage->m_Doglists[2][0]->bEnable = true;
+						stage->m_Doglists[2][1]->bEnable = true;
+					}
+				}
+				break;
+	}
+	case 10: // 解除してるのを見てる時間
+		if (++m_WaitTimer > 60)
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			m_bPause = true;
+		}
+		break;
+
+	case 11: // 戻ったねー！
+		if (tdnMouse::GetLeft() == 3)
+		{
+			m_TutorialStep++;
+			m_bPause = false;
+		}
+		break;
+
+	case 12: // 狼ポップアップ出るまでの待機時間
+		if (++m_WaitTimer > 60)
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			EnemyMgr->WarningPopUp(2);	// 羊レーンにポップアップ出す
+		}
+		break;
+
+	case 13: // 狼ポップアップ中
+		if (++m_WaitTimer > 120)
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			m_bPause = true;
+		}
+		break;
+
+	case 14:// オオカミが来るぞ！小屋をクリックして回避しよう！
+	{
+				if (tdnMouse::GetLeft() == 3)
+				{
+					int y = (int)tdnMouse::GetPos().y;
+					if (y > STAGE_POS_Y[1] && y < STAGE_POS_Y[1] + LANE_WIDTH && tdnMouse::GetPos().x < 150)
+					{
+						m_TutorialStep++;
+						m_bPause = false;
+					}
+				}
+	}
+		break;
+
+	case 15: // 一定時間後に狼を出す
+		if (++m_WaitTimer > 120)
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			EnemyMgr->Create(2);	// ポップアップレーンにオオカミ出す
+		}
+		break;
+		
+	case 16: // オオカミ経過するまで待つ
+		if (EnemyMgr->GetList()->empty())
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			m_bPause = true;
+		}
+		break;
+
+	case 17: // オオカミ回避できたね
+		if (tdnMouse::GetLeft() == 3)
+		{
+			m_TutorialStep++;
+			m_bPause = false;
+		}
+		break;
+
+	case 18: // 適当な待機時間
+		if (++m_WaitTimer > 60)
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			m_bPause = true;
+		}
+		break;
+
+	case 19: // 牧草ゲージがあるぞ！
+		if (tdnMouse::GetLeft() == 3)
+		{
+			m_TutorialStep++;
+			m_bPause = false;
+		}
+		break;
+
+	case 20: // 牧草ゲージ溜まるまで待つ
+		BokusouMgr->Update();
+		if (++m_WaitTimer > 300)
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			m_bPause = true;
+		}
+		break;
+
+	case 21: // 牧草ゲージが溜まって、牧草が実体化するぞ！
+		if (tdnMouse::GetLeft() == 3)
+		{
+			m_TutorialStep++;
+			m_bPause = false;
+		}
+		break;
+	case 22: // 牧草ベジエ待つ
+		BokusouMgr->Update();
+		if (!BokusouMgr->GetList()->empty())
+		{
+			if (++m_WaitTimer > 90)
 			{
-				state = SCENE::POSE;
-				m_poseState = POSE_STATE::START;
+				m_WaitTimer = 0;
+				m_TutorialStep++;
+				m_bPause = true;
 			}
-		
-			// 色
-			m_poseIcon.pic->SetARGB(0xffffffff);
 		}
-		else
-		{
-			// 色
-			m_poseIcon.pic->SetARGB(0xffaaaaaa);
-		}
-	
+		break;
 
-	
-		
-}
-
-void sceneTutorial::EndEvent()
-{
-	// PosyEffect
-	PostEffectMgr.Update();
-
-	// EffectMGR
-	EffectMgr.Update();
-
-
-	if( end->Update() ){
-
-		
-		if (isResultFlag==true)
-		{
-			isResultFlag = false;
-			RESULT_UIMNG.Action();
-
-			// BGMの音量少し下げる
-			bgm->SetVolume("MAIN", .5f);
-			bgm->SetSpeed("MAIN", 1.0f);
-		}
-		
-
-		state = SCENE::RESULT;
-	}
-}
-
-void sceneTutorial::ResultUpdate()
-{
-	// PosyEffect
-	PostEffectMgr.Update();
-
-	// EffectMGR
-	EffectMgr.Update();
-
-	// カーソル戻す
-	pointer->SetState(MousePointer::STATE::NOMAL);
-
-
-	//bgm->Play("RESULT");
-	if( FadeControl::IsFade() ) return;
-	if( FadeControl::IsEndFade() ){
-		state = SCENE::TIPS;
-		tips->TipsSelect();// ★ ヒント更新
-
-		//bgm->Stop("MAIN");
-		//state = SCENE::INIT;
-		//MainFrame->ChangeScene(new Title());
-		return;
-	}
-
-	if (RESULT_UIMNG.Update()){
-		FadeControl::Setting(FadeControl::MODE::FADE_OUT, 30.0f);
-	}
-}
-
-void sceneTutorial::TipsUpdate()
-{
-	// PosyEffect
-	PostEffectMgr.Update();
-
-	// EffectMGR
-	EffectMgr.Update();
-
-	// カーソル戻す
-	pointer->SetState(MousePointer::STATE::NOMAL);
-
-	// ヒント終わったら
-	if (tips->Update())
+	case 23: // 牧草が実体化したぞ！犬を使って羊を牧草にぶつけてみよう！
 	{
-		bgm->Stop("MAIN");
-		state = SCENE::INIT;
-		MainFrame->ChangeScene(new Title());
+				 if (tdnMouse::GetLeft() == 3)
+				 {
+					 const Vector2 ClickPoint(stage->m_Doglists[1][0]->GetPos().x + 64, stage->m_Doglists[1][0]->GetPos().y + 64);
+					 if ((tdnMouse::GetPos() - ClickPoint).LengthSq() < 64 * 64)
+					 {
+						 m_TutorialStep++;
+						 m_bPause = false;
+
+						 EffectMgr.AddEffect((int)stage->m_Doglists[1][0]->GetPos().x + 64, (int)stage->m_Doglists[1][0]->GetPos().y + 64, EFFECT_TYPE::DOG_EFFECT);
+						 se->Play("犬", stage->m_Doglists[1][0]->GetPos());
+						 stage->m_Doglists[1][0]->Change();	// 犬のON_OFF
+
+						 // 上の右以外無効化
+						 stage->m_Doglists[0][0]->bEnable = false;
+						 stage->m_Doglists[0][1]->bEnable = true;
+						 stage->m_Doglists[1][1]->bEnable = false;
+						 stage->m_Doglists[2][0]->bEnable = false;
+						 stage->m_Doglists[2][1]->bEnable = false;
+					 }
+				 }
 	}
+		break;
+
+	case 24: // 羊が牧草ヒットするまで待つ
+		if (!g_pSheepMgr->GetFatList()->empty())
+		{
+			if (++m_WaitTimer > 90)
+			{
+				m_WaitTimer = 0;
+				m_TutorialStep++;
+				m_bPause = true;
+
+				// この1フレームの更新で牧草を消す
+				BokusouMgr->Update();
+			}
+		}
+		break;
+		
+	case 25: // 羊が太った！羊の群れで流しこもう！
+		if (tdnMouse::GetLeft() == 3)
+		{
+			m_TutorialStep++;
+			m_bPause = false;
+		}
+		break;
+
+	case 26: // デブ羊押してる間のところ
+		if (g_pSheepMgr->GetFatList()->empty())
+		{
+			if (++m_WaitTimer > 60)
+			{
+				m_WaitTimer = 0;
+				m_TutorialStep++;
+				m_bPause = true;
+			}
+		}
+		break;
+		
+	case 27: // スコアがたくさん入ったぞ！
+		if (tdnMouse::GetLeft() == 3)
+		{
+			m_TutorialStep++;
+			m_bPause = false;
+		}
+		break;
+
+	case 28: // 適当な待機時間
+		if (++m_WaitTimer > 60)
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			m_bPause = true;
+		}
+		break;
+
+	case 29: // 1匹の犠牲でタイムを増やそう！
+		if (tdnMouse::GetLeft() == 3)
+		{
+			m_TutorialStep++;
+			m_bPause = false;
+		}
+		break;
+
+	case 30: // この間にプレイヤーは掴んで火ののところへ持っていかせる
+		g_pSheepMgr->m_bCatchOK = true;
+		if (NikuMgr->GetYakiniku())
+		{
+			m_TutorialStep++;
+			m_bPause = true;
+			g_pSheepMgr->m_bCatchOK = false;
+		}
+		break;
+
+	case 31: // お見事！羊を焼けたね！肉には焼き加減があるぞ！
+		if (tdnMouse::GetLeft() == 3)
+		{
+			m_TutorialStep++;
+			m_bPause = false;
+		}
+		break;
+	case 32: // 肉がパーフェクトになるまで待つ
+		if (++m_WaitTimer > 350)
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			m_bPause = true;
+		}
+		break;
+
+	case 33: // このタイミングがパーフェクトだ！焼き羊をクリックしてみよう！
+	{
+				 if (tdnMouse::GetLeft() == 3)
+				 {
+					 const Vector2 ClickPoint(YAKINIKU_AREA.x + 30, YAKINIKU_AREA.y + 96);
+					 const Vector2 mPos = tdnMouse::GetPos();
+					 if (mPos.x > ClickPoint.x && mPos.x < ClickPoint.x + 190 && mPos.y > ClickPoint.y && mPos.y < ClickPoint.y + 100)
+					 {
+						 m_TutorialStep++;
+						 m_bPause = false;
+						 NikuMgr->CreateNiku();
+					 }
+				 }
+	}
+		break;
+
+	case 34:// 肉バウンド中
+		if (++m_WaitTimer > 120)
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			EnemyMgr->WarningPopUp(1);	// ポップアップ出す
+		}
+		break;
+
+	case 35:// 狼ポップアップ中
+		if (++m_WaitTimer > 120)
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			m_bPause = true;
+		}
+		break;
+
+	case 36:// 肉をドラックアンドドロップでオオカミのレーンにおいてみよう！
+		if (tdnMouse::GetLeft() == 3)
+		{
+			m_TutorialStep++;
+			m_bPause = false;
+		}
+		break;
+
+	case 37:// プレイヤーに肉ドラッグアンドドロップさせる
+		NikuMgr->m_bClickOK = true;
+		if (NikuMgr->GetNiku()->isSeted() && NikuMgr->GetNiku()->GetFloor() == 1)
+		{
+			m_TutorialStep++;
+			NikuMgr->m_bClickOK = false;
+		}
+		break;
+
+	case 38:// 少し待って狼出現
+		if (++m_WaitTimer > 120)
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			EnemyMgr->Create(1);
+		}
+		break;
+
+	case 39: // 走って肉食うまでの空白
+		if ((*EnemyMgr->GetList()->begin())->GetMode() == Enemy::Wolf::MODE::NIKU)
+		{
+			if (++m_WaitTimer > 90)
+			{
+				m_WaitTimer = 0;
+				m_TutorialStep++;
+				m_bPause = true;
+			}
+		}
+		break;
+
+	case 40: // Delicious！オオカミが肉を食ってるぞ！
+		if (tdnMouse::GetLeft() == 3)
+		{
+			m_TutorialStep++;
+			m_bPause = false;
+		}
+		break;
+
+	case 41: // デブ生成されるまでの空白
+		if (!EnemyMgr->GetFatList()->empty())
+		{
+			if (++m_WaitTimer > 90)
+			{
+				m_WaitTimer = 0;
+				m_TutorialStep++;
+				m_bPause = true;
+			}
+		}
+		break;
+
+	case 42:
+		// オオカミが太ったぞ！太った羊と同じ要領で、群れで押し込もう！
+		if (tdnMouse::GetLeft() == 3)
+		{
+			const Vector2 ClickPoint(stage->m_Doglists[1][0]->GetPos().x + 64, stage->m_Doglists[1][0]->GetPos().y + 64);
+			if ((tdnMouse::GetPos() - ClickPoint).LengthSq() < 64 * 64)
+			{
+				m_TutorialStep++;
+				m_bPause = false;
+
+				se->Play("犬", stage->m_Doglists[1][0]->GetPos());
+				stage->m_Doglists[1][0]->Change();	// 犬のON_OFF
+
+				stage->m_Doglists[0][1]->bEnable = false;
+				stage->m_Doglists[1][0]->bEnable = true;
+				stage->m_Doglists[1][1]->bEnable = true;
+			}
+		}
+		break;
+
+	case 43: // オオカミが入るまでストップ
+		if (EnemyMgr->GetFatList()->empty())
+		{
+			if (++m_WaitTimer > 90)
+			{
+				m_WaitTimer = 0;
+				m_TutorialStep++;
+				m_bPause = true;
+			}
+		}
+		break;
+
+	case 44: // 太った狼を押し出すとタイムが回復するぞ！
+		if (tdnMouse::GetLeft() == 3)
+		{
+			m_TutorialStep++;
+			m_bPause = false;
+		}
+		break;
+
+	case 45:
+		// 適当な待機時間
+		if (++m_WaitTimer > 120)
+		{
+			m_WaitTimer = 0;
+			m_TutorialStep++;
+			m_bPause = true;
+		}
+		break;
+
+	case 46: // 基本ルールはこれで終了。良い羊焼きライフを
+		if (tdnMouse::GetLeft() == 3)
+		{
+			m_TutorialStep++;
+			m_bPause = false;
+			FadeControl::Setting(FadeControl::MODE::WHITE_OUT, 4);
+		}
+		break;
+
+	case 47: // フェード終了まち
+		if (FadeControl::IsEndFade())
+		{
+			bgm->Stop("MAIN");
+			// シーン終了フラグ
+			return true;
+		}
+		break;
+	default: // 例外
+		assert(0);
+		break;
+	}
+
+	// 時が止まってなかったら更新
+	if (!m_bPause)
+	{
+		// PosyEffect
+		PostEffectMgr.Update();
+
+		// EffectMGR
+		EffectMgr.Update();
+
+
+		/*　当たり判定　*/
+		CollisionMgr->Update(g_pSheepMgr, dataMNG, stage);
+
+		dataMNG->Update();
+		NikuMgr->Update();
+		stage->Update();
+		g_pSheepMgr->Update();
+		EnemyMgr->Update();
+		ShakeMgr->Update();
+		UIMNG.Update();
+
+	}
+
+	return false;
 }
 
 
@@ -473,17 +823,8 @@ void sceneTutorial::Render()
 
 	// ステート描画
 	switch (state) {
-	case SCENE::EXPLAIN:	ExplainRender();	break;
 	case SCENE::READY:		ReadyRender();		break;
 	case SCENE::MAIN:		MainRender();		break;
-	case SCENE::END:		EndRender();		break;
-	case SCENE::RESULT:
-	{
-		stage->RenderFront();
-	}break;
-	case SCENE::TIPS:
-	{
-	}break;
 	}
 
 /************************************************/
@@ -514,20 +855,10 @@ void sceneTutorial::Render()
 	}
 	
 	// ↑
-	switch (state) {
-	case SCENE::RESULT:		ResultRender();		break;
-	case SCENE::TIPS:		TipsRender();		break;
-	case SCENE::POSE:		PoseRender();		break;
-	}
 
 	switch (state) {
-	case SCENE::EXPLAIN:	EffectMgr.Render();	break;
 	case SCENE::READY:		EffectMgr.Render();	break;
 	case SCENE::MAIN:		EffectMgr.Render();	break;
-	case SCENE::END:		            		break;
-	case SCENE::RESULT:		EffectMgr.Render(); break;
-	case SCENE::TIPS:		EffectMgr.Render(); break;
-	case SCENE::POSE:		                    break;
 	}
 	
 
@@ -538,15 +869,6 @@ void sceneTutorial::Render()
 	DebugText();
 	//CollisionMgr->DebugRender(g_pSheepMgr, dataMNG, stage);
 #endif
-}
-
-void sceneTutorial::ExplainRender()
-{
-	stage->RenderFront();
-
-	NumberEffect.Render();
-	explain->Render();
-
 }
 
 void sceneTutorial::ReadyRender()
@@ -579,32 +901,184 @@ void sceneTutorial::MainRender()
 	BokusouMgr->RenderFront();
 	NikuMgr->RenderFront();
 	NumberEffect.Render();
+
+
+
+	/*★★チュートリアル関連の描画★★*/
+
+	// 時が止まってたら暗くなる(この辺は自由にどうぞ)
+	if (m_bPause)
+	{
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x80000000);
+	}
+
+	switch (m_TutorialStep)
+	{
+	case 0:	// ゲームスタートして羊が出てくるまでの待機期間
+		break;
+
+	case 1:	// 羊がレーンから出てくるよ！！
+		tdnText::Draw(640, 320, 0xffffffff, "ようこそ、羊焼きワールドへ");
+		break;
+
+	case 2:	// 羊がレーンに入るまでの待機時間
+		break;
+
+	case 3:	// 羊が右まで逃げたらスコアはいるよ！！
+		tdnText::Draw(640, 320, 0xffffffff, "羊が右まで逃げたらスコアはいるよ！！");
+		break;
+
+	case 4:	// 適当な待機時間
+		break;
+
+	case 5:	// 犬をクリックすると流れを変えられるぞ！ ※犬クリックコマンド
+		tdnText::Draw(640, 320, 0xffffffff, "犬をクリックすると流れを変えられるぞ！");
+		break;
+
+	case 6:	// この間に羊が曲がっている
+		break;
+
+	case 7:	// 羊の流れが変わったな
+		tdnText::Draw(640, 320, 0xffffffff, "羊の流れが変わったな");
+		break;
+
+	case 8:	// 適当な待機時間
+		break;
+
+	case 9:	// もう一度クリックすると解除するぞ！ ※犬クリックコマンド
+		tdnText::Draw(640, 320, 0xffffffff, "もう一度犬をクリックすると解除するぞ！");
+		break;
+	case 10: // 解除してるのを見てる時間
+		break;
+
+	case 11: // 戻ったねー！
+		tdnText::Draw(640, 320, 0xffffffff, "犬が戻ったねー！");
+		break;
+
+	case 12: // 狼ポップアップ出るまでの待機時間
+		break;
+
+	case 13: // 狼ポップアップ中
+		break;
+
+	case 14:// オオカミが来るぞ！小屋をクリックして回避しよう！ ※ここで真ん中の小屋をクリックするコマンド
+		tdnText::Draw(640, 320, 0xffffffff, "オオカミが来るぞ！小屋をクリックして回避しよう！");
+		break;
+
+	case 15: // 一定時間後に狼を出す
+		break;
+
+	case 16: // オオカミ経過するまで待つ
+		break;
+
+	case 17: // オオカミ回避できたね
+		tdnText::Draw(640, 320, 0xffffffff, "オオカミ回避できたね");
+		break;
+
+	case 18: // 適当な待機時間
+		break;
+
+	case 19: // 牧草ゲージがあるぞ！
+		tdnText::Draw(640, 320, 0xffffffff, "牧草ゲージがあるぞ！");
+		break;
+
+	case 20: // 牧草ゲージ溜まるまで待つ
+		break;
+
+	case 21: // 牧草ゲージが溜まって、牧草が実体化するぞ！
+		tdnText::Draw(640, 320, 0xffffffff, "牧草ゲージが溜まって、牧草が実体化するぞ！");
+		break;
+	case 22: // 牧草ベジエ待つ
+		break;
+
+	case 23: // 牧草が実体化したぞ！犬を使って羊を牧草にぶつけてみよう！　 ※ここで犬クリックコマンド
+		tdnText::Draw(640, 320, 0xffffffff, "牧草が実体化したぞ！犬を使って羊を牧草にぶつけてみよう！");
+		break;
+
+	case 24: // 羊が牧草ヒットするまで待つ
+		break;
+
+	case 25: // 羊が太った！羊の群れで流しこもう！
+		tdnText::Draw(640, 320, 0xffffffff, "羊が太ったぞ！羊の群れで流しこもう！");
+		break;
+
+	case 26: // デブ羊押してる間のところ
+		break;
+
+	case 27: // スコアがたくさん入ったぞ！
+		tdnText::Draw(640, 320, 0xffffffff, "スコアがたくさん入ったぞ！");
+		break;
+
+	case 28: // 適当な待機時間
+		break;
+
+	case 29: // 1匹の犠牲でタイムを増やそう！
+		tdnText::Draw(640, 320, 0xffffffff, "1匹の犠牲でタイムを増やそう！ドラッグアンドドロップで火に持っていこう");
+		break;
+
+	case 30: // ※★このステートでプレイヤーに羊をドラッグアンドドロップで焼かせる！
+		break;
+
+	case 31: // お見事！羊を焼けたね！肉には焼き加減があるぞ！
+		tdnText::Draw(640, 320, 0xffffffff, "お見事！羊を焼けたね！肉には焼き加減があるぞ！");
+		break;
+	case 32: // 肉がパーフェクトになるまで待つ(操作受付はしない)
+		break;
+
+	case 33: // このタイミングがパーフェクトだ！焼き羊をクリックしてみよう！ ※ここで焼き羊クリックコマンド
+		tdnText::Draw(640, 320, 0xffffffff, "このタイミングがパーフェクトだ！焼き羊をクリックしてみよう！");
+		break;
+
+	case 34:// 肉バウンド中
+		break;
+
+	case 35:// 狼ポップアップ中
+		break;
+
+	case 36:// 肉をドラックアンドドロップでオオカミのレーンにおいてみよう！
+		tdnText::Draw(640, 320, 0xffffffff, "肉をドラックアンドドロップでオオカミのレーンにおいてみよう！");
+		break;
+
+	case 37:// ※★このステートでプレイヤーに「真ん中レーンに」肉ドラッグアンドドロップさせる！！！
+		break;
+
+	case 38:// 少し待って狼出現
+		break;
+
+	case 39: // 走って肉食うまでの空白
+		break;
+
+	case 40: // Delicious！オオカミが肉を食ってるぞ！
+		tdnText::Draw(640, 320, 0xffffffff, "Delicious！オオカミが肉を食ってるぞ！");
+		break;
+
+	case 41: // デブオオカミが生成されるまでの空白
+		break;
+
+	case 42:
+		// オオカミが太ったぞ！太った羊と同じ要領で、群れで押し込もう！ ※ここで犬クリックコマンド
+		tdnText::Draw(640, 320, 0xffffffff, "オオカミが太ったぞ！太った羊と同じ要領で、群れで押し込もう");
+		break;
+
+	case 43: // オオカミが入るまでの待機時間
+		break;
+
+	case 44: // 太った狼を押し出すとタイムが回復するぞ！
+		tdnText::Draw(640, 320, 0xffffffff, "太った狼を押し出すとタイムが回復するぞ！");
+		break;
+
+	case 45:
+		// 適当な待機時間
+		break;
+
+	case 46: // 基本ルールはこれで終了。良い羊焼きライフを
+		tdnText::Draw(640, 320, 0xffffffff, "基本ルールはこれで終了。良い羊焼きライフを");
+		break;
+
+	case 47: // フェード終了まち
+		break;
+	}
 }
-
-void sceneTutorial::EndRender()
-{
-	// ステージの前描画
-	stage->RenderFront();
-	NumberEffect.Render();
-	end->Render();
-}
-
-void sceneTutorial::ResultRender()
-{
-	// ステージの前描画
-	//stage->RenderFront();
-	NumberEffect.Render();
-	//result->Render();
-	RESULT_UIMNG.Render();
-}
-
-void sceneTutorial::TipsRender()
-{
-	tips->Render();
-
-
-}
-
 
 void sceneTutorial::DebugText()
 {
@@ -667,7 +1141,7 @@ void sceneTutorial::PoseUpdate()
 		/***************************/
 		// アゲインの動き
 		// 距離計算 
-		float len = Math::Length(m_again.x + 240, m_again.y + 64, tdnMouse::GetPos().x, tdnMouse::GetPos().y);
+		float len = Math::Length((float)m_again.x + 240, (float)m_again.y + 64, tdnMouse::GetPos().x, tdnMouse::GetPos().y);
 		if (len < 220 && 60 > abs((m_again.y + 64) - tdnMouse::GetPos().y))// ＋Yをカットする
 		{
 			// 色を実体化
@@ -716,7 +1190,7 @@ void sceneTutorial::PoseUpdate()
 		/***************************/
 		// ストップの動き
 		// 距離計算 
-		len = Math::Length(m_stop.x + 240, m_stop.y + 64, tdnMouse::GetPos().x, tdnMouse::GetPos().y);
+		len = Math::Length((float)m_stop.x + 240, (float)m_stop.y + 64, tdnMouse::GetPos().x, tdnMouse::GetPos().y);
 		if (len < 220 && 60 > abs((m_stop.y + 64) - tdnMouse::GetPos().y))// ＋Yをカットする
 		{
 			// 色を実体化

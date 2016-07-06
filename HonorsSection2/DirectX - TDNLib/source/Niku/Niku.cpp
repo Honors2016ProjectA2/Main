@@ -21,7 +21,7 @@ NikuManager *NikuManager::GetInstance()
 	return pInstance;
 }
 
-NikuManager::NikuManager() :m_pNiku(nullptr), m_pYakiniku(nullptr), m_pNikuBazier(nullptr)
+NikuManager::NikuManager() :m_pNiku(nullptr), m_pYakiniku(nullptr), m_pNikuBazier(nullptr), m_bClickOK(true)
 {
 	m_pIkenieImages = new tdn2DObj*[(int)SHEEP_TYPE::MAX];
 	m_pNikuImages = new tdn2DObj*[(int)SHEEP_TYPE::MAX];
@@ -142,20 +142,23 @@ void NikuManager::Update()
 		else
 		{
 			// マウス押したら
-			if (tdnMouse::GetLeft() == 3)
+			if (m_bClickOK)
 			{
-				// 肉置場との距離範囲内
-				if ((tdnMouse::GetPos() - m_pNiku->GetCenterPos()).LengthSq() < 64 * 64)
+				if (tdnMouse::GetLeft() == 3)
 				{
-					// 肉の移動量消す
-					m_pNiku->MoveOff();
+					// 肉置場との距離範囲内
+					if ((tdnMouse::GetPos() - m_pNiku->GetCenterPos()).LengthSq() < 64 * 64)
+					{
+						// 肉の移動量消す
+						m_pNiku->MoveOff();
 
-					// 肉掴みフラグON
-					m_bHoldNiku = true;
-					se->Play("牧草成長", m_pNiku->GetCenterPos());
+						// 肉掴みフラグON
+						m_bHoldNiku = true;
+						se->Play("牧草成長", m_pNiku->GetCenterPos());
 
-					// 設置しない
-					m_pNiku->UnSet();
+						// 設置しない
+						m_pNiku->UnSet();
+					}
 				}
 			}
 		}
@@ -169,7 +172,7 @@ void NikuManager::Update()
 		}
 	}
 
-	else if (m_pYakiniku)
+	if (m_pYakiniku)
 	{
 		static int HinokoFrame = 0;
 		// 火の粉パーティクル
@@ -181,18 +184,21 @@ void NikuManager::Update()
 
 		m_pYakiniku->Update();
 
-		//static int onFrame = 0;
-		// マウス左クリックで肉作成(放し)
-		if (tdnMouse::GetLeft() == 3
-			//&& onFrame <= 10
-			)
+		if (m_bClickOK)
 		{
-			Vector2 mPos = tdnMouse::GetPos();
-			// 焼肉エリア内なら
-			if (mPos.x > YAKINIKU_AREA.x + 30 && mPos.x < YAKINIKU_AREA.x + 30 + 190 && mPos.y > YAKINIKU_AREA.y + 96 && mPos.y < YAKINIKU_AREA.y + 96 + 100)
+			//static int onFrame = 0;
+			// マウス左クリックで肉作成(放し)
+			if (tdnMouse::GetLeft() == 3
+				//&& onFrame <= 10
+				)
 			{
-				// 肉作る
-				CreateNiku();
+				Vector2 mPos = tdnMouse::GetPos();
+				// 焼肉エリア内なら
+				if (mPos.x > YAKINIKU_AREA.x + 30 && mPos.x < YAKINIKU_AREA.x + 30 + 190 && mPos.y > YAKINIKU_AREA.y + 96 && mPos.y < YAKINIKU_AREA.y + 96 + 100)
+				{
+					// 肉作る
+					CreateNiku();
+				}
 			}
 		}
 

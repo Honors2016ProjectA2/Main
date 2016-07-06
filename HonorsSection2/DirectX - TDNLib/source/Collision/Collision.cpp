@@ -110,7 +110,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 		}
 
 		// órÇ∆å¢
-		for (auto& dogIterator : *stageMNG->GetDogList(sinIterator->Get_floor())){
+		for (auto& dogIterator : stageMNG->m_Doglists[sinIterator->Get_floor()]){
 			if (ExclamationPointAndCurvePoint(sinIterator, dogIterator)){
 				sinIterator->SetCurve(dogIterator->GetDir());	// órÇ…ã»Ç™ÇÍñΩóﬂÇèoÇ∑ÅI
 				//if (manIterator.col_check)continue;
@@ -406,7 +406,7 @@ void CollisionManager::Update(SheepManager* sinnMNG, DataManager* dataMNG, Stage
 			Vector3 center2Pos = Vector3(100, 300, 0);
 			Vector3 endPos =	Vector3(720, 40, 0);
 			UIMNG.AddSendPower("Data/power.png", startPos, centerPos, center2Pos, endPos, 48, AddTime, false, 0);
-			NumberEffect.AddNumber(startPos.x-196, startPos.y+32, AddTime, Number_Effect::COLOR_TYPE::YELLOW_GREEN,Number::NUM_KIND::TIMER);
+			NumberEffect.AddNumber((int)startPos.x-196, (int)startPos.y+32, AddTime, Number_Effect::COLOR_TYPE::YELLOW_GREEN,Number::NUM_KIND::TIMER);
 
 			///_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
@@ -593,7 +593,7 @@ void CollisionManager::DebugRender(SheepManager* sinnMNG, DataManager* dataMNG, 
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
 		// å¢Ç†ÇΩÇËîªíË
-		for (auto it : *stageMNG->GetDogList(i))
+		for (auto it : stageMNG->m_Doglists[i])
 		{
 			if(it->IsOpening())tdnPolygon::Rect((int)it->GetPos().x - DOG_SIZE, (int)it->GetPos().y, DOG_SIZE, (int)it->GetWidth(), RS::COPY, 0x0fff0000);
 		}

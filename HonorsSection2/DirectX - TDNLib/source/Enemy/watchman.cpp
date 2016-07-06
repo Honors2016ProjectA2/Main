@@ -87,6 +87,8 @@ void Enemy::Wolf::Update()
 			else it++;
 		}
 	}
+
+	if (m_pos.x < -120) m_bErase = true;	// この処理抜けてて悲惨なことになってた
 }
 
 void Enemy::Wolf::Run()
@@ -292,8 +294,10 @@ EnemyManager::EnemyManager() :m_CreateTimer(0)
 	m_NextFloor = tdnRandom::Get(0, 2);
 }
 
-void EnemyManager::Initialize()
+void EnemyManager::Initialize(bool bTutorial)
 {
+	m_bTutorial = bTutorial;
+
 	// 生成時間初期化
 	m_CreateTimer = 0;
 
@@ -371,57 +375,52 @@ void EnemyManager::Create(int floor, ENEMY_TYPE type)
 
 void EnemyManager::Update()
 {
-	int rest = (int)(m_CREATETIME * m_CreateSpeed) - m_CreateTimer;
-	if (!m_bWarning)
+	// チュートリアルじゃなかったら
+	if (!m_bTutorial)
 	{
-		if (rest <= 80 && rest >= 50)
+		int rest = (int)(m_CREATETIME * m_CreateSpeed) - m_CreateTimer;
+		if (!m_bWarning)
 		{
-			// アンリミ率でアンリミフラグけってい
-			m_bUnlimitedCreate = (tdnRandom::Get(0, 99) < m_UnlimitedPercent);
-
-			// 肉センサー
-			Niku *pNiku = NikuMgr->GetNiku();
-			if (pNiku)
+			if (rest <= 80 && rest >= 50)
 			{
-				if (pNiku->isSeted())m_NextFloor = pNiku->GetFloor();
-			}
+				// アンリミ率でアンリミフラグけってい
+				m_bUnlimitedCreate = (tdnRandom::Get(0, 99) < m_UnlimitedPercent);
 
-			// 肉なかったら次は1/2の確率でデブ羊フロア
-			else if (rand() % 2)
-			{
-				if (!g_pSheepMgr->GetFatList()->empty())
+				// 肉センサー
+				Niku *pNiku = NikuMgr->GetNiku();
+				if (pNiku)
 				{
-					m_NextFloor = (*g_pSheepMgr->GetFatList()->begin())->GetFloor();
+					if (pNiku->isSeted())m_NextFloor = pNiku->GetFloor();
 				}
+
+				// 肉なかったら次は1/2の確率でデブ羊フロア
+				else if (rand() % 2)
+				{
+					if (!g_pSheepMgr->GetFatList()->empty())
+					{
+						m_NextFloor = (*g_pSheepMgr->GetFatList()->begin())->GetFloor();
+					}
+				}
+
+				WarningPopUp(m_NextFloor, m_bUnlimitedCreate);
+
+				// わーにんぐON
+				m_bWarning = true;
 			}
+		}
 
-			// ポップアップ
-			EffectMgr.AddEffect(1100, STAGE_POS_Y[m_NextFloor] + LANE_WIDTH / 2, (m_bUnlimitedCreate) ? EFFECT_TYPE::DARK_NOTICE : EFFECT_TYPE::NOTICE);
+		// 敵生成タイマー
+		if (++m_CreateTimer > (int)(m_CREATETIME * m_CreateSpeed))
+		{
+			m_CreateTimer = 0;
+			Create(m_NextFloor, ENEMY_TYPE::WOLF);
 
-			// SEの再生
-			if (m_bUnlimitedCreate)
-			{
-				se->Play("アンリミ!");
-			}
-			else se->Play("!", Vector2(1100, (float)STAGE_POS_Y[m_NextFloor] + LANE_WIDTH / 2));
+			// 次のフロア作成
+			m_NextFloor = tdnRandom::Get(0, 2);
 
-			// わーにんぐON
-			m_bWarning = true;
+			m_bWarning = false;
 		}
 	}
-
-	// 敵生成タイマー
-	if (++m_CreateTimer > (int)(m_CREATETIME * m_CreateSpeed))
-	{
-		m_CreateTimer = 0;
-		Create(m_NextFloor, ENEMY_TYPE::WOLF);
-
-		// 次のフロア作成
-		m_NextFloor = tdnRandom::Get(0, 2);
-
-		m_bWarning = false;
-	}
-
 	for (auto it = m_list.begin(); it != m_list.end();)
 	{
 		// 敵たち更新
@@ -505,4 +504,17 @@ void EnemyManager::CheckChangeSpeed(int WolfKillCount)
 			//m_ChangeSpeedLineList.erase(it);
 		}
 	}
+}
+
+void EnemyManager::WarningPopUp(int floor, bool bUnlimited)
+{
+	// ポップアップ
+	EffectMgr.AddEffect(1100, STAGE_POS_Y[floor] + LANE_WIDTH / 2, (bUnlimited) ? EFFECT_TYPE::DARK_NOTICE : EFFECT_TYPE::NOTICE);
+
+	// SEの再生
+	if (bUnlimited)
+	{
+		se->Play("アンリミ!");
+	}
+	else se->Play("!", Vector2(1100, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2));
 }

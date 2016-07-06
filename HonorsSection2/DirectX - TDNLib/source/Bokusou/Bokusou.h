@@ -143,8 +143,8 @@ public:
 	void Update(BokusouManager *pMgr);
 	void Render();
 	void RenderFront();
-
 	void ChangePos(const Vector2 &pos);
+
 private:
 	tdn2DAnim *m_pTargetAnim;
 	Pie_graph *m_pGraph;
@@ -171,7 +171,7 @@ public:
 
 	~BokusouManager();
 
-	void Initialize();
+	void Initialize(bool bTutorial);
 	void Release();
 	void Update();
 	void Render();
@@ -185,6 +185,8 @@ public:
 
 	// ベジエさんから呼び出す
 	void CreateByBazier();
+
+	bool m_bTutorial;
 
 private:
 	// 1つしかない実体

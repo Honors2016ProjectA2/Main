@@ -57,23 +57,23 @@ bool sceneMain::Initialize()
 	tdnView::Init();
 
 	// レーンの幅とか読み込むので、ステージを真っ先にnew
-	stage = new StageManager();
+	stage = new StageManager(false);
 
 	back = new tdn2DObj("DATA/GameHaikei.png");
 	explain = new Explain();
-	ready = new Ready();
+	ready = new Ready(false);
 	end = new End();
 	tips = new Tips();
 	pointer = new MousePointer();
 	dataMNG = new DataManager();
-	g_pSheepMgr = new SheepManager();
+	g_pSheepMgr = new SheepManager(false);
 	//result = new Result2();
 	RESULT_UIMNG.Init();
 
 	isResultFlag = true;
 
 	// 敵マネージャ初期k
-	EnemyMgr->Initialize();
+	EnemyMgr->Initialize(false);
 
 	byunAlpha = new tdn2DObj("DATA/alpha.png");
 	shader2D->SetValue("ByunAlphaMap", byunAlpha);
@@ -85,7 +85,7 @@ bool sceneMain::Initialize()
 	this->Init();
 
 	// 牧草マネージャー初期化
-	BokusouMgr->Initialize();
+	BokusouMgr->Initialize(false);
 
 	// 肉マネージャー初期化
 	NikuMgr->Initialize();
@@ -347,7 +347,7 @@ void sceneMain::MainUpdate()
 
 	// ポーズ
 	//if (KeyBoard(KB_P) == 3)
-		if (32 > Math::Length(m_poseIcon.x, m_poseIcon.y, tdnMouse::GetPos().x, tdnMouse::GetPos().y))
+		if (32 > Math::Length((float)m_poseIcon.x, (float)m_poseIcon.y, tdnMouse::GetPos().x, tdnMouse::GetPos().y))
 		{
 			if (tdnMouse::GetLeft() == 3)
 			{
@@ -667,7 +667,7 @@ void sceneMain::PoseUpdate()
 		/***************************/
 		// アゲインの動き
 		// 距離計算 
-		float len = Math::Length(m_again.x + 240, m_again.y + 64, tdnMouse::GetPos().x, tdnMouse::GetPos().y);
+		float len = Math::Length((float)m_again.x + 240, (float)m_again.y + 64, tdnMouse::GetPos().x, tdnMouse::GetPos().y);
 		if (len < 220 && 60 > abs((m_again.y + 64) - tdnMouse::GetPos().y))// ＋Yをカットする
 		{
 			// 色を実体化
@@ -716,7 +716,7 @@ void sceneMain::PoseUpdate()
 		/***************************/
 		// ストップの動き
 		// 距離計算 
-		len = Math::Length(m_stop.x + 240, m_stop.y + 64, tdnMouse::GetPos().x, tdnMouse::GetPos().y);
+		len = Math::Length((float)m_stop.x + 240, (float)m_stop.y + 64, tdnMouse::GetPos().x, tdnMouse::GetPos().y);
 		if (len < 220 && 60 > abs((m_stop.y + 64) - tdnMouse::GetPos().y))// ＋Yをカットする
 		{
 			// 色を実体化

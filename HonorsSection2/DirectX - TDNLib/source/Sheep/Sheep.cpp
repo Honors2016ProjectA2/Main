@@ -334,9 +334,11 @@ FatSheep::~FatSheep()
 
 //**************************************************
 
-SheepManager::SheepManager(bool bTitle) :m_bTitle(bTitle), sp(0), m_CreateFrame(0)
+SheepManager::SheepManager(bool bTutorial, bool bTitle) :m_bTitle(bTitle), sp(0), m_CreateFrame(0), m_bTutorial(bTutorial)
 {
 	m_pBoneImage = new tdn2DObj("DATA/CHR/hone_motion.png");
+
+	m_bCatchOK = (!bTutorial && !bTitle);
 
 	g_CreateSheepFloor = 2;	// 初期羊生成フロア
 	// 次のランダムフロア決定
@@ -432,32 +434,42 @@ SheepManager::~SheepManager()
 
 void SheepManager::create(int floor)
 {
-	// ランダムに羊のタイプ
-	float r = tdnRandom::Get(.0f, 100.0f);
-	for (int i = (int)SHEEP_TYPE::MAX - 1; i >= 0; i--)
+	// チュートリアルなら白羊固定
+	if (m_bTutorial)
 	{
-		// ランダムに取得したパーセントが設定したpercentage範囲内だったらそいつを生成
-		if (r <= m_TextParam.data[i].percentage)
+		m_List.push_back(new Sheep::Normal(m_TextParam.data[0], floor, m_TextParam));
+	}
+
+	// 通常どおりの確率計算
+	else
+	{
+		// ランダムに羊のタイプ
+		float r = tdnRandom::Get(.0f, 100.0f);
+		for (int i = (int)SHEEP_TYPE::MAX - 1; i >= 0; i--)
 		{
-			switch ((SHEEP_TYPE)i)
+			// ランダムに取得したパーセントが設定したpercentage範囲内だったらそいつを生成
+			if (r <= m_TextParam.data[i].percentage)
 			{
-			case SHEEP_TYPE::NOMAL:
-				m_List.push_back(new Sheep::Normal(m_TextParam.data[i], floor, m_TextParam));
-				break;
-			case SHEEP_TYPE::GOLD:
-				m_List.push_back(new Sheep::Gold(m_TextParam.data[i], floor, m_TextParam));
-				break;
-			case SHEEP_TYPE::REAL:
-				m_List.push_back(new Sheep::Real(m_TextParam.data[i], floor, m_TextParam));
-				break;
-			default:
-				assert(0);	// 例外処理
+				switch ((SHEEP_TYPE)i)
+				{
+				case SHEEP_TYPE::NOMAL:
+					m_List.push_back(new Sheep::Normal(m_TextParam.data[i], floor, m_TextParam));
+					break;
+				case SHEEP_TYPE::GOLD:
+					m_List.push_back(new Sheep::Gold(m_TextParam.data[i], floor, m_TextParam));
+					break;
+				case SHEEP_TYPE::REAL:
+					m_List.push_back(new Sheep::Real(m_TextParam.data[i], floor, m_TextParam));
+					break;
+				default:
+					assert(0);	// 例外処理
+					break;
+				}
+
 				break;
 			}
-
-			break;
+			else r -= m_TextParam.data[i].percentage;
 		}
-		else r -= m_TextParam.data[i].percentage;
 	}
 }
 
@@ -521,8 +533,8 @@ void SheepManager::Update()
 		create(g_CreateSheepFloor);
 	}
 
-	// 掴み更新(タイトルだったらなし)
-	if(!m_bTitle)CatchUpdate();
+	// 掴み更新
+	if(m_bCatchOK)CatchUpdate();
 
 	// 羊更新
 	for (auto it = m_List.begin(); it != m_List.end();)

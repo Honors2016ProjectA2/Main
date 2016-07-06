@@ -3,7 +3,7 @@
 #define __FRAMEWORK_H__
 
 // ショートカット(デバッグ用)
-//#define GAME_SHORTCUT
+#define GAME_SHORTCUT
 
 #include	"TDNLIB.h"
 //#include	"System.h"

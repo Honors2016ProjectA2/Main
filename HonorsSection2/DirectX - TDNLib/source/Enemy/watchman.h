@@ -131,7 +131,7 @@ public:
 	// 実体の取得
 	static EnemyManager *GetInstance(){ static EnemyManager i; return &i; }
 
-	void Initialize();
+	void Initialize(bool bTutorial);
 	~EnemyManager();
 
 	void Release();
@@ -142,6 +142,8 @@ public:
 	/* データリセット */
 	void Clear();
 
+	void TutorialSet(bool b){ m_bTutorial = b; }
+
 	std::list<Enemy::Wolf*> *GetList(){ return &m_list; }
 	std::list<FatWolf*> *GetFatList(){ return &m_FatList; }
 	void Set_Pointers(StageManager *sm, DataManager *dm){ sp = sm, dmp = dm; }
@@ -151,6 +153,11 @@ public:
 
 	// 狼倒したら予備だす
 	void CheckChangeSpeed(int WolfKillCount);
+
+	// わーにんぐ
+	void WarningPopUp(int floor, bool bUnlimited = false);
+	// 敵生成
+	void Create(int floor, ENEMY_TYPE type = ENEMY_TYPE::WOLF);
 
 private:
 
@@ -179,6 +186,8 @@ private:
 	float m_CreateSpeed;	// 0～1の値。出現間隔
 	bool m_bWarning;	// わーにんぐ出したか
 
+	bool m_bTutorial;
+
 	struct ChangeSpeedLine
 	{
 		int line;
@@ -194,9 +203,6 @@ private:
 
 	StageManager *sp;
 	DataManager *dmp;
-
-	// 敵生成
-	void Create(int floor, ENEMY_TYPE type);
 };
 
 

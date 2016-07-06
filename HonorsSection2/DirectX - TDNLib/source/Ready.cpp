@@ -50,7 +50,7 @@ namespace{
 	}
 }
 
-Ready::Ready()
+Ready::Ready(bool bTutorial) :m_bTutorial(bTutorial)
 {
 	//sinnRun = new tdn2DObjEx("DATA/CHR/sheep_animation.png");
 	//sinnJump = new tdn2DObjEx("DATA/CHR/fat_sheep.png");
@@ -153,8 +153,8 @@ void Ready::GoBigger()
 	{
 		if (scale >= GO::SCALE_MAX / 2.0f) // スケール3/4ぐらい
 		{
-			// ランダムにドア開ける！！
-			g_CreateSheepFloor = tdnRandom::Get(0, 2);
+			// ランダムにドア開ける！！(チュートリアルなら固定)
+			g_CreateSheepFloor = m_bTutorial ? 2 : tdnRandom::Get(0, 2);
 
 			// SE
 			se->Play("ドア", Vector2(0, 150 + (g_CreateSheepFloor * 170.0f)));
