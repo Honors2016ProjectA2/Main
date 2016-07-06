@@ -694,7 +694,7 @@ void StageManager::RenderBack()
 	// —r’Í‚ñ‚¾‚ç“_–Å
 	if (g_pSheepMgr->isHoldSheep() && !NikuMgr->GetNiku() && !NikuMgr->GetYakiniku())
 	{
-		m_pStageImages[StageImage::IKENIE]->SetARGB((0x00ffffff | ((BYTE)(96 * ((float)m_pFireFlash->frame / m_pFireFlash->TURN)) << 24)));	// ƒ¿ˆ—
+		m_pStageImages[StageImage::IKENIE]->SetARGB((0x00ffffff | ((BYTE)(255 * ((float)m_pFireFlash->frame / m_pFireFlash->TURN)) << 24)));	// ƒ¿ˆ—
 		m_pStageImages[StageImage::IKENIE]->Render((int)YAKINIKU_AREA.x, (int)YAKINIKU_AREA.y, 256, 256, m_FireAnimPanel * 256, 0, 256, 256, RS::ADD);
 		m_pStageImages[StageImage::IKENIE]->SetARGB(0xffffffff);
 	}

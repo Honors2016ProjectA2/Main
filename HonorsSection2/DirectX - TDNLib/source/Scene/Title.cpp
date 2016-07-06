@@ -13,6 +13,7 @@
 #include "UI\SendPower\SendPower.h"
 #include "../Niku/Niku.h"
 #include "Scene\Explain.h"
+#include "SceneTutorial.h"
 
 Explain* ex;
 
@@ -192,7 +193,7 @@ bool Title::Update()
 			//FadeControl::IsEndFade() && 
 			!se->isPlay("ゲームスタート", 0))
 		{
-			MainFrame->ChangeScene(new sceneMain(), true);	// シーンローディングを挟む
+			MainFrame->ChangeScene(new sceneTutorial, true);	// シーンローディングを挟む
 			return true;
 		}
 	
@@ -255,6 +256,7 @@ void Title::DogVsMouse()
 	{
 		if (len < 60)
 		{
+			if (!m_bDogFlag)se->Play("犬");
 			m_bDogFlag = true;
 			EffectMgr.AddEffect((int)m_dog.pos.x + 60, (int)m_dog.pos.y + 60, EFFECT_TYPE::DOG_EFFECT);
 
