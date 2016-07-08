@@ -719,9 +719,9 @@ bool sceneTutorial::MainUpdate()
 		// オオカミが太ったぞ！太った羊と同じ要領で、群れで押し込もう！
 		if (tdnMouse::GetLeft() == 3)
 		{
-			const Vector2 ClickPoint(stage->m_Doglists[1][0]->GetPos().x + 64, stage->m_Doglists[1][0]->GetPos().y + 64);
-			if ((tdnMouse::GetPos() - ClickPoint).LengthSq() < 64 * 64)
-			{
+			//const Vector2 ClickPoint(stage->m_Doglists[1][0]->GetPos().x + 64, stage->m_Doglists[1][0]->GetPos().y + 64);
+			//if ((tdnMouse::GetPos() - ClickPoint).LengthSq() < 64 * 64)
+			//{
 				m_TutorialStep++;
 				m_bPause = false;
 
@@ -731,7 +731,7 @@ bool sceneTutorial::MainUpdate()
 				stage->m_Doglists[0][1]->bEnable = false;
 				stage->m_Doglists[1][0]->bEnable = true;
 				stage->m_Doglists[1][1]->bEnable = true;
-			}
+			//}
 		}
 		break;
 
@@ -876,7 +876,7 @@ void sceneTutorial::Render()
 
 	switch (state) {
 	case SCENE::READY:		EffectMgr.Render();	break;
-	case SCENE::MAIN:		EffectMgr.Render();	break;
+	case SCENE::MAIN:break;
 	}
 	
 
@@ -919,7 +919,7 @@ void sceneTutorial::MainRender()
 	BokusouMgr->RenderFront();
 	NikuMgr->RenderFront();
 	NumberEffect.Render();
-
+	EffectMgr.Render();
 
 
 	/*★★チュートリアル関連の描画★★*/
@@ -927,8 +927,12 @@ void sceneTutorial::MainRender()
 	// 時が止まってたら暗くなる(この辺は自由にどうぞ)
 	if (m_bPause)
 	{
-		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x50000000);
+		//tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x50000000);
 	}
+
+	static const int TUTORIAL_TEXT_X = 32;
+	static const int TUTORIAL_TEXT_Y = 160;
+	static const DWORD TUTORIAL_TEXT_COLOR = 0xffffffff;
 
 	switch (m_TutorialStep)
 	{
@@ -936,44 +940,47 @@ void sceneTutorial::MainRender()
 		break;
 
 	case 1:	// 羊がレーンから出てくるよ！！
-		tdnText::Draw(640, 320, 0xffffffff, "ようこそ、羊焼きワールドへ");
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x50000000);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "おおかみとひつじたちの世界へようこそ！");
 		break;
 
 	case 2:	// 羊がレーンに入るまでの待機時間
 		break;
 
 	case 3:	// 羊が右まで逃げたらスコアはいるよ！！
-		tdnText::Draw(640, 320, 0xffffffff, "羊が右まで逃げたらスコアはいるよ！！");
 		m_blackflame[(int)BLACK::POINT]->Render(0, 0);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "羊が右まで逃げたらスコアが加算！");
 		break;
 
 	case 4:	// 適当な待機時間
 		break;
 
 	case 5:	// 犬をクリックすると流れを変えられるぞ！ ※犬クリックコマンド
-		tdnText::Draw(640, 320, 0xffffffff, "犬をクリックすると流れを変えられるぞ！");
 		m_blackflame[(int)BLACK::DOG]->Render(0, 0);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "犬をクリックすると流れを変えられるぞ！");
 		break;
 
 	case 6:	// この間に羊が曲がっている
 		break;
 
 	case 7:	// 羊の流れが変わったな
-		tdnText::Draw(640, 320, 0xffffffff, "羊の流れが変わったな");
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x50000000);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "羊の流れが変わったな");
 		break;
 
 	case 8:	// 適当な待機時間
 		break;
 
 	case 9:	// もう一度クリックすると解除するぞ！ ※犬クリックコマンド
-		tdnText::Draw(640, 320, 0xffffffff, "もう一度犬をクリックすると解除するぞ！");
 		m_blackflame[(int)BLACK::DOG]->Render(0, 0);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "もう一度犬をクリックすると解除するぞ！");
 		break;
 	case 10: // 解除してるのを見てる時間
 		break;
 
 	case 11: // 戻ったねー！
-		tdnText::Draw(640, 320, 0xffffffff, "犬が戻ったねー！");
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x50000000);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "流れが戻ったぞ！");
 		break;
 
 	case 12: // 狼ポップアップ出るまでの待機時間
@@ -983,8 +990,8 @@ void sceneTutorial::MainRender()
 		break;
 
 	case 14:// オオカミが来るぞ！小屋をクリックして回避しよう！ ※ここで真ん中の小屋をクリックするコマンド
-		tdnText::Draw(640, 320, 0xffffffff, "オオカミが来るぞ！小屋をクリックして回避しよう！");
 		m_blackflame[(int)BLACK::HOUSE]->Render(0, 0);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "オオカミが来るぞ！小屋をクリックして回避しよう！");
 		break;
 
 	case 15: // 一定時間後に狼を出す
@@ -994,51 +1001,55 @@ void sceneTutorial::MainRender()
 		break;
 
 	case 17: // オオカミ回避できたね
-		tdnText::Draw(640, 320, 0xffffffff, "オオカミ回避できたね");
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x50000000);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "オオカミ回避できたね");
 		break;
 
 	case 18: // 適当な待機時間
 		break;
 
 	case 19: // 牧草ゲージがあるぞ！
-		tdnText::Draw(640, 320, 0xffffffff, "牧草ゲージがあるぞ！");
 		m_blackflame[(int)BLACK::GRASS_GAGE]->Render(0, 0);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "牧草ゲージがあるぞ！");
 		break;
 
 	case 20: // 牧草ゲージ溜まるまで待つ
 		break;
 
 	case 21: // 牧草ゲージが溜まって、牧草が実体化するぞ！
-		tdnText::Draw(640, 320, 0xffffffff, "牧草ゲージが溜まって、牧草が実体化するぞ！");
 		m_blackflame[(int)BLACK::GRASS]->Render(0, 0);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "牧草ゲージが溜まって、牧草が実体化するぞ！");
 		break;
 	case 22: // 牧草ベジエ待つ
 		break;
 
 	case 23: // 牧草が実体化したぞ！犬を使って羊を牧草にぶつけてみよう！　 ※ここで犬クリックコマンド
-		tdnText::Draw(640, 320, 0xffffffff, "牧草が実体化したぞ！犬を使って羊を牧草にぶつけてみよう！");
 		m_blackflame[(int)BLACK::DOG_USE]->Render(0, 0);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "牧草が実体化したぞ！犬を使って羊を牧草にぶつけてみよう！");
 		break;
 
 	case 24: // 羊が牧草ヒットするまで待つ
 		break;
 
 	case 25: // 羊が太った！羊の群れで流しこもう！
-		tdnText::Draw(640, 320, 0xffffffff, "羊が太ったぞ！羊の群れで流しこもう！");
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x50000000);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "羊が太ったぞ！羊の群れで流しこもう！");
 		break;
 
 	case 26: // デブ羊押してる間のところ
 		break;
 
 	case 27: // スコアがたくさん入ったぞ！
-		tdnText::Draw(640, 320, 0xffffffff, "スコアがたくさん入ったぞ！");
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x50000000);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "スコアがたくさん入ったぞ！");
 		break;
 
 	case 28: // 適当な待機時間
 		break;
 
 	case 29: // 1匹の犠牲でタイムを増やそう！
-		tdnText::Draw(640, 320, 0xffffffff, "1匹の犠牲でタイムを増やそう！ドラッグアンドドロップで火に持っていこう");
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x50000000);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "1匹の犠牲でタイムを増やそう！\nドラッグアンドドロップで火に持っていこう");
 		break;
 
 	case 30: // ※★このステートでプレイヤーに羊をドラッグアンドドロップで焼かせる！
@@ -1046,14 +1057,15 @@ void sceneTutorial::MainRender()
 		break;
 
 	case 31: // お見事！羊を焼けたね！肉には焼き加減があるぞ！
-		tdnText::Draw(640, 320, 0xffffffff, "お見事！羊を焼けたね！肉には焼き加減があるぞ！");
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x50000000);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "お見事！羊を焼けたね！肉には焼き加減があるぞ！");
 		break;
 	case 32: // 肉がパーフェクトになるまで待つ(操作受付はしない)
 		break;
 
 	case 33: // このタイミングがパーフェクトだ！焼き羊をクリックしてみよう！ ※ここで焼き羊クリックコマンド
-		tdnText::Draw(640, 320, 0xffffffff, "このタイミングがパーフェクトだ！焼き羊をクリックしてみよう！");
 		m_blackflame[(int)BLACK::MEET]->Render(0, 0);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "このタイミングがパーフェクトだ！\n焼き羊をクリックしてみよう！");
 		break;
 
 	case 34:// 肉バウンド中
@@ -1063,8 +1075,8 @@ void sceneTutorial::MainRender()
 		break;
 
 	case 36:// 肉をドラックアンドドロップでオオカミのレーンにおいてみよう！
-		tdnText::Draw(640, 320, 0xffffffff, "肉をドラックアンドドロップでオオカミのレーンにおいてみよう！");
 		m_blackflame[(int)BLACK::CENTER]->Render(0, 0);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "肉をドラックアンドドロップで、\nオオカミのレーンにおいてみよう！");
 	
 		break;
 
@@ -1081,7 +1093,8 @@ void sceneTutorial::MainRender()
 		break;
 
 	case 40: // Delicious！オオカミが肉を食ってるぞ！
-		tdnText::Draw(640, 320, 0xffffffff, "Delicious！オオカミが肉を食ってるぞ！");
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x50000000);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "Delicious！オオカミが肉を食ってるぞ！");
 		break;
 
 	case 41: // デブオオカミが生成されるまでの空白
@@ -1089,14 +1102,16 @@ void sceneTutorial::MainRender()
 
 	case 42:
 		// オオカミが太ったぞ！太った羊と同じ要領で、群れで押し込もう！ ※ここで犬クリックコマンド
-		tdnText::Draw(640, 320, 0xffffffff, "オオカミが太ったぞ！太った羊と同じ要領で、群れで押し込もう");
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x50000000);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "オオカミが太ったぞ！\n太った羊と同じ要領で、群れで押し込もう");
 		break;
 
 	case 43: // オオカミが入るまでの待機時間
 		break;
 
 	case 44: // 太った狼を押し出すとタイムが回復するぞ！
-		tdnText::Draw(640, 320, 0xffffffff, "太った狼を押し出すとタイムが回復するぞ！");
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x50000000);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "太った狼を押し出すとタイムが回復するぞ！");
 		break;
 
 	case 45:
@@ -1104,7 +1119,8 @@ void sceneTutorial::MainRender()
 		break;
 
 	case 46: // 基本ルールはこれで終了。良い羊焼きライフを
-		tdnText::Draw(640, 320, 0xffffffff, "基本ルールはこれで終了。良い羊焼きライフを");
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x50000000);
+		tdnText::Draw(TUTORIAL_TEXT_X, TUTORIAL_TEXT_Y, TUTORIAL_TEXT_COLOR, "基本ルールはこれで終了。良い羊焼きライフを");
 		break;
 
 	case 47: // フェード終了まち

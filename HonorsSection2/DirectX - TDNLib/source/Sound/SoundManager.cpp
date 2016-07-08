@@ -15,7 +15,7 @@
 const SE_Manager::DATA all_dataS[] =
 {
 	{ "ポーズ",			"DATA/Sound/SE/se1.wav",		1, false },
-	{ "CLICK",			"DATA/Sound/SE/se4.wav",		3, false },
+	{ "CLICK",			"DATA/Sound/SE/se4.wav",		6, false },
 	{ "ふとる",			"DATA/Sound/SE/be_fat.wav",		3, false },
 	{ "!"		,		"DATA/Sound/SE/wolf.wav",		3, false },
 	{ "パクモグ",		"DATA/Sound/SE/pakumogu.wav",	2, false },

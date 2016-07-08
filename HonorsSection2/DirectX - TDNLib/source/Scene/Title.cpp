@@ -20,6 +20,7 @@ Explain* ex;
 //End* end;
 
 SendPower* m_send;
+bool Title::m_bTutorial = true;
 
 Vector3 start, center, center2, end;
 
@@ -65,6 +66,8 @@ bool Title::Initialize()
 	// EXIT
 	m_pExit = new ExitInfo("DATA/title/exit.png", Vector2(16, 640), Vector2(128, 128));
 
+	// チューとリアl
+	m_pTutorial = new TutorialInfo("DATA/Tutorial/説明.png", Vector2(1100, 600), Vector2(150, 150));
 
 	// 小屋
 	m_bKoyaFlag = false;
@@ -104,7 +107,7 @@ Title::~Title()
 	SAFE_DELETE(m_titleLogo);
 	SAFE_DELETE(m_koya.pic);
 	SAFE_DELETE(m_koya.picBack);
-	
+	delete m_pTutorial;
 	//SAFE_DELETE(end);
 
 	Particle2dManager::Release();
@@ -193,7 +196,13 @@ bool Title::Update()
 			//FadeControl::IsEndFade() && 
 			!se->isPlay("ゲームスタート", 0))
 		{
-			MainFrame->ChangeScene(new sceneTutorial, true);	// シーンローディングを挟む
+			// チュートリアル分岐
+			if (m_bTutorial)
+			{
+				m_bTutorial = false;	// チュートリアル解除
+				MainFrame->ChangeScene(new sceneTutorial, true);	// シーンローディングを挟む
+			}
+			else MainFrame->ChangeScene(new sceneMain, true);	// シーンローディングを挟む
 			return true;
 		}
 	
@@ -202,11 +211,17 @@ bool Title::Update()
 	{
 		// カーソル範囲内処理
 		m_pExit->bPoint = m_pExit->CheckCurosrIn(tdnMouse::GetPos());
+		m_pTutorial->bPoint = m_pTutorial->CheckCurosrIn(tdnMouse::GetPos());
 
 		// 左クリック
 		if (tdnMouse::GetLeft() == 3 && m_pExit->bPoint)
 		{
 			PostMessage(tdnSystem::GetWindow(), WM_CLOSE, 0, 0);
+		}
+		else if (tdnMouse::GetLeft() == 3 && m_pTutorial->bPoint)
+		{
+			se->Play("CLICK");
+			m_bTutorial = !m_bTutorial;
 		}
 	}
 
@@ -341,6 +356,9 @@ void Title::Render()
 
 	// EXIT看板
 	m_pExit->Render();
+
+	// チュートリアル看板
+	m_pTutorial->Render();
 
 	// エフェクトマネージャー
 	EffectMgr.Render();

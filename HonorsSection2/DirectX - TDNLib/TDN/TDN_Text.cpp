@@ -8,7 +8,7 @@ void tdnText::Init(){
 
 	hf = (HFONT)GetStockObject(SYSTEM_FONT);
 	GetObject(hf, sizeof(LOGFONT), (LPSTR)&fd);
-	fd.Height = 32;
+	fd.Height = 64;
 	fd.Width = 0;
 	fd.Italic = 0;
 	fd.CharSet = SHIFTJIS_CHARSET;

@@ -47,6 +47,25 @@ private:
 		bool CheckCurosrIn(const Vector2 &mPos){ return (mPos.x > pos.x && mPos.x < pos.x + size.x && mPos.y > pos.y && mPos.y < pos.y + size.y); }
 	}*m_pExit;
 
+	// チュートリアル看板
+	static bool m_bTutorial;		// チュートリアルフラグ
+	struct TutorialInfo
+	{
+		tdn2DObj *pImage;	// 画像
+		Vector2 pos;		// 座標
+		Vector2 size;		// 画像サイズ
+		bool bPoint;		// カーソル範囲内か
+		TutorialInfo(char *filename, const Vector2 &pos, const Vector2 &size) :pImage(new tdn2DObj(filename)), pos(pos), size(size), bPoint(false){}
+		~TutorialInfo(){ delete pImage; }
+		void Render()
+		{
+			pImage->SetARGB(bPoint ? 0xffffffff : 0xffcccccc);
+			pImage->SetScale(bPoint ? 1.1f : 1.0f);
+			pImage->Render((int)pos.x, (int)pos.y, (int)size.x, (int)size.y, m_bTutorial ? 150 : 0, 0, 150, 150);
+		}
+		bool CheckCurosrIn(const Vector2 &mPos){ return (mPos.x > pos.x && mPos.x < pos.x + size.x && mPos.y > pos.y && mPos.y < pos.y + size.y); }
+	}*m_pTutorial;
+
 	// マウスポインタ―
 	MousePointer* m_pointer;
 

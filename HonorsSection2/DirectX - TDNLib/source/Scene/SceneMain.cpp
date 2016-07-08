@@ -245,7 +245,7 @@ void sceneMain::Init()
 	FadeControl::Setting(FadeControl::MODE::WHITE_IN, 30.0f);
 
 	// ここのかっこを0にするとレディーゴーの処理が出る(デバッグの時短でレディーゴーを無しにしてる)
-	state = (0) ? SCENE::MAIN : SCENE::EXPLAIN;
+	state = (0) ? SCENE::MAIN : SCENE::READY;
 	DataDelivery();
 }
 
