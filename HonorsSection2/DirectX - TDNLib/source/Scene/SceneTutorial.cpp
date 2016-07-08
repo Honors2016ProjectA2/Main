@@ -136,6 +136,17 @@ bool sceneTutorial::Initialize()
 	m_poseIcon.y = 42;
 	m_poseIcon.pic->SetARGB(0xffaaaaaa);// 色
 	
+	// 黒縁
+	m_blackflame[(int)BLACK::DOG]=new tdn2DObj("DATA/Tutorial/犬.png");
+	m_blackflame[(int)BLACK::DOG_USE] = new tdn2DObj("DATA/Tutorial/犬を使って.png");
+	m_blackflame[(int)BLACK::HOUSE] = new tdn2DObj("DATA/Tutorial/小屋.png");
+	m_blackflame[(int)BLACK::CENTER] = new tdn2DObj("DATA/Tutorial/真ん中レーン.png");
+	m_blackflame[(int)BLACK::POINT] = new tdn2DObj("DATA/Tutorial/点入ったとき.png");
+	m_blackflame[(int)BLACK::MEET] = new tdn2DObj("DATA/Tutorial/肉.png");
+	m_blackflame[(int)BLACK::GRASS] = new tdn2DObj("DATA/Tutorial/牧草.png");
+	m_blackflame[(int)BLACK::GRASS_GAGE] = new tdn2DObj("DATA/Tutorial/牧草ゲージ.png");
+	m_blackflame[(int)BLACK::DRAG] = new tdn2DObj("DATA/Tutorial/ドラッグ&ドロップ.png");
+	m_blackflame[(int)BLACK::HOLD] = new tdn2DObj("DATA/Tutorial/肉掴め.png");
 	return true;
 }
 
@@ -167,6 +178,13 @@ sceneTutorial::~sceneTutorial()
 	SAFE_DELETE(m_poseTimer.three);
 
 	SAFE_DELETE(m_poseIcon.pic);
+
+
+	for (int i = 0; i < (int)BLACK::END; i++)
+	{
+		SAFE_DELETE(m_blackflame[i]);
+	}
+	
 }
 
 //******************************************************************
@@ -909,7 +927,7 @@ void sceneTutorial::MainRender()
 	// 時が止まってたら暗くなる(この辺は自由にどうぞ)
 	if (m_bPause)
 	{
-		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x80000000);
+		tdnPolygon::Rect(0, 0, 1280, 720, RS::COPY, 0x50000000);
 	}
 
 	switch (m_TutorialStep)
@@ -926,6 +944,7 @@ void sceneTutorial::MainRender()
 
 	case 3:	// 羊が右まで逃げたらスコアはいるよ！！
 		tdnText::Draw(640, 320, 0xffffffff, "羊が右まで逃げたらスコアはいるよ！！");
+		m_blackflame[(int)BLACK::POINT]->Render(0, 0);
 		break;
 
 	case 4:	// 適当な待機時間
@@ -933,6 +952,7 @@ void sceneTutorial::MainRender()
 
 	case 5:	// 犬をクリックすると流れを変えられるぞ！ ※犬クリックコマンド
 		tdnText::Draw(640, 320, 0xffffffff, "犬をクリックすると流れを変えられるぞ！");
+		m_blackflame[(int)BLACK::DOG]->Render(0, 0);
 		break;
 
 	case 6:	// この間に羊が曲がっている
@@ -947,6 +967,7 @@ void sceneTutorial::MainRender()
 
 	case 9:	// もう一度クリックすると解除するぞ！ ※犬クリックコマンド
 		tdnText::Draw(640, 320, 0xffffffff, "もう一度犬をクリックすると解除するぞ！");
+		m_blackflame[(int)BLACK::DOG]->Render(0, 0);
 		break;
 	case 10: // 解除してるのを見てる時間
 		break;
@@ -963,6 +984,7 @@ void sceneTutorial::MainRender()
 
 	case 14:// オオカミが来るぞ！小屋をクリックして回避しよう！ ※ここで真ん中の小屋をクリックするコマンド
 		tdnText::Draw(640, 320, 0xffffffff, "オオカミが来るぞ！小屋をクリックして回避しよう！");
+		m_blackflame[(int)BLACK::HOUSE]->Render(0, 0);
 		break;
 
 	case 15: // 一定時間後に狼を出す
@@ -980,6 +1002,7 @@ void sceneTutorial::MainRender()
 
 	case 19: // 牧草ゲージがあるぞ！
 		tdnText::Draw(640, 320, 0xffffffff, "牧草ゲージがあるぞ！");
+		m_blackflame[(int)BLACK::GRASS_GAGE]->Render(0, 0);
 		break;
 
 	case 20: // 牧草ゲージ溜まるまで待つ
@@ -987,12 +1010,14 @@ void sceneTutorial::MainRender()
 
 	case 21: // 牧草ゲージが溜まって、牧草が実体化するぞ！
 		tdnText::Draw(640, 320, 0xffffffff, "牧草ゲージが溜まって、牧草が実体化するぞ！");
+		m_blackflame[(int)BLACK::GRASS]->Render(0, 0);
 		break;
 	case 22: // 牧草ベジエ待つ
 		break;
 
 	case 23: // 牧草が実体化したぞ！犬を使って羊を牧草にぶつけてみよう！　 ※ここで犬クリックコマンド
 		tdnText::Draw(640, 320, 0xffffffff, "牧草が実体化したぞ！犬を使って羊を牧草にぶつけてみよう！");
+		m_blackflame[(int)BLACK::DOG_USE]->Render(0, 0);
 		break;
 
 	case 24: // 羊が牧草ヒットするまで待つ
@@ -1017,6 +1042,7 @@ void sceneTutorial::MainRender()
 		break;
 
 	case 30: // ※★このステートでプレイヤーに羊をドラッグアンドドロップで焼かせる！
+		m_blackflame[(int)BLACK::DRAG]->Render(0, 0);
 		break;
 
 	case 31: // お見事！羊を焼けたね！肉には焼き加減があるぞ！
@@ -1027,6 +1053,7 @@ void sceneTutorial::MainRender()
 
 	case 33: // このタイミングがパーフェクトだ！焼き羊をクリックしてみよう！ ※ここで焼き羊クリックコマンド
 		tdnText::Draw(640, 320, 0xffffffff, "このタイミングがパーフェクトだ！焼き羊をクリックしてみよう！");
+		m_blackflame[(int)BLACK::MEET]->Render(0, 0);
 		break;
 
 	case 34:// 肉バウンド中
@@ -1037,9 +1064,14 @@ void sceneTutorial::MainRender()
 
 	case 36:// 肉をドラックアンドドロップでオオカミのレーンにおいてみよう！
 		tdnText::Draw(640, 320, 0xffffffff, "肉をドラックアンドドロップでオオカミのレーンにおいてみよう！");
+		m_blackflame[(int)BLACK::CENTER]->Render(0, 0);
+	
 		break;
 
 	case 37:// ※★このステートでプレイヤーに「真ん中レーンに」肉ドラッグアンドドロップさせる！！！
+		
+		m_blackflame[(int)BLACK::CENTER]->Render(0, 0);
+		m_blackflame[(int)BLACK::HOLD]->Render(0, 0);
 		break;
 
 	case 38:// 少し待って狼出現

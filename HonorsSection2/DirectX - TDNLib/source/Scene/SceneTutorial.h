@@ -87,6 +87,21 @@ public:
 	};
 	PoseIcon m_poseIcon;
 
+
+	// í«â¡Å@çïâè
+
+	enum class BLACK
+	{
+		DOG, DOG_USE,HOUSE,CENTER,
+		POINT,MEET,GRASS, GRASS_GAGE,DRAG,HOLD,END
+	};
+
+	tdn2DObj* m_blackflame[(int)BLACK::END];
+
+
+
+
+
 private:
 
 	void PoseUpdate();
