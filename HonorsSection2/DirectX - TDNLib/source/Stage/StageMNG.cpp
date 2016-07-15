@@ -57,7 +57,8 @@ int FindFloor(float posY)
 //------- constructor,destructor ---------
 
 StageManager::StageManager(bool bTutorial) :m_pDogImage(new tdn2DObj("DATA/CHR/dog.png")), m_pFireImage(new tdn2DObj("DATA/巻き/炎の種.png")), m_bTutorial(bTutorial), m_bDogUpdate(true),
-m_FireAnimFrame(0), m_FireAnimPanel(0), m_ChangeScoreTime(0), m_pBatuImage(new tdn2DObj("DATA/batu.png")), m_pNumber(new tdn2DObj("DATA/Number/Number.png")), m_pFireFlash(new FireFlash)
+m_FireAnimFrame(0), m_FireAnimPanel(0), m_ChangeScoreTime(0), m_pBatuImage(new tdn2DObj("DATA/batu.png")), m_pNumber(new tdn2DObj("DATA/Number/Number.png")), m_pFireFlash(new FireFlash),
+m_bHouseUpdate(true)
 {
 	for (int i = 0; i < STAGE_MAX; i++)
 	{
@@ -249,37 +250,40 @@ void StageManager::Update()
 		}
 	}
 
-	if (tdnMouse::GetLeft() == 3)
+	if (m_bHouseUpdate)
 	{
-		// 羊生成の小屋を変える処理
-		if (floor != -1 && floor != g_CreateSheepFloor)
+		if (tdnMouse::GetLeft() == 3)
 		{
-			// リキャストOK
-			if (stage[floor]->GetRecastTime() <= 0)
+			// 羊生成の小屋を変える処理
+			if (floor != -1 && floor != g_CreateSheepFloor)
 			{
-				// リキャスト設定
-				stage[g_CreateSheepFloor]->SetRecastTime(m_RECAST_TIME);
+				// リキャストOK
+				if (stage[floor]->GetRecastTime() <= 0)
+				{
+					// リキャスト設定
+					stage[g_CreateSheepFloor]->SetRecastTime(m_RECAST_TIME);
 
-				// 羊生成フロア変える
-				g_CreateSheepFloor = floor;
+					// 羊生成フロア変える
+					g_CreateSheepFloor = floor;
 
-				// SEの再生
-				se->Play("ドア", Vector2(128, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2));
+					// SEの再生
+					se->Play("ドア", Vector2(128, (float)STAGE_POS_Y[floor] + LANE_WIDTH / 2));
 
-				// 開くエフェクト
-				EffectMgr.AddEffect(96, STAGE_POS_Y[floor] + LANE_WIDTH / 2, EFFECT_TYPE::SMOKE);
-				EffectMgr.AddEffect(96, STAGE_POS_Y[floor] + LANE_WIDTH / 2, EFFECT_TYPE::INEFFECT_MINI);
+					// 開くエフェクト
+					EffectMgr.AddEffect(96, STAGE_POS_Y[floor] + LANE_WIDTH / 2, EFFECT_TYPE::SMOKE);
+					EffectMgr.AddEffect(96, STAGE_POS_Y[floor] + LANE_WIDTH / 2, EFFECT_TYPE::INEFFECT_MINI);
 
-				// 犬配置リセット
-				m_DogStock = 2;
+					// 犬配置リセット
+					m_DogStock = 2;
 
-				// 犬レーン変更
-				SetDogFloor(floor);
+					// 犬レーン変更
+					SetDogFloor(floor);
 
-				stage[floor]->m_TenmetsuFrame = 0;
+					stage[floor]->m_TenmetsuFrame = 0;
 
-				// Tipsカウント
-				TipsCountMgr->m_LaneChange++;
+					// Tipsカウント
+					TipsCountMgr->m_LaneChange++;
+				}
 			}
 		}
 	}

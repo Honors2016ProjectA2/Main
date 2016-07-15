@@ -97,7 +97,8 @@ public:
 	};
 
 	tdn2DObj* m_blackflame[(int)BLACK::END];
-
+	static const int m_NumTutorialTextImage = 23;
+	tdn2DObj* m_pTutorialTextImages[m_NumTutorialTextImage];
 
 
 

@@ -176,6 +176,7 @@ public:
 
 	const bool m_bTutorial;
 	bool m_bDogUpdate;
+	bool m_bHouseUpdate;
 };
 
 // Å’ZƒtƒƒAŒŸõŠÖ”
